@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/module/rdm/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+
+	<context:component-scan base-package="codedriver.module.rdm" use-default-filters="false">
+		<context:include-filter type="annotation" expression="codedriver.framework.common.RootComponent" />
+	</context:component-scan>
+
+	<context:component-scan base-package="codedriver.module.rdm" />
+	<context:annotation-config />
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- 启动expost-proxy,expose proxy在threadlocal -->
+	<aop:aspectj-autoproxy expose-proxy="true" />
+	<mvc:annotation-driven />
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="codedriver.module.rdm.dao" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:codedriver/module/rdm/dao/*.xml</value>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>
