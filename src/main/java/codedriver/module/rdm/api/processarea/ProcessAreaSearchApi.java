@@ -1,27 +1,26 @@
-package codedriver.module.rdm.api;
+package codedriver.module.rdm.api.processarea;
 
-import codedriver.framework.common.AuthAction;
 import codedriver.framework.restful.core.ApiComponentBase;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 /**
- * @ClassName TaskCreateApi
+ * @ClassName FieldSaveApi
  * @Description
  * @Auther fandong
- * @Date 2019/12/3 15:35
+ * @Date 2019/12/4 9:52
  **/
 @Service
-public class TaskCreateApi extends ApiComponentBase {
+public class ProcessAreaSearchApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/task/create";
+        return "module/rdm/processarea/search";
     }
 
     @Override
     public String getName() {
-        return "创建任务接口";
+        return "查询过程域接口";
     }
 
     @Override
@@ -34,6 +33,5 @@ public class TaskCreateApi extends ApiComponentBase {
         return null;
     }
 
+
 }
-
-
