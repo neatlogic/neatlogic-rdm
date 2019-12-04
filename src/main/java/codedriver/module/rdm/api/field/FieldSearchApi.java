@@ -1,8 +1,13 @@
 package codedriver.module.rdm.api.field;
 
 import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.module.rdm.dao.mapper.FieldMapper;
+import codedriver.module.rdm.dto.FieldVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @ClassName FieldSaveApi
@@ -12,6 +17,9 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class FieldSearchApi extends ApiComponentBase {
+
+    @Resource
+    private FieldMapper fieldMapper;
 
     @Override
     public String getToken() {
@@ -30,8 +38,10 @@ public class FieldSearchApi extends ApiComponentBase {
 
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-        return null;
+        JSONObject data = new JSONObject();
+        List<FieldVo> fieldList =  fieldMapper.getFieldList(new FieldVo());
+        data.put("fieldList", fieldList);
+        return data;
     }
-
 
 }
