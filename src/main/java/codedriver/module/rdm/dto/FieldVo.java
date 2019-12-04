@@ -1,8 +1,10 @@
 package codedriver.module.rdm.dto;
 
+import codedriver.module.rdm.api.constants.FieldType;
+
 /**
  * @ClassName FieldVo
- * @Description
+ * @Description 属性类
  * @Auther fandong
  * @Date 2019/12/4 14:38
  **/
@@ -15,7 +17,9 @@ public class FieldVo {
     private String alias;
     private String description;
     private Integer type;
+    private String typeName;
     private String config;
+    private Integer isSystemField;
 
 
     public Long getId() {
@@ -82,11 +86,27 @@ public class FieldVo {
         this.type = type;
     }
 
+    public String getTypeName() {
+        return FieldType.getNameById(this.type);
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
     public String getConfig() {
         return config;
     }
 
     public void setConfig(String config) {
         this.config = config;
+    }
+
+    public Integer getIsSystemField() {
+        return isSystemField;
+    }
+
+    public void setIsSystemField(Integer isSystemField) {
+        this.isSystemField = isSystemField;
     }
 }
