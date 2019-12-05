@@ -3,7 +3,7 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName CategoryVo
  * @Description 分类
- * @Auther fandong
+ * @Auther r2d2
  * @Date 2019/12/4 18:36
  **/
 public class CategoryVo {
@@ -13,8 +13,10 @@ public class CategoryVo {
     private String description;
     private Long parentId;
     private String parentUuid;
+
     private Long processAreaId;
     private String processAreaUuid;
+
     private Long projectId;
     private String projectUuid;
 

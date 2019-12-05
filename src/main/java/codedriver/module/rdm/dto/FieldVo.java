@@ -1,11 +1,11 @@
 package codedriver.module.rdm.dto;
 
-import codedriver.module.rdm.api.constants.FieldType;
+import codedriver.module.rdm.constants.FieldType;
 
 /**
  * @ClassName FieldVo
  * @Description 属性类
- * @Auther fandong
+ * @Auther r2d2
  * @Date 2019/12/4 14:38
  **/
 public class FieldVo {

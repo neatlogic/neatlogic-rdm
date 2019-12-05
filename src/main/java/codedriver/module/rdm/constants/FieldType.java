@@ -1,9 +1,9 @@
-package codedriver.module.rdm.api.constants;
+package codedriver.module.rdm.constants;
 
 /**
  * @ClassName FieldType
  * @Description 字段类型枚举类
- * @Auther fandong
+ * @Auther r2d2
  * @Date 2019/12/4 15:16
  **/
 public enum FieldType {
@@ -19,12 +19,12 @@ public enum FieldType {
     private Integer id;
     private String name;
 
-    private FieldType(Integer _id, String _name) {
+    FieldType(Integer _id, String _name) {
         this.id = _id;
         this.name = _name;
     }
 
-    public static String getNameById(Integer _id){
+    public static String getNameById(Integer _id) {
         for (FieldType field : FieldType.values()) {
             if (field.getId().equals(_id)) {
                 return field.getName();

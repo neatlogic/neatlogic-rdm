@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @ClassName TaskVo
  * @Description 任务类
- * @Auther fandong
+ * @Auther r2d2
  * @Date 2019/12/4 18:17
  **/
 public class TaskVo {

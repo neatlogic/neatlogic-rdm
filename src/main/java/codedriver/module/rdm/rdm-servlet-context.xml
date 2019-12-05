@@ -19,22 +19,22 @@
 
     <codedriver:module id="rdm" name="研发管理模块"/>
 
-	<context:component-scan base-package="codedriver.module.rdm" use-default-filters="false">
-		<context:include-filter type="annotation" expression="codedriver.framework.common.RootComponent" />
-	</context:component-scan>
+    <context:component-scan base-package="codedriver.module.rdm" use-default-filters="false">
+        <context:include-filter type="annotation" expression="codedriver.framework.common.RootComponent"/>
+    </context:component-scan>
 
-	<context:component-scan base-package="codedriver.module.rdm" />
-	<context:annotation-config />
-	<tx:annotation-driven transaction-manager="transactionManager" />
-	<aop:aspectj-autoproxy expose-proxy="true" />
-	<mvc:annotation-driven />
+    <context:component-scan base-package="codedriver.module.rdm"/>
+    <context:annotation-config/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+    <mvc:annotation-driven/>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="codedriver.module.rdm.dao" />
+        <property name="basePackage" value="codedriver.module.rdm.dao"/>
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-        <property name="dataSource" ref="dataSource" />
+        <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations">
             <list>
                 <value>classpath:codedriver/module/rdm/dao/mapper/*.xml</value>

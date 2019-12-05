@@ -1,26 +1,26 @@
-package codedriver.module.rdm.api.processarea;
+package codedriver.module.rdm.api.projectworkflow;
 
 import codedriver.framework.restful.core.ApiComponentBase;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 /**
- * @ClassName ProcessAreaSaveApi
+ * @ClassName ProjectWorkflowSaveApi
  * @Description
  * @Auther r2d2
  * @Date 2019/12/4 9:52
  **/
 @Service
-public class ProcessAreaSaveApi extends ApiComponentBase {
+public class ProjectWorkflowSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/processarea/save";
+        return "module/rdm/projectworkflow/save";
     }
 
     @Override
     public String getName() {
-        return "保存过程域接口";
+        return "保存项目工作流接口";
     }
 
     @Override

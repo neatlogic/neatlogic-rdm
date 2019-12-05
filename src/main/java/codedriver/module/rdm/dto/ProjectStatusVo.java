@@ -5,10 +5,10 @@ import java.util.List;
 /**
  * @ClassName StatusVo
  * @Description
- * @Auther fandong
+ * @Auther r2d2
  * @Date 2019/12/4 18:23
  **/
-public class StatusVo {
+public class ProjectStatusVo {
     private Long id;
     private String uuid;
     private String name;

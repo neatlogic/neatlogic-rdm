@@ -3,7 +3,7 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName FilterVo
  * @Description 任务查询过滤类
- * @Auther fandong
+ * @Auther r2d2
  * @Date 2019/12/4 17:38
  **/
 public class FilterVo {
