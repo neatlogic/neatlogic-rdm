@@ -3,7 +3,7 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName Itearator
  * @Description 迭代类
- * @Auther r2d2
+ * @Auther
  * @Date 2019/12/4 18:10
  **/
 public class IterationVo {

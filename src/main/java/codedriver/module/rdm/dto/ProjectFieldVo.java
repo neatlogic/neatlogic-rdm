@@ -3,7 +3,7 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName ProjectFieldVo
  * @Description 项目属性类
- * @Auther r2d2
+ * @Auther
  * @Date 2019/12/4 15:58
  **/
 public class ProjectFieldVo extends ProjectVo {

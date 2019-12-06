@@ -3,7 +3,7 @@ package codedriver.module.rdm.constants;
 /**
  * @ClassName FieldType
  * @Description 字段类型枚举类
- * @Auther r2d2
+ * @Auther
  * @Date 2019/12/4 15:16
  **/
 public enum FieldType {

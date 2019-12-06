@@ -3,7 +3,7 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName PriorityVo
  * @Description 优先级类
- * @Auther r2d2
+ * @Auther
  * @Date 2019/12/4 18:23
  **/
 public class PriorityVo {
