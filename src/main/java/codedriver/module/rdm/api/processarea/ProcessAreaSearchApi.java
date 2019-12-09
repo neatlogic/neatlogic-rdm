@@ -43,7 +43,7 @@ public class ProcessAreaSearchApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字(用户id或名称),模糊查询", isRequired = false),
+    @Input({ @Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字(过程域名称),模糊查询", isRequired = false),
             @Param(name = "needPage", type = ApiParamType.BOOLEAN, desc = "是否需要分页", isRequired = false),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数", isRequired = false),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量 默认10", isRequired = false) })
