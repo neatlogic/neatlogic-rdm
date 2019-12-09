@@ -7,4 +7,5 @@ package codedriver.module.rdm.constants;
  * @Date 2019/12/4 19:30
  **/
 public enum ProcessAreaType {
+
 }

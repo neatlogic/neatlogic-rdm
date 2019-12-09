@@ -8,11 +8,11 @@ package codedriver.module.rdm.constants;
  **/
 public enum FieldType {
     FILE(1, "文件"),
-    TEXT(2, "文本域"),
-    NUMBER(3, "数值"),
-    DATE(4, "日期选择"),
-    SELECT(5, "单选框"),
-    STRING(6, "单行文本框"),
+    NUMBER(2, "数值"),
+    DATE(3, "日期选择"),
+    SELECT(4, "单选框"),
+    TEXT(5, "单行文本框"),
+    TEXTAREA(6, "文本域"),
     MULTIPLESELECT(7, "多选框");
 
 

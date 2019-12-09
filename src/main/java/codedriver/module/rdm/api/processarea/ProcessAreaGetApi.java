@@ -1,0 +1,58 @@
+package codedriver.module.rdm.api.processarea;
+
+import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.restful.annotation.Description;
+import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.Output;
+import codedriver.framework.restful.annotation.Param;
+import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.module.rdm.dao.mapper.ProcessAreaMapper;
+import codedriver.module.rdm.dto.ProcessAreaVo;
+import codedriver.module.rdm.services.ProcessAreaService;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * @ClassName ProcessAreaSearchApi
+ * @Description
+ * @Auther
+ * @Date 2019/12/4 9:52
+ **/
+@Service
+public class ProcessAreaGetApi extends ApiComponentBase {
+
+    @Resource
+    private ProcessAreaMapper processAreaMapper;
+
+    @Override
+    public String getToken() {
+        return "module/rdm/processarea/get";
+    }
+
+    @Override
+    public String getName() {
+        return "根据查询id过程域接口";
+    }
+
+    @Override
+    public String getConfig() {
+        return null;
+    }
+
+    @Input({ @Param(name = "uuid", type = ApiParamType.LONG, desc = "关键字(用户id或名称),模糊查询", isRequired = true)})
+    @Description(desc = "根据查询uuid过程域接口")
+    @Override
+    public Object myDoService(JSONObject jsonObj) throws Exception {
+        JSONObject result = new JSONObject();
+
+        String uuid = jsonObj.getString("uuid");
+        result.put("processArea", processAreaMapper.getProcessAreaByUuid(uuid));
+        result.put("fieldList", processAreaMapper.getProcessAreaFieldListByUuid(uuid));
+        return result;
+    }
+
+
+}

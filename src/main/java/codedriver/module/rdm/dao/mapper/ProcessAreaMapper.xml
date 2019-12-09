@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProcessAreaMapper">
+
+    <select id="searchProcessAreaCount" parameterType="codedriver.module.rdm.dto.ProcessAreaVo" resultType="int">
+        SELECT
+            COUNT(id)
+        FROM `rdm_process_area` a
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND a.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <select id="searchProcessArea" parameterType="codedriver.module.rdm.dto.ProcessAreaVo" resultType="codedriver.module.rdm.dto.ProcessAreaVo">
+        SELECT
+          `id`,
+          `name`,
+          `uuid`,
+          `description`
+        FROM
+          `rdm_process_area` a
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND a.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ORDER BY a.id
+        <if test="needPage == true">
+            LIMIT #{startNum}, #{pageSize}
+        </if>
+	</select>
+
+    <select id="getProcessAreaByUuid" resultType="codedriver.module.rdm.dto.ProcessAreaVo">
+        SELECT
+          `id`,
+          `name`,
+          `uuid`,
+          `description`
+        FROM
+          `rdm_process_area` a
+        WHERE uuid = #{value}
+    </select>
+
+    <select id="getProcessAreaFieldListByUuid" resultType="codedriver.module.rdm.dto.FieldVo">
+        SELECT
+            `field`,
+            `name`,
+            `field_uuid` as uuid,
+            `field_type` as type
+        FROM
+          `rdm_process_area_field`
+        WHERE process_area_uuid = #{value}
+    </select>
+
+    <delete id="deleteProcessArea" >
+        DELETE FROM `rdm_process_area` WHERE uuid = #{value}
+    </delete>
+</mapper>

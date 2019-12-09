@@ -1,8 +1,14 @@
 package codedriver.module.rdm.api.processarea;
 
+import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.module.rdm.dao.mapper.ProcessAreaMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @ClassName ProcessAreaDeleteApi
@@ -12,6 +18,9 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class ProcessAreaDeleteApi extends ApiComponentBase {
+
+    @Resource
+    private ProcessAreaMapper processAreaMapper;
 
     @Override
     public String getToken() {
@@ -28,8 +37,12 @@ public class ProcessAreaDeleteApi extends ApiComponentBase {
         return null;
     }
 
+    @Input({
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true) })
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
+        Long processAreaId = jsonObj.getLong("uuid");
+        processAreaMapper.deleteProcessArea(processAreaId);
         return null;
     }
 
