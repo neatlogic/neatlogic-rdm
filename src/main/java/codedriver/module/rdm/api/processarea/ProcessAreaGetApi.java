@@ -34,7 +34,7 @@ public class ProcessAreaGetApi extends ApiComponentBase {
 
     @Override
     public String getName() {
-        return "根据查询id过程域接口";
+        return "根据查询uuid过程域接口";
     }
 
     @Override
@@ -42,12 +42,11 @@ public class ProcessAreaGetApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "uuid", type = ApiParamType.LONG, desc = "关键字(用户id或名称),模糊查询", isRequired = true)})
+    @Input({ @Param(name = "uuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true)})
     @Description(desc = "根据查询uuid过程域接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject result = new JSONObject();
-
         String uuid = jsonObj.getString("uuid");
         result.put("processArea", processAreaMapper.getProcessAreaByUuid(uuid));
         result.put("fieldList", processAreaMapper.getProcessAreaFieldListByUuid(uuid));
