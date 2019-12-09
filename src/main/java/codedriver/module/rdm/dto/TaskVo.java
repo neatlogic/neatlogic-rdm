@@ -7,52 +7,159 @@ import java.util.List;
 /**
  * @ClassName TaskVo
  * @Description 任务类
- * @Auther
+ * @Auther r2d2
  * @Date 2019/12/4 18:17
  **/
 public class TaskVo {
+
+    /**
+     * 自增主键
+     */
     private Long id;
+
+    /**
+     * 任务uuid
+     */
     private String uuid;
+
+    /**
+     * 任务名称
+     */
     private String name;
-    private String description;
+
+    /**
+     * 任务描述id
+     */
     private Long descriptionId;
 
+    /**
+     * 任务描述
+     */
+    private String description;
+
+    /**
+     * 任务id
+     */
     private Long projectId;
+
+    /**
+     * 项目uuid
+     */
     private String projectUuid;
+
+    /**
+     * 项目名称
+     */
     private String projectName;
 
+    /**
+     * 迭代id
+     */
     private Long iterationId;
-    private String processUuid;
+
+    /**
+     * 迭代名称
+     */
     private String iterationName;
 
+    /**
+     * 过程域id
+     */
     private Long processAreaId;
+
+    /**
+     * 过程域uuid
+     */
     private String processAreaUuid;
+
+    /**
+     * 过程域名称
+     */
     private String processAreaName;
 
+    /**
+     * 父任务Id
+     */
     private Long parentId;
 
+    /**
+     * 状态id
+     */
     private Long statusId;
+
+    /**
+     * 状态uuid
+     */
     private String statusUuid;
+
+    /**
+     * 状态名称
+     */
     private String statusName;
 
+    /**
+     * 优先级id
+     */
     private Long priorityId;
+
+    /**
+     * 优先级uuid
+     */
     private String priorityUuid;
+
+    /**
+     * 优先级名称
+     */
     private String priorityName;
 
+    /**
+     * 处理人id集合
+     */
     private String processAccountIdList;
+
+    /**
+     * 处理人集合
+     */
     public List<UserVo> processAccountList;
 
+    /**
+     * 开始时间
+     */
     private String startTime;
+
+    /**
+     * 结束时间
+     */
     private String endTime;
 
+    /**
+     * 创建人
+     */
     private String createUser;
+
+    /**
+     * 创建时间
+     */
     private String createTime;
 
+    /**
+     * 修改人
+     */
     private String updateUser;
+
+    /**
+     * 修改时间
+     */
     private String updateTime;
 
-
+    /**
+     * 该值是一个json数组，为将来数据库扩展准备()
+     */
     private String customFields;
+
+    /**
+     * 任务属性集合
+     */
     private List<FieldVo> taskFieldList;
 
     public Long getId() {
@@ -125,14 +232,6 @@ public class TaskVo {
 
     public void setIterationId(Long iterationId) {
         this.iterationId = iterationId;
-    }
-
-    public String getProcessUuid() {
-        return processUuid;
-    }
-
-    public void setProcessUuid(String processUuid) {
-        this.processUuid = processUuid;
     }
 
     public String getIterationName() {

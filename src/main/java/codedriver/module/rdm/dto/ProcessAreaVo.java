@@ -5,13 +5,29 @@ import codedriver.framework.common.dto.BasePageVo;
 /**
  * @ClassName ProcessAreaVo
  * @Description 过程域类
- * @Auther
+ * @Auther r2d2
  * @Date 2019/12/4 15:56
  **/
 public class ProcessAreaVo extends BasePageVo {
+
+    /**
+     * 自增主键
+     */
     private Long id;
+
+    /**
+     * 过程域名称
+     */
     private String name;
+
+    /**
+     * 过程域uuid
+     */
     private String uuid;
+
+    /**
+     * 过程域查询关键字
+     */
     private transient String keyword;
 
     public Long getId() {

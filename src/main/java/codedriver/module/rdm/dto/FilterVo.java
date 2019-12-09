@@ -2,16 +2,40 @@ package codedriver.module.rdm.dto;
 
 /**
  * @ClassName FilterVo
- * @Description 任务查询过滤类
+ * @Description 任务查询过滤类(过滤器)
  * @Auther
  * @Date 2019/12/4 17:38
  **/
 public class FilterVo {
+
+    /**
+     * 自增主键
+     */
     private Long id;
+
+    /**
+     * 过滤器uuid
+     */
     private String uuid;
+
+    /**
+     * 项目id
+     */
     private Long projectId;
+
+    /**
+     * 项目uuid
+     */
     private Long processAreaId;
+
+    /**
+     * 过滤器名称
+     */
     private String name;
+
+    /**
+     * 过滤器配置(条件)
+     */
     private String config;
 
     public Long getId() {

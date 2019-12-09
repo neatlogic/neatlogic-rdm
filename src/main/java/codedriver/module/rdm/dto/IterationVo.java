@@ -3,15 +3,39 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName Itearator
  * @Description 迭代类
- * @Auther
+ * @Auther r2d2
  * @Date 2019/12/4 18:10
  **/
 public class IterationVo {
+
+    /**
+     * 自增主键
+     */
     private Long id;
+
+    /**
+     * 项目迭代uuid
+     */
     private String uuid;
+
+    /**
+     * 迭代名称
+     */
     private String name;
+
+    /**
+     * 迭代开始时间
+     */
     private String startTime;
+
+    /**
+     * 迭代结束时间
+     */
     private String endTime;
+
+    /**
+     * 迭代描述
+     */
     private String description;
 
     public Long getId() {

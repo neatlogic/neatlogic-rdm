@@ -3,21 +3,59 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName CategoryVo
  * @Description 分类
- * @Auther
+ * @Auther r2d2
  * @Date 2019/12/4 18:36
  **/
 public class CategoryVo {
+
+    /**
+     * 自增主键
+     */
     private Long id;
+
+    /**
+     * 类型uuid
+     */
     private String uuid;
+
+    /**
+     * 类型名称
+     */
     private String name;
+
+    /**
+     * 类型描述
+     */
     private String description;
+
+    /**
+     * 父类型id
+     */
     private Long parentId;
+
+    /**
+     * 父类型uuid
+     */
     private String parentUuid;
 
+    /**
+     * 过程域id
+     */
     private Long processAreaId;
+
+    /**
+     * 过程域uuid
+     */
     private String processAreaUuid;
 
+    /**
+     * 项目id
+     */
     private Long projectId;
+
+    /**
+     * 项目uuid
+     */
     private String projectUuid;
 
     public Long getId() {
