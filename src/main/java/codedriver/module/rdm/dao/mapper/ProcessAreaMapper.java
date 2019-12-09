@@ -16,7 +16,7 @@ public interface ProcessAreaMapper {
 
     List<ProcessAreaVo> searchProcessArea(ProcessAreaVo processAreaVo);
 
-    void deleteProcessArea(Long processAreaId);
+    void deleteProcessArea(String processAreaUuid);
 
     ProcessAreaVo getProcessAreaByUuid(String uuid);
 
