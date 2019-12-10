@@ -39,8 +39,7 @@ public class FieldSearchApi extends ApiComponentBase {
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject data = new JSONObject();
-        List<FieldVo> fieldList = fieldMapper.getFieldList(new FieldVo());
-        data.put("fieldList", fieldList);
+        data.put("fieldList", fieldMapper.getFieldList(new FieldVo()));
         return data;
     }
 

@@ -1,5 +1,7 @@
 package codedriver.module.rdm.dto;
 
+import codedriver.framework.common.dto.BasePageVo;
+
 import java.util.List;
 
 /**
@@ -8,12 +10,17 @@ import java.util.List;
  * @Auther r2d2
  * @Date 2019/12/4 15:55
  **/
-public class ProjectVo {
+public class ProjectVo extends BasePageVo {
 
     /**
      * 自增主键
      */
     private Long id;
+
+    /**
+     * 项目查询关键字
+     */
+    private transient String keyword;
 
     /**
      * 项目名称
@@ -39,6 +46,26 @@ public class ProjectVo {
 
     private List<IterationVo> iterationList;
 
+    /**
+     * 创建人
+     */
+    private String createUser;
+
+    /**
+     * 创建时间
+     */
+    private String createTime;
+
+    /**
+     * 修改人
+     */
+    private String updateUser;
+
+    /**
+     * 修改时间
+     */
+    private String updateTime;
+
     public Long getId() {
         return id;
     }
@@ -53,6 +80,14 @@ public class ProjectVo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 
     public String getUuid() {
@@ -93,5 +128,38 @@ public class ProjectVo {
 
     public void setTemplateUuid(String templateUuid) {
         this.templateUuid = templateUuid;
+    }
+
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -1,8 +1,18 @@
 package codedriver.module.rdm.api.projectfield;
 
+import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.module.rdm.dao.mapper.FieldMapper;
+import codedriver.module.rdm.dao.mapper.ProjectMapper;
+import codedriver.module.rdm.dto.FieldVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName ProjectFieldSearchApi
@@ -12,6 +22,12 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class ProjectFieldSearchApi extends ApiComponentBase {
+
+    @Resource
+    private FieldMapper fieldMapper;
+
+    @Resource
+    private ProjectMapper projectMapper;
 
     @Override
     public String getToken() {
@@ -28,10 +44,17 @@ public class ProjectFieldSearchApi extends ApiComponentBase {
         return null;
     }
 
+    @Input({ @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
+            @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true)
+    })
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-        return null;
+        JSONObject result = new JSONObject();
+        String projectUuid = jsonObj.getString("projectUuid");
+        String processAreaUuid = jsonObj.getString("processAreaUuid");
+        List<FieldVo> projectFieldList = projectMapper.getProjectFieldList(projectUuid, processAreaUuid);
+        result.put("fieldList", projectFieldList);
+        return result;
     }
-
 
 }

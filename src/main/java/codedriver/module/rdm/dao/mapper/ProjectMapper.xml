@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectMapper">
+
+    <select id="searchProjectCount" parameterType="codedriver.module.rdm.dto.ProjectVo" resultType="int">
+        SELECT
+            COUNT(id)
+        FROM `rdm_project` a
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND a.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </select>
+
+    <select id="searchProject" parameterType="codedriver.module.rdm.dto.ProjectVo" resultType="codedriver.module.rdm.dto.ProjectVo">
+        SELECT
+        `id`,
+        `name`,
+        `uuid`,
+        `description`,
+        `status`,
+        `create_time` AS createTime,
+        `create_user` AS createUser,
+        `update_time` AS updateUser,
+        `update_user` AS updateTime
+        FROM `rdm_project` a
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND a.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ORDER BY a.id
+        <if test="needPage == true">
+            LIMIT #{startNum}, #{pageSize}
+        </if>
+	</select>
+
+    <select id="getProjectByUuid" resultType="codedriver.module.rdm.dto.ProjectVo">
+        SELECT
+        `id`,
+        `name`,
+        `uuid`,
+        `description`,
+        `status`,
+        `create_time` AS createTime,
+        `create_user` AS createUser,
+        `update_time` AS updateUser,
+        `update_user` AS updateTime
+        FROM `rdm_project` a
+        WHERE uuid = #{value}
+    </select>
+
+    <select id="getProjectFieldList" resultType="codedriver.module.rdm.dto.FieldVo">
+        SELECT
+            `field`,
+            `name`,
+            `field_uuid` AS uuid,
+            `field_type` AS type,
+            `is_system_field` AS isSystemField,
+            `is_show` AS isShow,
+            `field_config` AS config,
+            `sort`
+        FROM
+          `rdm_project_field`
+        WHERE project_uuid = #{projectUuid}
+        AND process_area_uuid = #{processAreaUuid}
+        ORDER BY sort ASC
+    </select>
+
+    <delete id="deleteProject" >
+        DELETE FROM `rdm_project_field` WHERE uuid = #{value}
+    </delete>
+</mapper>

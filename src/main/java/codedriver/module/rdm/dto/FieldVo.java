@@ -65,6 +65,15 @@ public class FieldVo {
      */
     private Integer isSystemField;
 
+    /**
+     * 是否展示(0否  1是)
+     */
+    private Integer isShow;
+
+    /**
+     * 排序字段
+     */
+    private Integer sort;
 
     public Long getId() {
         return id;
@@ -152,5 +161,21 @@ public class FieldVo {
 
     public void setIsSystemField(Integer isSystemField) {
         this.isSystemField = isSystemField;
+    }
+
+    public Integer getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(Integer isShow) {
+        this.isShow = isShow;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }
