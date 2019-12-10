@@ -6,10 +6,8 @@
         SELECT
           `id`,
           `uuid`,
-          `pa_id` AS processAreaId,
           `field`,
           `name`,
-          `alias`,
           `description`,
           `type`,
           `config`

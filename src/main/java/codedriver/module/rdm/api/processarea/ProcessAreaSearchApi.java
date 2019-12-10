@@ -56,12 +56,20 @@ public class ProcessAreaSearchApi extends ApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject result = new JSONObject();
         ProcessAreaVo processAreaVo = new ProcessAreaVo();
-        processAreaVo.setPageSize(jsonObj.getInteger("pageSize"));
-        processAreaVo.setCurrentPage(jsonObj.getInteger("currentPage"));
+
         processAreaVo.setKeyword(jsonObj.getString("keyword"));
         if(jsonObj.containsKey("needPage")){
             processAreaVo.setNeedPage(jsonObj.getBoolean("needPage"));
         }
+
+        if(jsonObj.containsKey("pageSize")){
+            processAreaVo.setPageSize(jsonObj.getInteger("pageSize"));
+        }
+
+        if(jsonObj.containsKey("currentPage")){
+            processAreaVo.setCurrentPage(jsonObj.getInteger("currentPage"));
+        }
+
         List<ProcessAreaVo> dataList = processAreaService.searchProcessArea(processAreaVo);
         result.put("processAreaList", dataList);
         if (processAreaVo.getNeedPage()) {
