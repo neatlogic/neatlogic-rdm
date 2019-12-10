@@ -15,7 +15,7 @@ public class ProjectFieldSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/project/save";
+        return "module/rdm/projectfield/save";
     }
 
     @Override

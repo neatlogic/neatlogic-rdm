@@ -15,7 +15,7 @@ public class ProjectFieldSearchApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/project/search";
+        return "module/rdm/projectfield/search";
     }
 
     @Override
