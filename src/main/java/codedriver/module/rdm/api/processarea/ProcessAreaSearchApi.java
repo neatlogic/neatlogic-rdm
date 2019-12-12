@@ -6,10 +6,8 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.ProcessAreaMapper;
 import codedriver.module.rdm.dto.ProcessAreaVo;
 import codedriver.module.rdm.services.ProcessAreaService;
-import codedriver.module.rdm.util.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +45,7 @@ public class ProcessAreaSearchApi extends ApiComponentBase {
             @Param(name = "needPage", type = ApiParamType.BOOLEAN, desc = "是否需要分页", isRequired = false),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数", isRequired = false),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量 默认10", isRequired = false) })
-    @Output({ @Param(name = "processAreaList", type = ApiParamType.JSONARRAY, desc = "过程域数据集合"),
+    @Output({ @Param(name = "processAreaList", type = ApiParamType.JSONARRAY, desc = "过程域数据集合", explode = ProcessAreaVo[].class),
             @Param(name = "pageCount", type = ApiParamType.INTEGER, desc = "总页数"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页数"),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页展示数量")})
@@ -56,7 +54,6 @@ public class ProcessAreaSearchApi extends ApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject result = new JSONObject();
         ProcessAreaVo processAreaVo = new ProcessAreaVo();
-
         processAreaVo.setKeyword(jsonObj.getString("keyword"));
         if(jsonObj.containsKey("needPage")){
             processAreaVo.setNeedPage(jsonObj.getBoolean("needPage"));

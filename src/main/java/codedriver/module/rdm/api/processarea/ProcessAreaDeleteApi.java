@@ -41,8 +41,7 @@ public class ProcessAreaDeleteApi extends ApiComponentBase {
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true) })
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-        String processAreaId = jsonObj.getString("uuid");
-        processAreaMapper.deleteProcessArea(processAreaId);
+        processAreaMapper.deleteProcessArea(jsonObj.getString("uuid"));
         return null;
     }
 

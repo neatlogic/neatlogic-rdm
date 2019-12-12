@@ -7,13 +7,10 @@ import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProcessAreaMapper;
-import codedriver.module.rdm.dto.ProcessAreaVo;
-import codedriver.module.rdm.services.ProcessAreaService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @ClassName ProcessAreaSearchApi
@@ -34,7 +31,7 @@ public class ProcessAreaGetApi extends ApiComponentBase {
 
     @Override
     public String getName() {
-        return "根据查询uuid过程域接口";
+        return "根据uuid查询过程域接口";
     }
 
     @Override
@@ -43,7 +40,7 @@ public class ProcessAreaGetApi extends ApiComponentBase {
     }
 
     @Input({ @Param(name = "uuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true)})
-    @Description(desc = "根据查询uuid过程域接口")
+    @Description(desc = "根据uuid查询过程域接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject result = new JSONObject();

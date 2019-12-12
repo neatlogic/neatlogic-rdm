@@ -10,6 +10,8 @@ import java.util.List;
  * @Auther
  * @Date 2019/12/4 14:34
  **/
-public interface FieldMapper {
-    List<FieldVo> getFieldList(FieldVo fieldVo);
+public interface SystemFieldMapper {
+    List<FieldVo> searchField(FieldVo fieldVo);
+
+    void insertSystemField(FieldVo fieldVo);
 }
