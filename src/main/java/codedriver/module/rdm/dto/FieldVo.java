@@ -16,6 +16,11 @@ public class FieldVo {
     private Long id;
 
     /**
+     * 属性查询关键字
+     */
+    private transient String keyword;
+
+    /**
      * 属性uuid
      */
     private String uuid;
@@ -74,6 +79,19 @@ public class FieldVo {
      * 排序字段
      */
     private Integer sort;
+
+    public FieldVo(){
+
+    }
+
+    public FieldVo(String _field, String _name, String _uuid, Integer _type, String _config, Integer _sort){
+        this.field = _field;
+        this.name = _name;
+        this.uuid = _uuid;
+        this.type = _type;
+        this.config = _config;
+        this.sort = _sort;
+    }
 
     public Long getId() {
         return id;
@@ -177,5 +195,13 @@ public class FieldVo {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }

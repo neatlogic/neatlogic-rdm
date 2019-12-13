@@ -1,23 +1,59 @@
 package codedriver.module.rdm.dto;
 
+import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.restful.annotation.EntityField;
+
 import java.util.List;
 
 /**
  * @ClassName StatusVo
- * @Description
+ * @Description 项目工作流状态
  * @Auther
  * @Date 2019/12/4 18:23
  **/
 public class ProjectStatusVo {
+
+    /**
+     * 自增主键
+     */
+    @EntityField(name = "自增主键",type = ApiParamType.STRING)
     private Long id;
+
+    /**
+     * 状态uuid
+     */
+    @EntityField(name = "状态uuid",type = ApiParamType.STRING)
     private String uuid;
+
+    /**
+     * 状态名称
+     */
+    @EntityField(name = "状态名称",type = ApiParamType.STRING)
     private String name;
-    private Long processAreaId;
-    private String processAreaUuid;
-    private Long projectId;
+
+    /**
+     * 项目uuid
+     */
+    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
     private String projectUuid;
 
-    public List<Long> transferTo;
+    /**
+     * 过程域uuid
+     */
+    @EntityField(name = "过程域uuid",type = ApiParamType.STRING)
+    private String processAreaUuid;
+
+    /**
+     * 类型
+     */
+    @EntityField(name = "类型",type = ApiParamType.STRING)
+    private String type;
+
+    /**
+     * 状态转移列表
+     */
+    @EntityField(name = "状态转移列表",type = ApiParamType.JSONARRAY)
+    public List<String> transferTo;
 
     public Long getId() {
         return id;
@@ -43,28 +79,12 @@ public class ProjectStatusVo {
         this.name = name;
     }
 
-    public Long getProcessAreaId() {
-        return processAreaId;
-    }
-
-    public void setProcessAreaId(Long processAreaId) {
-        this.processAreaId = processAreaId;
-    }
-
     public String getProcessAreaUuid() {
         return processAreaUuid;
     }
 
     public void setProcessAreaUuid(String processAreaUuid) {
         this.processAreaUuid = processAreaUuid;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
     }
 
     public String getProjectUuid() {
@@ -75,11 +95,19 @@ public class ProjectStatusVo {
         this.projectUuid = projectUuid;
     }
 
-    public List<Long> getTransferTo() {
+    public List<String> getTransferTo() {
         return transferTo;
     }
 
-    public void setTransferTo(List<Long> transferTo) {
+    public void setTransferTo(List<String> transferTo) {
         this.transferTo = transferTo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

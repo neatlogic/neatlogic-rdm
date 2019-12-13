@@ -1,26 +1,28 @@
-package codedriver.module.rdm.api.projectworkflow;
+package codedriver.module.rdm.api.systemfield;
 
 import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.module.rdm.core.ApiRequestType;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 /**
- * @ClassName ProjectWorkflowSearchApi
+ * @ClassName FieldDeleteApi
  * @Description
  * @Auther
  * @Date 2019/12/4 9:52
  **/
 @Service
-public class ProjectWorkflowSearchApi extends ApiComponentBase {
+@ApiRequestType(type = "DELETE")
+public class SystemFieldDeleteApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/projectworkflow/search";
+        return "module/rdm/systemfield/delete";
     }
 
     @Override
     public String getName() {
-        return "查询项目工作流接口";
+        return "删除系统属性接口";
     }
 
     @Override

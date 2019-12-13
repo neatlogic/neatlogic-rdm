@@ -7,6 +7,7 @@ import codedriver.module.rdm.dto.FieldVo;
 import codedriver.module.rdm.dto.ProcessAreaFieldVo;
 import codedriver.module.rdm.dto.ProcessAreaVo;
 import codedriver.module.rdm.exception.processarea.ProcessAreaExistException;
+import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +54,7 @@ public class ProcessAreaServiceImpl implements ProcessAreaService {
             processAreaMapper.updateProcessArea(processAreaVo);
             processAreaMapper.deleteAllProcessAreaField(processAreaVo.getUuid());
         }else{
-            uuid = UUID.randomUUID().toString().replaceAll("-","");
+            uuid = UuidUtil.getUuid();
             processAreaVo.setUuid(uuid);
             processAreaMapper.insertProcessArea(processAreaVo);
         }

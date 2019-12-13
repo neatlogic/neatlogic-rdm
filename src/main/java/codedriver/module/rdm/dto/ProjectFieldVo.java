@@ -13,8 +13,9 @@ public class ProjectFieldVo extends ProjectVo {
     private String fieldConfig;
     private String fieldData;
     private Integer fieldType;
-    private Long processAreaId;
+    private String processAreaUuid;
     private Integer isSystemField;
+    private Integer sort;
 
     public String getField() {
         return field;
@@ -64,19 +65,27 @@ public class ProjectFieldVo extends ProjectVo {
         this.fieldType = fieldType;
     }
 
-    public Long getProcessAreaId() {
-        return processAreaId;
-    }
-
-    public void setProcessAreaId(Long processAreaId) {
-        this.processAreaId = processAreaId;
-    }
-
     public Integer getIsSystemField() {
         return isSystemField;
     }
 
     public void setIsSystemField(Integer isSystemField) {
         this.isSystemField = isSystemField;
+    }
+
+    public String getProcessAreaUuid() {
+        return processAreaUuid;
+    }
+
+    public void setProcessAreaUuid(String processAreaUuid) {
+        this.processAreaUuid = processAreaUuid;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

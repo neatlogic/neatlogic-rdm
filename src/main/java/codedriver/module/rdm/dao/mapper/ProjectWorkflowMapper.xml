@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper">
+    <resultMap id="projectWorkflowMap" type="codedriver.module.rdm.dto.ProjectStatusVo">
+        <id property="uuid" column="uuid"/>
+        <id property="projectUuid" column="projectUuid" />
+        <id property="processAreaUuid" column="processAreaUuid" />
+        <result property="name" column="name" />
+        <result property="type" column="type" />
+        <collection property="transferTo" ofType="java.lang.String">
+            <result column="transferTo" />
+        </collection>
+
+
+    </resultMap>
+
+    <select id="getProjectWorkFlow" resultMap="projectWorkflowMap">
+        SELECT
+        a.uuid,
+        a.`name`,
+        a.type,
+        a.`project_uuid` AS projectUuid,
+        a.`process_area_uuid` AS processAreaUuid,
+        b.`transfer_to` AS transferTo
+        FROM `rdm_project_status` a
+        LEFT JOIN `rdm_project_status_route` b ON a.`uuid` = b.`uuid`
+        WHERE a.`project_uuid`  = #{projectUuid}
+        AND a.`process_area_uuid` = #{processAreaUuid}
+    </select>
+
+    <insert id="insertProjectWorkflowStatus" parameterType="codedriver.module.rdm.dto.ProjectStatusVo">
+        INSERT INTO `rdm_project_status` (
+          `project_uuid`,
+          `process_area_uuid`,
+          `uuid`,
+          `name`,
+          `type`
+        )
+        VALUES
+          (
+            #{projectUuid},
+            #{processAreaUuid},
+            #{uuid},
+            #{name},
+            #{type}
+          )
+    </insert>
+
+    <insert id="insertProjectWorkflowStatusTransfer">
+        INSERT INTO `rdm_project_status_route` (
+            `uuid`,
+            `transfer_to`
+        )
+        VALUES
+          (
+            #{uuid},
+            #{transferTo}
+          )
+    </insert>
+
+    <delete id="deleteAllProjectStatus">
+        DELETE
+        a, b
+        FROM `rdm_project_status` a
+        LEFT JOIN `rdm_project_status_route` b ON a.uuid = b.uuid
+        WHERE a.project_uuid = #{projectUuid}
+        AND process_area_uuid = #{processAreaUuid}
+    </delete>
+</mapper>
