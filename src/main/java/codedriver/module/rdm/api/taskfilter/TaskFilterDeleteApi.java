@@ -1,28 +1,26 @@
-package codedriver.module.rdm.api.field;
+package codedriver.module.rdm.api.taskfilter;
 
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.core.ApiRequestType;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 /**
- * @ClassName FieldDeleteApi
+ * @ClassName FilterDeleteApi
  * @Description
  * @Auther
  * @Date 2019/12/4 9:52
  **/
 @Service
-@ApiRequestType(type = "DELETE")
-public class FieldDeleteApi extends ApiComponentBase {
+public class TaskFilterDeleteApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/field/delete";
+        return "module/rdm/taskfilter/delete";
     }
 
     @Override
     public String getName() {
-        return "删除系统属性接口";
+        return "删除过滤器接口";
     }
 
     @Override

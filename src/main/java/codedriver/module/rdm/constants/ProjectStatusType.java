@@ -8,25 +8,17 @@ package codedriver.module.rdm.constants;
  **/
 public enum ProjectStatusType {
 
-    START(1, "开始状态"),
-    RUN(2, "运行状态"),
-    STOP(3, "结束状态");
+    START("start", "开始状态"),
+    RUN("run", "运行状态"),
+    STOP("stop", "结束状态");
 
 
-    private Integer id;
     private String name;
+    private String description;
 
-    ProjectStatusType(Integer _id, String _name) {
-        this.id = _id;
+    ProjectStatusType(String _name, String _description) {
         this.name = _name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+        this.description = _description;
     }
 
     public String getName() {
@@ -35,5 +27,13 @@ public enum ProjectStatusType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

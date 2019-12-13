@@ -1,6 +1,8 @@
 package codedriver.module.rdm.dto;
 
+import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.common.dto.BasePageVo;
+import codedriver.framework.restful.annotation.EntityField;
 
 import java.util.List;
 
@@ -25,11 +27,13 @@ public class ProjectVo extends BasePageVo {
     /**
      * 项目名称
      */
+    @EntityField(name = "项目名称",type = ApiParamType.STRING)
     private String name;
 
     /**
      * 项目uuid
      */
+    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
     private String uuid;
 
     /**

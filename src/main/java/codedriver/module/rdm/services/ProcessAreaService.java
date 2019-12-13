@@ -12,4 +12,6 @@ import java.util.List;
  **/
 public interface ProcessAreaService {
     List <ProcessAreaVo> searchProcessArea(ProcessAreaVo processAreaVo);
+
+    String saveProcessArea(ProcessAreaVo processAreaVo);
 }

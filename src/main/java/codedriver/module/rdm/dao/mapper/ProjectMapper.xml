@@ -41,10 +41,10 @@
         `uuid`,
         `description`,
         `status`,
-        `create_time` AS createTime,
+        DATE_FORMAT(a.create_time, '%Y-%m-%d %H:%i:%s') AS createTime,
         `create_user` AS createUser,
-        `update_time` AS updateUser,
-        `update_user` AS updateTime
+        DATE_FORMAT(a.update_time, '%Y-%m-%d %H:%i:%s') AS updateTime,
+        `update_user` AS updateUser
         FROM `rdm_project` a
         WHERE uuid = #{value}
     </select>
