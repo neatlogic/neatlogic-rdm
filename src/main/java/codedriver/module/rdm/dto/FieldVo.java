@@ -5,7 +5,7 @@ import codedriver.module.rdm.constants.FieldType;
 /**
  * @ClassName FieldVo
  * @Description 属性类
- * @Auther r2d2
+ * @Auther
  * @Date 2019/12/4 14:38
  **/
 public class FieldVo {

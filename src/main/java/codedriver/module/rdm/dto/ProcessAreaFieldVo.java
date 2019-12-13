@@ -3,7 +3,7 @@ package codedriver.module.rdm.dto;
 /**
  * @ClassName ProjectFieldVo
  * @Description 过程域属性类
- * @Auther r2d2
+ * @Auther
  * @Date 2019/12/4 15:58
  **/
 public class ProcessAreaFieldVo extends FieldVo {
