@@ -20,4 +20,6 @@ public interface ProjectWorkflowMapper {
     void deleteAllProjectStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid);
 
     List<ProjectStatusVo> getProjectWorkFlow(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid);
+
+    List<ProjectStatusVo> getTransferStatusList(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("statusUuid")String statusUuid);
 }

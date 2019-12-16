@@ -15,7 +15,7 @@ import javax.annotation.Resource;
 
 /**
  * @ClassName ProjectGetApi
- * @Description
+ * @Description 根据uuid查询项目接口
  * @Auther
  * @Date 2019/12/10 17:31
  **/

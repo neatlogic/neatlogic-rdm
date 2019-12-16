@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @ClassName ProjectStatusSearchApi
- * @Description
+ * @Description 查询项目状态集合接口
  * @Auther
  * @Date 2019/12/4 9:52
  **/

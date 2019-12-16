@@ -63,6 +63,7 @@ public class ProjectWorkflowSaveApi extends ApiComponentBase {
             String statusName = statusJsonObject.getString("statusName");
             String statusUuid = statusJsonObject.getString("statusUuid");
             String statusType = statusJsonObject.getString("statusType");
+            //状态流转列表
             JSONArray transferArray  = statusJsonObject.getJSONArray("transferList");
             List<String> transferList = new ArrayList<>();
             for(Object transferObject : transferArray){

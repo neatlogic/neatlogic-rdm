@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @ClassName ProjectFieldDeleteApi
- * @Description
+ * @Description 删除项目属性接口
  * @Auther
  * @Date 2019/12/4 9:52
  **/

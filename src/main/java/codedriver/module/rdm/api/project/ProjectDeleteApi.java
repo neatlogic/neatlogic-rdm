@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @ClassName ProjectDeleteApi
- * @Description
+ * @Description 删除项目接口
  * @Auther
  * @Date 2019/12/4 9:52
  **/
@@ -23,7 +23,7 @@ public class ProjectDeleteApi extends ApiComponentBase {
 
     @Override
     public String getName() {
-        return "查询项目接口";
+        return "删除项目接口";
     }
 
     @Override
