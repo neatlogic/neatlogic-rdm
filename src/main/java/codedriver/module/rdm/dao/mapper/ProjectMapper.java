@@ -15,6 +15,10 @@ import java.util.List;
 public interface ProjectMapper {
     int searchProjectCount(ProjectVo projectVo);
 
+    int insertProject(ProjectVo projectVo);
+
+    int updateProject(ProjectVo projectVo);
+
     List<ProjectVo> searchProject(ProjectVo projectVo);
 
     ProjectVo getProjectByUuid(String uuid);

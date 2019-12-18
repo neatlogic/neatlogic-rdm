@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.TemplateMapper">
+
+    <select id="getTemplateProcessAreaListByTemplateUuid" parameterType="java.lang.String" resultType="codedriver.module.rdm.dto.TemplateProcessAreaVo">
+        SELECT
+        `id`,
+        `template_uuid`,
+        `process_area_id`,
+        `process_area_field_sort`
+        FROM `rdm_template_process_area`
+        WHERE `template_uuid` = #{templateUuid}
+    </select>
+
+    <insert id="insertTemplate" parameterType="codedriver.module.rdm.dto.TemplateVo">
+        INSERT INTO  `rdm_template`
+        (
+          `uuid`,
+          `name`,
+          `description`,
+          `create_user`,
+          `create_time`,
+          `update_user`,
+          `update_time`
+          `is_active`
+        ) VALUES (
+        #{uuid},
+        #{name},
+        #{description},
+        #{createUser},
+        NOW(),
+        #{updateUser},
+        NOW(),
+        #{isActive}
+        )
+    </insert>
+
+    <insert id="insertTemplateProcessArea" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO `rdm_template_process_area`
+        (
+        `template_uuid`,
+        `process_area_uuid`,
+        `process_area_field_sort`
+        ) VALUES (
+        #{templateUuid},
+        #{processAreaUuid},
+        #{processAreaFieldSort}
+        )
+    </insert>
+
+    <insert id="insertTemplateProcessAreaField" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO
+        `rdm_template_process_area_field`
+        (
+        `template_uuid`,
+        `process_area_uuid`,
+        `field`,
+        `field_name`,
+        `field_uuid`,
+        `field_type`,
+        `config`,
+        `is_system`
+        ) VALUES (
+        #{templateUuid},
+        #{processAreaUuid},
+        #{field},
+        #{fieldName},
+        #{fieldUuid},
+        #{fieldType},
+        #{config},
+        #{isSystem}
+        )
+    </insert>
+
+    <update id="updateTemplateProcessAreaFieldSort" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaVo">
+        UPDATE `rdm_template_process_area` SET
+        `process_area_field_sort` = #{processAreaFieldSort}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateTemplate" parameterType="codedriver.module.rdm.dto.TemplateVo">
+        UPDATE `rdm_template` SET
+        `name` = #{name},
+        `description` = #{description},
+        `update_user` = #{updateUser},
+        `update_time` = NOW(),
+        WHERE `uuid` = #{uuid}
+    </update>
+
+    <delete id="deleteTemplateByUuid" parameterType="java.lang.String">
+        DELETE FROM `rdm_template` WHERE `uuid` = #{uuid}
+    </delete>
+
+    <delete id="deleteTemplateProcessAreaById" parameterType="java.lang.Long">
+        DELETE FROM `rdm_template_process_area` WHERE `id` = #{id}
+    </delete>
+
+    <delete id="deleteTemplateProcessAreaByTemplateUuid" parameterType="java.lang.String">
+        DELETE FROM `rdm_template_process_area` WHERE `template_uuid` = #{templateUuid}
+    </delete>
+
+    <delete id="deleteTemplateProcessFieldByTemplateUuidAndAreaUuid">
+        DELETE FROM `rdm_template_process_area_field` WHERE `template_uuid` = #{templateUuid} AND `process_area_uuid` = #{processAreaUuid}
+    </delete>
+
+    <delete id="deleteTemplateProCustomFieldByTemplateUuidAndAreaUuid">
+        DELETE FROM `rdm_template_process_area_field` WHERE `template_uuid` = #{templateUuid} AND `process_area_uuid` = #{processAreaUuid} AND `is_system` = 0
+    </delete>
+
+    <delete id="deleteTemplateProcessFieldByTemplateUuid">
+        DELETE FROM `rdm_template_process_area_field` WHERE `template_uuid` = #{templateUuid}
+    </delete>
+</mapper>

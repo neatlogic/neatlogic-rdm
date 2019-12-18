@@ -66,6 +66,43 @@
         ORDER BY sort ASC
     </select>
 
+    <insert id="insertProject" parameterType="codedriver.module.rdm.dto.ProjectVo">
+        INSERT INTO
+        `rdm_project`(
+        `name`,
+        `uuid`,
+        `description`,
+        `parentUuid`,
+        `status`,
+        `create_time`,
+        `create_user`,
+        `update_time`,
+        `update_user`
+        ) values (
+        #{name},
+        #{uuid},
+        #{description},
+        #{parentUuid},
+        #{status},
+        NOW(),
+        #{createUser}
+        NOW(),
+        #{updateUser}
+        )
+    </insert>
+
+    <update id="updateProject" parameterType="codedriver.module.rdm.dto.ProjectVo">
+        UPDATE `rdm_project`
+        SET
+        `name` = #{name},
+        `description` = #{description},
+        `parentUuid` = #{parentUuid},
+        `status` = #{status},
+        `update_user` = #{updateUser},
+        `update_time` = NOW()
+        WHERE `uuid` = #{uuid}
+    </update>
+
     <delete id="deleteProject" >
         DELETE FROM `rdm_project_field` WHERE uuid = #{value}
     </delete>

@@ -13,4 +13,6 @@ import java.util.List;
  **/
 public interface ProjectService {
     List <ProjectVo> searchProject(ProjectVo projectVo);
+
+    String saveProject(ProjectVo projectVo);
 }

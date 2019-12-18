@@ -37,6 +37,24 @@ public class ProjectVo extends BasePageVo {
     private String uuid;
 
     /**
+    *
+    *  项目描述
+    */
+    private String description;
+
+    /**
+     *
+     *  项目状态
+     */
+    private String status;
+
+    /**
+     *
+     *  父项目Uuid
+     */
+    private String parentUuid;
+
+    /**
      * 模板
      */
     private Long templateId;
@@ -165,5 +183,29 @@ public class ProjectVo extends BasePageVo {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getParentUuid() {
+        return parentUuid;
+    }
+
+    public void setParentUuid(String parentUuid) {
+        this.parentUuid = parentUuid;
     }
 }
