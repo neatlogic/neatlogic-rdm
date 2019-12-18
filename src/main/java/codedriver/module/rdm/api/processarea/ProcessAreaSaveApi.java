@@ -12,6 +12,7 @@ import codedriver.module.rdm.dto.ProcessAreaVo;
 import codedriver.module.rdm.services.ProcessAreaService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -61,7 +62,7 @@ public class ProcessAreaSaveApi extends ApiComponentBase {
 
         processAreaVo.setName(name);
         processAreaVo.setDescription(description);
-        if(jsonObj.containsKey("uuid")){
+        if(jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))){
             String uuid = jsonObj.getString("uuid");
             processAreaVo.setUuid(uuid);
             processAreaVo.setUpdateUser(UserContext.get().getUserId());

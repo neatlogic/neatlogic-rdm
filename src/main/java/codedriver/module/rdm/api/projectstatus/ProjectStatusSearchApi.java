@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * @ClassName ProjectStatusSearchApi
- * @Description 查询项目状态集合接口
+ * @Description 查询项目状态集合接口,改用查询项目工作流接口
  * @Auther
  * @Date 2019/12/4 9:52
  **/
 @Service
+@Deprecated
 public class ProjectStatusSearchApi extends ApiComponentBase {
 
     @Override

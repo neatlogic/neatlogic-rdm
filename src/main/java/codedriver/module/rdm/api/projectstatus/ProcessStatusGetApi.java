@@ -6,6 +6,7 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectPriorityMapper;
+import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ import javax.annotation.Resource;
 public class ProcessStatusGetApi extends ApiComponentBase {
 
     @Resource
-    private ProjectPriorityMapper projectPriorityMapper;
+    private ProjectWorkflowMapper projectWorkflowMapper;
 
     @Override
     public String getToken() {
@@ -43,7 +44,8 @@ public class ProcessStatusGetApi extends ApiComponentBase {
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject result = new JSONObject();
-
+        String uuid = jsonObj.getString("uuid");
+        result.put("projectStatus", projectWorkflowMapper.getProjectWorkflowStatusByUuid(uuid));
         return result;
     }
 
