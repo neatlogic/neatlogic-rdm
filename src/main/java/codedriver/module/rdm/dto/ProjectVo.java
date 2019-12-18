@@ -17,6 +17,7 @@ public class ProjectVo extends BasePageVo {
     /**
      * 自增主键
      */
+    @EntityField(name = "自增主键",type = ApiParamType.LONG)
     private Long id;
 
     /**
@@ -46,8 +47,14 @@ public class ProjectVo extends BasePageVo {
      */
     private String templateUuid;
 
+    /**
+     * 项目字段
+     */
     private List<FieldVo> fieldList;
 
+    /**
+     * 项目迭代
+     */
     private List<IterationVo> iterationList;
 
     /**

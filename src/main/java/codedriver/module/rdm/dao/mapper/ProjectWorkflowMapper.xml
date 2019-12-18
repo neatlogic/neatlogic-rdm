@@ -40,6 +40,27 @@
           AND a.`uuid` = #{statusUuid}
     </select>
 
+    <select id="getProjectWorkflowStatusByUuid" resultType="codedriver.module.rdm.dto.ProjectStatusVo">
+        SELECT
+        a.uuid,
+        a.`name`,
+        a.type,
+        a.`project_uuid` AS projectUuid,
+        a.`process_area_uuid` AS processAreaUuid
+        FROM `rdm_project_status` a
+        WHERE a.uuid = #{value}
+    </select>
+
+    <select id="checkProjectStatusExist" parameterType="codedriver.module.rdm.dto.ProjectStatusVo" resultType="int">
+        SELECT
+        COUNT(id)
+        FROM `rdm_project_status` a
+        WHERE a.name = #{name}
+        <if test="uuid != null and uuid != ''">
+            AND a.uuid != #{uuid}
+        </if>
+    </select>
+
     <insert id="insertProjectWorkflowStatus" parameterType="codedriver.module.rdm.dto.ProjectStatusVo">
         INSERT INTO `rdm_project_status` (
           `project_uuid`,
@@ -70,6 +91,17 @@
           )
     </insert>
 
+    <update id="updateProjectStatus" parameterType="codedriver.module.rdm.dto.ProjectStatusVo">
+        UPDATE
+          `rdm_project_status`
+        SET
+          `name` = #{name},
+          `type` = #{type},
+          `update_time` = NOW(),
+          `update_user` = #{updateUser}
+        WHERE `uuid` = #{uuid}
+    </update>
+
     <delete id="deleteAllProjectStatus">
         DELETE
         a, b
@@ -77,5 +109,11 @@
         LEFT JOIN `rdm_project_status_route` b ON a.uuid = b.uuid
         WHERE a.project_uuid = #{projectUuid}
         AND process_area_uuid = #{processAreaUuid}
+    </delete>
+
+    <delete id="deleteProjectStatusByUuid">
+        DELETE
+        FROM `rdm_project_status`
+        WHERE uuid = #{value}
     </delete>
 </mapper>

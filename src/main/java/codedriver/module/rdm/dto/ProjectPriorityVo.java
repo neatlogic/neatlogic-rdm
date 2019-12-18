@@ -4,15 +4,13 @@ import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.common.dto.BasePageVo;
 import codedriver.framework.restful.annotation.EntityField;
 
-import java.util.List;
-
 /**
- * @ClassName StatusVo
- * @Description 项目工作流状态
+ * @ClassName ProjectPriorityVo
+ * @Description 优先级类
  * @Auther
  * @Date 2019/12/4 18:23
  **/
-public class ProjectStatusVo extends BasePageVo {
+public class ProjectPriorityVo extends BasePageVo {
 
     /**
      * 自增主键
@@ -21,41 +19,37 @@ public class ProjectStatusVo extends BasePageVo {
     private Long id;
 
     /**
-     * 状态uuid
+     * 优先级查询关键字
      */
-    @EntityField(name = "状态uuid",type = ApiParamType.STRING)
+    private transient String keyword;
+
+    /**
+     * 优先级uuid
+     */
+    @EntityField(name = "优先级uuid",type = ApiParamType.STRING)
     private String uuid;
 
     /**
-     * 状态名称
+     * 优先级名称
      */
-    @EntityField(name = "状态名称",type = ApiParamType.STRING)
+    @EntityField(name = "优先级名称",type = ApiParamType.STRING)
     private String name;
 
     /**
-     * 项目uuid
+     * 优先级颜色
      */
-    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
-    private String projectUuid;
+    @EntityField(name = "优先级颜色",type = ApiParamType.STRING)
+    private String color;
 
     /**
      * 过程域uuid
      */
-    @EntityField(name = "过程域uuid",type = ApiParamType.STRING)
     private String processAreaUuid;
 
     /**
-     * 类型
+     * 项目uuid
      */
-    @EntityField(name = "类型",type = ApiParamType.STRING)
-    private String type;
-
-    /**
-     * 状态转移列表
-     */
-    @EntityField(name = "状态转移列表",type = ApiParamType.JSONARRAY)
-    public List<String> transferTo;
-
+    private String projectUuid;
 
     /**
      * 创建人
@@ -105,6 +99,14 @@ public class ProjectStatusVo extends BasePageVo {
         this.name = name;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public String getProcessAreaUuid() {
         return processAreaUuid;
     }
@@ -119,22 +121,6 @@ public class ProjectStatusVo extends BasePageVo {
 
     public void setProjectUuid(String projectUuid) {
         this.projectUuid = projectUuid;
-    }
-
-    public List<String> getTransferTo() {
-        return transferTo;
-    }
-
-    public void setTransferTo(List<String> transferTo) {
-        this.transferTo = transferTo;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getCreateUser() {
@@ -167,5 +153,13 @@ public class ProjectStatusVo extends BasePageVo {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }
