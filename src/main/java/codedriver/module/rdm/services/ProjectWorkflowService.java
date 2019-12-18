@@ -14,4 +14,5 @@ public interface ProjectWorkflowService {
 
     void saveProjectWorkFlow(String projectUuid, String processAreaUuid, List<ProjectStatusVo> statusList);
 
+    String saveProjectStatus(ProjectStatusVo projectStatusVo);
 }

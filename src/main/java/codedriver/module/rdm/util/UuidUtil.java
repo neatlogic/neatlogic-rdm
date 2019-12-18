@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * @ClassName UuidUtil
- * @Description
+ * @Description  Uuid工具类
  * @Auther
  * @Date 2019/12/13 16:32
  **/
