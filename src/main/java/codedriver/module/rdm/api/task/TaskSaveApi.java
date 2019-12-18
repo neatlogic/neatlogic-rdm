@@ -49,6 +49,8 @@ public class TaskSaveApi extends ApiComponentBase {
             @Param(name = "customFields", type = ApiParamType.JSONARRAY, desc = "项目自定义属性集合", isRequired = false ),
             @Param(name = "description", type = ApiParamType.STRING, desc = "描述", isRequired = false),
     })
+    @Output({@Param(name = "uuid", type = ApiParamType.STRING, desc = "任务uuid")})
+    @Description(desc = "保存任务接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         return null;

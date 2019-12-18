@@ -5,7 +5,6 @@ import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.ProjectPriorityMapper;
 import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;

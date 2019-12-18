@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @ClassName FilterDeleteApi
- * @Description
+ * @Description 删除过滤器接口
  * @Auther
  * @Date 2019/12/4 9:52
  **/
