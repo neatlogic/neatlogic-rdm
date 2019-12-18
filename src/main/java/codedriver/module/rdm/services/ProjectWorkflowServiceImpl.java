@@ -2,7 +2,6 @@ package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
 import codedriver.module.rdm.dto.ProjectStatusVo;
-import codedriver.module.rdm.exception.projectpriority.ProjectPriorityExistException;
 import codedriver.module.rdm.exception.projectstatus.ProjectStatusExistException;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
