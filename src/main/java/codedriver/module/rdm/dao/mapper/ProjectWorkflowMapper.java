@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @ClassName ProjectWorkFlowMapper
  * @Description
- * @Auther fandong
+ * @Auther
  * @Date 2019/12/13 14:40
  **/
 public interface ProjectWorkflowMapper {
@@ -20,4 +20,15 @@ public interface ProjectWorkflowMapper {
     void deleteAllProjectStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid);
 
     List<ProjectStatusVo> getProjectWorkFlow(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid);
+
+    List<ProjectStatusVo> getTransferStatusList(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("statusUuid")String statusUuid);
+
+    ProjectStatusVo getProjectWorkflowStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid,@Param("uuid") String uuid);
+
+    void deleteProjectStatusByUuid(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("uuid") String uuid);
+
+    int checkProjectStatusExist(ProjectStatusVo projectStatusVo);
+
+    void updateProjectStatus(ProjectStatusVo projectStatusVo);
+
 }
