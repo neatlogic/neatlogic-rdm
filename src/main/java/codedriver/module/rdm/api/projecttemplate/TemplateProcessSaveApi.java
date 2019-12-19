@@ -1,4 +1,4 @@
-package codedriver.module.rdm.api.template;
+package codedriver.module.rdm.api.projecttemplate;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
@@ -8,7 +8,6 @@ import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.TemplateProcessAreaFieldVo;
 import codedriver.module.rdm.dto.TemplateProcessAreaVo;
 import codedriver.module.rdm.services.ProjectTemplateService;
-import codedriver.module.rdm.util.UuidUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class TemplateProcessSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/template/proAreaSave";
+        return "module/rdm/projecttemplate/processarea/save";
     }
 
     @Override

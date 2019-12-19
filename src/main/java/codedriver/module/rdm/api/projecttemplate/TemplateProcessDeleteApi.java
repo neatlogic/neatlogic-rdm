@@ -1,11 +1,10 @@
-package codedriver.module.rdm.api.template;
+package codedriver.module.rdm.api.projecttemplate;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dto.TemplateProcessAreaFieldVo;
 import codedriver.module.rdm.dto.TemplateProcessAreaVo;
 import codedriver.module.rdm.services.ProjectTemplateService;
 import com.alibaba.fastjson.JSONObject;
@@ -25,7 +24,7 @@ public class TemplateProcessDeleteApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/projectTemplate/processAreaDelete";
+        return "module/rdm/projecttemplate/processarea/delete";
     }
 
     @Override
@@ -52,6 +51,6 @@ public class TemplateProcessDeleteApi extends ApiComponentBase {
         processAreaVo.setTemplateUuid(templateUuid);
         processAreaVo.setId(id);
         templateService.deleteTemplateProcessArea(processAreaVo);
-        return null;
+        return new JSONObject();
     }
 }

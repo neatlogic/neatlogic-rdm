@@ -1,4 +1,4 @@
-package codedriver.module.rdm.api.template;
+package codedriver.module.rdm.api.projecttemplate;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
@@ -24,7 +24,7 @@ public class TemplateProcessTemplateSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/template/processTemplateSave";
+        return "module/rdm/projecttemplate/processtemplate/save";
     }
 
     @Override

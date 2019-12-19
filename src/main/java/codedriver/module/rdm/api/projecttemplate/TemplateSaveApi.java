@@ -1,7 +1,6 @@
-package codedriver.module.rdm.api.template;
+package codedriver.module.rdm.api.projecttemplate;
 
 import codedriver.framework.apiparam.core.ApiParamType;
-import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
@@ -26,7 +25,7 @@ public class TemplateSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/template/save";
+        return "module/rdm/projecttemplate/save";
     }
 
     @Override
@@ -54,6 +53,6 @@ public class TemplateSaveApi extends ApiComponentBase {
             templateVo.setUuid(jsonObj.getString("uuid"));
         }
         returnObj.put("uuid", templateService.saveTemplate(templateVo));
-        return new JSONObject();
+        return returnObj;
     }
 }
