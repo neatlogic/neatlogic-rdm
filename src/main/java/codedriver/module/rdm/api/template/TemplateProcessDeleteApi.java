@@ -7,7 +7,9 @@ import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.TemplateProcessAreaFieldVo;
 import codedriver.module.rdm.dto.TemplateProcessAreaVo;
+import codedriver.module.rdm.services.ProjectTemplateService;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,6 +19,9 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class TemplateProcessDeleteApi extends ApiComponentBase {
+
+    @Autowired
+    private ProjectTemplateService templateService;
 
     @Override
     public String getToken() {
@@ -46,6 +51,7 @@ public class TemplateProcessDeleteApi extends ApiComponentBase {
         processAreaVo.setProcessAreaUuid(processAreaUuid);
         processAreaVo.setTemplateUuid(templateUuid);
         processAreaVo.setId(id);
+        templateService.deleteTemplateProcessArea(processAreaVo);
         return null;
     }
 }

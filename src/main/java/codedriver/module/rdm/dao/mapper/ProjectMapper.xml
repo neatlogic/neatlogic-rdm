@@ -91,6 +91,54 @@
         )
     </insert>
 
+    <insert id="insertProjectProcessArea" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO `rdm_project_process_area`
+        (
+        `project_uuid`,
+        `process_area_uuid`,
+        `process_area_name`,
+        `process_area_field_sort`,
+        `is_enable`
+        )  VALUES (
+        #{projectUuid},
+        #{processAreaUuid},
+        #{processAreaName},
+        #{processAreaFieldSort},
+        #{isEnable}
+        )
+    </insert>
+    
+    <insert id="insertProjectProcessAreaField" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO `rdm_project_field`
+        (
+        `project_uuid`,
+        `process_area_uuid`,
+        `field_name`,
+        `field`,
+        `field_uuid`,
+        `field_type`,
+        `config`,
+        `is_system`,
+        `is_show`
+        ) VALUES (
+        #{projectUuid},
+        #{processAreaUuid},
+        #{fieldName},
+        #{field},
+        #{fieldUuid},
+        #{fieldType},
+        #{config},
+        #{isSystem},
+        #{isShow}
+        )
+    </insert>
+
     <update id="updateProject" parameterType="codedriver.module.rdm.dto.ProjectVo">
         UPDATE `rdm_project`
         SET

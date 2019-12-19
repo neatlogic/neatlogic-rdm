@@ -4,9 +4,11 @@ import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.common.util.PageUtil;
 import codedriver.module.rdm.constants.ProjectStatusType;
 import codedriver.module.rdm.dao.mapper.ProjectMapper;
-import codedriver.module.rdm.dto.ProjectVo;
+import codedriver.module.rdm.dao.mapper.TemplateMapper;
+import codedriver.module.rdm.dto.*;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Autowired
+    private TemplateMapper templateMapper;
 
     @Override
     public List<ProjectVo> searchProject(ProjectVo projectVo) {
@@ -49,5 +54,34 @@ public class ProjectServiceImpl implements ProjectService {
             projectMapper.updateProject(projectVo);
         }
         return projectVo.getUuid();
+    }
+
+    @Override
+    public void copyTemplateData(String templateUuid, String projectUuid) {
+        List<TemplateProcessAreaVo> processAreaVoList = templateMapper.getTemplateProcessAreaListByTemplateUuid(templateUuid);
+        for (TemplateProcessAreaVo areaVo : processAreaVoList){
+            ProjectProcessAreaVo projectProcessAreaVo = new ProjectProcessAreaVo();
+            projectProcessAreaVo.setIsEnable(1);
+            projectProcessAreaVo.setProcessAreaName(areaVo.getProcessAreaName());
+            projectProcessAreaVo.setProcessAreaSort(areaVo.getProcessAreaFieldSort());
+            projectProcessAreaVo.setProjectUuid(projectUuid);
+            projectProcessAreaVo.setProcessAreaUuid(areaVo.getProcessAreaUuid());
+            projectMapper.insertProjectProcessArea(projectProcessAreaVo);
+
+            List<TemplateProcessAreaFieldVo> areaFieldVoList = areaVo.getProcessAreaFieldVoList();
+            for (TemplateProcessAreaFieldVo areaFieldVo : areaFieldVoList){
+                ProjectProcessAreaFieldVo fieldVo = new ProjectProcessAreaFieldVo();
+                fieldVo.setConfig(areaFieldVo.getConfig());
+                fieldVo.setField(areaFieldVo.getField());
+                fieldVo.setFieldName(areaFieldVo.getFieldName());
+                fieldVo.setFieldType(areaFieldVo.getFieldType());
+                fieldVo.setFieldUuid(areaFieldVo.getFieldUuid());
+                fieldVo.setIsShow(1);
+                fieldVo.setIsSystem(areaFieldVo.getIsSystem());
+                fieldVo.setProcessAreaUuid(areaFieldVo.getProcessAreaUuid());
+                fieldVo.setProjectUuid(projectUuid);
+                projectMapper.insertProjectProcessAreaField(fieldVo);
+            }
+        }
     }
 }

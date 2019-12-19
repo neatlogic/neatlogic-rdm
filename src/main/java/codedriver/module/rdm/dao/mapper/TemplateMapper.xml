@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.rdm.dao.mapper.TemplateMapper">
+    <resultMap id="processAreaMap" type="codedriver.module.rdm.dto.TemplateProcessAreaVo">
+        <id property="id" column="id"/>
+        <result property="processAreaUuid" column="processAreaUuid"/>
+        <result property="templateUuid" column="templateUuid"/>
+        <result property="processAreaName" column="processAreaName"/>
+        <result property="processAreaFieldSort" column="processAreaFieldSort"/>
+        <collection property="processAreaFieldVoList" javaType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+            <id column="fieldId" property="id"/>
+            <result column="field" property="field"/>
+            <result column="fieldName" property="fieldName"/>
+            <result column="fieldUuid" property="fieldUuid"/>
+            <result column="fieldType" property="fieldType"/>
+            <result column="config" property="config"/>
+            <result column="isSystem" property="isSystem"/>
+        </collection>
+    </resultMap>
 
-    <select id="getTemplateProcessAreaListByTemplateUuid" parameterType="java.lang.String" resultType="codedriver.module.rdm.dto.TemplateProcessAreaVo">
+    <select id="getTemplateProcessAreaListByTemplateUuid" parameterType="java.lang.String" resultMap="processAreaMap">
         SELECT
-        `id`,
-        `template_uuid`,
-        `process_area_id`,
-        `process_area_field_sort`
-        FROM `rdm_template_process_area`
+        a.`id`,
+        a.`template_uuid` as `templateUuid`,
+        a.`process_area_uuid` as `processAreaUuid`,
+        a.`process_area_name` as `processAreaName`,
+        a.`process_area_field_sort` as `processAreaFieldSort`,
+        b.`id` as `fieldId`,
+        b.`field` as `field`,
+        b.`field_name` as `fieldName`,
+        b.`field_uuid` as `fieldUuid`,
+        b.`field_type` as `fieldType`,
+        b.`config` as `config`,
+        b. `is_system` as `isSystem`
+        FROM `rdm_template_process_area` a
+        LEFT JOIN `rdm_template_process_area_field` b ON a.`template_uuid` = b.`template_uuid` AND a.`process_area_uuid` = b.`process_area_uuid`
         WHERE `template_uuid` = #{templateUuid}
     </select>
 
@@ -35,6 +60,22 @@
         )
     </insert>
 
+    <insert id="insertTemplateProcessTemplate" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO `rdm_template_process_area_template`
+        (
+        `template_uuid`,
+        `process_area_uuid`,
+        `content`
+        ) VALUES (
+          #{templateUuid},
+          #{processAreaUuid},
+          #{content}
+        )
+    </insert>
+
     <insert id="insertTemplateProcessArea" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaVo">
         <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
             select LAST_INSERT_ID() as id
@@ -43,6 +84,7 @@
         (
         `template_uuid`,
         `process_area_uuid`,
+        `process_area_name`,
         `process_area_field_sort`
         ) VALUES (
         #{templateUuid},
@@ -91,6 +133,18 @@
         `update_user` = #{updateUser},
         `update_time` = NOW(),
         WHERE `uuid` = #{uuid}
+    </update>
+
+    <update id="updateTemplateProcessAreaField" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+        UPDATE `rdm_template_process_area_field` SET
+        `config` = #{config}
+        WHERE fieldUuid = #{fieldUuid}
+    </update>
+
+    <update id="updateTemplateProcessTemplate" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo">
+        UPDATE `rdm_template_process_ara_template` SET
+        `content` = #{content}
+        WHERE id = #{id}
     </update>
 
     <delete id="deleteTemplateByUuid" parameterType="java.lang.String">

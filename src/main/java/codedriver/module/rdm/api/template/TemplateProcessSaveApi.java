@@ -44,8 +44,8 @@ public class TemplateProcessSaveApi extends ApiComponentBase {
     }
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "数据主键ID"),
+            @Param(name = "processAreaName", type = ApiParamType.STRING, desc = "过程域名称", isRequired = true),
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
-            @Param(name = "processAreaFieldSort", type = ApiParamType.JSONARRAY, desc = "过程域属性排序", isRequired = true),
             @Param(name = "templateUuid", type = ApiParamType.STRING, desc = "模板uuid", isRequired = true),
             @Param(name = "processAreaFieldList", explode = TemplateProcessAreaFieldVo[].class)})
     @Description(desc = "项目模板过程域配置保存接口")
@@ -53,8 +53,8 @@ public class TemplateProcessSaveApi extends ApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         TemplateProcessAreaVo processAreaVo = new TemplateProcessAreaVo();
         processAreaVo.setTemplateUuid(jsonObj.getString("templateUuid"));
-        processAreaVo.setProcessAreaFieldSort(jsonObj.getJSONArray("processAreaFieldSort").toJSONString());
         processAreaVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
+        processAreaVo.setProcessAreaName(jsonObj.getString("processAreaName"));
         if (jsonObj.containsKey("id")) {
             processAreaVo.setId(jsonObj.getLong("id"));
         }

@@ -3,6 +3,7 @@ package codedriver.module.rdm.services;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.module.rdm.dao.mapper.TemplateMapper;
 import codedriver.module.rdm.dto.TemplateProcessAreaFieldVo;
+import codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo;
 import codedriver.module.rdm.dto.TemplateProcessAreaVo;
 import codedriver.module.rdm.dto.TemplateVo;
 import codedriver.module.rdm.util.UuidUtil;
@@ -84,5 +85,19 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
         templateMapper.deleteTemplateByUuid(templateUuid);
         templateMapper.deleteTemplateProcessAreaByTemplateUuid(templateUuid);
         templateMapper.deleteTemplateProcessFieldByTemplateUuid(templateUuid);
+    }
+
+    @Override
+    public void saveTemplateProcessAreaField(TemplateProcessAreaFieldVo fieldVo) {
+        templateMapper.updateTemplateProcessAreaField(fieldVo);
+    }
+
+    @Override
+    public void saveTemplateProcessAreaTemplate(TemplateProcessAreaTemplateVo processAreaTemplateVo) {
+        if (processAreaTemplateVo.getId() != null && processAreaTemplateVo.getId() != 0L){
+            templateMapper.updateTemplateProcessTemplate(processAreaTemplateVo);
+        } else {
+            templateMapper.insertTemplateProcessTemplate(processAreaTemplateVo);
+        }
     }
 }

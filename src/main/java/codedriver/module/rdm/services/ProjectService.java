@@ -15,4 +15,6 @@ public interface ProjectService {
     List <ProjectVo> searchProject(ProjectVo projectVo);
 
     String saveProject(ProjectVo projectVo);
+
+    void copyTemplateData(String templateUuid, String projectUuid);
 }

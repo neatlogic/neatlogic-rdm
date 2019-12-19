@@ -1,6 +1,8 @@
 package codedriver.module.rdm.dao.mapper;
 
 import codedriver.module.rdm.dto.FieldVo;
+import codedriver.module.rdm.dto.ProjectProcessAreaFieldVo;
+import codedriver.module.rdm.dto.ProjectProcessAreaVo;
 import codedriver.module.rdm.dto.ProjectVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +26,8 @@ public interface ProjectMapper {
     ProjectVo getProjectByUuid(String uuid);
 
     List<FieldVo> getProjectFieldList(@Param("projectUuid") String projectUuid, @Param("processAreaUuid") String processAreaUuid);
+
+    void insertProjectProcessArea(ProjectProcessAreaVo processAreaVo);
+
+    void insertProjectProcessAreaField(ProjectProcessAreaFieldVo processAreaFieldVo);
 }

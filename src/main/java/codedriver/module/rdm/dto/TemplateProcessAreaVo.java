@@ -14,6 +14,8 @@ import java.util.List;
 public class TemplateProcessAreaVo {
     private Long id;
 
+    private String processAreaName;
+
     private String templateUuid;
 
     private String processAreaUuid;
@@ -60,5 +62,13 @@ public class TemplateProcessAreaVo {
 
     public void setProcessAreaFieldVoList(List<TemplateProcessAreaFieldVo> processAreaFieldVoList) {
         this.processAreaFieldVoList = processAreaFieldVoList;
+    }
+
+    public String getProcessAreaName() {
+        return processAreaName;
+    }
+
+    public void setProcessAreaName(String processAreaName) {
+        this.processAreaName = processAreaName;
     }
 }
