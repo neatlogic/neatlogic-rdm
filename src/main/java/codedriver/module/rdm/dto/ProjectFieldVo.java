@@ -6,71 +6,17 @@ package codedriver.module.rdm.dto;
  * @Auther
  * @Date 2019/12/4 15:58
  **/
-public class ProjectFieldVo extends ProjectVo {
-    private String field;
-    private String fieldUuid;
-    private String fieldName;
-    private String fieldConfig;
-    private String fieldData;
-    private Integer fieldType;
+public class ProjectFieldVo extends FieldVo {
+
+    private String projectUuid;
     private String processAreaUuid;
-    private Integer isSystemField;
-    private Integer sort;
 
-    public String getField() {
-        return field;
+    public String getProjectUuid() {
+        return projectUuid;
     }
 
-    public void setField(String field) {
-        this.field = field;
-    }
-
-    public String getFieldUuid() {
-        return fieldUuid;
-    }
-
-    public void setFieldUuid(String fieldUuid) {
-        this.fieldUuid = fieldUuid;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFieldConfig() {
-        return fieldConfig;
-    }
-
-    public void setFieldConfig(String fieldConfig) {
-        this.fieldConfig = fieldConfig;
-    }
-
-    public String getFieldData() {
-        return fieldData;
-    }
-
-    public void setFieldData(String fieldData) {
-        this.fieldData = fieldData;
-    }
-
-    public Integer getFieldType() {
-        return fieldType;
-    }
-
-    public void setFieldType(Integer fieldType) {
-        this.fieldType = fieldType;
-    }
-
-    public Integer getIsSystemField() {
-        return isSystemField;
-    }
-
-    public void setIsSystemField(Integer isSystemField) {
-        this.isSystemField = isSystemField;
+    public void setProjectUuid(String projectUuid) {
+        this.projectUuid = projectUuid;
     }
 
     public String getProcessAreaUuid() {
@@ -79,13 +25,5 @@ public class ProjectFieldVo extends ProjectVo {
 
     public void setProcessAreaUuid(String processAreaUuid) {
         this.processAreaUuid = processAreaUuid;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
     }
 }

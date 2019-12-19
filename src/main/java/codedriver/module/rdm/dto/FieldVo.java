@@ -26,11 +26,6 @@ public class FieldVo {
     private String uuid;
 
     /**
-     * 过程域id
-     */
-    private Long processAreaId;
-
-    /**
      * 属性英文名
      */
     private String field;
@@ -107,14 +102,6 @@ public class FieldVo {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public Long getProcessAreaId() {
-        return processAreaId;
-    }
-
-    public void setProcessAreaId(Long processAreaId) {
-        this.processAreaId = processAreaId;
     }
 
     public String getName() {

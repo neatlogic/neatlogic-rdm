@@ -4,15 +4,15 @@ import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.common.dto.BasePageVo;
 import codedriver.framework.restful.annotation.EntityField;
 
-import java.util.List;
+import java.util.Date;
 
 /**
- * @ClassName ProjectVo
- * @Description 项目类
+ * @ClassName Itearator
+ * @Description 迭代类
  * @Auther
- * @Date 2019/12/4 15:55
+ * @Date 2019/12/4 18:10
  **/
-public class ProjectVo extends BasePageVo {
+public class ProjectIterationVo  extends BasePageVo {
 
     /**
      * 自增主键
@@ -21,36 +21,45 @@ public class ProjectVo extends BasePageVo {
     private Long id;
 
     /**
-     * 项目查询关键字
+     * 迭代查询关键字
      */
     private transient String keyword;
-
-    /**
-     * 项目名称
-     */
-    @EntityField(name = "项目名称",type = ApiParamType.STRING)
-    private String name;
 
     /**
      * 项目uuid
      */
     @EntityField(name = "项目uuid",type = ApiParamType.STRING)
+    private String projectUuid;
+
+    /**
+     * 项目迭代uuid
+     */
+    @EntityField(name = "项目迭代uuid",type = ApiParamType.STRING)
     private String uuid;
 
     /**
-     * 模板uuid
+     * 迭代名称
      */
-    private String templateUuid;
+    @EntityField(name = "迭代名称",type = ApiParamType.STRING)
+    private String name;
 
     /**
-     * 项目字段
+     * 迭代开始时间
      */
-    private List<FieldVo> fieldList;
+    @EntityField(name = "迭代开始时间",type = ApiParamType.STRING)
+    private String startDate;
 
     /**
-     * 项目迭代
+     * 迭代结束时间
      */
-    private List<ProjectIterationVo> iterationList;
+    @EntityField(name = "迭代结束时间",type = ApiParamType.STRING)
+    private String endDate;
+
+    /**
+     * 迭代描述
+     */
+    private String description;
+
 
     /**
      * 创建人
@@ -72,6 +81,14 @@ public class ProjectVo extends BasePageVo {
      */
     private String updateTime;
 
+    public String getProjectUuid() {
+        return projectUuid;
+    }
+
+    public void setProjectUuid(String projectUuid) {
+        this.projectUuid = projectUuid;
+    }
+
     public Long getId() {
         return id;
     }
@@ -80,13 +97,6 @@ public class ProjectVo extends BasePageVo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getKeyword() {
         return keyword;
@@ -104,28 +114,36 @@ public class ProjectVo extends BasePageVo {
         this.uuid = uuid;
     }
 
-    public List<FieldVo> getFieldList() {
-        return fieldList;
+    public String getName() {
+        return name;
     }
 
-    public void setFieldList(List<FieldVo> fieldList) {
-        this.fieldList = fieldList;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public List<ProjectIterationVo> getIterationList() {
-        return iterationList;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setIterationList(List<ProjectIterationVo> iterationList) {
-        this.iterationList = iterationList;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getTemplateUuid() {
-        return templateUuid;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setTemplateUuid(String templateUuid) {
-        this.templateUuid = templateUuid;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 
