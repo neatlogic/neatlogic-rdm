@@ -2,6 +2,9 @@ package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
 import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.exception.projectstatus.ProjectStatusExistException;
+import codedriver.module.rdm.util.UuidUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,5 +36,27 @@ public class ProjectWorkflowServiceImpl implements ProjectWorkflowService {
             }
         }
 
+    }
+
+
+    @Override
+    public String saveProjectStatus(ProjectStatusVo projectStatusVo) {
+        String uuid;
+
+        int count = projectWorkflowMapper.checkProjectStatusExist(projectStatusVo);
+        if(count >= 1){
+            throw new ProjectStatusExistException(projectStatusVo.getName());
+        }
+
+        if(StringUtils.isNotBlank(projectStatusVo.getUuid())){
+            uuid = projectStatusVo.getUuid();
+            projectWorkflowMapper.updateProjectStatus(projectStatusVo);
+        }else{
+            uuid = UuidUtil.getUuid();
+            projectStatusVo.setUuid(uuid);
+            projectWorkflowMapper.insertProjectWorkflowStatus(projectStatusVo);
+        }
+
+        return uuid;
     }
 }
