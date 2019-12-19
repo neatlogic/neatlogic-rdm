@@ -72,7 +72,6 @@
         `name`,
         `uuid`,
         `description`,
-        `parentUuid`,
         `status`,
         `create_time`,
         `create_user`,
@@ -82,7 +81,6 @@
         #{name},
         #{uuid},
         #{description},
-        #{parentUuid},
         #{status},
         NOW(),
         #{createUser}
@@ -144,7 +142,6 @@
         SET
         `name` = #{name},
         `description` = #{description},
-        `parentUuid` = #{parentUuid},
         `status` = #{status},
         `update_user` = #{updateUser},
         `update_time` = NOW()

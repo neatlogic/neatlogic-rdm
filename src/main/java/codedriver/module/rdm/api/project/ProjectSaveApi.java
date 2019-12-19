@@ -47,7 +47,6 @@ public class ProjectSaveApi extends ApiComponentBase {
     @Input({
             @Param(name="name", type= ApiParamType.STRING, desc = "项目名称", isRequired = true, xss = true),
             @Param(name="description", type= ApiParamType.STRING, desc = "项目描述", isRequired = true, xss = true),
-            @Param(name= "parentUuid", type = ApiParamType.STRING, desc = "父项目uuid"),
             @Param(name = "templateUuid", type = ApiParamType.STRING, desc = "模板uuid"),
             @Param(name="status", type= ApiParamType.STRING, desc = "状态"),
             @Param(name="uuid", type= ApiParamType.STRING, desc = "项目uuid")
@@ -66,9 +65,6 @@ public class ProjectSaveApi extends ApiComponentBase {
         projectVo.setUpdateUser(UserContext.get().getUserId());
         if (jsonObj.containsKey("uuid")){
             projectVo.setUuid(jsonObj.getString("uuid"));
-        }
-        if (jsonObj.containsKey("parentUuid")){
-            projectVo.setParentUuid(jsonObj.getString("parentUuid"));
         }
         if (jsonObj.containsKey("status")){
             projectVo.setStatus(jsonObj.getString("status"));
