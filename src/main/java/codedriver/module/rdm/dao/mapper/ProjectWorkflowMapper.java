@@ -23,9 +23,9 @@ public interface ProjectWorkflowMapper {
 
     List<ProjectStatusVo> getTransferStatusList(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("statusUuid")String statusUuid);
 
-    ProjectStatusVo getProjectWorkflowStatusByUuid(String uuid);
+    ProjectStatusVo getProjectWorkflowStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid,@Param("uuid") String uuid);
 
-    void deleteProjectStatusByUuid(String uuid);
+    void deleteProjectStatusByUuid(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("uuid") String uuid);
 
     int checkProjectStatusExist(ProjectStatusVo projectStatusVo);
 

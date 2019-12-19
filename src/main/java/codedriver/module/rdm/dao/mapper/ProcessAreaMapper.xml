@@ -38,7 +38,7 @@
         <if test="keyword != null and keyword != ''">
             AND a.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
-        ORDER BY a.id
+        ORDER BY a.id DESC
         <if test="needPage == true">
             LIMIT #{startNum}, #{pageSize}
         </if>

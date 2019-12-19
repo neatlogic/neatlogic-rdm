@@ -40,7 +40,7 @@
           AND a.`uuid` = #{statusUuid}
     </select>
 
-    <select id="getProjectWorkflowStatusByUuid" resultType="codedriver.module.rdm.dto.ProjectStatusVo">
+    <select id="getProjectWorkflowStatus" resultType="codedriver.module.rdm.dto.ProjectStatusVo">
         SELECT
         a.uuid,
         a.`name`,
@@ -48,14 +48,18 @@
         a.`project_uuid` AS projectUuid,
         a.`process_area_uuid` AS processAreaUuid
         FROM `rdm_project_status` a
-        WHERE a.uuid = #{value}
+        WHERE a.`project_uuid` = #{projectUuid}
+        AND a.`process_area_uuid` = #{processAreaUuid}
+        AND a.uuid = #{uuid}
     </select>
 
     <select id="checkProjectStatusExist" parameterType="codedriver.module.rdm.dto.ProjectStatusVo" resultType="int">
         SELECT
         COUNT(id)
         FROM `rdm_project_status` a
-        WHERE a.name = #{name}
+        WHERE a.`project_uuid` = #{projectUuid}
+        AND a.`process_area_uuid` = #{processAreaUuid}
+        AND a.name = #{name}
         <if test="uuid != null and uuid != ''">
             AND a.uuid != #{uuid}
         </if>
@@ -114,6 +118,8 @@
     <delete id="deleteProjectStatusByUuid">
         DELETE
         FROM `rdm_project_status`
-        WHERE uuid = #{value}
+        WHERE project_uuid = #{projectUuid}
+        AND process_area_uuid = #{processAreaUuid}
+        AND uuid = #{uuid}
     </delete>
 </mapper>
