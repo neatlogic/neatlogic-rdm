@@ -137,6 +137,22 @@
         )
     </insert>
 
+    <insert id="insertProjectProcessAreaTemplate" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaTemplateVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO
+        `rdm_project_process_area_tempate`(
+        `process_area_uuid`,
+        `project_uuid`,
+        `content`
+        ) VALUES (
+        #{processAreaUuid},
+        #{projectUuid},
+        #{content}
+        )
+    </insert>
+
     <update id="updateProject" parameterType="codedriver.module.rdm.dto.ProjectVo">
         UPDATE `rdm_project`
         SET

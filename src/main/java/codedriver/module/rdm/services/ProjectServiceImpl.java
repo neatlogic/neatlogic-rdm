@@ -83,5 +83,16 @@ public class ProjectServiceImpl implements ProjectService {
                 projectMapper.insertProjectProcessAreaField(fieldVo);
             }
         }
+
+        List<TemplateProcessAreaTemplateVo> templateVos = templateMapper.getTemplateProcessAreaTemplateListByTemplateUuid(templateUuid);
+        if (templateVos != null && templateVos.size() > 0){
+            for (TemplateProcessAreaTemplateVo templateVo : templateVos){
+                ProjectProcessAreaTemplateVo projectTemplate = new ProjectProcessAreaTemplateVo();
+                projectTemplate.setContent(templateVo.getContent());
+                projectTemplate.setProcessAreaUuid(templateVo.getProcessAreaUuid());
+                projectTemplate.setProjectUuid(projectUuid);
+                projectMapper.insertProjectProcessAreaTemplate(projectTemplate);
+            }
+        }
     }
 }

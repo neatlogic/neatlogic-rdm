@@ -37,6 +37,16 @@
         WHERE `template_uuid` = #{templateUuid}
     </select>
 
+    <select id="getTemplateProcessAreaTemplateListByTemplateUuid" parameterType="java.lang.String" resultType="codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo">
+        SELECT
+        `id`,
+        `process_area_uuid` as `processAreaUuid`,
+        `template_uuid` as `templateUuid`,
+        `conetent`
+        FROM `rdm_template_process_area_template`
+        WHERE `template_uuid` = #{templateUuid}
+    </select>
+
     <insert id="insertTemplate" parameterType="codedriver.module.rdm.dto.TemplateVo">
         INSERT INTO  `rdm_template`
         (

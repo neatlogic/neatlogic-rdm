@@ -39,4 +39,6 @@ public interface TemplateMapper {
     void updateTemplateProcessAreaFieldSort(TemplateProcessAreaVo processAreaVo);
 
     List<TemplateProcessAreaVo> getTemplateProcessAreaListByTemplateUuid(String templateUuid);
+
+    List<TemplateProcessAreaTemplateVo> getTemplateProcessAreaTemplateListByTemplateUuid(String templateUuid);
 }
