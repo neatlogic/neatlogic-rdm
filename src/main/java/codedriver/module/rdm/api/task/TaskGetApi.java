@@ -18,7 +18,7 @@ public class TaskGetApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/task/search";
+        return "module/rdm/task/get";
     }
 
     @Override
