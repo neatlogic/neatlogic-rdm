@@ -1,7 +1,6 @@
 package codedriver.module.rdm.dao.mapper;
 
 import codedriver.module.rdm.dto.ProjectPriorityVo;
-import codedriver.module.rdm.dto.ProjectStatusVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -6,7 +6,7 @@ package codedriver.module.rdm.constants;
  * @Auther
  * @Date 2019/12/4 19:30
  **/
-public enum ProjectStatusType {
+public enum ProjectWorkflowStatusType {
 
     START("start", "开始状态"),
     RUN("run", "运行状态"),
@@ -16,7 +16,7 @@ public enum ProjectStatusType {
     private String name;
     private String description;
 
-    ProjectStatusType(String _name, String _description) {
+    ProjectWorkflowStatusType(String _name, String _description) {
         this.name = _name;
         this.description = _description;
     }

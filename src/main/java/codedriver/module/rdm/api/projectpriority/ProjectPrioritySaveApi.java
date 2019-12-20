@@ -54,6 +54,7 @@ public class ProjectPrioritySaveApi extends ApiComponentBase {
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
 
+        JSONObject result = new JSONObject();
         ProjectPriorityVo projectPriorityVo = new ProjectPriorityVo();
 
         String projectUuid = jsonObj.getString("projectUuid");
@@ -76,8 +77,8 @@ public class ProjectPrioritySaveApi extends ApiComponentBase {
         }
 
         String uuid = projectPriorityService.saveProjectPriority(projectPriorityVo);
-        projectPriorityVo.setUuid(uuid);
-        return projectPriorityVo;
+        result.put("uuid", uuid);
+        return result;
     }
 
 

@@ -7,7 +7,7 @@ import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
-import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +44,7 @@ public class ProjectWorkflowGetApi extends ApiComponentBase {
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
     })
-    @Output({ @Param(name = "statusList", type = ApiParamType.JSONARRAY, desc = "项目状态集合", explode = ProjectStatusVo[].class)})
+    @Output({ @Param(name = "statusList", type = ApiParamType.JSONARRAY, desc = "项目状态集合", explode = ProjectWorkFlowStatusVo[].class)})
     @Description(desc = "查询项目工作流接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

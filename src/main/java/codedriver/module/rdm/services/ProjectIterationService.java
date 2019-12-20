@@ -14,5 +14,5 @@ import java.util.List;
 public interface ProjectIterationService {
     String saveProjectIteration(ProjectIterationVo projectIterationVo);
 
-    List<ProjectPriorityVo> searchProjectIteration(ProjectIterationVo projectIterationVo);
+    List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo);
 }

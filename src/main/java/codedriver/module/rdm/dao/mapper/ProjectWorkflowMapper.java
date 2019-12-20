@@ -1,6 +1,6 @@
 package codedriver.module.rdm.dao.mapper;
 
-import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,22 +13,22 @@ import java.util.List;
  **/
 public interface ProjectWorkflowMapper {
 
-    void insertProjectWorkflowStatus(ProjectStatusVo projectStatusVo);
+    void insertProjectWorkflowStatus(ProjectWorkFlowStatusVo projectWorkFlowStatusVo);
 
     void insertProjectWorkflowStatusTransfer(@Param("uuid")String uuid, @Param("transferTo")String transferTo);
 
     void deleteAllProjectStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid);
 
-    List<ProjectStatusVo> getProjectWorkFlow(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid);
+    List<ProjectWorkFlowStatusVo> getProjectWorkFlow(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid);
 
-    List<ProjectStatusVo> getTransferStatusList(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("statusUuid")String statusUuid);
+    List<ProjectWorkFlowStatusVo> getTransferStatusList(@Param("projectUuid")String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("statusUuid")String statusUuid);
 
-    ProjectStatusVo getProjectWorkflowStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid,@Param("uuid") String uuid);
+    ProjectWorkFlowStatusVo getProjectWorkflowStatus(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("uuid") String uuid);
 
     void deleteProjectStatusByUuid(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid, @Param("uuid") String uuid);
 
-    int checkProjectStatusExist(ProjectStatusVo projectStatusVo);
+    int checkProjectStatusExist(ProjectWorkFlowStatusVo projectWorkFlowStatusVo);
 
-    void updateProjectStatus(ProjectStatusVo projectStatusVo);
+    void updateProjectStatus(ProjectWorkFlowStatusVo projectWorkFlowStatusVo);
 
 }

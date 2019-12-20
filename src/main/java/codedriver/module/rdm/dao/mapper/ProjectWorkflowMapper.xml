@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper">
-    <resultMap id="projectWorkflowMap" type="codedriver.module.rdm.dto.ProjectStatusVo">
+    <resultMap id="projectWorkflowMap" type="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo">
         <id property="uuid" column="uuid"/>
         <id property="projectUuid" column="projectUuid" />
         <id property="processAreaUuid" column="processAreaUuid" />
@@ -26,7 +26,7 @@
         AND a.`process_area_uuid` = #{processAreaUuid}
     </select>
 
-    <select id="getTransferStatusList" resultType="codedriver.module.rdm.dto.ProjectStatusVo">
+    <select id="getTransferStatusList" resultType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo">
         SELECT
           b.`transfer_to` AS uuid,
           c.name,
@@ -40,7 +40,7 @@
           AND a.`uuid` = #{statusUuid}
     </select>
 
-    <select id="getProjectWorkflowStatus" resultType="codedriver.module.rdm.dto.ProjectStatusVo">
+    <select id="getProjectWorkflowStatus" resultType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo">
         SELECT
         a.uuid,
         a.`name`,
@@ -53,7 +53,7 @@
         AND a.uuid = #{uuid}
     </select>
 
-    <select id="checkProjectStatusExist" parameterType="codedriver.module.rdm.dto.ProjectStatusVo" resultType="int">
+    <select id="checkProjectStatusExist" parameterType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo" resultType="int">
         SELECT
         COUNT(id)
         FROM `rdm_project_status` a
@@ -65,7 +65,7 @@
         </if>
     </select>
 
-    <insert id="insertProjectWorkflowStatus" parameterType="codedriver.module.rdm.dto.ProjectStatusVo">
+    <insert id="insertProjectWorkflowStatus" parameterType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo">
         INSERT INTO `rdm_project_status` (
           `project_uuid`,
           `process_area_uuid`,
@@ -95,7 +95,7 @@
           )
     </insert>
 
-    <update id="updateProjectStatus" parameterType="codedriver.module.rdm.dto.ProjectStatusVo">
+    <update id="updateProjectStatus" parameterType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo">
         UPDATE
           `rdm_project_status`
         SET

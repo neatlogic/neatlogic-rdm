@@ -58,7 +58,7 @@ public class ProjectIterationSearchApi extends ApiComponentBase {
         projectIterationVo.setProjectUuid(projectUuid);
         projectIterationVo.setKeyword(keyword);
 
-        List<ProjectPriorityVo> iterationList = projectIterationService.searchProjectIteration(projectIterationVo);
+        List<ProjectIterationVo> iterationList = projectIterationService.searchProjectIteration(projectIterationVo);
         result.put("iterationList", iterationList);
         if (projectIterationVo.getNeedPage()) {
             result.put("pageSize", projectIterationVo.getPageSize());

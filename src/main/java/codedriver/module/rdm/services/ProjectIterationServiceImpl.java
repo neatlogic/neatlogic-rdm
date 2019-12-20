@@ -48,7 +48,7 @@ public class ProjectIterationServiceImpl implements ProjectIterationService{
     }
 
     @Override
-    public List<ProjectPriorityVo> searchProjectIteration(ProjectIterationVo projectIterationVo) {
+    public List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo) {
         return null;
     }
 }

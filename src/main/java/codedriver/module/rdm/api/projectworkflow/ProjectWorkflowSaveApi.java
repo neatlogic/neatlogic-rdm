@@ -6,7 +6,7 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 import codedriver.module.rdm.services.ProjectWorkflowService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -56,9 +56,9 @@ public class ProjectWorkflowSaveApi extends ApiComponentBase {
         String projectUuid = jsonObj.getString("projectUuid");
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         JSONArray statusArray = jsonObj.getJSONArray("statusList");
-        List<ProjectStatusVo> statusList = new ArrayList<>();
+        List<ProjectWorkFlowStatusVo> statusList = new ArrayList<>();
         for(Object statusObject : statusArray){
-            ProjectStatusVo projectStatusVo = new ProjectStatusVo();
+            ProjectWorkFlowStatusVo projectWorkFlowStatusVo = new ProjectWorkFlowStatusVo();
             JSONObject statusJsonObject = JSONObject.parseObject(statusObject.toString());
             String statusName = statusJsonObject.getString("statusName");
             String statusUuid = statusJsonObject.getString("statusUuid");
@@ -69,13 +69,13 @@ public class ProjectWorkflowSaveApi extends ApiComponentBase {
                 transferList.add(transferObject.toString());
             }
 
-            projectStatusVo.setProjectUuid(projectUuid);
-            projectStatusVo.setProcessAreaUuid(processAreaUuid);
-            projectStatusVo.setName(statusName);
-            projectStatusVo.setUuid(statusUuid);
-            projectStatusVo.setType(statusType);
-            projectStatusVo.setTransferTo(transferList);
-            statusList.add(projectStatusVo);
+            projectWorkFlowStatusVo.setProjectUuid(projectUuid);
+            projectWorkFlowStatusVo.setProcessAreaUuid(processAreaUuid);
+            projectWorkFlowStatusVo.setName(statusName);
+            projectWorkFlowStatusVo.setUuid(statusUuid);
+            projectWorkFlowStatusVo.setType(statusType);
+            projectWorkFlowStatusVo.setTransferTo(transferList);
+            statusList.add(projectWorkFlowStatusVo);
         }
         projectWorkFlowService.saveProjectWorkFlow(projectUuid, processAreaUuid, statusList);
         return null;

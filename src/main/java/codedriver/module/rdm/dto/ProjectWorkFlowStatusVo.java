@@ -11,7 +11,7 @@ import java.util.List;
  * @Auther
  * @Date 2019/12/4 18:23
  **/
-public class ProjectStatusVo {
+public class ProjectWorkFlowStatusVo {
 
     /**
      * 自增主键

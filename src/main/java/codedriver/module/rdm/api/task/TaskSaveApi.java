@@ -51,9 +51,9 @@ public class TaskSaveApi extends ApiComponentBase {
     })
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-        String uuid = null;
-
-        return uuid;
+        JSONObject result = new JSONObject();
+        result.put("uuid", "");
+        return result;
     }
 
 }

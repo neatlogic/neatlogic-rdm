@@ -1,7 +1,7 @@
 package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
-import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 import codedriver.module.rdm.exception.projectstatus.ProjectStatusExistException;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -26,13 +26,13 @@ public class ProjectWorkflowServiceImpl implements ProjectWorkflowService {
     private ProjectWorkflowMapper projectWorkflowMapper;
 
     @Override
-    public void saveProjectWorkFlow(String projectUuid, String processAreaUuid, List<ProjectStatusVo> statusList) {
+    public void saveProjectWorkFlow(String projectUuid, String processAreaUuid, List<ProjectWorkFlowStatusVo> statusList) {
         projectWorkflowMapper.deleteAllProjectStatus(projectUuid, processAreaUuid);
-        for(ProjectStatusVo projectStatusVo : statusList){
-            projectWorkflowMapper.insertProjectWorkflowStatus(projectStatusVo);
-            List<String> transferList = projectStatusVo.getTransferTo();
+        for(ProjectWorkFlowStatusVo projectWorkFlowStatusVo : statusList){
+            projectWorkflowMapper.insertProjectWorkflowStatus(projectWorkFlowStatusVo);
+            List<String> transferList = projectWorkFlowStatusVo.getTransferTo();
             for(String transferTo : transferList){
-                projectWorkflowMapper.insertProjectWorkflowStatusTransfer(projectStatusVo.getUuid(), transferTo);
+                projectWorkflowMapper.insertProjectWorkflowStatusTransfer(projectWorkFlowStatusVo.getUuid(), transferTo);
             }
         }
 
@@ -40,21 +40,21 @@ public class ProjectWorkflowServiceImpl implements ProjectWorkflowService {
 
 
     @Override
-    public String saveProjectStatus(ProjectStatusVo projectStatusVo) {
+    public String saveProjectStatus(ProjectWorkFlowStatusVo projectWorkFlowStatusVo) {
         String uuid;
 
-        int count = projectWorkflowMapper.checkProjectStatusExist(projectStatusVo);
+        int count = projectWorkflowMapper.checkProjectStatusExist(projectWorkFlowStatusVo);
         if(count >= 1){
-            throw new ProjectStatusExistException(projectStatusVo.getName());
+            throw new ProjectStatusExistException(projectWorkFlowStatusVo.getName());
         }
 
-        if(StringUtils.isNotBlank(projectStatusVo.getUuid())){
-            uuid = projectStatusVo.getUuid();
-            projectWorkflowMapper.updateProjectStatus(projectStatusVo);
+        if(StringUtils.isNotBlank(projectWorkFlowStatusVo.getUuid())){
+            uuid = projectWorkFlowStatusVo.getUuid();
+            projectWorkflowMapper.updateProjectStatus(projectWorkFlowStatusVo);
         }else{
             uuid = UuidUtil.getUuid();
-            projectStatusVo.setUuid(uuid);
-            projectWorkflowMapper.insertProjectWorkflowStatus(projectStatusVo);
+            projectWorkFlowStatusVo.setUuid(uuid);
+            projectWorkflowMapper.insertProjectWorkflowStatus(projectWorkFlowStatusVo);
         }
 
         return uuid;
