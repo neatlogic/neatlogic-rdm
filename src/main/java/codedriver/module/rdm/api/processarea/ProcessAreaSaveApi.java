@@ -55,6 +55,7 @@ public class ProcessAreaSaveApi extends ApiComponentBase {
     @Description(desc = "保存过程域接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
+        JSONObject result = new JSONObject();
         ProcessAreaVo processAreaVo = new ProcessAreaVo();
         String name = jsonObj.getString("name");
         String description = jsonObj.getString("description");
@@ -88,8 +89,8 @@ public class ProcessAreaSaveApi extends ApiComponentBase {
         }
 
         String uuid = processAreaService.saveProcessArea(processAreaVo);
-
-        return uuid;
+        result.put("uuid", uuid);
+        return result;
     }
 
 }

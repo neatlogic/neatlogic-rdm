@@ -55,7 +55,7 @@ public class ProjectIterationSaveApi extends ApiComponentBase {
     @Description(desc="保存项目迭代接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-
+        JSONObject result = new JSONObject();
         ProjectIterationVo projectIterationVo = new ProjectIterationVo();
         String projectUuid = jsonObj.getString("projectUuid");
         String name = jsonObj.getString("name");
@@ -77,8 +77,8 @@ public class ProjectIterationSaveApi extends ApiComponentBase {
         }
 
         String uuid = projectIterationService.saveProjectIteration(projectIterationVo);
-        projectIterationVo.setUuid(uuid);
-        return uuid;
+        result.put("uuid", uuid);
+        return result;
     }
 
 
