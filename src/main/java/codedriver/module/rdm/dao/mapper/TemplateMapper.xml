@@ -56,7 +56,7 @@
           `create_user`,
           `create_time`,
           `update_user`,
-          `update_time`
+          `update_time`,
           `is_active`
         ) VALUES (
         #{uuid},
@@ -99,6 +99,7 @@
         ) VALUES (
         #{templateUuid},
         #{processAreaUuid},
+        #{processAreaName},
         #{processAreaFieldSort}
         )
     </insert>
@@ -141,14 +142,14 @@
         `name` = #{name},
         `description` = #{description},
         `update_user` = #{updateUser},
-        `update_time` = NOW(),
+        `update_time` = NOW()
         WHERE `uuid` = #{uuid}
     </update>
 
     <update id="updateTemplateProcessAreaField" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
         UPDATE `rdm_template_process_area_field` SET
         `config` = #{config}
-        WHERE fieldUuid = #{fieldUuid}
+        WHERE field_uuid = #{fieldUuid}
     </update>
 
     <update id="updateTemplateProcessTemplate" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo">
@@ -161,23 +162,54 @@
         DELETE FROM `rdm_template` WHERE `uuid` = #{uuid}
     </delete>
 
-    <delete id="deleteTemplateProcessAreaById" parameterType="java.lang.Long">
-        DELETE FROM `rdm_template_process_area` WHERE `id` = #{id}
+    <delete id="deleteTemplateProcessArea" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaVo">
+        DELETE
+        FROM `rdm_template_process_area`
+        <where>
+            <if test="id != 0">
+                `id` = #{id}
+            </if>
+            <if test="templateUuid != null">
+                `template_uuid` = #{templateUuid}
+            </if>
+        </where>
     </delete>
 
-    <delete id="deleteTemplateProcessAreaByTemplateUuid" parameterType="java.lang.String">
-        DELETE FROM `rdm_template_process_area` WHERE `template_uuid` = #{templateUuid}
+    <delete id="deleteTemplateProcessField" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+        DELETE
+        FROM `rdm_template_process_area_field`
+        <where>
+            <if test="processAreaUuid != null">
+                `process_area_uuid` = #{processAreaUuid}
+            </if>
+            <if test="templateUuid != null">
+                `template_uuid` = #{templateUuid}
+            </if>
+        </where>
     </delete>
 
-    <delete id="deleteTemplateProcessFieldByTemplateUuidAndAreaUuid">
-        DELETE FROM `rdm_template_process_area_field` WHERE `template_uuid` = #{templateUuid} AND `process_area_uuid` = #{processAreaUuid}
+    <delete id="deleteTemplateProCustomField">
+        DELETE
+        FROM `rdm_template_process_area_field`
+        WHERE `is_system` = 0
+            <if test="templateUuid != null">
+               AND `template_uuid` = #{templateUuid}
+            </if>
+            <if test="processAreaUuid != null">
+              AND  `process_area_uuid` = #{processAreaUuid}
+            </if>
     </delete>
 
-    <delete id="deleteTemplateProCustomFieldByTemplateUuidAndAreaUuid">
-        DELETE FROM `rdm_template_process_area_field` WHERE `template_uuid` = #{templateUuid} AND `process_area_uuid` = #{processAreaUuid} AND `is_system` = 0
-    </delete>
-
-    <delete id="deleteTemplateProcessFieldByTemplateUuid">
-        DELETE FROM `rdm_template_process_area_field` WHERE `template_uuid` = #{templateUuid}
+    <delete id="deleteTemplateProcessAreaTemplate" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo">
+        DELETE
+        FROM `rdm_template_process_area_template`
+        <where>
+            <if test="templateUuid != null">
+                `template_uuid` = #{templateUuid}
+            </if>
+            <if test="processAreaUuid != null">
+                `process_area_uuid` = #{processAreaUuid}
+            </if>
+        </where>
     </delete>
 </mapper>
