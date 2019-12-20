@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @ClassName TaskSearchApi
- * @Description
+ * @Description 根据uuid查询任务接口
  * @Auther
  * @Date 2019/12/3 15:35
  **/
@@ -23,7 +23,7 @@ public class TaskGetApi extends ApiComponentBase {
 
     @Override
     public String getName() {
-        return "查询任务接口";
+        return "根据uuid查询任务接口";
     }
 
     @Override
