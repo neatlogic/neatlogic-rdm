@@ -7,7 +7,7 @@
         <result property="templateUuid" column="templateUuid"/>
         <result property="processAreaName" column="processAreaName"/>
         <result property="processAreaFieldSort" column="processAreaFieldSort"/>
-        <collection property="processAreaFieldVoList" javaType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+        <collection property="processAreaFieldVoList" ofType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
             <id column="fieldId" property="id"/>
             <result column="field" property="field"/>
             <result column="fieldName" property="fieldName"/>
@@ -15,6 +15,7 @@
             <result column="fieldType" property="fieldType"/>
             <result column="config" property="config"/>
             <result column="isSystem" property="isSystem"/>
+            <result column="processAreaUuid" property="processAreaUuid"/>
         </collection>
     </resultMap>
 
@@ -34,7 +35,7 @@
         b. `is_system` as `isSystem`
         FROM `rdm_template_process_area` a
         LEFT JOIN `rdm_template_process_area_field` b ON a.`template_uuid` = b.`template_uuid` AND a.`process_area_uuid` = b.`process_area_uuid`
-        WHERE `template_uuid` = #{templateUuid}
+        WHERE a.`template_uuid` = #{templateUuid}
     </select>
 
     <select id="getTemplateProcessAreaTemplateListByTemplateUuid" parameterType="java.lang.String" resultType="codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo">
@@ -42,7 +43,7 @@
         `id`,
         `process_area_uuid` as `processAreaUuid`,
         `template_uuid` as `templateUuid`,
-        `conetent`
+        `content`
         FROM `rdm_template_process_area_template`
         WHERE `template_uuid` = #{templateUuid}
     </select>
@@ -166,7 +167,7 @@
         DELETE
         FROM `rdm_template_process_area`
         <where>
-            <if test="id != 0">
+            <if test="id != null and id != 0">
                 `id` = #{id}
             </if>
             <if test="templateUuid != null">

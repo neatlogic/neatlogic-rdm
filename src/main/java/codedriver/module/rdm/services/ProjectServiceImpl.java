@@ -47,23 +47,22 @@ public class ProjectServiceImpl implements ProjectService {
         projectVo.setUpdateUser(UserContext.get().getUserId());
         if (StringUtils.isBlank(projectVo.getUuid())){
             projectVo.setUuid(UuidUtil.getUuid());
-            projectVo.setStatus(ProjectStatusType.RUN.getName());
             projectVo.setCreateUser(UserContext.get().getUserId());
             projectMapper.insertProject(projectVo);
         }else {
             projectMapper.updateProject(projectVo);
         }
+        copyTemplateData(projectVo.getTemplateUuid(), projectVo.getUuid());
         return projectVo.getUuid();
     }
 
-    @Override
     public void copyTemplateData(String templateUuid, String projectUuid) {
         List<TemplateProcessAreaVo> processAreaVoList = templateMapper.getTemplateProcessAreaListByTemplateUuid(templateUuid);
         for (TemplateProcessAreaVo areaVo : processAreaVoList){
             ProjectProcessAreaVo projectProcessAreaVo = new ProjectProcessAreaVo();
             projectProcessAreaVo.setIsEnable(1);
             projectProcessAreaVo.setProcessAreaName(areaVo.getProcessAreaName());
-            projectProcessAreaVo.setProcessAreaSort(areaVo.getProcessAreaFieldSort());
+            projectProcessAreaVo.setProcessAreaFieldSort(areaVo.getProcessAreaFieldSort());
             projectProcessAreaVo.setProjectUuid(projectUuid);
             projectProcessAreaVo.setProcessAreaUuid(areaVo.getProcessAreaUuid());
             projectMapper.insertProjectProcessArea(projectProcessAreaVo);

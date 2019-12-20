@@ -11,7 +11,7 @@ public class ProjectProcessAreaVo {
     private String projectUuid;
     private String processAreaUuid;
     private String processAreaName;
-    private String processAreaSort;
+    private String processAreaFieldSort;
     private int isEnable;
 
     public Long getId() {
@@ -54,11 +54,11 @@ public class ProjectProcessAreaVo {
         this.isEnable = isEnable;
     }
 
-    public String getProcessAreaSort() {
-        return processAreaSort;
+    public String getProcessAreaFieldSort() {
+        return processAreaFieldSort;
     }
 
-    public void setProcessAreaSort(String processAreaSort) {
-        this.processAreaSort = processAreaSort;
+    public void setProcessAreaFieldSort(String processAreaFieldSort) {
+        this.processAreaFieldSort = processAreaFieldSort;
     }
 }
