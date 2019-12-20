@@ -1,6 +1,6 @@
 package codedriver.module.rdm.services;
 
-import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import java.util.List;
  **/
 public interface ProjectWorkflowService {
 
-    void saveProjectWorkFlow(String projectUuid, String processAreaUuid, List<ProjectStatusVo> statusList);
+    void saveProjectWorkFlow(String projectUuid, String processAreaUuid, List<ProjectWorkFlowStatusVo> statusList);
 
-    String saveProjectStatus(ProjectStatusVo projectStatusVo);
+    String saveProjectStatus(ProjectWorkFlowStatusVo projectWorkFlowStatusVo);
 
 }

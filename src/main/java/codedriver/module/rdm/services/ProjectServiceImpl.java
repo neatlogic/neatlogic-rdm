@@ -2,14 +2,13 @@ package codedriver.module.rdm.services;
 
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.common.util.PageUtil;
-import codedriver.module.rdm.constants.ProjectStatusType;
+import codedriver.module.rdm.constants.ProjectWorkflowStatusType;
 import codedriver.module.rdm.dao.mapper.ProjectMapper;
 import codedriver.module.rdm.dao.mapper.TemplateMapper;
 import codedriver.module.rdm.dto.*;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectVo.setUpdateUser(UserContext.get().getUserId());
         if (StringUtils.isBlank(projectVo.getUuid())){
             projectVo.setUuid(UuidUtil.getUuid());
-            projectVo.setStatus(ProjectStatusType.RUN.getName());
+            projectVo.setStatus(ProjectWorkflowStatusType.RUN.getName());
             projectVo.setCreateUser(UserContext.get().getUserId());
             projectMapper.insertProject(projectVo);
         }else {

@@ -7,7 +7,7 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.constants.ProjectStatusType;
+import codedriver.module.rdm.constants.ProjectWorkflowStatusType;
 import codedriver.module.rdm.dto.ProjectVo;
 import codedriver.module.rdm.services.ProjectService;
 import codedriver.module.rdm.util.UuidUtil;

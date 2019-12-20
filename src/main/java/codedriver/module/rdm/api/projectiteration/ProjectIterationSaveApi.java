@@ -46,8 +46,8 @@ public class ProjectIterationSaveApi extends ApiComponentBase {
 
     @Input({
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
-            @Param(name = "startDate", type = ApiParamType.STRING, desc = "开始日期", isRequired = true),
-            @Param(name = "endDate", type = ApiParamType.STRING, desc = "结束日期", isRequired = true),
+            @Param(name = "startDate", type = ApiParamType.STRING, desc = "开始日期，eg:1990-11-12", isRequired = true),
+            @Param(name = "endDate", type = ApiParamType.STRING, desc = "结束日期，eg:1990-12-12", isRequired = true),
             @Param(name = "name", type = ApiParamType.STRING, desc = "名称", isRequired = true),
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "迭代uuid", isRequired = false)
     })

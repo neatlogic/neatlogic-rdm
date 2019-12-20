@@ -1,4 +1,4 @@
-package codedriver.module.rdm.api.projectstatus;
+package codedriver.module.rdm.api.projectworkflowstatus;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
@@ -7,7 +7,7 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dto.ProjectStatusVo;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 import codedriver.module.rdm.services.ProjectWorkflowService;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -49,34 +49,34 @@ public class ProjectStatusSaveApi extends ApiComponentBase {
             @Param(name = "type", type = ApiParamType.STRING, desc = "状态类型", isRequired = true),
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "状态uuid", isRequired = false)
     })
-    @Output({@Param(name="projectStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态信息", explode = ProjectStatusVo.class)})
+    @Output({@Param(name="projectStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态信息", explode = ProjectWorkFlowStatusVo.class)})
     @Description(desc = "保存项目状态接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
 
-        ProjectStatusVo projectStatusVo = new ProjectStatusVo();
+        ProjectWorkFlowStatusVo projectWorkFlowStatusVo = new ProjectWorkFlowStatusVo();
 
         String projectUuid = jsonObj.getString("projectUuid");
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         String name = jsonObj.getString("name");
         String type = jsonObj.getString("type");
 
-        projectStatusVo.setProjectUuid(projectUuid);
-        projectStatusVo.setProcessAreaUuid(processAreaUuid);
-        projectStatusVo.setName(name);
-        projectStatusVo.setType(type);
+        projectWorkFlowStatusVo.setProjectUuid(projectUuid);
+        projectWorkFlowStatusVo.setProcessAreaUuid(processAreaUuid);
+        projectWorkFlowStatusVo.setName(name);
+        projectWorkFlowStatusVo.setType(type);
 
         if(jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))){
             String uuid = jsonObj.getString("uuid");
-            projectStatusVo.setUuid(uuid);
-            projectStatusVo.setUpdateUser(UserContext.get().getUserId());
+            projectWorkFlowStatusVo.setUuid(uuid);
+            projectWorkFlowStatusVo.setUpdateUser(UserContext.get().getUserId());
         }else{
-            projectStatusVo.setCreateUser(UserContext.get().getUserId());
+            projectWorkFlowStatusVo.setCreateUser(UserContext.get().getUserId());
         }
 
-        String uuid = projectWorkflowService.saveProjectStatus(projectStatusVo);
-        projectStatusVo.setUuid(uuid);
-        return projectStatusVo;
+        String uuid = projectWorkflowService.saveProjectStatus(projectWorkFlowStatusVo);
+        projectWorkFlowStatusVo.setUuid(uuid);
+        return projectWorkFlowStatusVo;
     }
 
     public static void main(String[] args) {

@@ -1,11 +1,13 @@
-package codedriver.module.rdm.api.projectstatus;
+package codedriver.module.rdm.api.projectworkflowstatus;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
+import codedriver.module.rdm.dto.ProjectWorkFlowStatusVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +45,10 @@ public class ProcessStatusGetApi extends ApiComponentBase {
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "优先级uuid", isRequired = true)
     })
+
+    @Output({
+            @Param(name = "projectWorkFlowStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态属性",explode = ProjectWorkFlowStatusVo.class )
+    })
     @Description(desc = "根据uuid查询状态接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -50,8 +56,8 @@ public class ProcessStatusGetApi extends ApiComponentBase {
         String projectUuid = jsonObj.getString("projectUuid");
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         String uuid = jsonObj.getString("uuid");
-        result.put("projectStatus", projectWorkflowMapper.getProjectWorkflowStatus(projectUuid, processAreaUuid, uuid));
-        return result;
+        ProjectWorkFlowStatusVo ProjectWorkFlowStatusVo =  projectWorkflowMapper.getProjectWorkflowStatus(projectUuid, processAreaUuid, uuid);
+        return ProjectWorkFlowStatusVo;
     }
 
 
