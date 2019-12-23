@@ -8,9 +8,7 @@ import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.ProjectIterationVo;
-import codedriver.module.rdm.dto.ProjectPriorityVo;
 import codedriver.module.rdm.services.ProjectIterationService;
-import codedriver.module.rdm.services.ProjectPriorityService;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -52,7 +50,7 @@ public class ProjectIterationSaveApi extends ApiComponentBase {
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "迭代uuid", isRequired = false)
     })
     @Output({@Param(name = "uuid", type = ApiParamType.STRING, desc = "状态uuid")})
-    @Description(desc="保存项目迭代接口")
+    @Description(desc = "保存项目迭代接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONObject result = new JSONObject();
@@ -70,11 +68,11 @@ public class ProjectIterationSaveApi extends ApiComponentBase {
         projectIterationVo.setStartDate(startDate);
         projectIterationVo.setEndDate(endDate);
 
-        if(jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))){
+        if (jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))) {
             String uuid = jsonObj.getString("uuid");
             projectIterationVo.setUuid(uuid);
             projectIterationVo.setUpdateUser(UserContext.get().getUserId());
-        }else{
+        } else {
             projectIterationVo.setCreateUser(UserContext.get().getUserId());
         }
 

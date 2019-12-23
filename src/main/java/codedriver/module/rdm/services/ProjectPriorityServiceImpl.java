@@ -31,14 +31,14 @@ public class ProjectPriorityServiceImpl implements ProjectPriorityService {
         String uuid;
 
         int count = projectPriorityMapper.checkProjectPriorityExist(projectPriorityVo);
-        if(count >= 1){
+        if (count >= 1) {
             throw new ProjectPriorityExistException(projectPriorityVo.getName());
         }
 
-        if(StringUtils.isNotBlank(projectPriorityVo.getUuid())){
+        if (StringUtils.isNotBlank(projectPriorityVo.getUuid())) {
             uuid = projectPriorityVo.getUuid();
             projectPriorityMapper.updateProjectPriority(projectPriorityVo);
-        }else{
+        } else {
             uuid = UuidUtil.getUuid();
             projectPriorityVo.setUuid(uuid);
             projectPriorityMapper.insertProjectPriority(projectPriorityVo);

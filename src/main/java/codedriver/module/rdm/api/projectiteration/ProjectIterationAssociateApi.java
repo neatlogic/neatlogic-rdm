@@ -45,14 +45,14 @@ public class ProjectIterationAssociateApi extends ApiComponentBase {
             @Param(name = "projectIterationUuid", type = ApiParamType.STRING, desc = "项目迭代Uuid", isRequired = true),
             @Param(name = "taskList", type = ApiParamType.STRING, desc = "Task uuid集合", isRequired = true)
     })
-    @Description(desc="项目迭代规划接口")
+    @Description(desc = "项目迭代规划接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String projectUuid = jsonObj.getString("projectUuid");
         String projectIterationUuid = jsonObj.getString("projectIterationUuid");
         JSONArray taskArray = jsonObj.getJSONArray("taskList");
-        List<String> taskList =  taskArray.toJavaList(String.class);
-        if(taskArray != null && taskArray.size() > 0 ){
+        List<String> taskList = taskArray.toJavaList(String.class);
+        if (taskArray != null && taskArray.size() > 0) {
             projectIterationService.associateTask(projectUuid, projectIterationUuid, taskList);
         }
 

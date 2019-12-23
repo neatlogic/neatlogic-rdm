@@ -1,9 +1,7 @@
 package codedriver.module.rdm.api.task;
 
 import codedriver.framework.apiparam.core.ApiParamType;
-import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import com.alibaba.fastjson.JSONObject;
@@ -46,7 +44,7 @@ public class TaskSaveApi extends ApiComponentBase {
             @Param(name = "endTime", type = ApiParamType.STRING, desc = "截至时间", isRequired = false),
             @Param(name = "parentId", type = ApiParamType.LONG, desc = "父任务id", isRequired = false),
             @Param(name = "processAccountIdList", type = ApiParamType.JSONARRAY, desc = "处理人集合", isRequired = false),
-            @Param(name = "customFieldList", type = ApiParamType.JSONARRAY, desc = "项目自定义属性集合", isRequired = false ),
+            @Param(name = "customFieldList", type = ApiParamType.JSONARRAY, desc = "项目自定义属性集合", isRequired = false),
             @Param(name = "description", type = ApiParamType.STRING, desc = "描述", isRequired = false),
     })
     @Override

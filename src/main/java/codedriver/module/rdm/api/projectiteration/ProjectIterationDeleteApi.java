@@ -6,7 +6,6 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
-import codedriver.module.rdm.dao.mapper.ProjectPriorityMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +39,8 @@ public class ProjectIterationDeleteApi extends ApiComponentBase {
     }
 
     @Input({
-            @Param(name = "uuid", type = ApiParamType.STRING, desc = "项目迭代uuid", isRequired = true) })
-    @Description(desc="删除项目迭代接口")
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "项目迭代uuid", isRequired = true)})
+    @Description(desc = "删除项目迭代接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String projectUuid = jsonObj.getString("projectUuid");
