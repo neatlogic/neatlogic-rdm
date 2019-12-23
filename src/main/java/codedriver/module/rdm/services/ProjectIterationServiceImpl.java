@@ -3,6 +3,7 @@ package codedriver.module.rdm.services;
 import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
 import codedriver.module.rdm.dto.ProjectIterationVo;
 import codedriver.module.rdm.dto.ProjectPriorityVo;
+import codedriver.module.rdm.exception.projectiteration.ProjectIterationException;
 import codedriver.module.rdm.exception.projectpriority.ProjectPriorityExistException;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +33,7 @@ public class ProjectIterationServiceImpl implements ProjectIterationService{
 
         int count = projectIterationMapper.checkProjectIterationExist(projectIterationVo);
         if(count >= 1){
-            throw new ProjectPriorityExistException(projectIterationVo.getName());
+            throw new ProjectIterationException(projectIterationVo.getName());
         }
 
         if(StringUtils.isNotBlank(projectIterationVo.getUuid())){
@@ -50,5 +51,10 @@ public class ProjectIterationServiceImpl implements ProjectIterationService{
     @Override
     public List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo) {
         return null;
+    }
+
+    @Override
+    public void associateTask(String projectUuid, String projectIterationUuid, List<String> taskList) {
+        projectIterationMapper.associateTask(projectUuid, projectIterationUuid, taskList);
     }
 }

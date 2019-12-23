@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
  * @Date 2019/12/4 9:52
  **/
 @Service
+@Deprecated
 public class ProjectStatusSearchApi extends ApiComponentBase {
 
     @Override

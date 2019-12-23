@@ -59,12 +59,14 @@ public class ProjectIterationSaveApi extends ApiComponentBase {
         ProjectIterationVo projectIterationVo = new ProjectIterationVo();
         String projectUuid = jsonObj.getString("projectUuid");
         String name = jsonObj.getString("name");
+        String description = jsonObj.getString("description");
         String startDate = jsonObj.getString("startDate");
         String endDate = jsonObj.getString("endDate");
 
 
         projectIterationVo.setProjectUuid(projectUuid);
         projectIterationVo.setName(name);
+        projectIterationVo.setDescription(description);
         projectIterationVo.setStartDate(startDate);
         projectIterationVo.setEndDate(endDate);
 

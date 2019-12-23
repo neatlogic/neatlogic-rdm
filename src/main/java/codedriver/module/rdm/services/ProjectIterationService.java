@@ -15,4 +15,6 @@ public interface ProjectIterationService {
     String saveProjectIteration(ProjectIterationVo projectIterationVo);
 
     List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo);
+
+    void associateTask(String projectUuid, String projectIterationUuid, List<String> taskList);
 }

@@ -43,7 +43,7 @@ public class ProjectIterationGetApi extends ApiComponentBase {
 
     @Input({
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
-            @Param(name = "uuid", type = ApiParamType.STRING, desc = "优先级uuid", isRequired = true)
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "迭代uuid", isRequired = true)
     })
     @Output({
             @Param(name = "projectIterationVo", type = ApiParamType.JSONOBJECT, desc = "projectIterationVo", explode = ProjectIterationVo.class)
