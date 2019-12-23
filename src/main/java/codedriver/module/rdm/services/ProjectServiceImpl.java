@@ -6,6 +6,7 @@ import codedriver.module.rdm.dao.mapper.ProjectMapper;
 import codedriver.module.rdm.dao.mapper.TemplateMapper;
 import codedriver.module.rdm.dto.*;
 import codedriver.module.rdm.util.UuidUtil;
+import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,5 +92,53 @@ public class ProjectServiceImpl implements ProjectService {
                 projectMapper.insertProjectProcessAreaTemplate(projectTemplate);
             }
         }
+    }
+
+    @Override
+    public List<ProjectProcessAreaVo> searchProjectProcessArea(ProjectProcessAreaVo processAreaVo) {
+        return projectMapper.getProjectProcessArea(processAreaVo);
+    }
+
+    @Override
+    public void saveProjectProcessArea(ProjectProcessAreaVo processAreaVo) {
+        //删除自定义属性
+        ProjectProcessAreaFieldVo fieldVo = new ProjectProcessAreaFieldVo();
+        fieldVo.setProcessAreaUuid(processAreaVo.getProcessAreaUuid());
+        fieldVo.setProjectUuid(processAreaVo.getProjectUuid());
+        projectMapper.deleteProjectProcessAreaCustomFiled(fieldVo);
+        List<ProjectProcessAreaFieldVo> fieldVoList = processAreaVo.getFieldList();
+        JSONArray sortArray = new JSONArray();
+        for (ProjectProcessAreaFieldVo f : fieldVoList){
+            f.setFieldUuid(UuidUtil.getUuid());
+            if (f.getId() != null && f.getId() != 0L){
+                if (f.getIsSystem() != 1){
+                    projectMapper.insertProjectProcessAreaField(f);
+                }
+            }else {
+                projectMapper.insertProjectProcessAreaField(f);
+            }
+            sortArray.add(f.getId());
+        }
+        //更新过程域
+        processAreaVo.setProcessAreaFieldSort(sortArray.toJSONString());
+        if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
+            projectMapper.updateProjectProcessAreaFieldSort(processAreaVo);
+        }else {
+            projectMapper.insertProjectProcessArea(processAreaVo);
+        }
+    }
+
+    @Override
+    public void saveProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo) {
+        if (templateVo.getId() != null && templateVo.getId() != 0L){
+            projectMapper.updteProjectProcessAreaTemplate(templateVo);
+        }else {
+            projectMapper.insertProjectProcessAreaTemplate(templateVo);
+        }
+    }
+
+    @Override
+    public void saveProjectProcessField(ProjectProcessAreaFieldVo fieldVo) {
+        projectMapper.updateProjectProcessAreaFiled(fieldVo);
     }
 }

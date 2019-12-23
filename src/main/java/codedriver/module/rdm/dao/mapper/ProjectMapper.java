@@ -18,15 +18,23 @@ public interface ProjectMapper {
 
     int updateProject(ProjectVo projectVo);
 
+    void updateProjectProcessAreaFieldSort(ProjectProcessAreaVo processAreaVo);
+
+    void updteProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo);
+
+    void updateProjectProcessAreaFiled(ProjectProcessAreaFieldVo fieldVo);
+
     List<ProjectVo> searchProject(ProjectVo projectVo);
 
-    ProjectVo getProjectByUuid(String uuid);
+    List<ProjectProcessAreaVo> getProjectProcessArea(ProjectProcessAreaVo areaVo);
 
-    List<FieldVo> getProjectFieldList(@Param("projectUuid") String projectUuid, @Param("processAreaUuid") String processAreaUuid);
+    ProjectVo getProjectByUuid(String uuid);
 
     void insertProjectProcessArea(ProjectProcessAreaVo processAreaVo);
 
     void insertProjectProcessAreaField(ProjectProcessAreaFieldVo processAreaFieldVo);
 
     void insertProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo);
+
+    void deleteProjectProcessAreaCustomFiled(ProjectProcessAreaFieldVo fieldVo);
 }
