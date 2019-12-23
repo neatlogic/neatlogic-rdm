@@ -48,4 +48,8 @@
         `user_id` = #{userId}
         WHERE `id` = #{id}
     </update>
+
+    <delete id="deleteProjectMemberByUserId" parameterType="java.lang.String">
+        DELETE FROM `rdm_project_member` WHERE `user_id` = #{userId}
+    </delete>
 </mapper>

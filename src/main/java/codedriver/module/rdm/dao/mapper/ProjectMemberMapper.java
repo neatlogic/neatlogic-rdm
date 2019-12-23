@@ -11,4 +11,6 @@ public interface ProjectMemberMapper {
     void insertProjectMember(ProjectMemberVo memberVo);
 
     void updateProjectMember(ProjectMemberVo memberVo);
+
+    void deleteProjectMemberByUserId(String userId);
 }
