@@ -74,6 +74,7 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
             fieldVo.setFieldType(fieldObj.getString("fieldType"));
             fieldVo.setConfig(fieldObj.getString("config"));
             fieldVo.setIsSystem(fieldObj.getInteger("isSystem"));
+            fieldVo.setIsRequired(fieldObj.getInteger("isRequired"));
             fieldVo.setIsShow(fieldObj.getInteger("isShow"));
             fieldVo.setProjectUuid(jsonObj.getString("projectUuid"));
             fieldVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));

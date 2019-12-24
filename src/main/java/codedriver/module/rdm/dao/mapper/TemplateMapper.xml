@@ -119,7 +119,8 @@
         `field_uuid`,
         `field_type`,
         `config`,
-        `is_system`
+        `is_system`,
+        `is_required`
         ) VALUES (
         #{templateUuid},
         #{processAreaUuid},
@@ -128,7 +129,8 @@
         #{fieldUuid},
         #{fieldType},
         #{config},
-        #{isSystem}
+        #{isSystem},
+        #{isRequired}
         )
     </insert>
 
@@ -147,9 +149,15 @@
         WHERE `uuid` = #{uuid}
     </update>
 
-    <update id="updateTemplateProcessAreaField" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+    <update id="updateTemplateProcessAreaFieldConfig" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
         UPDATE `rdm_template_process_area_field` SET
         `config` = #{config}
+        WHERE field_uuid = #{fieldUuid}
+    </update>
+
+    <update id="updateTemplateProcessAreaFieldRequired" parameterType="codedriver.module.rdm.dto.TemplateProcessAreaFieldVo">
+        UPDATE `rdm_template_process_area_field` SET
+        `is_required` = #{isRequired}
         WHERE field_uuid = #{fieldUuid}
     </update>
 

@@ -21,5 +21,5 @@ public interface ProjectService {
 
     void saveProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo);
 
-    void saveProjectProcessField(ProjectProcessAreaFieldVo fieldVo);
+    void saveProjectProcessFieldConfig(ProjectProcessAreaFieldVo fieldVo);
 }

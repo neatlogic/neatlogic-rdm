@@ -47,7 +47,7 @@ public class TemplateProcessFieldSaveApi extends ApiComponentBase {
         TemplateProcessAreaFieldVo fieldVo = new TemplateProcessAreaFieldVo();
         fieldVo.setFieldUuid(fieldUuid);
         fieldVo.setConfig(configObj.toJSONString());
-        templateService.saveTemplateProcessAreaField(fieldVo);
+        templateService.saveTemplateProcessAreaFieldConfig(fieldVo);
         return new JSONObject();
     }
 }

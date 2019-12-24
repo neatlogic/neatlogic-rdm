@@ -16,6 +16,15 @@ public class ProjectProcessAreaFieldVo {
     private String config;
     private int isSystem;
     private int isShow;
+    private int isRequired;
+
+    public int getIsRequired() {
+        return isRequired;
+    }
+
+    public void setIsRequired(int isRequired) {
+        this.isRequired = isRequired;
+    }
 
     public Long getId() {
         return id;

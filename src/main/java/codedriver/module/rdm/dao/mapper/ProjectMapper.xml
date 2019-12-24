@@ -212,8 +212,12 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateProjectProcessAreaFiled" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+    <update id="updateProjectProcessAreaFieldConfig" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
         UPDATE `rdm_project_field` SET `config` = #{config} WHERE field_uuid = #{fieldUuid}
+    </update>
+
+    <update id="updateProjectProcessAreaFieldRequired" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+        UPDATE `rdm_project_field` SET `is_required` = #{isRequired} WHERE field_uuid = #{fieldUuid}
     </update>
 
     <delete id="deleteProject" >

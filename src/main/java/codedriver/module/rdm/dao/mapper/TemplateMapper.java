@@ -22,7 +22,9 @@ public interface TemplateMapper {
 
     void updateTemplateProcessTemplate(TemplateProcessAreaTemplateVo processAreaTemplateVo);
 
-    void updateTemplateProcessAreaField(TemplateProcessAreaFieldVo fieldVo);
+    void updateTemplateProcessAreaFieldConfig(TemplateProcessAreaFieldVo fieldVo);
+
+    void updateTemplateProcessAreaFieldRequired(TemplateProcessAreaFieldVo fieldVo);
 
     void deleteTemplateByUuid(String uuid);
 

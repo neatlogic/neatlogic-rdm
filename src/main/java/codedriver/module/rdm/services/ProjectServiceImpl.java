@@ -78,6 +78,7 @@ public class ProjectServiceImpl implements ProjectService {
                 fieldVo.setFieldUuid(areaFieldVo.getFieldUuid());
                 fieldVo.setIsShow(1);
                 fieldVo.setIsSystem(areaFieldVo.getIsSystem());
+                fieldVo.setIsRequired(areaFieldVo.getIsRequired());
                 fieldVo.setProcessAreaUuid(areaFieldVo.getProcessAreaUuid());
                 fieldVo.setProjectUuid(projectUuid);
                 projectMapper.insertProjectProcessAreaField(fieldVo);
@@ -125,18 +126,28 @@ public class ProjectServiceImpl implements ProjectService {
         fieldVo.setProjectUuid(processAreaVo.getProjectUuid());
         projectMapper.deleteProjectProcessAreaCustomFiled(fieldVo);
         List<ProjectProcessAreaFieldVo> fieldVoList = processAreaVo.getFieldList();
+        List<ProjectProcessAreaFieldVo> systemFieldList = new ArrayList<>();
         JSONArray sortArray = new JSONArray();
         for (ProjectProcessAreaFieldVo f : fieldVoList){
-            f.setFieldUuid(UuidUtil.getUuid());
+
             if (f.getId() != null && f.getId() != 0L){
                 if (f.getIsSystem() != 1){
+                    f.setFieldUuid(UuidUtil.getUuid());
                     projectMapper.insertProjectProcessAreaField(f);
+                }else {
+                    systemFieldList.add(f);
                 }
             }else {
+                f.setFieldUuid(UuidUtil.getUuid());
                 projectMapper.insertProjectProcessAreaField(f);
             }
             sortArray.add(f.getId());
         }
+
+        for (ProjectProcessAreaFieldVo field : systemFieldList){
+            projectMapper.updateProjectProcessAreaFieldRequired(field);
+        }
+
         //更新过程域
         processAreaVo.setProcessAreaFieldSort(sortArray.toJSONString());
         projectMapper.updateProjectProcessArea(processAreaVo);
@@ -152,7 +163,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void saveProjectProcessField(ProjectProcessAreaFieldVo fieldVo) {
-        projectMapper.updateProjectProcessAreaFiled(fieldVo);
+    public void saveProjectProcessFieldConfig(ProjectProcessAreaFieldVo fieldVo) {
+        projectMapper.updateProjectProcessAreaFieldConfig(fieldVo);
     }
 }
