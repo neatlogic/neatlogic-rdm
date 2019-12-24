@@ -62,6 +62,9 @@ public class TemplateProcessSaveApi extends ApiComponentBase {
         for (int i = 0; i < processAreaFieldList.size(); i++) {
             JSONObject processAreaField = processAreaFieldList.getJSONObject(i);
             TemplateProcessAreaFieldVo fieldVo = new TemplateProcessAreaFieldVo();
+            if (processAreaField.containsKey("id")){
+                fieldVo.setId(processAreaField.getLong("id"));
+            }
             fieldVo.setField(processAreaField.getString("field"));
             fieldVo.setFieldName(processAreaField.getString("fieldName"));
             fieldVo.setFieldType(processAreaField.getString("fieldType"));

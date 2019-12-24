@@ -22,7 +22,7 @@ public class TemplateProcessAreaVo {
 
     private String processAreaFieldSort;
 
-    List<TemplateProcessAreaFieldVo> processAreaFieldVoList;
+    private List<TemplateProcessAreaFieldVo> processAreaFieldVoList;
 
     public Long getId() {
         return id;

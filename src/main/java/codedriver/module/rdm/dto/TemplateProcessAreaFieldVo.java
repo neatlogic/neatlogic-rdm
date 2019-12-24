@@ -9,6 +9,7 @@ import codedriver.framework.restful.annotation.EntityField;
  * @create: 2019-12-17 16:10
  **/
 public class TemplateProcessAreaFieldVo {
+    @EntityField(name = "属性id", type = ApiParamType.LONG)
     private Long id;
     private String fieldUuid;
     private String templateUuid;

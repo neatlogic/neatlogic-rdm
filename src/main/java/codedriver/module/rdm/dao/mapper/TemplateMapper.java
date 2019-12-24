@@ -12,9 +12,9 @@ public interface TemplateMapper {
 
     void insertTemplate(TemplateVo templateVo);
 
-    void insertTemplateProcessTemplate(TemplateProcessAreaTemplateVo processAreaTemplateVo);
-
     void insertTemplateProcessArea(TemplateProcessAreaVo processAreaVo);
+
+    void insertTemplateProcessTemplate(TemplateProcessAreaTemplateVo processAreaTemplateVo);
 
     void insertTemplateProcessAreaField(TemplateProcessAreaFieldVo processAreaFieldVo);
 
@@ -26,17 +26,17 @@ public interface TemplateMapper {
 
     void deleteTemplateByUuid(String uuid);
 
-    void deleteTemplateProcessAreaById(Long id);
+    void deleteTemplateProcessArea(TemplateProcessAreaVo areaVo);
 
-    void deleteTemplateProcessAreaByTemplateUuid(String templateUuid);
+    void deleteTemplateProcessField(TemplateProcessAreaFieldVo fieldVo);
 
-    void deleteTemplateProcessFieldByTemplateUuid(String templateUuid);
+    void deleteTemplateProCustomField(TemplateProcessAreaFieldVo fieldVo);
 
-    void deleteTemplateProcessFieldByTemplateUuidAndAreaUuid(@Param("templateUuid") String templateUuid, @Param("processAreaUuid") String processAreaUuid);
-
-    void deleteTemplateProCustomFieldByTemplateUuidAndAreaUuid(@Param("templateUuid") String templateUuid, @Param("processAreaUuid") String processAreaUuid);
+    void deleteTemplateProcessAreaTemplate(TemplateProcessAreaTemplateVo templateVo);
 
     void updateTemplateProcessAreaFieldSort(TemplateProcessAreaVo processAreaVo);
 
     List<TemplateProcessAreaVo> getTemplateProcessAreaListByTemplateUuid(String templateUuid);
+
+    List<TemplateProcessAreaTemplateVo> getTemplateProcessAreaTemplateListByTemplateUuid(String templateUuid);
 }

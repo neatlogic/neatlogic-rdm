@@ -69,11 +69,11 @@ public class ProjectSaveApi extends ApiComponentBase {
         if (jsonObj.containsKey("status")){
             projectVo.setStatus(jsonObj.getString("status"));
         }
-        String uuid = projectService.saveProject(projectVo);
         if (jsonObj.containsKey("templateUuid")){
-            projectService.copyTemplateData(jsonObj.getString("templateUuid"), uuid);
+            projectVo.setTemplateUuid(jsonObj.getString("templateUuid"));
+
         }
-        returnObj.put("uuid", uuid);
+        returnObj.put("uuid", projectService.saveProject(projectVo));
         return returnObj;
     }
 }

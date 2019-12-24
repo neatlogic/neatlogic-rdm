@@ -12,11 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * @program: codedriver
@@ -36,6 +33,7 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
         if (StringUtils.isBlank(templateVo.getUuid())){
             templateVo.setUuid(UuidUtil.getUuid());
             templateVo.setCreateUser(UserContext.get().getUserId());
+            templateVo.setIsActive(1);
             templateMapper.insertTemplate(templateVo);
         }else {
             templateMapper.updateTemplate(templateVo);
@@ -46,15 +44,19 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
     @Override
     public void saveTemplateProcessArea(TemplateProcessAreaVo processAreaVo) {
         //删除自定义属性
-        templateMapper.deleteTemplateProCustomFieldByTemplateUuidAndAreaUuid(processAreaVo.getTemplateUuid(), processAreaVo.getProcessAreaUuid());
+        TemplateProcessAreaFieldVo fieldParam = new TemplateProcessAreaFieldVo();
+        fieldParam.setTemplateUuid(processAreaVo.getTemplateUuid());
+        fieldParam.setProcessAreaUuid(processAreaVo.getProcessAreaUuid());
+        templateMapper.deleteTemplateProCustomField(fieldParam);
         List<TemplateProcessAreaFieldVo> fieldVoList = processAreaVo.getProcessAreaFieldVoList();
-        List<TemplateProcessAreaFieldVo> systemFieldVoList = new ArrayList<>();
         JSONArray sortArray = new JSONArray();
         //只加自定义属性
         for (TemplateProcessAreaFieldVo fieldVo : fieldVoList){
             fieldVo.setFieldUuid(UuidUtil.getUuid());
-            if (fieldVo.getIsSystem() == 1){
-                systemFieldVoList.add(fieldVo);
+            if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
+                if (fieldVo.getIsSystem() != 1){
+                    templateMapper.insertTemplateProcessAreaField(fieldVo);
+                }
             }else {
                 templateMapper.insertTemplateProcessAreaField(fieldVo);
             }
@@ -67,24 +69,36 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
         }else {
             //新增过程域
             templateMapper.insertTemplateProcessArea(processAreaVo);
-            //新增系统属性
-            for (TemplateProcessAreaFieldVo sysTemFieldVo : systemFieldVoList){
-                templateMapper.insertTemplateProcessAreaField(sysTemFieldVo);
-            }
         }
     }
 
     @Override
     public void deleteTemplateProcessArea(TemplateProcessAreaVo processAreaVo) {
-        templateMapper.deleteTemplateProcessAreaById(processAreaVo.getId());
-        templateMapper.deleteTemplateProcessFieldByTemplateUuidAndAreaUuid(processAreaVo.getTemplateUuid(), processAreaVo.getProcessAreaUuid());
+        TemplateProcessAreaVo areaVo = new TemplateProcessAreaVo();
+        areaVo.setId(processAreaVo.getId());
+        templateMapper.deleteTemplateProcessArea(areaVo);
+        TemplateProcessAreaFieldVo fieldVo = new TemplateProcessAreaFieldVo();
+        fieldVo.setProcessAreaUuid(processAreaVo.getProcessAreaUuid());
+        fieldVo.setTemplateUuid(processAreaVo.getTemplateUuid());
+        templateMapper.deleteTemplateProcessField(fieldVo);
+        TemplateProcessAreaTemplateVo templateVo = new TemplateProcessAreaTemplateVo();
+        templateVo.setTemplateUuid(processAreaVo.getTemplateUuid());
+        templateVo.setProcessAreaUuid(processAreaVo.getProcessAreaUuid());
+        templateMapper.deleteTemplateProcessAreaTemplate(templateVo);
     }
 
     @Override
     public void deleteTemplate(String templateUuid) {
         templateMapper.deleteTemplateByUuid(templateUuid);
-        templateMapper.deleteTemplateProcessAreaByTemplateUuid(templateUuid);
-        templateMapper.deleteTemplateProcessFieldByTemplateUuid(templateUuid);
+        TemplateProcessAreaVo areaVo = new TemplateProcessAreaVo();
+        areaVo.setTemplateUuid(templateUuid);
+        templateMapper.deleteTemplateProcessArea(areaVo);
+        TemplateProcessAreaFieldVo fieldParam = new TemplateProcessAreaFieldVo();
+        fieldParam.setTemplateUuid(templateUuid);
+        templateMapper.deleteTemplateProcessField(fieldParam);
+        TemplateProcessAreaTemplateVo templateVo = new TemplateProcessAreaTemplateVo();
+        templateVo.setTemplateUuid(templateUuid);
+        templateMapper.deleteTemplateProcessAreaTemplate(templateVo);
     }
 
     @Override

@@ -2,6 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.rdm.dao.mapper.ProjectMapper">
 
+    <resultMap id="projectProcessArea" type="codedriver.module.rdm.dto.ProjectProcessAreaVo">
+        <id property="id" column="id"/>
+        <result property="processAreaUuid" column="processAreaUuid"/>
+        <result property="projectUuid" column="projectUuid"/>
+        <result property="processAreaName" column="processAreaName"/>
+        <result property="processAreaFieldSort" column="processAreaFieldSort"/>
+        <result property="isEnable" column="isEnable"/>
+        <collection property="fieldList" ofType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+            <id property="id" column="fieldId"/>
+            <result property="projectUuid" column="projectUuid"/>
+            <result property="processAreaUuid" column="processAreaName"/>
+            <result property="fieldUuid" column="fieldUuid"/>
+            <result property="field" column="field"/>
+            <result property="config" column="config"/>
+            <result property="fieldType" column="fieldType"/>
+            <result property="isSystem" column="isSystem"/>
+            <result property="fieldName" column="fieldName"/>
+            <result property="isShow" column="isSHow"/>
+        </collection>
+    </resultMap>
+
     <select id="searchProjectCount" parameterType="codedriver.module.rdm.dto.ProjectVo" resultType="int">
         SELECT
             COUNT(id)
@@ -10,6 +31,35 @@
         <if test="keyword != null and keyword != ''">
             AND a.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
+    </select>
+
+    <select id="getProjectProcessArea" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo" resultMap="projectProcessArea">
+        SELECT
+        a.`id`,
+        a.`project_uuid` as `projectUuid`,
+        a.`process_area_uuid` as `processAreaUuid`,
+        a.`process_area_name` as `processAreaName`,
+        a.`process_area_field_sort` as `processAreaFieldSort`,
+        a.`is_enable` as `isEnable`,
+        b.`id` as `fieldId`,
+        b.`field` as `field`,
+        b.`field_name` as `fieldName`,
+        b.`field_uuid` as `fieldUuid`,
+        b.`field_type` as `fieldType`,
+        b.`config`,
+        b.`is_system` as `isSystem`,
+        b.`is_show` as `isShow`
+        FROM `rdm_project_process_area` a
+        LEFT JOIN `rdm_project_field` b ON a.project_uuid = b.project_uuid AND a.process_area_uuid = b.process_area_uuid
+        <where>
+            <if test="projectUuid != null">
+                a.`project_uuid` = #{projectUuid}
+            </if>
+
+            <if test="processAreaUuid != null">
+                a.`processAreaUuid` = #{processAreaUuid}
+            </if>
+        </where>
     </select>
 
     <select id="searchProject" parameterType="codedriver.module.rdm.dto.ProjectVo" resultType="codedriver.module.rdm.dto.ProjectVo">
@@ -49,23 +99,6 @@
         WHERE uuid = #{value}
     </select>
 
-    <select id="getProjectFieldList" resultType="codedriver.module.rdm.dto.FieldVo">
-        SELECT
-            `field`,
-            `name`,
-            `field_uuid` AS uuid,
-            `field_type` AS type,
-            `is_system_field` AS isSystemField,
-            `is_show` AS isShow,
-            `field_config` AS config,
-            `sort`
-        FROM
-          `rdm_project_field`
-        WHERE project_uuid = #{projectUuid}
-        AND process_area_uuid = #{processAreaUuid}
-        ORDER BY sort ASC
-    </select>
-
     <insert id="insertProject" parameterType="codedriver.module.rdm.dto.ProjectVo">
         INSERT INTO
         `rdm_project`(
@@ -83,7 +116,7 @@
         #{description},
         #{status},
         NOW(),
-        #{createUser}
+        #{createUser},
         NOW(),
         #{updateUser}
         )
@@ -137,6 +170,22 @@
         )
     </insert>
 
+    <insert id="insertProjectProcessAreaTemplate" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaTemplateVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO
+        `rdm_project_process_area_tempate`(
+        `process_area_uuid`,
+        `project_uuid`,
+        `content`
+        ) VALUES (
+        #{processAreaUuid},
+        #{projectUuid},
+        #{content}
+        )
+    </insert>
+
     <update id="updateProject" parameterType="codedriver.module.rdm.dto.ProjectVo">
         UPDATE `rdm_project`
         SET
@@ -148,7 +197,36 @@
         WHERE `uuid` = #{uuid}
     </update>
 
+    <update id="updateProjectProcessAreaFieldSort" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo">
+        UPDATE `rdm_project_process_area`
+        SET
+        `process_area_field_sort` = #{processAreaFieldSort}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updteProjectProcessAreaTemplate" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaTemplateVo">
+        UPDATE `rdm_project_process_area_template`
+        SET
+        `content` = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateProjectProcessAreaFiled" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+        UPDATE `rdm_project_field` SET `config` = #{config} WHERE field_uuid = #{fieldUuid}
+    </update>
+
     <delete id="deleteProject" >
         DELETE FROM `rdm_project_field` WHERE uuid = #{value}
+    </delete>
+
+    <delete id="deleteProjectProcessAreaCustomFiled" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+        DELETE FROM `rdm_project_field`
+        WHERE `is_system` = 0
+        <if test="projectUuid != null">
+            AND `project_uuid` = #{projectUuid}
+        </if>
+        <if test="processAreaUuid != null">
+            AND `process_area_uuid` = #{processAreaUuid}
+        </if>
     </delete>
 </mapper>

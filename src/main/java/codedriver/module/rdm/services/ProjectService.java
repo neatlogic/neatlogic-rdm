@@ -1,7 +1,6 @@
 package codedriver.module.rdm.services;
 
-import codedriver.module.rdm.dto.ProcessAreaVo;
-import codedriver.module.rdm.dto.ProjectVo;
+import codedriver.module.rdm.dto.*;
 
 import java.util.List;
 
@@ -16,5 +15,11 @@ public interface ProjectService {
 
     String saveProject(ProjectVo projectVo);
 
-    void copyTemplateData(String templateUuid, String projectUuid);
+    List<ProjectProcessAreaVo> searchProjectProcessArea(ProjectProcessAreaVo processAreaVo);
+
+    void saveProjectProcessArea(ProjectProcessAreaVo processAreaVo);
+
+    void saveProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo);
+
+    void saveProjectProcessField(ProjectProcessAreaFieldVo fieldVo);
 }
