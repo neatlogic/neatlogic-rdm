@@ -28,10 +28,10 @@ public class ProjectWorkflowServiceImpl implements ProjectWorkflowService {
     @Override
     public void saveProjectWorkFlow(String projectUuid, String processAreaUuid, List<ProjectWorkFlowStatusVo> statusList) {
         projectWorkflowMapper.deleteAllProjectStatus(projectUuid, processAreaUuid);
-        for(ProjectWorkFlowStatusVo projectWorkFlowStatusVo : statusList){
+        for (ProjectWorkFlowStatusVo projectWorkFlowStatusVo : statusList) {
             projectWorkflowMapper.insertProjectWorkflowStatus(projectWorkFlowStatusVo);
             List<String> transferList = projectWorkFlowStatusVo.getTransferTo();
-            for(String transferTo : transferList){
+            for (String transferTo : transferList) {
                 projectWorkflowMapper.insertProjectWorkflowStatusTransfer(projectWorkFlowStatusVo.getUuid(), transferTo);
             }
         }
@@ -44,14 +44,14 @@ public class ProjectWorkflowServiceImpl implements ProjectWorkflowService {
         String uuid;
 
         int count = projectWorkflowMapper.checkProjectStatusExist(projectWorkFlowStatusVo);
-        if(count >= 1){
+        if (count >= 1) {
             throw new ProjectStatusExistException(projectWorkFlowStatusVo.getName());
         }
 
-        if(StringUtils.isNotBlank(projectWorkFlowStatusVo.getUuid())){
+        if (StringUtils.isNotBlank(projectWorkFlowStatusVo.getUuid())) {
             uuid = projectWorkFlowStatusVo.getUuid();
             projectWorkflowMapper.updateProjectStatus(projectWorkFlowStatusVo);
-        }else{
+        } else {
             uuid = UuidUtil.getUuid();
             projectWorkFlowStatusVo.setUuid(uuid);
             projectWorkflowMapper.insertProjectWorkflowStatus(projectWorkFlowStatusVo);

@@ -9,7 +9,6 @@ import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.ProjectIterationVo;
 import codedriver.module.rdm.dto.ProjectPriorityVo;
 import codedriver.module.rdm.services.ProjectIterationService;
-import codedriver.module.rdm.services.ProjectPriorityService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 

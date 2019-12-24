@@ -2,8 +2,7 @@ package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
 import codedriver.module.rdm.dto.ProjectIterationVo;
-import codedriver.module.rdm.dto.ProjectPriorityVo;
-import codedriver.module.rdm.exception.projectpriority.ProjectPriorityExistException;
+import codedriver.module.rdm.exception.projectiteration.ProjectIterationException;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ProjectIterationServiceImpl implements ProjectIterationService{
+public class ProjectIterationServiceImpl implements ProjectIterationService {
 
     @Resource
     private ProjectIterationMapper projectIterationMapper;
@@ -31,14 +30,14 @@ public class ProjectIterationServiceImpl implements ProjectIterationService{
         String uuid;
 
         int count = projectIterationMapper.checkProjectIterationExist(projectIterationVo);
-        if(count >= 1){
-            throw new ProjectPriorityExistException(projectIterationVo.getName());
+        if (count >= 1) {
+            throw new ProjectIterationException(projectIterationVo.getName());
         }
 
-        if(StringUtils.isNotBlank(projectIterationVo.getUuid())){
+        if (StringUtils.isNotBlank(projectIterationVo.getUuid())) {
             uuid = projectIterationVo.getUuid();
             projectIterationMapper.updateProjectIteration(projectIterationVo);
-        }else{
+        } else {
             uuid = UuidUtil.getUuid();
             projectIterationVo.setUuid(uuid);
             projectIterationMapper.insertProjectIteration(projectIterationVo);
@@ -50,5 +49,10 @@ public class ProjectIterationServiceImpl implements ProjectIterationService{
     @Override
     public List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo) {
         return null;
+    }
+
+    @Override
+    public void associateTask(String projectUuid, String projectIterationUuid, List<String> taskList) {
+        projectIterationMapper.associateTask(projectUuid, projectIterationUuid, taskList);
     }
 }

@@ -31,7 +31,7 @@ public class TaskGetApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name="uuid", type= ApiParamType.STRING, isRequired = true)})
+    @Input({@Param(name = "uuid", type = ApiParamType.STRING, isRequired = true)})
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         return null;

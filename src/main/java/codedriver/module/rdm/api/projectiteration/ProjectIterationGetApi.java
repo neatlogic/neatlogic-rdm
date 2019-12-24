@@ -7,7 +7,6 @@ import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
-import codedriver.module.rdm.dao.mapper.ProjectPriorityMapper;
 import codedriver.module.rdm.dto.ProjectIterationVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
@@ -43,7 +42,7 @@ public class ProjectIterationGetApi extends ApiComponentBase {
 
     @Input({
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
-            @Param(name = "uuid", type = ApiParamType.STRING, desc = "优先级uuid", isRequired = true)
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "迭代uuid", isRequired = true)
     })
     @Output({
             @Param(name = "projectIterationVo", type = ApiParamType.JSONOBJECT, desc = "projectIterationVo", explode = ProjectIterationVo.class)

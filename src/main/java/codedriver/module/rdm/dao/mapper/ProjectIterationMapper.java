@@ -3,6 +3,8 @@ package codedriver.module.rdm.dao.mapper;
 import codedriver.module.rdm.dto.ProjectIterationVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @ClassName ProjectIterationMapper
  * @Description
@@ -19,4 +21,6 @@ public interface ProjectIterationMapper {
     void updateProjectIteration(ProjectIterationVo projectIterationVo);
 
     void insertProjectIteration(ProjectIterationVo projectIterationVo);
+
+    void associateTask(@Param("projectUuid")String projectUuid, @Param("projectIterationUuid")String projectIterationUuid, @Param("taskList")List<String> taskList);
 }
