@@ -18,7 +18,7 @@ public interface ProjectMapper {
 
     int updateProject(ProjectVo projectVo);
 
-    void updateProjectProcessAreaFieldSort(ProjectProcessAreaVo processAreaVo);
+    void updateProjectProcessArea(ProjectProcessAreaVo processAreaVo);
 
     void updteProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo);
 

@@ -10,12 +10,14 @@ import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
 import codedriver.module.rdm.dto.ProjectMemberVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @program: codedriver
  * @description:
  * @create: 2019-12-23 18:45
  **/
+@Service
 public class ProjectMemberSaveApi extends ApiComponentBase {
 
     @Autowired
@@ -23,12 +25,12 @@ public class ProjectMemberSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "";
+        return "module/rdm/projectmember/save";
     }
 
     @Override
     public String getName() {
-        return null;
+        return "项目成员保存接口";
     }
 
     @Override

@@ -6,6 +6,7 @@ import codedriver.module.rdm.dao.mapper.ProjectMapper;
 import codedriver.module.rdm.dao.mapper.TemplateMapper;
 import codedriver.module.rdm.dto.*;
 import codedriver.module.rdm.util.UuidUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,6 +98,22 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<ProjectProcessAreaVo> searchProjectProcessArea(ProjectProcessAreaVo processAreaVo) {
+        List<ProjectProcessAreaVo> areaVoList = projectMapper.getProjectProcessArea(processAreaVo);
+        for (ProjectProcessAreaVo areaVo : areaVoList){
+            String fieldSort = areaVo.getProcessAreaFieldSort();
+            JSONArray sortArray = JSON.parseArray(fieldSort);
+            List<ProjectProcessAreaFieldVo> fieldVoList = areaVo.getFieldList();
+            List<ProjectProcessAreaFieldVo> sortFieldList = new ArrayList<>();
+            for (int i = 0; i < sortArray.size(); i ++){
+                for (ProjectProcessAreaFieldVo fieldVo : fieldVoList){
+                    if (sortArray.getLong(i) == fieldVo.getId()){
+                        sortFieldList.add(fieldVo);
+                        break;
+                    }
+                }
+            }
+            areaVo.setFieldList(sortFieldList);
+        }
         return projectMapper.getProjectProcessArea(processAreaVo);
     }
 
@@ -121,11 +139,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         //更新过程域
         processAreaVo.setProcessAreaFieldSort(sortArray.toJSONString());
-        if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
-            projectMapper.updateProjectProcessAreaFieldSort(processAreaVo);
-        }else {
-            projectMapper.insertProjectProcessArea(processAreaVo);
-        }
+        projectMapper.updateProjectProcessArea(processAreaVo);
     }
 
     @Override
