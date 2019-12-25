@@ -6,6 +6,7 @@ import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
+import codedriver.module.rdm.dto.ProjectMemberVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,12 +38,17 @@ public class ProjectMemberDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param( name = "userId", type = ApiParamType.STRING, desc = "用户ID", isRequired = true)})
+    @Input({@Param( name = "userId", type = ApiParamType.STRING, desc = "用户ID", isRequired = true),
+            @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
     @Description(desc = "项目组成员删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String userId = jsonObj.getString("userId");
-        memberMapper.deleteProjectMemberByUserId(userId);
+        String projectUuid = jsonObj.getString("projectUuid");
+        ProjectMemberVo memberVo = new ProjectMemberVo();
+        memberVo.setUserId(userId);
+        memberVo.setProjectUuid(projectUuid);
+        memberMapper.deleteProjectMember(memberVo);
         return new JSONObject();
     }
 }

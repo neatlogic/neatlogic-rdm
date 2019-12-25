@@ -53,11 +53,11 @@
         LEFT JOIN `rdm_project_field` b ON a.project_uuid = b.project_uuid AND a.process_area_uuid = b.process_area_uuid
         <where>
             <if test="projectUuid != null">
-                a.`project_uuid` = #{projectUuid}
+              and  a.`project_uuid` = #{projectUuid}
             </if>
 
             <if test="processAreaUuid != null">
-                a.`processAreaUuid` = #{processAreaUuid}
+             and   a.`process_area_uuid` = #{processAreaUuid}
             </if>
         </where>
     </select>
@@ -156,7 +156,8 @@
         `field_type`,
         `config`,
         `is_system`,
-        `is_show`
+        `is_show`,
+        `is_required`
         ) VALUES (
         #{projectUuid},
         #{processAreaUuid},
@@ -166,7 +167,8 @@
         #{fieldType},
         #{config},
         #{isSystem},
-        #{isShow}
+        #{isShow},
+        #{isRequired}
         )
     </insert>
 
@@ -175,7 +177,7 @@
             select LAST_INSERT_ID() as id
         </selectKey>
         INSERT INTO
-        `rdm_project_process_area_tempate`(
+        `rdm_project_process_area_template`(
         `process_area_uuid`,
         `project_uuid`,
         `content`
@@ -197,10 +199,11 @@
         WHERE `uuid` = #{uuid}
     </update>
 
-    <update id="updateProjectProcessAreaFieldSort" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo">
+    <update id="updateProjectProcessArea" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo">
         UPDATE `rdm_project_process_area`
         SET
-        `process_area_field_sort` = #{processAreaFieldSort}
+        `process_area_field_sort` = #{processAreaFieldSort},
+        `is_enable` = #{isEnable}
         WHERE id = #{id}
     </update>
 
@@ -211,8 +214,12 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateProjectProcessAreaFiled" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+    <update id="updateProjectProcessAreaFieldConfig" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
         UPDATE `rdm_project_field` SET `config` = #{config} WHERE field_uuid = #{fieldUuid}
+    </update>
+
+    <update id="updateProjectProcessAreaFieldRequired" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+        UPDATE `rdm_project_field` SET `is_required` = #{isRequired} WHERE field_uuid = #{fieldUuid}
     </update>
 
     <delete id="deleteProject" >

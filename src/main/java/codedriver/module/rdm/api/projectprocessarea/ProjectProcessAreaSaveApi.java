@@ -48,6 +48,7 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
             @Param(name = "processAreaName", type = ApiParamType.STRING, desc = "过程域名称", isRequired = true),
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
+            @Param(name = "isEnable", type = ApiParamType.INTEGER, desc = "是否可见，1表示可见，0表示不可见", isRequired = true),
             @Param(name = "processAreaFieldList", explode = ProjectProcessAreaFieldVo[].class)})
     @Description( desc = "保存项目过程域接口")
     @Override
@@ -56,6 +57,7 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
         areaVo.setProjectUuid(jsonObj.getString("projectUuid"));
         areaVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
         areaVo.setProcessAreaName(jsonObj.getString("processAreaName"));
+        areaVo.setIsEnable(jsonObj.getInteger("isEnable"));
         if (jsonObj.containsKey("id")){
             areaVo.setId(jsonObj.getLong("id"));
         }
@@ -72,7 +74,12 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
             fieldVo.setFieldType(fieldObj.getString("fieldType"));
             fieldVo.setConfig(fieldObj.getString("config"));
             fieldVo.setIsSystem(fieldObj.getInteger("isSystem"));
-            fieldVo.setProjectUuid(fieldObj.getString("projectUuid"));
+            fieldVo.setIsRequired(fieldObj.getInteger("isRequired"));
+            fieldVo.setIsShow(fieldObj.getInteger("isShow"));
+            if (fieldObj.containsKey("fieldUuid")){
+                fieldVo.setFieldUuid(fieldObj.getString("fieldUuid"));
+            }
+            fieldVo.setProjectUuid(jsonObj.getString("projectUuid"));
             fieldVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
             fieldVoList.add(fieldVo);
         }
@@ -80,6 +87,4 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
         projectService.saveProjectProcessArea(areaVo);
         return new JSONObject();
     }
-
-
 }

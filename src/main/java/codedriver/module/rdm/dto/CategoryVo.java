@@ -57,6 +57,21 @@ public class CategoryVo {
      * 项目uuid
      */
     private String projectUuid;
+    
+    /** 
+    * @Description: 是否有效 
+    * @Param:  
+    * @return:   
+    */ 
+    private int isActive;
+
+    public int getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
+    }
 
     public Long getId() {
         return id;

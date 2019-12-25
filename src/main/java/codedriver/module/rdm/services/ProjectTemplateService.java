@@ -24,5 +24,5 @@ public interface ProjectTemplateService {
 
     void deleteTemplate(String templateUuid);
 
-    void saveTemplateProcessAreaField(TemplateProcessAreaFieldVo fieldVo);
+    void saveTemplateProcessAreaFieldConfig(TemplateProcessAreaFieldVo fieldVo);
 }

@@ -30,6 +30,17 @@ public class TemplateProcessAreaFieldVo {
     @EntityField(name = "是否为系统属性", type = ApiParamType.INTEGER)
     private int isSystem;
 
+    @EntityField(name = "是否必填", type = ApiParamType.INTEGER)
+    private int isRequired;
+
+    public int getIsRequired() {
+        return isRequired;
+    }
+
+    public void setIsRequired(int isRequired) {
+        this.isRequired = isRequired;
+    }
+
     public Long getId() {
         return id;
     }

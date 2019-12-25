@@ -1,21 +1,55 @@
 package codedriver.module.rdm.dto;
 
+import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.restful.annotation.EntityField;
+import codedriver.framework.restful.core.ApiComponent;
+
 /**
  * @program: codedriver
  * @description:
  * @create: 2019-12-19 14:38
  **/
 public class ProjectProcessAreaFieldVo {
+    @EntityField( name = "主键ID", type = ApiParamType.LONG)
     private Long id;
+
+    @EntityField(name = "项目uuid", type = ApiParamType.STRING)
     private String projectUuid;
+
+    @EntityField(name = "过程域uuid", type = ApiParamType.STRING)
     private String processAreaUuid;
+
+    @EntityField(name = "属性展示名称", type = ApiParamType.STRING)
     private String fieldName;
+
+    @EntityField(name = "属性值名称", type = ApiParamType.STRING)
     private String field;
+
+    @EntityField(name = "属性uuid", type = ApiParamType.STRING)
     private String fieldUuid;
+
+    @EntityField(name = "控件类型", type = ApiParamType.STRING)
     private String fieldType;
+
+    @EntityField(name = "属性配置", type = ApiParamType.JSONOBJECT)
     private String config;
+
+    @EntityField(name = "是否为系统属性", type = ApiParamType.STRING)
     private int isSystem;
+
+    @EntityField(name = "是否展示", type = ApiParamType.INTEGER)
     private int isShow;
+
+    @EntityField(name = "是否必填", type = ApiParamType.INTEGER)
+    private int isRequired;
+
+    public int getIsRequired() {
+        return isRequired;
+    }
+
+    public void setIsRequired(int isRequired) {
+        this.isRequired = isRequired;
+    }
 
     public Long getId() {
         return id;

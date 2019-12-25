@@ -49,7 +49,7 @@
         WHERE `id` = #{id}
     </update>
 
-    <delete id="deleteProjectMemberByUserId" parameterType="java.lang.String">
-        DELETE FROM `rdm_project_member` WHERE `user_id` = #{userId}
+    <delete id="deleteProjectMember" parameterType="codedriver.module.rdm.dto.ProjectMemberVo">
+        DELETE FROM `rdm_project_member` WHERE `user_id` = #{userId} AND `project_uuid` = #{projectUuid}
     </delete>
 </mapper>

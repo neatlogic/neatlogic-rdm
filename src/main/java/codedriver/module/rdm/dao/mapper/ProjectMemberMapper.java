@@ -12,5 +12,5 @@ public interface ProjectMemberMapper {
 
     void updateProjectMember(ProjectMemberVo memberVo);
 
-    void deleteProjectMemberByUserId(String userId);
+    void deleteProjectMember(ProjectMemberVo memberVo);
 }

@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,19 +51,28 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
         fieldParam.setProcessAreaUuid(processAreaVo.getProcessAreaUuid());
         templateMapper.deleteTemplateProCustomField(fieldParam);
         List<TemplateProcessAreaFieldVo> fieldVoList = processAreaVo.getProcessAreaFieldVoList();
+        List<TemplateProcessAreaFieldVo> systemFieldList = new ArrayList<>();
         JSONArray sortArray = new JSONArray();
         //只加自定义属性
         for (TemplateProcessAreaFieldVo fieldVo : fieldVoList){
-            fieldVo.setFieldUuid(UuidUtil.getUuid());
             if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
                 if (fieldVo.getIsSystem() != 1){
+                    fieldVo.setFieldUuid(UuidUtil.getUuid());
                     templateMapper.insertTemplateProcessAreaField(fieldVo);
+                }else {
+                    systemFieldList.add(fieldVo);
                 }
             }else {
+                fieldVo.setFieldUuid(UuidUtil.getUuid());
                 templateMapper.insertTemplateProcessAreaField(fieldVo);
             }
             sortArray.add(fieldVo.getId());
         }
+
+        for (TemplateProcessAreaFieldVo fieldVo : systemFieldList){
+            templateMapper.updateTemplateProcessAreaFieldRequired(fieldVo);
+        }
+
         //更新模板过程域
         processAreaVo.setProcessAreaFieldSort(sortArray.toJSONString());
         if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
@@ -102,8 +113,8 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
     }
 
     @Override
-    public void saveTemplateProcessAreaField(TemplateProcessAreaFieldVo fieldVo) {
-        templateMapper.updateTemplateProcessAreaField(fieldVo);
+    public void saveTemplateProcessAreaFieldConfig(TemplateProcessAreaFieldVo fieldVo) {
+        templateMapper.updateTemplateProcessAreaFieldConfig(fieldVo);
     }
 
     @Override

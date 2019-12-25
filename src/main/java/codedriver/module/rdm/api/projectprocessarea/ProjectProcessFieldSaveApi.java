@@ -48,7 +48,7 @@ public class ProjectProcessFieldSaveApi extends ApiComponentBase {
         ProjectProcessAreaFieldVo fieldVo = new ProjectProcessAreaFieldVo();
         fieldVo.setFieldUuid(fieldUuid);
         fieldVo.setConfig(configObj.toJSONString());
-        projectService.saveProjectProcessField(fieldVo);
+        projectService.saveProjectProcessFieldConfig(fieldVo);
         return new JSONObject();
     }
 }

@@ -72,6 +72,10 @@ public class TemplateProcessSaveApi extends ApiComponentBase {
             fieldVo.setIsSystem(processAreaField.getInteger("isSystem"));
             fieldVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
             fieldVo.setTemplateUuid(jsonObj.getString("templateUuid"));
+            fieldVo.setIsRequired(processAreaField.getInteger("isRequired"));
+            if (processAreaField.containsKey("fieldUuid")){
+                fieldVo.setFieldUuid(processAreaField.getString("fieldUuid"));
+            }
             fieldVoList.add(fieldVo);
         }
         processAreaVo.setProcessAreaFieldVoList(fieldVoList);
