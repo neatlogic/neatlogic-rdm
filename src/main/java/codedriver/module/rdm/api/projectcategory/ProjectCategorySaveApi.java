@@ -70,6 +70,7 @@ public class ProjectCategorySaveApi extends ApiComponentBase {
             categoryMapper.updateProjectCategoryByUuid(category);
         }else {
             category.setUuid(UuidUtil.getUuid());
+            category.setIsActive(1);
             categoryMapper.insertProjectCategory(category);
         }
         JSONObject returnObj = new JSONObject();

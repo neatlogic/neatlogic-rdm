@@ -11,20 +11,19 @@
         `name`,
         `description`
         FROM `rdm_category`
-        <where>
-            <if test="uuid != null and uuid != ''">
-                AND `uuid` = #{uuid}
-            </if>
-            <if test="projectUuid != null and projectUuid != ''">
-                AND `project_uuid` = #{projectUuid}
-            </if>
-            <if test="processAreaUuid != null and processAreaUuid != ''">
-                AND `process_area_uuid` = #{processAreaUuid}
-            </if>
-            <if test="parentUuid != null and parentUuid != ''">
-                AND `parent_uuid` = #{parentUuid}
-            </if>
-        </where>
+        WHERE `is_active` = 1
+        <if test="uuid != null and uuid != ''">
+            AND `uuid` = #{uuid}
+        </if>
+        <if test="projectUuid != null and projectUuid != ''">
+            AND `project_uuid` = #{projectUuid}
+        </if>
+        <if test="processAreaUuid != null and processAreaUuid != ''">
+            AND `process_area_uuid` = #{processAreaUuid}
+        </if>
+        <if test="parentUuid != null and parentUuid != ''">
+            AND `parent_uuid` = #{parentUuid}
+        </if>
     </select>
 
 
@@ -46,18 +45,20 @@
         `uuid`,
         `parent_uuid`,
         `name`,
-        `description`
+        `description`,
+        `is_active`
         ) VALUES (
         #{projectUuid},
         #{processAreaUuid},
         #{uuid},
         #{parentUuid},
         #{name},
-        #{description}
+        #{description},
+        #{isActive}
         )
     </insert>
 
     <delete id="deleteProjectCategoryByUuid" parameterType="java.lang.String">
-        DELETE FROM `rdm_category` WHERE `uuid` = #{uuid}
+        UPDATE `rdm_category` SET `is_active` = 0 WHERE `uuid` = #{uuid}
     </delete>
 </mapper>
