@@ -55,18 +55,18 @@ public class SystemFieldSearchApi extends ApiComponentBase {
 
         //test
         List<FieldVo> fieldVoList = new ArrayList<FieldVo>(){{
-            add(new FieldVo("name", "名称", "77941ed7405d4ecf9617f4c59ed5eef2", 5, "", 1));
-            add(new FieldVo("statusName", "状态", "15bf75fee7c3415c88db5efb31b66755", 4, "", 2));
-            add(new FieldVo("priorityName", "优先级", "d06b08e3420a47a79470dc140eb9736f", 4, "", 3));
-            add(new FieldVo("createUser", "创建人", "b17475f97ee9472fa57f817f90a55bd3", 5, "", 4));
-            add(new FieldVo("createTime", "创建时间", "de50b4b946c34f5ab0c9844ca503d72d", 3, "", 5));
-            add(new FieldVo("processUser", "处理人", "70a1ee7ba73d4ff496d06c5099a60d27", 7, "", 6));
-            add(new FieldVo("startTime", "开始时间", "bdfe8acb69734b0bb7a8781ca59886e9", 3, "", 7));
-            add(new FieldVo("endTime", "截至时间", "10c62e2569234199a95fac6713cccbe3", 3, "", 8));
-            add(new FieldVo("iterationName", "迭代", "cbc54be59a494e508ab181191a5f3ba4", 4, "", 9));
-            add(new FieldVo("categoryName", "分类", "1cc7765ad13745bc90fc3d2d96abc0db", 4, "", 10));
-            add(new FieldVo("updateUser", "更新人", "d4afcda53aef477db79116181f961c9f", 5, "", 11));
-            add(new FieldVo("updateTime", "更新时间", "893798cdf7c64caea90595599b7fee28", 3, "", 12));
+            add(new FieldVo("name", "名称", "77941ed7405d4ecf9617f4c59ed5eef2", "5", "", 1));
+            add(new FieldVo("statusName", "状态", "15bf75fee7c3415c88db5efb31b66755", "4", "", 2));
+            add(new FieldVo("priorityName", "优先级", "d06b08e3420a47a79470dc140eb9736f", "4", "", 3));
+            add(new FieldVo("createUser", "创建人", "b17475f97ee9472fa57f817f90a55bd3", "5", "", 4));
+            add(new FieldVo("createTime", "创建时间", "de50b4b946c34f5ab0c9844ca503d72d", "3", "", 5));
+            add(new FieldVo("processUser", "处理人", "70a1ee7ba73d4ff496d06c5099a60d27", "7", "", 6));
+            add(new FieldVo("startTime", "开始时间", "bdfe8acb69734b0bb7a8781ca59886e9", "3", "", 7));
+            add(new FieldVo("endTime", "截至时间", "10c62e2569234199a95fac6713cccbe3", "3", "", 8));
+            add(new FieldVo("iterationName", "迭代", "cbc54be59a494e508ab181191a5f3ba4", "4", "", 9));
+            add(new FieldVo("categoryName", "分类", "1cc7765ad13745bc90fc3d2d96abc0db", "4," ,"", 10));
+            add(new FieldVo("updateUser", "更新人", "d4afcda53aef477db79116181f961c9f", "5", "", 11));
+            add(new FieldVo("updateTime", "更新时间", "893798cdf7c64caea90595599b7fee28", "3", "", 12));
         }};
 
 

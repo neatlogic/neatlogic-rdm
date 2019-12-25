@@ -53,7 +53,7 @@ public class FieldVo {
     /**
      * 属性类型(数字)
      */
-    private Integer type;
+    private String type;
 
     /**
      * 属性类型名称
@@ -80,17 +80,29 @@ public class FieldVo {
      */
     private Integer sort;
 
+    private String value;
+
+
     public FieldVo(){
 
     }
 
-    public FieldVo(String _field, String _name, String _uuid, Integer _type, String _config, Integer _sort){
+    public FieldVo(String _field, String _name, String _uuid, String _type, String _config, Integer _sort){
         this.field = _field;
         this.name = _name;
         this.uuid = _uuid;
         this.type = _type;
         this.config = _config;
         this.sort = _sort;
+    }
+
+    public FieldVo(FieldVo field) {
+        setName(field.getName());
+        setField(field.getField());
+        setUuid(field.getUuid());
+        setType(field.getType());
+        setValue(field.getValue());
+        setConfig(field.getConfig());
     }
 
     public Long getId() {
@@ -149,20 +161,12 @@ public class FieldVo {
         this.description = description;
     }
 
-    public Integer getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(String type) {
         this.type = type;
-    }
-
-    public String getTypeName() {
-        return FieldType.getNameById(this.type);
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
     }
 
     public String getConfig() {
@@ -203,5 +207,13 @@ public class FieldVo {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

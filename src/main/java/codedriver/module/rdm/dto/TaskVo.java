@@ -28,19 +28,9 @@ public class TaskVo {
     private String name;
 
     /**
-     * 任务描述id
-     */
-    private Long descriptionId;
-
-    /**
      * 任务描述
      */
     private String description;
-
-    /**
-     * 任务id
-     */
-    private Long projectId;
 
     /**
      * 项目uuid
@@ -55,17 +45,12 @@ public class TaskVo {
     /**
      * 迭代id
      */
-    private Long iterationId;
+    private String iterationUuid;
 
     /**
      * 迭代名称
      */
     private String iterationName;
-
-    /**
-     * 过程域id
-     */
-    private Long processAreaId;
 
     /**
      * 过程域uuid
@@ -78,14 +63,9 @@ public class TaskVo {
     private String processAreaName;
 
     /**
-     * 父任务Id
+     * 父任务Uuid
      */
-    private Long parentId;
-
-    /**
-     * 状态id
-     */
-    private Long statusId;
+    private String parentUuid;
 
     /**
      * 状态uuid
@@ -98,14 +78,10 @@ public class TaskVo {
     private String statusName;
 
     /**
-     * 优先级id
-     */
-    private Long priorityId;
-
-    /**
      * 优先级uuid
      */
     private String priorityUuid;
+
 
     /**
      * 优先级名称
@@ -113,9 +89,19 @@ public class TaskVo {
     private String priorityName;
 
     /**
+     * 类别Uuid
+     */
+    private String categoryUuid;
+
+    /**
+     * 类别名称
+     */
+    private String categoryName;
+
+    /**
      * 处理人id集合
      */
-    private String processAccountIdList;
+    private List<String> processAccountIdList;
 
     /**
      * 处理人集合
@@ -194,22 +180,6 @@ public class TaskVo {
         this.description = description;
     }
 
-    public Long getDescriptionId() {
-        return descriptionId;
-    }
-
-    public void setDescriptionId(Long descriptionId) {
-        this.descriptionId = descriptionId;
-    }
-
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
     public String getProjectUuid() {
         return projectUuid;
     }
@@ -226,13 +196,6 @@ public class TaskVo {
         this.projectName = projectName;
     }
 
-    public Long getIterationId() {
-        return iterationId;
-    }
-
-    public void setIterationId(Long iterationId) {
-        this.iterationId = iterationId;
-    }
 
     public String getIterationName() {
         return iterationName;
@@ -240,14 +203,6 @@ public class TaskVo {
 
     public void setIterationName(String iterationName) {
         this.iterationName = iterationName;
-    }
-
-    public Long getProcessAreaId() {
-        return processAreaId;
-    }
-
-    public void setProcessAreaId(Long processAreaId) {
-        this.processAreaId = processAreaId;
     }
 
     public String getProcessAreaUuid() {
@@ -266,22 +221,6 @@ public class TaskVo {
         this.processAreaName = processAreaName;
     }
 
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
-
-    public Long getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(Long statusId) {
-        this.statusId = statusId;
-    }
-
     public String getStatusUuid() {
         return statusUuid;
     }
@@ -296,14 +235,6 @@ public class TaskVo {
 
     public void setStatusName(String statusName) {
         this.statusName = statusName;
-    }
-
-    public Long getPriorityId() {
-        return priorityId;
-    }
-
-    public void setPriorityId(Long priorityId) {
-        this.priorityId = priorityId;
     }
 
     public String getPriorityUuid() {
@@ -322,11 +253,11 @@ public class TaskVo {
         this.priorityName = priorityName;
     }
 
-    public String getProcessAccountIdList() {
+    public List<String> getProcessAccountIdList() {
         return processAccountIdList;
     }
 
-    public void setProcessAccountIdList(String processAccountIdList) {
+    public void setProcessAccountIdList(List<String> processAccountIdList) {
         this.processAccountIdList = processAccountIdList;
     }
 
@@ -400,5 +331,37 @@ public class TaskVo {
 
     public void setTaskFieldList(List<FieldVo> taskFieldList) {
         this.taskFieldList = taskFieldList;
+    }
+
+    public String getIterationUuid() {
+        return iterationUuid;
+    }
+
+    public void setIterationUuid(String iterationUuid) {
+        this.iterationUuid = iterationUuid;
+    }
+
+    public String getParentUuid() {
+        return parentUuid;
+    }
+
+    public void setParentUuid(String parentUuid) {
+        this.parentUuid = parentUuid;
+    }
+
+    public String getCategoryUuid() {
+        return categoryUuid;
+    }
+
+    public void setCategoryUuid(String categoryUuid) {
+        this.categoryUuid = categoryUuid;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

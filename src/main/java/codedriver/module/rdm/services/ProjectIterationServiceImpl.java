@@ -2,7 +2,7 @@ package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
 import codedriver.module.rdm.dto.ProjectIterationVo;
-import codedriver.module.rdm.exception.projectiteration.ProjectIterationException;
+import codedriver.module.rdm.exception.projectiteration.ProjectIterationExistException;
 import codedriver.module.rdm.util.UuidUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ public class ProjectIterationServiceImpl implements ProjectIterationService {
 
         int count = projectIterationMapper.checkProjectIterationExist(projectIterationVo);
         if (count >= 1) {
-            throw new ProjectIterationException(projectIterationVo.getName());
+            throw new ProjectIterationExistException(projectIterationVo.getName());
         }
 
         if (StringUtils.isNotBlank(projectIterationVo.getUuid())) {
@@ -48,7 +48,8 @@ public class ProjectIterationServiceImpl implements ProjectIterationService {
 
     @Override
     public List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo) {
-        return null;
+        return projectIterationMapper.searchProjectIteration(projectIterationVo);
+
     }
 
     @Override

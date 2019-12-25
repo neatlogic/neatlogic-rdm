@@ -79,7 +79,7 @@ public class ProcessAreaSaveApi extends ApiComponentBase {
                 String field = fieldJson.getString("field");
                 String fieldName = fieldJson.getString("name");
                 String fieldUuid = fieldJson.getString("uuid");
-                Integer fieldType= fieldJson.getInteger("type");
+                String fieldType= fieldJson.getString("type");
                 String config = fieldJson.getString("config");
                 Integer sort= fieldJson.getInteger("sort");
                 fieldList.add(new FieldVo(field, fieldName, fieldUuid, fieldType, config, sort));

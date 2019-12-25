@@ -23,4 +23,6 @@ public interface ProjectIterationMapper {
     void insertProjectIteration(ProjectIterationVo projectIterationVo);
 
     void associateTask(@Param("projectUuid")String projectUuid, @Param("projectIterationUuid")String projectIterationUuid, @Param("taskList")List<String> taskList);
+
+    List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo);
 }
