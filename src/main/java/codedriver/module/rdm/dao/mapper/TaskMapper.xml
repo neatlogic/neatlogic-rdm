@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.TaskMapper">
+
+    <insert id="insertTask" parameterType="codedriver.module.rdm.dto.TaskVo">
+        INSERT INTO `rdm_task` (
+          `name`,
+          `uuid`,
+          `project_uuid`,
+          `iteration_uuid`,
+          `process_area_uuid`,
+          `status_uuid`,
+          `parent_uuid`,
+          `priority_uuid`,
+          `category_uuid`,
+          `start_time`,
+          `end_time`,
+          `create_user`,
+          `create_time`
+        )
+        VALUES
+          (
+            #{name},
+            #{uuid},
+            #{projectUuid},
+            #{iterationUuid},
+            #{processAreaUuid},
+            #{statusUuid},
+            #{parentUuid},
+            #{priorityUuid},
+            #{categoryUuid},
+            #{startTime},
+            #{endTime},
+            #{createUser},
+            NOW()
+          )
+    </insert>
+
+    <insert id="insertTaskProcessAccount">
+        INSERT INTO `rdm_task_process_account` (
+            `task_uuid`,
+            `user_id`
+         )
+         VALUES
+         (
+          #{taskUuid},
+          #{userId}
+         )
+    </insert>
+
+    <insert id="insertTaskField">
+        INSERT INTO `rdm_task_field` (
+          `task_uuid`,
+          `field`,
+          `field_name`,
+          `field_uuid`,
+          `field_type`,
+          `field_value`
+        )
+        VALUES
+          (
+            #{taskUuid},
+            #{field},
+            #{name},
+            #{uuid},
+            #{type},
+            #{value}
+          )
+    </insert>
+
+    <insert id="insertTaskDescription">
+        INSERT INTO `rdm_task_descpiption` (
+            `task_uuid`,
+            `description`
+        )
+        VALUES
+          (
+            #{taskUuid},
+            #{description}
+          )
+    </insert>
+</mapper>
