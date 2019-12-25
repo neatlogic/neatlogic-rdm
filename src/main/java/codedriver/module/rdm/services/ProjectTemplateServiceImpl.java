@@ -55,14 +55,15 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
         JSONArray sortArray = new JSONArray();
         //只加自定义属性
         for (TemplateProcessAreaFieldVo fieldVo : fieldVoList){
-            fieldVo.setFieldUuid(UuidUtil.getUuid());
             if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
                 if (fieldVo.getIsSystem() != 1){
+                    fieldVo.setFieldUuid(UuidUtil.getUuid());
                     templateMapper.insertTemplateProcessAreaField(fieldVo);
                 }else {
                     systemFieldList.add(fieldVo);
                 }
             }else {
+                fieldVo.setFieldUuid(UuidUtil.getUuid());
                 templateMapper.insertTemplateProcessAreaField(fieldVo);
             }
             sortArray.add(fieldVo.getId());
