@@ -86,4 +86,16 @@ public class TaskServiceImpl implements TaskService {
         return uuid;
     }
 
+    @Override
+    public void associateTask(List<TaskAssociateVo> associateList) {
+        for(TaskAssociateVo taskAssociateVo : associateList){
+            taskMapper.replaceAssociate(taskAssociateVo);
+        }
+    }
+
+    @Override
+    public void deleteAssociate(String taskUuid, String targetUuid) {
+        taskMapper.deleteAssociate(taskUuid, targetUuid);
+    }
+
 }
