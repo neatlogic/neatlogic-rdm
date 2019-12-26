@@ -50,6 +50,15 @@
     </update>
 
     <delete id="deleteProjectMember" parameterType="codedriver.module.rdm.dto.ProjectMemberVo">
-        DELETE FROM `rdm_project_member` WHERE `user_id` = #{userId} AND `project_uuid` = #{projectUuid}
+        DELETE
+        FROM `rdm_project_member`
+        <where>
+            <if test="userId !=null and userId != ''">
+                AND `user_id` = #{userId}
+            </if>
+            <if test="projectUuid != null and projectUuid != ''">
+                AND `project_uuid` = #{projectUuid}
+            </if>
+        </where>
     </delete>
 </mapper>
