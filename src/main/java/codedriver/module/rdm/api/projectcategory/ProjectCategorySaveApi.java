@@ -46,8 +46,8 @@ public class ProjectCategorySaveApi extends ApiComponentBase {
              @Param( name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
              @Param( name = "uuid", type = ApiParamType.STRING, desc = "主键uuid"),
              @Param( name = "parentUuid", type = ApiParamType.STRING, desc = "父级类别uuid"),
-             @Param( name = "name", type = ApiParamType.STRING, desc = "类别名称", isRequired = true),
-             @Param( name = "description", type = ApiParamType.STRING, desc = "类别描述")})
+             @Param( name = "name", type = ApiParamType.STRING, desc = "类别名称", isRequired = true, xss = true),
+             @Param( name = "description", type = ApiParamType.STRING, desc = "类别描述", xss = true)})
     @Output({ @Param( name = "uuid", type = ApiParamType.STRING, desc = "类别主键uuid")})
     @Description(desc = "项目类别保存接口")
     @Override
