@@ -1,6 +1,7 @@
 package codedriver.module.rdm.dao.mapper;
 
 import codedriver.module.rdm.dto.TaskFieldVo;
+import codedriver.module.rdm.dto.TaskFileVo;
 import codedriver.module.rdm.dto.TaskVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +19,8 @@ public interface TaskMapper {
     void insertTaskField(TaskFieldVo taskField);
 
     void insertTaskDescription(@Param("taskUuid") String taskUuid, @Param("description")String description);
+
+    void insertTaskFile(TaskFileVo taskFileVo);
+
+    void deleteTaskFile(TaskFileVo taskFileVo);
 }
