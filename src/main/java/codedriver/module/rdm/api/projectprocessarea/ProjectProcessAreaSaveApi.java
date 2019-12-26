@@ -45,7 +45,6 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
     }
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "数据主键ID"),
-            @Param(name = "processAreaName", type = ApiParamType.STRING, desc = "过程域名称", isRequired = true),
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
             @Param(name = "isEnable", type = ApiParamType.INTEGER, desc = "是否可见，1表示可见，0表示不可见", isRequired = true),
@@ -56,7 +55,6 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
         ProjectProcessAreaVo areaVo = new ProjectProcessAreaVo();
         areaVo.setProjectUuid(jsonObj.getString("projectUuid"));
         areaVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
-        areaVo.setProcessAreaName(jsonObj.getString("processAreaName"));
         areaVo.setIsEnable(jsonObj.getInteger("isEnable"));
         if (jsonObj.containsKey("id")){
             areaVo.setId(jsonObj.getLong("id"));

@@ -148,6 +148,8 @@ public class TaskVo {
      */
     private List<FieldVo> taskFieldList;
 
+    private List<TaskFileVo> taskFileVoList;
+
     public Long getId() {
         return id;
     }
@@ -363,5 +365,13 @@ public class TaskVo {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public List<TaskFileVo> getTaskFileVoList() {
+        return taskFileVoList;
+    }
+
+    public void setTaskFileVoList(List<TaskFileVo> taskFileVoList) {
+        this.taskFileVoList = taskFileVoList;
     }
 }
