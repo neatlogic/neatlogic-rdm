@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,19 +84,26 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.insertTaskDescription(uuid, taskVo.getDescription());
         }
 
+        if (taskVo.getTaskFileVoList() != null && taskVo.getTaskFileVoList().size() > 0){
+            for (TaskFileVo fileVo : taskVo.getTaskFileVoList()){
+                fileVo.setTaskUuid(uuid);
+                taskMapper.insertTaskFile(fileVo);
+            }
+        }
         return uuid;
     }
 
     @Override
-    public void associateTask(List<TaskAssociateVo> associateList) {
-        for(TaskAssociateVo taskAssociateVo : associateList){
-            taskMapper.replaceAssociate(taskAssociateVo);
+    public List<Long> saveTaskFile(TaskVo taskVo) {
+        String uuid = taskVo.getUuid();
+        TaskFileVo param = new TaskFileVo();
+        param.setTaskUuid(uuid);
+        taskMapper.deleteTaskFile(param);
+        List<Long> idList = new ArrayList<>();
+        for (TaskFileVo fileVo : taskVo.getTaskFileVoList()){
+            taskMapper.insertTaskFile(fileVo);
+            idList.add(fileVo.getId());
         }
+        return idList;
     }
-
-    @Override
-    public void deleteAssociate(String taskUuid, String targetUuid) {
-        taskMapper.deleteAssociate(taskUuid, targetUuid);
-    }
-
 }

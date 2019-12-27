@@ -80,52 +80,32 @@
           )
     </insert>
 
-    <insert id="replaceAssociate" parameterType="codedriver.module.rdm.dto.TaskAssociateVo">
-        REPLACE INTO `rdm_task_associated` (
-            `task_uuid`,
-            `target_task_uuid`,
-            `type`
+    <insert id="insertTaskFile" parameterType="codedriver.module.rdm.dto.TaskFileVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO `rdm_task_file` (
+        `task_uuid`,
+        `file_uuid`,
+        `create_user`,
+        `create_time`
+        ) VALUES (
+        #{taskUuid},
+        #{fileUuid},
+        #{createUser},
+        NOW()
         )
-        VALUES
-          (
-            #{taskUuid},
-            #{targetTaskUuid},
-            #{type}
-          )
     </insert>
 
-    <insert id="insertTaskComment" parameterType="codedriver.module.rdm.dto.TaskCommentVo">
-        INSERT INTO `rdm_task_comment` (
-            `task_uuid`,
-            `comment`,
-            `create_time`,
-            `create_user`
-        )
-        VALUES
-          (
-            #{taskUuid},
-            #{comment},
-            NOW(),
-            #{createUser}
-          )
-    </insert>
-
-    <update id="updateTaskComment" parameterType="codedriver.module.rdm.dto.TaskCommentVo">
-        UPDATE  `rdm_task_comment`
-        SET
-            `comment` = #{comment},
-            `update_time` = NOW(),
-            `update_user` = #{updateUser}
-        WHERE task_uuid = #{taskUuid}
-    </update>
-
-    <delete id="deleteAssociate">
-        DELETE FROM `rdm_task_associated`
-        WHERE `task_uuid` = #{taskUuid}
-        AND `target_task_uuid`=#{targetTaskUuid}
-    </delete>
-
-    <delete id="deleteComment">
-        DELETE FROM `rdm_task_comment` WHERE id = #{value}
+    <delete id="deleteTaskFile" parameterType="codedriver.module.rdm.dto.TaskFileVo">
+        DELETE FROM `rdm_task_file`
+        <where>
+            <if test="taskUuid != null and taskUuid != ''">
+                AND `task_uuid` = #{taskUuid}
+            </if>
+            <if test="fileUuid != null and fileUuid != ''">
+                AND `file_uuid` = #{fileUuid}
+            </if>
+        </where>
     </delete>
 </mapper>

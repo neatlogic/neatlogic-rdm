@@ -47,8 +47,7 @@ public class ProjectProcessAreaSearchApi extends ApiComponentBase {
 
     @Input({ @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
              @Param( name = "processAreaUuid", type = ApiParamType.STRING, desc = "模板uuid")})
-    @Output({ @Param(explode = ProjectProcessAreaVo.class),
-              @Param(name = "processAreaList", explode = ProjectProcessAreaVo[].class, desc = "项目过程域集合")})
+    @Output({ @Param(name = "processAreaList", explode = ProjectProcessAreaVo[].class, desc = "项目过程域集合")})
     @Description(desc = "查询项目过程域接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

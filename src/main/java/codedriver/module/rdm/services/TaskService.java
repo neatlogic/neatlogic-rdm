@@ -1,6 +1,7 @@
 package codedriver.module.rdm.services;
 
-import codedriver.module.rdm.dto.TaskAssociateVo;
+import codedriver.module.rdm.dto.TaskFieldVo;
+import codedriver.module.rdm.dto.TaskFileVo;
 import codedriver.module.rdm.dto.TaskVo;
 
 import java.util.List;
@@ -14,7 +15,5 @@ import java.util.List;
 public interface TaskService {
     String saveTask(TaskVo taskVo);
 
-    void associateTask(List<TaskAssociateVo> associateList);
-
-    void deleteAssociate(String taskUuid, String targetUuid);
+    List<Long> saveTaskFile(TaskVo taskVo);
 }

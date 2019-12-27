@@ -1,11 +1,13 @@
 package codedriver.module.rdm.api.task;
 
 import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.FieldVo;
 import codedriver.module.rdm.dto.TaskFieldVo;
+import codedriver.module.rdm.dto.TaskFileVo;
 import codedriver.module.rdm.dto.TaskVo;
 import codedriver.module.rdm.services.TaskService;
 import com.alibaba.fastjson.JSONArray;
@@ -84,7 +86,18 @@ public class TaskSaveApi extends ApiComponentBase {
         String description = jsonObj.getString("description");
         JSONArray processAccountIdArray = jsonObj.getJSONArray("processAccountIdList");
         JSONArray fieldArray = jsonObj.getJSONArray("customFieldList");
-
+        JSONArray fileUuidArray = jsonObj.getJSONArray("attachmentList");
+        if (fileUuidArray != null && fileUuidArray.size() > 0){
+            List<TaskFileVo> taskFileVoList = new ArrayList<>();
+            for (int i = 0; i < fileUuidArray.size(); i++){
+                String fileUuid = fileUuidArray.getString(i);
+                TaskFileVo fileVo = new TaskFileVo();
+                fileVo.setFileUuid(fileUuid);
+                fileVo.setCreateUser(UserContext.get().getUserId());
+                taskFileVoList.add(fileVo);
+            }
+            taskVo.setTaskFileVoList(taskFileVoList);
+        }
         taskVo.setName(name);
         taskVo.setProjectUuid(projectUuid);
         taskVo.setProcessAreaUuid(processAreaUuid);
@@ -126,7 +139,6 @@ public class TaskSaveApi extends ApiComponentBase {
             }
             taskVo.setTaskFieldList(fieldList);
         }
-
         String uuid = taskService.saveTask(taskVo);
         result.put("uuid",uuid);
         return result;
