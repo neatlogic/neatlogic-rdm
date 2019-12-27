@@ -1,6 +1,8 @@
 package codedriver.module.rdm.dto;
 
+import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.dto.UserVo;
+import codedriver.framework.restful.annotation.EntityField;
 
 import java.util.List;
 
@@ -12,95 +14,60 @@ import java.util.List;
  **/
 public class TaskVo {
 
-    /**
-     * 自增主键
-     */
     private Long id;
 
-    /**
-     * 任务uuid
-     */
+    @EntityField(name = "任务uuid",type = ApiParamType.STRING)
     private String uuid;
 
-    /**
-     * 任务名称
-     */
+    @EntityField(name = "任务名称",type = ApiParamType.STRING)
     private String name;
 
-    /**
-     * 任务描述
-     */
+    @EntityField(name = "任务描述",type = ApiParamType.STRING)
     private String description;
 
-    /**
-     * 项目uuid
-     */
+    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
     private String projectUuid;
 
-    /**
-     * 项目名称
-     */
+    @EntityField(name = "项目名称",type = ApiParamType.STRING)
     private String projectName;
 
-    /**
-     * 迭代id
-     */
+    @EntityField(name = "迭代id",type = ApiParamType.STRING)
     private String iterationUuid;
 
-    /**
-     * 迭代名称
-     */
+    @EntityField(name = "迭代名称",type = ApiParamType.STRING)
     private String iterationName;
 
-    /**
-     * 过程域uuid
-     */
+    @EntityField(name = "迭代名称",type = ApiParamType.STRING)
     private String processAreaUuid;
 
-    /**
-     * 过程域名称
-     */
+    @EntityField(name = "过程域名称",type = ApiParamType.STRING)
     private String processAreaName;
 
-    /**
-     * 父任务Uuid
-     */
+    @EntityField(name = "父任务Uuid",type = ApiParamType.STRING)
     private String parentUuid;
 
-    /**
-     * 状态uuid
-     */
+    @EntityField(name = "状态uuid",type = ApiParamType.STRING)
     private String statusUuid;
 
-    /**
-     * 状态名称
-     */
+    @EntityField(name = "状态名称",type = ApiParamType.STRING)
     private String statusName;
 
-    /**
-     * 优先级uuid
-     */
+    @EntityField(name = "优先级uuid",type = ApiParamType.STRING)
     private String priorityUuid;
 
-
-    /**
-     * 优先级名称
-     */
+    @EntityField(name = "优先级名称",type = ApiParamType.STRING)
     private String priorityName;
 
-    /**
-     * 类别Uuid
-     */
+    @EntityField(name = "优先级颜色",type = ApiParamType.STRING)
+    private String priorityColor;
+
+    @EntityField(name = "类别Uuid",type = ApiParamType.STRING)
     private String categoryUuid;
 
-    /**
-     * 类别名称
-     */
+    @EntityField(name = "类别名称",type = ApiParamType.STRING)
     private String categoryName;
 
-    /**
-     * 处理人id集合
-     */
+    @EntityField(name = "处理人id集合",type = ApiParamType.JSONARRAY)
     private List<String> processAccountIdList;
 
     /**
@@ -108,34 +75,22 @@ public class TaskVo {
      */
     public List<UserVo> processAccountList;
 
-    /**
-     * 开始时间
-     */
+    @EntityField(name = "开始时间",type = ApiParamType.STRING)
     private String startTime;
 
-    /**
-     * 结束时间
-     */
+    @EntityField(name = "结束时间",type = ApiParamType.STRING)
     private String endTime;
 
-    /**
-     * 创建人
-     */
+    @EntityField(name = "创建人",type = ApiParamType.STRING)
     private String createUser;
 
-    /**
-     * 创建时间
-     */
+    @EntityField(name = "创建时间",type = ApiParamType.STRING)
     private String createTime;
 
-    /**
-     * 修改人
-     */
+    @EntityField(name = "修改人",type = ApiParamType.STRING)
     private String updateUser;
 
-    /**
-     * 修改时间
-     */
+    @EntityField(name = "修改时间",type = ApiParamType.STRING)
     private String updateTime;
 
     /**
@@ -143,11 +98,10 @@ public class TaskVo {
      */
     private String customFields;
 
-    /**
-     * 任务属性集合
-     */
+    @EntityField(name = "任务属性集合",type = ApiParamType.JSONARRAY)
     private List<FieldVo> taskFieldList;
 
+    @EntityField(name = "任务附件集合",type = ApiParamType.JSONARRAY)
     private List<TaskFileVo> taskFileVoList;
 
     public Long getId() {
@@ -373,5 +327,13 @@ public class TaskVo {
 
     public void setTaskFileVoList(List<TaskFileVo> taskFileVoList) {
         this.taskFileVoList = taskFileVoList;
+    }
+
+    public String getPriorityColor() {
+        return priorityColor;
+    }
+
+    public void setPriorityColor(String priorityColor) {
+        this.priorityColor = priorityColor;
     }
 }
