@@ -4,12 +4,16 @@ package codedriver.module.rdm.dto;
  * @ClassName TaskAssociateVo
  * @Description
  * @Auther
- * @Date 2019/12/25 14:41
+ * @Date 2019/12/26 14:41
  **/
 public class TaskAssociateVo {
     private String taskUuid;
     private String targetTaskUuid;
     private String type;
+
+    public TaskAssociateVo(){
+
+    }
 
     public TaskAssociateVo(String _taskUuid, String _targetTaskUuid, String _type) {
         this.taskUuid = _taskUuid;

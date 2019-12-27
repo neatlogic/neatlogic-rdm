@@ -2,10 +2,15 @@ package codedriver.module.rdm.api.task;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.module.rdm.dto.TaskVo;
+import codedriver.module.rdm.services.TaskService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @ClassName TaskSearchApi
@@ -15,6 +20,9 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 public class TaskGetApi extends ApiComponentBase {
+
+    @Resource
+    private TaskService taskService;
 
     @Override
     public String getToken() {
@@ -31,10 +39,17 @@ public class TaskGetApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "uuid", type = ApiParamType.STRING, isRequired = true)})
+    @Input({
+            @Param(name = "uuid", type = ApiParamType.STRING, isRequired = true)
+    })
+    @Output({
+            @Param(name = "taskVo", type = ApiParamType.JSONOBJECT, explode = TaskVo.class)
+    })
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-        return null;
+        String uuid = jsonObj.getString("uuid");
+        TaskVo taskVo = taskService.getTaskInfoByUuid(uuid);
+        return taskVo;
     }
 
 }
