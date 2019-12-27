@@ -87,17 +87,7 @@ public class TaskSaveApi extends ApiComponentBase {
         JSONArray processAccountIdArray = jsonObj.getJSONArray("processAccountIdList");
         JSONArray fieldArray = jsonObj.getJSONArray("customFieldList");
         JSONArray fileUuidArray = jsonObj.getJSONArray("attachmentList");
-        if (fileUuidArray != null && fileUuidArray.size() > 0){
-            List<TaskFileVo> taskFileVoList = new ArrayList<>();
-            for (int i = 0; i < fileUuidArray.size(); i++){
-                String fileUuid = fileUuidArray.getString(i);
-                TaskFileVo fileVo = new TaskFileVo();
-                fileVo.setFileUuid(fileUuid);
-                fileVo.setCreateUser(UserContext.get().getUserId());
-                taskFileVoList.add(fileVo);
-            }
-            taskVo.setTaskFileVoList(taskFileVoList);
-        }
+
         taskVo.setName(name);
         taskVo.setProjectUuid(projectUuid);
         taskVo.setProcessAreaUuid(processAreaUuid);
@@ -111,6 +101,7 @@ public class TaskSaveApi extends ApiComponentBase {
         taskVo.setEndTime(endTime);
         taskVo.setDescription(description);
 
+        //处理人
         if(processAccountIdArray != null && processAccountIdArray.size() > 0 ){
             List<String> accountIdList = new ArrayList<>();
             for(Object account : processAccountIdArray){
@@ -119,6 +110,7 @@ public class TaskSaveApi extends ApiComponentBase {
             taskVo.setProcessAccountIdList(accountIdList);
         }
 
+        //自定义属性
         if(fieldArray != null && fieldArray.size() > 0 ){
             List<FieldVo> fieldList = new ArrayList<>();
             for(Object field : fieldArray){
@@ -139,6 +131,20 @@ public class TaskSaveApi extends ApiComponentBase {
             }
             taskVo.setTaskFieldList(fieldList);
         }
+
+        //附件
+        if (fileUuidArray != null && fileUuidArray.size() > 0){
+            List<TaskFileVo> taskFileVoList = new ArrayList<>();
+            for (int i = 0; i < fileUuidArray.size(); i++){
+                String fileUuid = fileUuidArray.getString(i);
+                TaskFileVo fileVo = new TaskFileVo();
+                fileVo.setFileUuid(fileUuid);
+                fileVo.setCreateUser(UserContext.get().getUserId());
+                taskFileVoList.add(fileVo);
+            }
+            taskVo.setTaskFileVoList(taskFileVoList);
+        }
+
         String uuid = taskService.saveTask(taskVo);
         result.put("uuid",uuid);
         return result;
