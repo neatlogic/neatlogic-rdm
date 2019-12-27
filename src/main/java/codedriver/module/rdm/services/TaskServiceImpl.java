@@ -90,7 +90,20 @@ public class TaskServiceImpl implements TaskService {
                 taskMapper.insertTaskFile(fileVo);
             }
         }
+
         return uuid;
+    }
+
+    @Override
+    public void associateTask(List<TaskAssociateVo> associateList) {
+        for(TaskAssociateVo taskAssociateVo : associateList){
+            taskMapper.replaceAssociate(taskAssociateVo);
+        }
+    }
+
+    @Override
+    public void deleteAssociate(String taskUuid, String targetUuid) {
+        taskMapper.deleteAssociate(taskUuid, targetUuid);
     }
 
     @Override
@@ -105,5 +118,10 @@ public class TaskServiceImpl implements TaskService {
             idList.add(fileVo.getId());
         }
         return idList;
+    }
+
+    @Override
+    public TaskVo getTaskInfoByUuid(String uuid) {
+        return taskMapper.getTaskByUuid(uuid);
     }
 }

@@ -53,7 +53,12 @@ public class ProjectIterationServiceImpl implements ProjectIterationService {
     }
 
     @Override
-    public void associateTask(String projectUuid, String projectIterationUuid, List<String> taskList) {
-        projectIterationMapper.associateTask(projectUuid, projectIterationUuid, taskList);
+    public void associateTask(String projectUuid, String projectIterationUuid, String action, List<String> taskList) {
+        if(action.equals("add")){
+            projectIterationMapper.associateTask(projectUuid, projectIterationUuid, taskList);
+        }else if(action.equals("delete")){
+            projectIterationMapper.associateTask(projectUuid, null, taskList);
+        }
+
     }
 }
