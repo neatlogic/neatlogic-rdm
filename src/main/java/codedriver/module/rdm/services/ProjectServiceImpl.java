@@ -3,11 +3,14 @@ package codedriver.module.rdm.services;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.common.util.PageUtil;
 import codedriver.module.rdm.dao.mapper.ProjectMapper;
+import codedriver.module.rdm.dao.mapper.ProjectPriorityMapper;
+import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
 import codedriver.module.rdm.dao.mapper.TemplateMapper;
 import codedriver.module.rdm.dto.*;
 import codedriver.module.rdm.util.UuidUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName ProjectServiceImpl
@@ -32,6 +37,12 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private TemplateMapper templateMapper;
+
+    @Autowired
+    private ProjectPriorityMapper priorityMapper;
+
+    @Autowired
+    private ProjectWorkflowMapper workflowMapper;
 
     @Override
     public List<ProjectVo> searchProject(ProjectVo projectVo) {
@@ -81,6 +92,8 @@ public class ProjectServiceImpl implements ProjectService {
                 fieldVo.setIsRequired(areaFieldVo.getIsRequired());
                 fieldVo.setProcessAreaUuid(areaFieldVo.getProcessAreaUuid());
                 fieldVo.setProjectUuid(projectUuid);
+                insertProjectPriority(fieldVo);
+                insertProjectStatus(fieldVo);
                 projectMapper.insertProjectProcessAreaField(fieldVo);
             }
         }
@@ -165,5 +178,67 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public void saveProjectProcessFieldConfig(ProjectProcessAreaFieldVo fieldVo) {
         projectMapper.updateProjectProcessAreaFieldConfig(fieldVo);
+    }
+
+    public void insertProjectPriority(ProjectProcessAreaFieldVo fieldVo){
+        if(fieldVo.getField().equals("priority")){
+            String config = fieldVo.getConfig();
+            if (JSONArray.isValid(config)){
+                JSONArray configArray = JSONArray.parseArray(config);
+                for (int i = 0 ; i < configArray.size() ; i++){
+                    JSONObject priority = configArray.getJSONObject(i);
+                    ProjectPriorityVo priorityVo = new ProjectPriorityVo();
+                    priorityVo.setColor(priority.getString("color"));
+                    priorityVo.setName(priority.getString("name"));
+                    if (priority.getBooleanValue("isdefault")){
+                        priorityVo.setIsDefault(1);
+                    }else {
+                        priorityVo.setIsDefault(0);
+                    }
+                    priorityVo.setProcessAreaUuid(fieldVo.getProcessAreaUuid());
+                    priorityVo.setProjectUuid(fieldVo.getProjectUuid());
+                    priorityVo.setUuid(UuidUtil.getUuid());
+                    priorityVo.setCreateUser(UserContext.get().getUserId());
+                    priorityVo.setUpdateUser(UserContext.get().getUserId());
+                    priorityMapper.insertProjectPriority(priorityVo);
+                }
+            }
+        }
+    }
+
+    public void insertProjectStatus(ProjectProcessAreaFieldVo fieldVo){
+        if (fieldVo.getField().equals("status")){
+            String config = fieldVo.getConfig();
+            if (JSONArray.isValid(config)){
+                Map<String, JSONArray> transferArray = new HashMap<>();
+                Map<String, String> statusMap = new HashMap<>();
+                JSONArray statusArray = JSONArray.parseArray(config);
+                //录入流转状态
+                for (int i = 0; i < statusArray.size(); i++){
+                    JSONObject obj = statusArray.getJSONObject(i);
+                    ProjectWorkFlowStatusVo statusVo = new ProjectWorkFlowStatusVo();
+                    statusVo.setProcessAreaUuid(fieldVo.getProcessAreaUuid());
+                    statusVo.setProjectUuid(fieldVo.getProjectUuid());
+                    statusVo.setUuid(UuidUtil.getUuid());
+                    statusVo.setName(obj.getString("name"));
+                    statusVo.setColor(obj.getString("color"));
+                    statusVo.setType(obj.getString("type"));
+                    workflowMapper.insertProjectWorkflowStatus(statusVo);
+                    JSONArray array = obj.getJSONArray("to");
+                    statusMap.put(statusVo.getName(), statusVo.getUuid());
+                    transferArray.put(statusVo.getUuid(), array);
+                }
+                //录入流转关联状态
+                for (Map.Entry<String, JSONArray> entry : transferArray.entrySet()){
+                    String uuid = entry.getKey();
+                    JSONArray transfers = entry.getValue();
+                    for (int i = 0; i < transfers.size(); i++){
+                        String transferUuid =statusMap.get(transfers.getString(i));
+                        workflowMapper.insertProjectWorkflowStatusTransfer(uuid, transferUuid);
+                    }
+                }
+
+            }
+        }
     }
 }

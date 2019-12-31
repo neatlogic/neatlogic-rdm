@@ -7,6 +7,7 @@
         <id property="processAreaUuid" column="processAreaUuid" />
         <result property="name" column="name" />
         <result property="type" column="type" />
+        <result property="color" column="color"/>
         <collection property="transferTo" ofType="java.lang.String">
             <result column="transferTo" />
         </collection>
@@ -17,6 +18,7 @@
         a.uuid,
         a.`name`,
         a.type,
+        a.`color`,
         a.`project_uuid` AS projectUuid,
         a.`process_area_uuid` AS processAreaUuid,
         b.`transfer_to` AS transferTo
@@ -46,7 +48,8 @@
         a.`name`,
         a.type,
         a.`project_uuid` AS projectUuid,
-        a.`process_area_uuid` AS processAreaUuid
+        a.`process_area_uuid` AS processAreaUuid,
+        a.`color`
         FROM `rdm_project_status` a
         WHERE a.`project_uuid` = #{projectUuid}
         AND a.`process_area_uuid` = #{processAreaUuid}
@@ -71,7 +74,8 @@
           `process_area_uuid`,
           `uuid`,
           `name`,
-          `type`
+          `type`,
+          `color`
         )
         VALUES
           (
@@ -79,7 +83,8 @@
             #{processAreaUuid},
             #{uuid},
             #{name},
-            #{type}
+            #{type},
+            #{color}
           )
     </insert>
 
@@ -102,7 +107,8 @@
           `name` = #{name},
           `type` = #{type},
           `update_time` = NOW(),
-          `update_user` = #{updateUser}
+          `update_user` = #{updateUser},
+          `color` = #{color}
         WHERE `uuid` = #{uuid}
     </update>
 

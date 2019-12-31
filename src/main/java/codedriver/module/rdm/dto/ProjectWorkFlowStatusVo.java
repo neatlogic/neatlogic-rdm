@@ -55,6 +55,9 @@ public class ProjectWorkFlowStatusVo {
     @EntityField(name = "状态转移列表",type = ApiParamType.JSONARRAY)
     public List<String> transferTo;
 
+    @EntityField(name = "颜色", type = ApiParamType.STRING)
+    private String color;
+
     /**
      * 创建人
      */
@@ -161,5 +164,13 @@ public class ProjectWorkFlowStatusVo {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
