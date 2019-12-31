@@ -75,6 +75,17 @@ public class ProjectPriorityVo extends BasePageVo {
     @EntityField(name = "修改时间",type = ApiParamType.STRING)
     private String updateTime;
 
+    @EntityField(name = "是否默认值", type = ApiParamType.INTEGER)
+    private int isDefault;
+
+    public int getIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
+    }
+
     public Long getId() {
         return id;
     }
