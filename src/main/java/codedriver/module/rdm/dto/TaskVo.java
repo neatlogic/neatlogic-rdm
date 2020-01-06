@@ -104,6 +104,8 @@ public class TaskVo {
     @EntityField(name = "任务附件集合",type = ApiParamType.JSONARRAY)
     private List<TaskFileVo> taskFileVoList;
 
+    private List<TaskAssociateVo> associatedTaskList;
+
     public Long getId() {
         return id;
     }
@@ -335,5 +337,13 @@ public class TaskVo {
 
     public void setPriorityColor(String priorityColor) {
         this.priorityColor = priorityColor;
+    }
+
+    public List<TaskAssociateVo> getAssociatedTaskList() {
+        return associatedTaskList;
+    }
+
+    public void setAssociatedTaskList(List<TaskAssociateVo> associatedTaskList) {
+        this.associatedTaskList = associatedTaskList;
     }
 }
