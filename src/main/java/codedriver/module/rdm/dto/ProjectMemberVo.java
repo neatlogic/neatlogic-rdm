@@ -14,6 +14,7 @@ public class ProjectMemberVo {
     private UserVo userVo;
     private int isLeader;
     private Long groupId;
+    private ProjectGroupVo groupVo;
 
     public Long getId() {
         return id;
@@ -61,5 +62,13 @@ public class ProjectMemberVo {
 
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
+    }
+
+    public ProjectGroupVo getGroupVo() {
+        return groupVo;
+    }
+
+    public void setGroupVo(ProjectGroupVo groupVo) {
+        this.groupVo = groupVo;
     }
 }

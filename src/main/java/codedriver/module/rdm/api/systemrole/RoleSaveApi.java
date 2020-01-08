@@ -1,14 +1,12 @@
-package codedriver.module.rdm.api.role;
+package codedriver.module.rdm.api.systemrole;
 
 import codedriver.framework.apiparam.core.ApiParamType;
-import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.RoleVo;
 import codedriver.module.rdm.services.RoleService;
-import codedriver.module.rdm.services.RoleServiceImpl;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

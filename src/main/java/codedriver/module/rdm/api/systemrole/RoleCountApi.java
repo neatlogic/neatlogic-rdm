@@ -1,4 +1,4 @@
-package codedriver.module.rdm.api.role;
+package codedriver.module.rdm.api.systemrole;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;

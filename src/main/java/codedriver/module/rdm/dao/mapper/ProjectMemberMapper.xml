@@ -13,6 +13,12 @@
             <result property="phone" column="phone"/>
             <result property="password" column="password"/>
         </association>
+        <association property="groupVo" javaType="codedriver.module.rdm.dto.ProjectGroupVo">
+            <id property="id" column="groupId"/>
+            <result property="name" column="groupName"/>
+            <result property="projectUuid" column="projectUuid"/>
+            <result property="role" column="role"/>
+        </association>
     </resultMap>
 
     <select id="getProjectMemberList" parameterType="java.lang.String" resultMap="memberMap">
@@ -20,13 +26,39 @@
         a.`id`,
         a.`project_uuid` as `projectUuid`,
         a.`user_id` as `userId`,
+        a.`group_id` as `groupId`,
         a.`is_leader` as `isLeader`,
         b.`user_name` as `userName`,
         b.`email`,
         b.`phone`,
-        b.`password`
-        FROM `rdm_project_member` a LEFT JOIN `user` b ON a.`user_id` = b.`user_id`
+        b.`password`,
+        c.`name` as `groupName`,
+        c.`role`
+        FROM `rdm_project_member` a
+        LEFT JOIN `user` b ON a.`user_id` = b.`user_id`
+        LEFT JOIN `rdm_project_group` c ON a.`group_id` = c.`id`
         WHERE b.`is_active` = 1 AND a.`project_uuid` = #{projectUuid}
+    </select>
+
+    <select id="getProjectMember" resultMap="memberMap">
+        SELECT
+        a.`id`,
+        a.`project_uuid` as `projectUuid`,
+        a.`user_id` as `userId`,
+        a.`group_id` as `groupId`,
+        a.`is_leader` as `isLeader`,
+        b.`user_name` as `userName`,
+        b.`email`,
+        b.`phone`,
+        b.`password`,
+        c.`name` as `groupName`,
+        c.`role`
+        FROM `rdm_project_member` a
+        LEFT JOIN `user` b ON a.`user_id` = b.`user_id`
+        LEFT JOIN `rdm_project_group` c ON a.`group_id` = c.`id`
+        WHERE b.`is_active` = 1
+        AND a.`project_uuid` = #{projectUuid}
+        AND a.`user_id` = #{userId}
     </select>
 
     <insert id="insertProjectMember" parameterType="codedriver.module.rdm.dto.ProjectMemberVo">
