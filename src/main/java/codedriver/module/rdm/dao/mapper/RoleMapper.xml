@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.RoleMapper">
+    <insert id="insertRole" parameterType="codedriver.module.rdm.dto.RoleVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO
+        `rdm_role`(
+        `user_id`,
+        `role`
+        )VALUES (
+        #{userId},
+        #{role}
+        )
+    </insert>
+
+    <select id="selectRoleCount" parameterType="codedriver.module.rdm.dto.RoleVo">
+        SELECT
+        COUNT(id)
+        FROM `rdm_role`
+        <where>
+            <if test="userId != null and userId != ''">
+                `user_id` = #{userId}
+            </if>
+            <if test="role != null and role != ''">
+                `role` = #{role}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteRoleByUserId" >
+        DELETE FROM `rdm_role` WHERE `user_id` = #{userId}
+    </delete>
+</mapper>

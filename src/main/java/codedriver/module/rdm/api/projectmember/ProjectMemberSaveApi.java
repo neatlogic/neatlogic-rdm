@@ -40,7 +40,9 @@ public class ProjectMemberSaveApi extends ApiComponentBase {
     }
 
     @Input({ @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
-             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户id集合", isRequired = true)})
+             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户id集合", isRequired = true),
+             @Param(name = "isLeader", type = ApiParamType.INTEGER, desc = "是否为组长, 1:是,0:不是", isRequired = true),
+             @Param(name = "groupId", type = ApiParamType.LONG, desc = "成员组Id", isRequired = true)})
     @Output({ @Param(name = "idList", type = ApiParamType.JSONARRAY, desc = "主键ID集合")})
     @Description(desc = "项目成员保存接口")
     @Override
@@ -48,6 +50,8 @@ public class ProjectMemberSaveApi extends ApiComponentBase {
         JSONObject returnObj = new JSONObject();
         JSONArray idArray = new JSONArray();
         String projectUuid = jsonObj.getString("projectUuid");
+        int isLeader = jsonObj.getInteger("isLeader");
+        Long groupId = jsonObj.getLong("groupId");
         ProjectMemberVo member = new ProjectMemberVo();
         member.setProjectUuid(projectUuid);
         memberMapper.deleteProjectMember(member);
@@ -57,6 +61,8 @@ public class ProjectMemberSaveApi extends ApiComponentBase {
             ProjectMemberVo memberVo = new ProjectMemberVo();
             memberVo.setProjectUuid(projectUuid);
             memberVo.setUserId(userId);
+            memberVo.setIsLeader(isLeader);
+            memberVo.setGroupId(groupId);
             memberMapper.insertProjectMember(memberVo);
             idArray.add(memberVo.getId());
         }

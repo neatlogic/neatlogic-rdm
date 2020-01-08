@@ -5,6 +5,7 @@
         <id property="id" column="id"/>
         <result property="projectUuid" column="projectUuid"/>
         <result property="userId" column="userId"/>
+        <result property="isLeader" column="isLeader"/>
         <association property="userVo" javaType="codedriver.framework.dto.UserVo">
             <id property="userId" column="userId"/>
             <result property="userName" column="userName"/>
@@ -19,6 +20,7 @@
         a.`id`,
         a.`project_uuid` as `projectUuid`,
         a.`user_id` as `userId`,
+        a.`is_leader` as `isLeader`,
         b.`user_name` as `userName`,
         b.`email`,
         b.`phone`,
@@ -34,20 +36,16 @@
         INSERT INTO `rdm_project_member`
         (
         `project_uuid`,
-        `user_id`
+        `user_id`,
+        `is_leader`,
+        `group_id`
         ) VALUES (
         #{projectUuid},
-        #{userId}
+        #{userId},
+        #{isLeader},
+        #{groupId}
         )
     </insert>
-
-    <update id="updateProjectMember" parameterType="codedriver.module.rdm.dto.ProjectMemberVo">
-        UPDATE `rdm_project_member`
-        SET
-         `project_uuid` = #{projectUuid},
-        `user_id` = #{userId}
-        WHERE `id` = #{id}
-    </update>
 
     <delete id="deleteProjectMember" parameterType="codedriver.module.rdm.dto.ProjectMemberVo">
         DELETE
@@ -58,6 +56,9 @@
             </if>
             <if test="projectUuid != null and projectUuid != ''">
                 AND `project_uuid` = #{projectUuid}
+            </if>
+            <if test="groupId != null and groupId != 0L">
+                AND `group_id` = #{groupId}
             </if>
         </where>
     </delete>

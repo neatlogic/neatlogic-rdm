@@ -12,6 +12,8 @@ public class ProjectMemberVo {
     private String projectUuid;
     private String userId;
     private UserVo userVo;
+    private int isLeader;
+    private Long groupId;
 
     public Long getId() {
         return id;
@@ -43,5 +45,21 @@ public class ProjectMemberVo {
 
     public void setUserVo(UserVo userVo) {
         this.userVo = userVo;
+    }
+
+    public int getIsLeader() {
+        return isLeader;
+    }
+
+    public void setIsLeader(int isLeader) {
+        this.isLeader = isLeader;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 }

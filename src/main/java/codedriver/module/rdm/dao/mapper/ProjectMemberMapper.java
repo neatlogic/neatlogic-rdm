@@ -10,7 +10,5 @@ public interface ProjectMemberMapper {
 
     void insertProjectMember(ProjectMemberVo memberVo);
 
-    void updateProjectMember(ProjectMemberVo memberVo);
-
     void deleteProjectMember(ProjectMemberVo memberVo);
 }
