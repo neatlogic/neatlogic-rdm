@@ -2,10 +2,8 @@ package codedriver.module.rdm.services;
 
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.common.util.PageUtil;
-import codedriver.module.rdm.dao.mapper.ProjectMapper;
-import codedriver.module.rdm.dao.mapper.ProjectPriorityMapper;
-import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
-import codedriver.module.rdm.dao.mapper.TemplateMapper;
+import codedriver.module.rdm.constants.RoleType;
+import codedriver.module.rdm.dao.mapper.*;
 import codedriver.module.rdm.dto.*;
 import codedriver.module.rdm.util.UuidUtil;
 import com.alibaba.fastjson.JSON;
@@ -44,6 +42,12 @@ public class ProjectServiceImpl implements ProjectService {
     @Autowired
     private ProjectWorkflowMapper workflowMapper;
 
+    @Autowired
+    private ProjectGroupMapper groupMapper;
+
+    @Autowired
+    private ProjectMemberMapper memberMapper;
+
     @Override
     public List<ProjectVo> searchProject(ProjectVo projectVo) {
         if (projectVo.getNeedPage()) {
@@ -65,9 +69,15 @@ public class ProjectServiceImpl implements ProjectService {
             projectMapper.updateProject(projectVo);
         }
         copyTemplateData(projectVo.getTemplateUuid(), projectVo.getUuid());
+        saveProjectRole(projectVo.getUuid());
         return projectVo.getUuid();
     }
-
+    
+    /** 
+    * @Description: 拷贝模板配置 
+    * @Param: [templateUuid, projectUuid] 
+    * @return: void  
+    */ 
     public void copyTemplateData(String templateUuid, String projectUuid) {
         List<TemplateProcessAreaVo> processAreaVoList = templateMapper.getTemplateProcessAreaListByTemplateUuid(templateUuid);
         for (TemplateProcessAreaVo areaVo : processAreaVoList){
@@ -108,6 +118,25 @@ public class ProjectServiceImpl implements ProjectService {
                 projectMapper.insertProjectProcessAreaTemplate(projectTemplate);
             }
         }
+    }
+
+    /** 
+    * @Description: 保存项目初始化角色 
+    * @Param: [projectUuid] 
+    * @return: void  
+    */ 
+    public void saveProjectRole(String projectUuid){
+        ProjectGroupVo groupVo = new ProjectGroupVo();
+        groupVo.setProjectUuid(projectUuid);
+        groupVo.setName("项目管理员");
+        groupVo.setRole(RoleType.MANAGER.getValue());
+        groupMapper.insertProjectGroup(groupVo);
+        ProjectMemberVo memberVo = new ProjectMemberVo();
+        memberVo.setGroupId(groupVo.getId());
+        memberVo.setProjectUuid(projectUuid);
+        memberVo.setUserId(UserContext.get().getUserId());
+        memberVo.setIsLeader(0);
+        memberMapper.insertProjectMember(memberVo);
     }
 
     @Override

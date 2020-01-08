@@ -23,7 +23,7 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
 
     @Autowired
     private ProjectRoleMapper roleMapper;
-
+    
     @Autowired
     private ProjectMemberMapper memberMapper;
 
@@ -42,5 +42,22 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
     @Override
     public List<RoleActionVo> searchProjectRoleAction(Long groupId, String module) {
         return roleMapper.searchRoleActionByGroupIdAndModule(groupId, module);
+    }
+
+    /** 
+    * @Description: 项目Uuid, 操作名称，操作所属模块（过程域/知识库等） 
+    * @Param: [projectUuid, actionName, module] 
+    * @return: boolean  
+    */ 
+    @Override
+    public boolean checkUserActionRole(String projectUuid, String actionName, String module) {
+        ProjectMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
+        List<RoleActionVo> actionVoList = roleMapper.searchRoleActionByGroupIdAndModule(memberVo.getGroupId(), module);
+        for (RoleActionVo actionVo : actionVoList){
+            if (actionName.equals(actionVo.getActionVo().getName())){
+                return true;
+            }
+        }
+        return false;
     }
 }

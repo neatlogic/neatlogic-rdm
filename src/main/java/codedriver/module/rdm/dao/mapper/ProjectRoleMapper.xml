@@ -30,6 +30,10 @@
         WHERE a.`group_id` = #{groupId} AND b.`module` = #{module}
     </select>
 
+    <select id="checkRoleAction" resultType="java.lang.Integer">
+        SELECT
+    </select>
+
     <insert id="insertProjectRoleAction" parameterType="codedriver.module.rdm.dto.RoleActionVo">
         INSERT INTO `rdm_role_action`
         (
