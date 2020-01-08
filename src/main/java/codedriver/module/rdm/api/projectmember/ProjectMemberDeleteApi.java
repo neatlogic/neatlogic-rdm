@@ -38,16 +38,19 @@ public class ProjectMemberDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param( name = "userId", type = ApiParamType.STRING, desc = "用户ID", isRequired = true),
-            @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
+    @Input({@Param( name = "userId", type = ApiParamType.STRING, desc = "用户ID"),
+            @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid"),
+            @Param( name = "groupId", type = ApiParamType.LONG, desc = "成员组ID")})
     @Description(desc = "项目组成员删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String userId = jsonObj.getString("userId");
         String projectUuid = jsonObj.getString("projectUuid");
+        Long groupId = jsonObj.getLong("groupId");
         ProjectMemberVo memberVo = new ProjectMemberVo();
         memberVo.setUserId(userId);
         memberVo.setProjectUuid(projectUuid);
+        memberVo.setGroupId(groupId);
         memberMapper.deleteProjectMember(memberVo);
         return new JSONObject();
     }

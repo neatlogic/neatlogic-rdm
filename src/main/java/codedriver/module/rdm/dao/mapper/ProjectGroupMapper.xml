@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectGroupMapper">
+    <insert id="insertProjectGroup" parameterType="codedriver.module.rdm.dto.ProjectGroupVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
+        INSERT INTO
+         `rdm_project_group`
+         (
+        `id`,
+        `name`,
+        `project_uuid`,
+        `role`
+        ) VALUES (
+        #{id},
+        #{name},
+        #{projectUuid},
+        #{role}
+        )
+    </insert>
+
+    <update id="updateProjectGroup" parameterType="codedriver.module.rdm.dto.ProjectGroupVo">
+        UPDATE `rdm_project_group`
+        SET
+        `name` = #{name}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteProjectGroup" parameterType="codedriver.module.rdm.dto.ProjectGroupVo">
+        DELETE FROM `rdm_project_group`
+        <where>
+            <if test="projectUuid != null and projectUuid != ''">
+                project_uuid = #{projectUuid}
+            </if>
+            <if test="id != null and id != 0L">
+                id = #{id}
+            </if>
+        </where>
+    </delete>
+</mapper>

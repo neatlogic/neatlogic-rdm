@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectRoleMapper">
+    <resultMap id="RoleActionMap" type="codedriver.module.rdm.dto.RoleActionVo">
+        <id column="id" property="id"/>
+        <result column="groupId" property="groupId"/>
+        <result column="actionId" property="actionId"/>
+        <result column="createUser" property="createUser"/>
+        <result column="createTime" property="createTime"/>
+        <association property="actionVo" javaType="codedriver.module.rdm.dto.ActionVo">
+            <id column="actionId" property="id"/>
+            <result column="module" property="module"/>
+            <result column="name" property="name"/>
+            <result column="url" property="url"/>
+        </association>
+    </resultMap>
+    <select id="searchRoleActionByGroupIdAndModule" resultMap="RoleActionMap">
+        SELECT
+        a.`id`,
+        a.`group_id` as `groupId`,
+        a.`action_id` as `actionId`,
+        a.`create_user` as `createUser`,
+        a.`create_time` as `createTime`,
+        b.`id` as `actionId`,
+        b.`module`,
+        b.`name`,
+        b.`url`
+        FROM `rdm_role_action` a
+        LEFT JOIN `rdm_action` b ON a.`action_id` = b.`id`
+        WHERE a.`group_id` = #{groupId} AND b.`module` = #{module}
+    </select>
+
+    <select id="checkRoleAction" resultType="java.lang.Integer">
+        SELECT
+    </select>
+
+    <insert id="insertProjectRoleAction" parameterType="codedriver.module.rdm.dto.RoleActionVo">
+        INSERT INTO `rdm_role_action`
+        (
+        `group_id`,
+        `action_id`,
+        `create_user`,
+        `create_time`
+        ) VALUES (
+        #{groupId},
+        #{actionId},
+        #{createUser},
+        NOW()
+        )
+    </insert>
+
+    <delete id="deleteProjectRoleAction" parameterType="java.lang.Long">
+        DELETE `rdm_role_action` WHERE `group_id` = #{groupId}
+    </delete>
+</mapper>
