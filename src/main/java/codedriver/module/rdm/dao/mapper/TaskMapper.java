@@ -37,4 +37,8 @@ public interface TaskMapper {
     void deleteTaskFile(TaskFileVo taskFileVo);
 
     TaskVo getTaskByUuid(@Param("uuid") String uuid);
+
+    Integer getTaskAssociationCount(@Param("taskUuid")String taskUuid, @Param("targetTaskProcessAreaUuid")String targetTaskProcessAreaUuid);
+
+    String getTaskIterationCount(@Param("taskUuid")String taskUuid);
 }

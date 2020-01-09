@@ -1,17 +1,20 @@
 package codedriver.module.rdm.api.task;
 
 import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.asynchronization.threadlocal.TenantContext;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.FieldVo;
-import codedriver.module.rdm.dto.TaskFieldVo;
 import codedriver.module.rdm.dto.TaskFileVo;
 import codedriver.module.rdm.dto.TaskVo;
+import codedriver.module.rdm.event.core.Trigger;
+import codedriver.module.rdm.event.eventdefine.TaskSaveEvent;
 import codedriver.module.rdm.services.TaskService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +32,9 @@ public class TaskSaveApi extends ApiComponentBase {
 
     @Resource
     private TaskService taskService;
+
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public String getToken() {
@@ -147,6 +153,13 @@ public class TaskSaveApi extends ApiComponentBase {
 
         String uuid = taskService.saveTask(taskVo);
         result.put("uuid",uuid);
+
+        //方式 1 ： spring 事件监听
+//        applicationEventPublisher.publishEvent(new TaskSaveEvent( this, JSONObject.parseObject(JSONObject.toJSONString(taskVo)), tenantUuid));
+
+        //方式2 ： 事件触发
+        Trigger.trigger(new TaskSaveEvent(uuid,  JSONObject.parseObject(JSONObject.toJSONString(taskVo)),  taskVo.getProcessAreaUuid(),  "process_area"));
+
         return result;
     }
 
