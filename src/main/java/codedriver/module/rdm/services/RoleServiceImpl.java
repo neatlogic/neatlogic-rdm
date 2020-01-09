@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @program: codedriver
  * @description:
@@ -32,5 +34,10 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void deleteRoleByUserId(String userId) {
         roleMapper.deleteRoleByUserId(userId);
+    }
+
+    @Override
+    public List<RoleVo> searchRole(RoleVo roleVo) {
+        return roleMapper.searchRole(roleVo);
     }
 }
