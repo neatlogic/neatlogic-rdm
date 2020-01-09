@@ -6,6 +6,7 @@
         <result property="projectUuid" column="projectUuid"/>
         <result property="userId" column="userId"/>
         <result property="isLeader" column="isLeader"/>
+        <result property="groupId" column="groupId"/>
         <association property="userVo" javaType="codedriver.framework.dto.UserVo">
             <id property="userId" column="userId"/>
             <result property="userName" column="userName"/>

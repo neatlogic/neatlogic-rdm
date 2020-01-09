@@ -10,12 +10,14 @@ import codedriver.module.rdm.dto.ProjectGroupVo;
 import codedriver.module.rdm.services.ProjectGroupService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @program: codedriver
  * @description:
  * @create: 2020-01-06 16:06
  **/
+@Service
 public class ProjectGroupDeleteApi extends ApiComponentBase {
 
     @Autowired

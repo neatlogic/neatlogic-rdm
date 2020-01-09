@@ -15,7 +15,7 @@
         )
     </insert>
 
-    <select id="selectRoleCount" parameterType="codedriver.module.rdm.dto.RoleVo">
+    <select id="selectRoleCount" parameterType="codedriver.module.rdm.dto.RoleVo" resultType="java.lang.Integer">
         SELECT
         COUNT(id)
         FROM `rdm_role`

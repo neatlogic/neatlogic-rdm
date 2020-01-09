@@ -45,7 +45,7 @@ public class ProjectRoleActionSaveApi extends ApiComponentBase {
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         Long groupId = jsonObj.getLong("groupId");
-        JSONArray actionArray = jsonObj.getJSONArray("actionList");
+        JSONArray actionArray = jsonObj.getJSONArray("actionIdList");
         List<Long> actionList = new ArrayList<>();
         for (int i = 0 ; i < actionArray.size(); i++){
             actionList.add(actionArray.getLong(i));

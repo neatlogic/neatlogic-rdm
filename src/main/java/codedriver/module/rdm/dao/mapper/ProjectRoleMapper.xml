@@ -50,6 +50,6 @@
     </insert>
 
     <delete id="deleteProjectRoleAction" parameterType="java.lang.Long">
-        DELETE `rdm_role_action` WHERE `group_id` = #{groupId}
+        DELETE FROM `rdm_role_action` WHERE `group_id` = #{groupId}
     </delete>
 </mapper>
