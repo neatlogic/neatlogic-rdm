@@ -2,6 +2,8 @@ package codedriver.module.rdm.dao.mapper;
 
 import codedriver.module.rdm.dto.RoleVo;
 
+import java.util.List;
+
 /**
  * @program: codedriver
  * @description:
@@ -14,4 +16,6 @@ public interface RoleMapper {
     int selectRoleCount(RoleVo roleVo);
 
     int deleteRoleByUserId(String userId);
+
+    List<RoleVo> searchRole(RoleVo roleVo);
 }
