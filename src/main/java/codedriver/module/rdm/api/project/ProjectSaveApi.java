@@ -7,15 +7,11 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.constants.ProjectWorkflowStatusType;
 import codedriver.module.rdm.dto.ProjectVo;
 import codedriver.module.rdm.services.ProjectService;
-import codedriver.module.rdm.util.UuidUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.xml.bind.SchemaOutputResolver;
 
 /**
  * @ClassName ProjectSaveApi
@@ -45,15 +41,15 @@ public class ProjectSaveApi extends ApiComponentBase {
     }
 
     @Input({
-            @Param(name="name", type= ApiParamType.STRING, desc = "项目名称", isRequired = true, xss = true),
-            @Param(name="description", type= ApiParamType.STRING, desc = "项目描述", isRequired = true, xss = true),
+            @Param(name = "name", type = ApiParamType.STRING, desc = "项目名称", isRequired = true, xss = true),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "项目描述", isRequired = true, xss = true),
             @Param(name = "templateUuid", type = ApiParamType.STRING, desc = "模板uuid"),
-            @Param(name="status", type= ApiParamType.STRING, desc = "状态"),
-            @Param(name="uuid", type= ApiParamType.STRING, desc = "项目uuid")
+            @Param(name = "status", type = ApiParamType.STRING, desc = "状态"),
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "项目uuid")
     })
 
     @Output({
-            @Param(name="uuid", type= ApiParamType.STRING),
+            @Param(name = "uuid", type = ApiParamType.STRING),
     })
     @Description(desc = "保存项目接口")
     @Override
@@ -63,13 +59,13 @@ public class ProjectSaveApi extends ApiComponentBase {
         projectVo.setName(jsonObj.getString("name"));
         projectVo.setDescription(jsonObj.getString("description"));
         projectVo.setUpdateUser(UserContext.get().getUserId());
-        if (jsonObj.containsKey("uuid")){
+        if (jsonObj.containsKey("uuid")) {
             projectVo.setUuid(jsonObj.getString("uuid"));
         }
-        if (jsonObj.containsKey("status")){
+        if (jsonObj.containsKey("status")) {
             projectVo.setStatus(jsonObj.getString("status"));
         }
-        if (jsonObj.containsKey("templateUuid")){
+        if (jsonObj.containsKey("templateUuid")) {
             projectVo.setTemplateUuid(jsonObj.getString("templateUuid"));
 
         }

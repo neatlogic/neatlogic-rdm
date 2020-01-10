@@ -32,12 +32,12 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
     @Override
     public String saveTemplate(TemplateVo templateVo) {
         templateVo.setUpdateUser(UserContext.get().getUserId());
-        if (StringUtils.isBlank(templateVo.getUuid())){
+        if (StringUtils.isBlank(templateVo.getUuid())) {
             templateVo.setUuid(UuidUtil.getUuid());
             templateVo.setCreateUser(UserContext.get().getUserId());
             templateVo.setIsActive(1);
             templateMapper.insertTemplate(templateVo);
-        }else {
+        } else {
             templateMapper.updateTemplate(templateVo);
         }
         return templateVo.getUuid();
@@ -54,30 +54,30 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
         List<TemplateProcessAreaFieldVo> systemFieldList = new ArrayList<>();
         JSONArray sortArray = new JSONArray();
         //只加自定义属性
-        for (TemplateProcessAreaFieldVo fieldVo : fieldVoList){
-            if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
-                if (fieldVo.getIsSystem() != 1){
+        for (TemplateProcessAreaFieldVo fieldVo : fieldVoList) {
+            if (processAreaVo.getId() != null && processAreaVo.getId() != 0L) {
+                if (fieldVo.getIsSystem() != 1) {
                     fieldVo.setFieldUuid(UuidUtil.getUuid());
                     templateMapper.insertTemplateProcessAreaField(fieldVo);
-                }else {
+                } else {
                     systemFieldList.add(fieldVo);
                 }
-            }else {
+            } else {
                 fieldVo.setFieldUuid(UuidUtil.getUuid());
                 templateMapper.insertTemplateProcessAreaField(fieldVo);
             }
             sortArray.add(fieldVo.getId());
         }
 
-        for (TemplateProcessAreaFieldVo fieldVo : systemFieldList){
+        for (TemplateProcessAreaFieldVo fieldVo : systemFieldList) {
             templateMapper.updateTemplateProcessAreaFieldRequired(fieldVo);
         }
 
         //更新模板过程域
         processAreaVo.setProcessAreaFieldSort(sortArray.toJSONString());
-        if (processAreaVo.getId() != null && processAreaVo.getId() != 0L){
+        if (processAreaVo.getId() != null && processAreaVo.getId() != 0L) {
             templateMapper.updateTemplateProcessAreaFieldSort(processAreaVo);
-        }else {
+        } else {
             //新增过程域
             templateMapper.insertTemplateProcessArea(processAreaVo);
         }
@@ -119,7 +119,7 @@ public class ProjectTemplateServiceImpl implements ProjectTemplateService {
 
     @Override
     public void saveTemplateProcessAreaTemplate(TemplateProcessAreaTemplateVo processAreaTemplateVo) {
-        if (processAreaTemplateVo.getId() != null && processAreaTemplateVo.getId() != 0L){
+        if (processAreaTemplateVo.getId() != null && processAreaTemplateVo.getId() != 0L) {
             templateMapper.updateTemplateProcessTemplate(processAreaTemplateVo);
         } else {
             templateMapper.insertTemplateProcessTemplate(processAreaTemplateVo);

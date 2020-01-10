@@ -1,9 +1,5 @@
 package codedriver.module.rdm.dto;
 
-import codedriver.framework.apiparam.core.ApiParamType;
-import codedriver.framework.restful.annotation.EntityField;
-import com.alibaba.fastjson.JSONArray;
-
 import java.util.List;
 
 /**

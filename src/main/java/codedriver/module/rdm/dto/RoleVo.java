@@ -10,16 +10,16 @@ import codedriver.framework.restful.annotation.EntityField;
  * @create: 2020-01-06 10:19
  **/
 public class RoleVo extends BasePageVo {
-    @EntityField( name = "主键ID", type = ApiParamType.LONG)
+    @EntityField(name = "主键ID", type = ApiParamType.LONG)
     private Long id;
 
-    @EntityField( name = "用户ID", type = ApiParamType.STRING)
+    @EntityField(name = "用户ID", type = ApiParamType.STRING)
     private String userId;
 
-    @EntityField( name = "用户名称", type = ApiParamType.STRING)
+    @EntityField(name = "用户名称", type = ApiParamType.STRING)
     private String userName;
 
-    @EntityField( name = "用户角色", type = ApiParamType.STRING)
+    @EntityField(name = "用户角色", type = ApiParamType.STRING)
     private String role;
 
     public Long getId() {

@@ -12,5 +12,5 @@ public interface ProjectRoleMapper {
 
     public List<RoleActionVo> searchRoleActionByGroupIdAndModule(@Param("groupId") Long groupId, @Param("module") String module);
 
-    public int checkRoleAction(@Param("projectUuid") String projectUuid, @Param("userId") String userId, @Param("module")String module);
+    public int checkRoleAction(@Param("projectUuid") String projectUuid, @Param("userId") String userId, @Param("module") String module);
 }

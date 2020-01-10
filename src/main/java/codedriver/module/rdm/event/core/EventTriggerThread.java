@@ -1,9 +1,6 @@
 package codedriver.module.rdm.event.core;
 
 import codedriver.framework.asynchronization.thread.CodeDriverThread;
-import com.alibaba.fastjson.JSONObject;
-
-import java.util.List;
 
 /**
  * @ClassName RdmEventTriggerThread

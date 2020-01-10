@@ -37,7 +37,7 @@ public class TemplateProcessDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
+    @Input({@Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
             @Param(name = "templateUuid", type = ApiParamType.STRING, desc = "模板uuid", isRequired = true),
             @Param(name = "id", type = ApiParamType.LONG, desc = "主键ID", isRequired = true)})
     @Description(desc = "项目模板过程域删除接口")

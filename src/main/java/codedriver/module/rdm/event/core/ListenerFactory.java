@@ -1,7 +1,6 @@
 package codedriver.module.rdm.event.core;
 
 import codedriver.framework.common.RootComponent;
-import codedriver.module.rdm.event.core.Listener;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -23,6 +22,15 @@ public class ListenerFactory implements ApplicationListener<ContextRefreshedEven
     private static Map<String, Listener> listenerMap = new ConcurrentHashMap<>();
 
     private static Map<String, List<Listener>> eventMap = new ConcurrentHashMap<>();
+
+    public static Listener getListenerByName(String listenerName) {
+        return listenerMap.get(listenerName);
+    }
+
+    //一个事件可能被多个地方监听
+    public static List<Listener> getListenerByEventName(String eventName) {
+        return eventMap.get(eventName);
+    }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -47,15 +55,6 @@ public class ListenerFactory implements ApplicationListener<ContextRefreshedEven
                 }
             }
         }
-    }
-
-    public static Listener getListenerByName(String listenerName) {
-        return listenerMap.get(listenerName);
-    }
-
-    //一个事件可能被多个地方监听
-    public static List<Listener> getListenerByEventName(String eventName) {
-        return eventMap.get(eventName);
     }
 
 }

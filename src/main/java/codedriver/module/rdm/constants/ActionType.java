@@ -10,31 +10,31 @@ public enum ActionType {
     UPLOAD("upload", "附件上传/关联"),
     DOWNLOAD("download", "附件下载/预览"),
     REMOVE("remove", "附件删除/解除关联"),
-    CIRCULATION("circulation","流转"),
-    MOVE("move","移动");
+    CIRCULATION("circulation", "流转"),
+    MOVE("move", "移动");
 
     private String value;
     private String text;
 
-    private ActionType(String _value, String _text){
+    private ActionType(String _value, String _text) {
         this.value = _value;
-        this.text=_text;
+        this.text = _text;
     }
 
-    public String getValue(){
-        return value;
-    }
-
-    public String getText(){
-        return text;
-    }
-
-    public static String getText(String value){
-        for (ActionType f : ActionType.values()){
-            if (f.getValue().equals(value)){
+    public static String getText(String value) {
+        for (ActionType f : ActionType.values()) {
+            if (f.getValue().equals(value)) {
                 return f.getText();
             }
         }
         return "";
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public String getText() {
+        return text;
     }
 }

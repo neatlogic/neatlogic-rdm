@@ -2,22 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.rdm.dao.mapper.SystemFieldMapper">
 
-    <select id="searchField" parameterType="codedriver.module.rdm.dto.FieldVo" resultType="codedriver.module.rdm.dto.FieldVo">
+    <select id="searchField" parameterType="codedriver.module.rdm.dto.FieldVo"
+            resultType="codedriver.module.rdm.dto.FieldVo">
         SELECT
-          `id`,
-          `uuid`,
-          `field`,
-          `name`,
-          `description`,
-          `type`,
-          `config`
+        `id`,
+        `uuid`,
+        `field`,
+        `name`,
+        `description`,
+        `type`,
+        `config`
         FROM
-          `rdm_system_field` a
+        `rdm_system_field` a
         WHERE 1 = 1
         <if test="keyword != null and keyword != ''">
             AND a.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
-	</select>
+    </select>
 
     <insert id="insertSystemField" parameterType="codedriver.module.rdm.dto.FieldVo">
         INSERT INTO `rdm_system_field` (

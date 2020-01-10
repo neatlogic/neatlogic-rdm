@@ -7,7 +7,6 @@ import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.ProjectProcessAreaFieldVo;
 import codedriver.module.rdm.dto.ProjectProcessAreaVo;
-import codedriver.module.rdm.dto.TemplateProcessAreaFieldVo;
 import codedriver.module.rdm.services.ProjectService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -49,22 +48,22 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
             @Param(name = "isEnable", type = ApiParamType.INTEGER, desc = "是否可见，1表示可见，0表示不可见", isRequired = true),
             @Param(name = "processAreaFieldList", explode = ProjectProcessAreaFieldVo[].class)})
-    @Description( desc = "保存项目过程域接口")
+    @Description(desc = "保存项目过程域接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         ProjectProcessAreaVo areaVo = new ProjectProcessAreaVo();
         areaVo.setProjectUuid(jsonObj.getString("projectUuid"));
         areaVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
         areaVo.setIsEnable(jsonObj.getInteger("isEnable"));
-        if (jsonObj.containsKey("id")){
+        if (jsonObj.containsKey("id")) {
             areaVo.setId(jsonObj.getLong("id"));
         }
         JSONArray areaFieldList = jsonObj.getJSONArray("processAreaFieldList");
         List<ProjectProcessAreaFieldVo> fieldVoList = new ArrayList<>();
-        for (int i = 0; i < areaFieldList.size(); i++){
+        for (int i = 0; i < areaFieldList.size(); i++) {
             JSONObject fieldObj = areaFieldList.getJSONObject(i);
             ProjectProcessAreaFieldVo fieldVo = new ProjectProcessAreaFieldVo();
-            if (fieldObj.containsKey("id")){
+            if (fieldObj.containsKey("id")) {
                 fieldVo.setId(fieldObj.getLong("id"));
             }
             fieldVo.setField(fieldObj.getString("field"));
@@ -74,7 +73,7 @@ public class ProjectProcessAreaSaveApi extends ApiComponentBase {
             fieldVo.setIsSystem(fieldObj.getInteger("isSystem"));
             fieldVo.setIsRequired(fieldObj.getInteger("isRequired"));
             fieldVo.setIsShow(fieldObj.getInteger("isShow"));
-            if (fieldObj.containsKey("fieldUuid")){
+            if (fieldObj.containsKey("fieldUuid")) {
                 fieldVo.setFieldUuid(fieldObj.getString("fieldUuid"));
             }
             fieldVo.setProjectUuid(jsonObj.getString("projectUuid"));

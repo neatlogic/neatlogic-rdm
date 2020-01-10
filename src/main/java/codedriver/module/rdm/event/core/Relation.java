@@ -17,7 +17,7 @@ public interface Relation {
 
     List<RelationVo> getRelationList();
 
-    Integer countRelation(String relation, String selectKey, String objectUuid, String targetObjectUuid );
+    Integer countRelation(String relation, String selectKey, String objectUuid, String targetObjectUuid);
 
     /*
      * 用于支持除了关联管理之外的校验参数

@@ -38,8 +38,8 @@ public class ProjectMemberSearchApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
-    @Output({ @Param(name = "projectMemberList", explode = ProjectMemberVo[].class, desc = "项目成员列表")})
+    @Input({@Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
+    @Output({@Param(name = "projectMemberList", explode = ProjectMemberVo[].class, desc = "项目成员列表")})
     @Description(desc = "项目组成员列表返回接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

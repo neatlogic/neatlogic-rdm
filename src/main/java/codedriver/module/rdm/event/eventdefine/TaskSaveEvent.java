@@ -1,8 +1,7 @@
 package codedriver.module.rdm.event.eventdefine;
 
-import codedriver.module.rdm.event.core.Belong;
 import codedriver.module.rdm.event.core.EventTemplate;
-import com.alibaba.fastjson.JSONObject;
+import codedriver.module.rdm.event.objectbelong.ProcessAreaBelong;
 
 /**
  * @ClassName TaskSaveEvent
@@ -13,8 +12,12 @@ import com.alibaba.fastjson.JSONObject;
 
 public class TaskSaveEvent extends EventTemplate {
 
-    public TaskSaveEvent(String _uniqueKey, JSONObject _param, String _objectUuid, String _belong) {
-        super( _uniqueKey,  _param,  _objectUuid,  _belong);
+    public TaskSaveEvent(String _uniqueKey, String _objectUuid, String _belong) {
+        super(_uniqueKey, _objectUuid, _belong);
+    }
+
+    public TaskSaveEvent(String _uniqueKey, ProcessAreaBelong _processAreaBelong) {
+        super(_uniqueKey, _processAreaBelong);
     }
 
     @Override

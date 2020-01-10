@@ -1,10 +1,6 @@
 package codedriver.module.rdm.dao.mapper;
 
-import codedriver.module.rdm.dto.TaskAssociateVo;
-import codedriver.module.rdm.dto.TaskCommentVo;
-import codedriver.module.rdm.dto.TaskFieldVo;
-import codedriver.module.rdm.dto.TaskFileVo;
-import codedriver.module.rdm.dto.TaskVo;
+import codedriver.module.rdm.dto.*;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -16,11 +12,11 @@ import org.apache.ibatis.annotations.Param;
 public interface TaskMapper {
     void insertTask(TaskVo taskVo);
 
-    void insertTaskProcessAccount(@Param("taskUuid") String taskUuid, @Param("userId")String userId);
+    void insertTaskProcessAccount(@Param("taskUuid") String taskUuid, @Param("userId") String userId);
 
     void insertTaskField(TaskFieldVo taskField);
 
-    void insertTaskDescription(@Param("taskUuid") String taskUuid, @Param("description")String description);
+    void insertTaskDescription(@Param("taskUuid") String taskUuid, @Param("description") String description);
 
     void replaceAssociate(TaskAssociateVo taskAssociateVo);
 
@@ -38,7 +34,7 @@ public interface TaskMapper {
 
     TaskVo getTaskByUuid(@Param("uuid") String uuid);
 
-    Integer getTaskAssociationCount(@Param("taskUuid")String taskUuid, @Param("targetTaskProcessAreaUuid")String targetTaskProcessAreaUuid);
+    Integer getTaskAssociationCount(@Param("taskUuid") String taskUuid, @Param("targetTaskProcessAreaUuid") String targetTaskProcessAreaUuid);
 
-    String getTaskIterationCount(@Param("taskUuid")String taskUuid);
+    String getTaskIterationCount(@Param("taskUuid") String taskUuid);
 }

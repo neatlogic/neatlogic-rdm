@@ -36,7 +36,7 @@ public class TemplateDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "uuid", type = ApiParamType.STRING, desc = "模板uuid", isRequired = true)})
+    @Input({@Param(name = "uuid", type = ApiParamType.STRING, desc = "模板uuid", isRequired = true)})
     @Description(desc = "项目模板删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

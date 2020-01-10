@@ -15,7 +15,7 @@ public class ProjectPriorityVo extends BasePageVo {
     /**
      * 自增主键
      */
-    @EntityField(name = "自增主键",type = ApiParamType.LONG)
+    @EntityField(name = "自增主键", type = ApiParamType.LONG)
     private Long id;
 
     /**
@@ -26,19 +26,19 @@ public class ProjectPriorityVo extends BasePageVo {
     /**
      * 优先级uuid
      */
-    @EntityField(name = "优先级uuid",type = ApiParamType.STRING)
+    @EntityField(name = "优先级uuid", type = ApiParamType.STRING)
     private String uuid;
 
     /**
      * 优先级名称
      */
-    @EntityField(name = "优先级名称",type = ApiParamType.STRING)
+    @EntityField(name = "优先级名称", type = ApiParamType.STRING)
     private String name;
 
     /**
      * 优先级颜色
      */
-    @EntityField(name = "优先级颜色",type = ApiParamType.STRING)
+    @EntityField(name = "优先级颜色", type = ApiParamType.STRING)
     private String color;
 
     /**
@@ -54,25 +54,25 @@ public class ProjectPriorityVo extends BasePageVo {
     /**
      * 创建人
      */
-    @EntityField(name = "创建人",type = ApiParamType.STRING)
+    @EntityField(name = "创建人", type = ApiParamType.STRING)
     private String createUser;
 
     /**
      * 创建时间
      */
-    @EntityField(name = "创建时间",type = ApiParamType.STRING)
+    @EntityField(name = "创建时间", type = ApiParamType.STRING)
     private String createTime;
 
     /**
      * 修改人
      */
-    @EntityField(name = "修改人",type = ApiParamType.STRING)
+    @EntityField(name = "修改人", type = ApiParamType.STRING)
     private String updateUser;
 
     /**
      * 修改时间
      */
-    @EntityField(name = "修改时间",type = ApiParamType.STRING)
+    @EntityField(name = "修改时间", type = ApiParamType.STRING)
     private String updateTime;
 
     @EntityField(name = "是否默认值", type = ApiParamType.INTEGER)

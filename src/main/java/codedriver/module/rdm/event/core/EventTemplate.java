@@ -1,8 +1,5 @@
 package codedriver.module.rdm.event.core;
 
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.context.ApplicationEvent;
-
 /**
  * @ClassName EventTemplate
  * @Description
@@ -12,25 +9,24 @@ import org.springframework.context.ApplicationEvent;
 public abstract class EventTemplate implements Event {
 
     private String uniqueKey;
-    private JSONObject param;
     private String belong;
     private String objectUuid;
 
-    public EventTemplate(String _uniqueKey, JSONObject _param, String _objectUuid, String _belong){
+    public EventTemplate(String _uniqueKey, String _objectUuid, String _belong) {
         this.uniqueKey = _uniqueKey;
-        this.param = _param;
         this.belong = _belong;
         this.objectUuid = _objectUuid;
+    }
+
+    public EventTemplate(String _uniqueKey, Belong _belong) {
+        this.uniqueKey = _uniqueKey;
+        this.belong = _belong.name();
+        this.objectUuid = _belong.getBelongUuid();
     }
 
     @Override
     public String getUniqueKey() {
         return uniqueKey;
-    }
-
-    @Override
-    public JSONObject getParam() {
-        return param;
     }
 
     @Override

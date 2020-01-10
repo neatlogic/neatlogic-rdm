@@ -1,6 +1,9 @@
 package codedriver.module.rdm.services;
 
-import codedriver.module.rdm.dto.*;
+import codedriver.module.rdm.dto.ProjectProcessAreaFieldVo;
+import codedriver.module.rdm.dto.ProjectProcessAreaTemplateVo;
+import codedriver.module.rdm.dto.ProjectProcessAreaVo;
+import codedriver.module.rdm.dto.ProjectVo;
 
 import java.util.List;
 
@@ -11,7 +14,7 @@ import java.util.List;
  * @Date 2019/12/9 11:40
  **/
 public interface ProjectService {
-    List <ProjectVo> searchProject(ProjectVo projectVo);
+    List<ProjectVo> searchProject(ProjectVo projectVo);
 
     String saveProject(ProjectVo projectVo);
 

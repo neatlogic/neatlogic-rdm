@@ -27,6 +27,10 @@ public class ProjectStatusSaveApi extends ApiComponentBase {
     @Resource
     private ProjectWorkflowService projectWorkflowService;
 
+    public static void main(String[] args) {
+        System.out.println(System.getProperty("sun.arch.data.model"));
+    }
+
     @Override
     public String getToken() {
         return "module/rdm/projectstatus/save";
@@ -49,7 +53,7 @@ public class ProjectStatusSaveApi extends ApiComponentBase {
             @Param(name = "type", type = ApiParamType.STRING, desc = "状态类型", isRequired = true),
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "状态uuid", isRequired = false)
     })
-    @Output({@Param(name="projectStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态信息", explode = ProjectWorkFlowStatusVo.class)})
+    @Output({@Param(name = "projectStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态信息", explode = ProjectWorkFlowStatusVo.class)})
     @Description(desc = "保存项目状态接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -66,21 +70,17 @@ public class ProjectStatusSaveApi extends ApiComponentBase {
         projectWorkFlowStatusVo.setName(name);
         projectWorkFlowStatusVo.setType(type);
 
-        if(jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))){
+        if (jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))) {
             String uuid = jsonObj.getString("uuid");
             projectWorkFlowStatusVo.setUuid(uuid);
             projectWorkFlowStatusVo.setUpdateUser(UserContext.get().getUserId());
-        }else{
+        } else {
             projectWorkFlowStatusVo.setCreateUser(UserContext.get().getUserId());
         }
 
         String uuid = projectWorkflowService.saveProjectStatus(projectWorkFlowStatusVo);
         projectWorkFlowStatusVo.setUuid(uuid);
         return projectWorkFlowStatusVo;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(System.getProperty("sun.arch.data.model"));
     }
 
 }

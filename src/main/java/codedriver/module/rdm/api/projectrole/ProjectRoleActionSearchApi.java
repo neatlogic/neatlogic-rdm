@@ -46,14 +46,14 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "module", desc = "模块类型", type = ApiParamType.STRING, isRequired = true),
-             @Param( name = "projectUuid", desc = "项目Uuid", type = ApiParamType.STRING, isRequired = true)})
+    @Input({@Param(name = "module", desc = "模块类型", type = ApiParamType.STRING, isRequired = true),
+            @Param(name = "projectUuid", desc = "项目Uuid", type = ApiParamType.STRING, isRequired = true)})
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String module = jsonObj.getString("module");
         String projectUuid = jsonObj.getString("projectUuid");
         ProjectMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
-        if (memberVo != null){
+        if (memberVo != null) {
             List<RoleActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupId(), module);
             List<String> actionNameList = new ArrayList<>();
             actionVoList.stream().forEach(e -> actionNameList.add(e.getActionVo().getName()));

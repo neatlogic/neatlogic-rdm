@@ -1,7 +1,5 @@
 package codedriver.module.rdm.event.core;
 
-import com.alibaba.fastjson.JSONObject;
-
 import java.util.List;
 
 /**
@@ -22,7 +20,7 @@ public interface Listener {
     List<String> getEventList();
 
     //触发事件
-    List<Long> triggerEvent(String uniqueKey, JSONObject triggerParam, String objectUuid, String objectBelong, String eventName);
+    List<Long> triggerEvent(String uniqueKey, String objectUuid, String objectBelong, String eventName);
 
     //返回事件完成
     void completeEvent(String uniqueKey, String objectUuid, String objectBelong, String eventName);

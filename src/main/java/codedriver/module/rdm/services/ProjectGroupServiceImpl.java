@@ -20,9 +20,9 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
 
     @Override
     public void saveProjectGroup(ProjectGroupVo groupVo) {
-        if (groupVo.getId() != null && groupVo.getId() != 0L){
+        if (groupVo.getId() != null && groupVo.getId() != 0L) {
             groupMapper.updateProjectGroup(groupVo);
-        }else {
+        } else {
             groupMapper.insertProjectGroup(groupVo);
         }
     }

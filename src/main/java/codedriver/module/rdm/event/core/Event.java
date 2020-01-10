@@ -1,7 +1,5 @@
 package codedriver.module.rdm.event.core;
 
-import com.alibaba.fastjson.JSONObject;
-
 /**
  * @ClassName RdmEvent
  * @Description
@@ -15,8 +13,6 @@ public interface Event {
     String getDescription();
 
     String getUniqueKey();
-
-    JSONObject getParam();
 
     String getObjectUuid();
 

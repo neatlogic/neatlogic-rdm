@@ -2,10 +2,10 @@ package codedriver.module.rdm.api.projecttemplate;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
+import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.framework.restful.annotation.Input;
 import codedriver.module.rdm.dto.TemplateVo;
 import codedriver.module.rdm.services.ProjectTemplateService;
 import com.alibaba.fastjson.JSONObject;
@@ -38,10 +38,10 @@ public class TemplateSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "name", type = ApiParamType.STRING, isRequired = true, desc = "模板名称", xss = true),
+    @Input({@Param(name = "name", type = ApiParamType.STRING, isRequired = true, desc = "模板名称", xss = true),
             @Param(name = "description", type = ApiParamType.STRING, isRequired = true, desc = "模板描述", xss = true),
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "模板UUID")})
-    @Output({ @Param(name = "uuid", type = ApiParamType.STRING, desc = "模板UUID")})
+    @Output({@Param(name = "uuid", type = ApiParamType.STRING, desc = "模板UUID")})
     @Description(desc = "项目模板保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -49,7 +49,7 @@ public class TemplateSaveApi extends ApiComponentBase {
         TemplateVo templateVo = new TemplateVo();
         templateVo.setName(jsonObj.getString("name"));
         templateVo.setDescription(jsonObj.getString("description"));
-        if (jsonObj.containsKey("uuid")){
+        if (jsonObj.containsKey("uuid")) {
             templateVo.setUuid(jsonObj.getString("uuid"));
         }
         returnObj.put("uuid", templateService.saveTemplate(templateVo));

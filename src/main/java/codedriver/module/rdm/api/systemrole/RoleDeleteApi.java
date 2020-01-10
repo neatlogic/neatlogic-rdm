@@ -37,12 +37,12 @@ public class RoleDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "userIdList", type = ApiParamType.JSONARRAY, isRequired = true, desc = "用户ID集合")})
-    @Description( desc = "系统角色删除接口")
+    @Input({@Param(name = "userIdList", type = ApiParamType.JSONARRAY, isRequired = true, desc = "用户ID集合")})
+    @Description(desc = "系统角色删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         JSONArray array = jsonObj.getJSONArray("userIdList");
-        for (int i = 0; i < array.size(); i++){
+        for (int i = 0; i < array.size(); i++) {
             roleService.deleteRoleByUserId(array.getString(i));
         }
         return new JSONObject();

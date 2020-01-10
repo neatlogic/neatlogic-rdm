@@ -37,8 +37,8 @@ public class RoleSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "userId", desc = "用户ID", isRequired = true, type = ApiParamType.STRING),
-             @Param( name = "role", desc = "角色", isRequired = true, type = ApiParamType.STRING)})
+    @Input({@Param(name = "userId", desc = "用户ID", isRequired = true, type = ApiParamType.STRING),
+            @Param(name = "role", desc = "角色", isRequired = true, type = ApiParamType.STRING)})
     @Description(desc = "系统角色保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

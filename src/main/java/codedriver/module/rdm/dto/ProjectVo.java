@@ -27,30 +27,27 @@ public class ProjectVo extends BasePageVo {
     /**
      * 项目名称
      */
-    @EntityField(name = "项目名称",type = ApiParamType.STRING)
+    @EntityField(name = "项目名称", type = ApiParamType.STRING)
     private String name;
 
     /**
      * 项目uuid
      */
-    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
+    @EntityField(name = "项目uuid", type = ApiParamType.STRING)
     private String uuid;
 
     /**
-    *
-    *  项目描述
-    */
+     * 项目描述
+     */
     private String description;
 
     /**
-     *
-     *  项目状态
+     * 项目状态
      */
     private String status;
 
     /**
-     *
-     *  父项目Uuid
+     * 父项目Uuid
      */
     private String parentUuid;
 

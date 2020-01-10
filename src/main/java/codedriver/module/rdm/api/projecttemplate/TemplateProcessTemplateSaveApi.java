@@ -37,10 +37,10 @@ public class TemplateProcessTemplateSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "id", type = ApiParamType.LONG, desc = "主键ID"),
-             @Param( name = "templateUuid", type = ApiParamType.STRING, desc = "模板uuid", isRequired = true),
-             @Param( name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
-             @Param( name = "content", type = ApiParamType.STRING, desc = "过程域模板内容")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "主键ID"),
+            @Param(name = "templateUuid", type = ApiParamType.STRING, desc = "模板uuid", isRequired = true),
+            @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
+            @Param(name = "content", type = ApiParamType.STRING, desc = "过程域模板内容")
     })
     @Description(desc = "项目模板过程域模板内容保存接口")
     @Override
@@ -50,7 +50,7 @@ public class TemplateProcessTemplateSaveApi extends ApiComponentBase {
         String templateUuid = jsonObj.getString("templateUuid");
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         String content = jsonObj.getString("content");
-        if (jsonObj.containsKey("id")){
+        if (jsonObj.containsKey("id")) {
             processAreaTemplateVo.setId(jsonObj.getLong("id"));
         }
         processAreaTemplateVo.setProcessAreaUuid(processAreaUuid);

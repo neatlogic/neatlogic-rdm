@@ -33,7 +33,7 @@ public class ProcessAreaRelation implements Relation {
     @Override
     public List<RelationVo> getRelationList() {
 
-        return new ArrayList<RelationVo>(){{
+        return new ArrayList<RelationVo>() {{
             //过程域之间关联
             add(new RelationVo(new ProcessAreaBelong(), new ProcessAreaBelong()));
 
@@ -45,16 +45,16 @@ public class ProcessAreaRelation implements Relation {
 
 
     @Override
-    public Integer countRelation(String relation, String selectKey, String objectUuid, String targetObjectUuid ){
+    public Integer countRelation(String relation, String selectKey, String objectUuid, String targetObjectUuid) {
         Integer count = 0;
-         if(relation.equalsIgnoreCase(new ProcessAreaBelong().name() + "||" +  new ProcessAreaBelong().name())){
-             count = taskMapper.getTaskAssociationCount(selectKey, targetObjectUuid);
-         }else if(relation.equalsIgnoreCase(new ProcessAreaBelong().name() + "||" +  new IterationBelong().name())){
-             String iterationUuid = taskMapper.getTaskIterationCount(selectKey);
-             if(StringUtils.isNotBlank(iterationUuid)){
-                 count = 1 ;
-             }
-         }
+        if (relation.equalsIgnoreCase(new ProcessAreaBelong().name() + "||" + new ProcessAreaBelong().name())) {
+            count = taskMapper.getTaskAssociationCount(selectKey, targetObjectUuid);
+        } else if (relation.equalsIgnoreCase(new ProcessAreaBelong().name() + "||" + new IterationBelong().name())) {
+            String iterationUuid = taskMapper.getTaskIterationCount(selectKey);
+            if (StringUtils.isNotBlank(iterationUuid)) {
+                count = 1;
+            }
+        }
         return count;
     }
 

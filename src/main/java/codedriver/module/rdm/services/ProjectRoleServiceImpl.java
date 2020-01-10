@@ -1,7 +1,6 @@
 package codedriver.module.rdm.services;
 
 import codedriver.framework.asynchronization.threadlocal.UserContext;
-import codedriver.module.rdm.dao.mapper.ProjectGroupMapper;
 import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
 import codedriver.module.rdm.dao.mapper.ProjectRoleMapper;
 import codedriver.module.rdm.dto.ProjectMemberVo;
@@ -23,14 +22,14 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
 
     @Autowired
     private ProjectRoleMapper roleMapper;
-    
+
     @Autowired
     private ProjectMemberMapper memberMapper;
 
     @Override
     public void saveProjectRoleAction(Long groupId, List<Long> actionIdList) {
         roleMapper.deleteProjectRoleAction(groupId);
-        for (Long actionId : actionIdList){
+        for (Long actionId : actionIdList) {
             RoleActionVo actionVo = new RoleActionVo();
             actionVo.setActionId(actionId);
             actionVo.setGroupId(groupId);
@@ -44,17 +43,17 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
         return roleMapper.searchRoleActionByGroupIdAndModule(groupId, module);
     }
 
-    /** 
-    * @Description: 项目Uuid, 操作名称，操作所属模块（过程域/知识库等） 
-    * @Param: [projectUuid, actionName, module] 
-    * @return: boolean  
-    */ 
+    /**
+     * @Description: 项目Uuid, 操作名称，操作所属模块（过程域/知识库等）
+     * @Param: [projectUuid, actionName, module]
+     * @return: boolean
+     */
     @Override
     public boolean checkUserActionRole(String projectUuid, String actionName, String module) {
         ProjectMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
         List<RoleActionVo> actionVoList = roleMapper.searchRoleActionByGroupIdAndModule(memberVo.getGroupId(), module);
-        for (RoleActionVo actionVo : actionVoList){
-            if (actionName.equals(actionVo.getActionVo().getName())){
+        for (RoleActionVo actionVo : actionVoList) {
+            if (actionName.equals(actionVo.getActionVo().getName())) {
                 return true;
             }
         }

@@ -20,6 +20,8 @@ public interface Belong {
 
     String description();
 
+    String getBelongUuid();
+
     List<JSONObject> getBelongObjects();
 
 }

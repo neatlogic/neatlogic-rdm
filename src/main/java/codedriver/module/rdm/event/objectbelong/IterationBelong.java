@@ -1,15 +1,12 @@
 package codedriver.module.rdm.event.objectbelong;
 
-import codedriver.module.rdm.dao.mapper.ProcessAreaMapper;
-import codedriver.module.rdm.dao.mapper.TaskMapper;
-import codedriver.module.rdm.dto.ProcessAreaVo;
 import codedriver.module.rdm.event.core.Belong;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @ClassName ProcessAreaObjectBelong
@@ -27,7 +24,12 @@ public class IterationBelong implements Belong {
 
     @Override
     public String description() {
-        return "过程域";
+        return "迭代";
+    }
+
+    @Override
+    public String getBelongUuid() {
+        return UUID.fromString(name()).toString().replaceAll("-", "");
     }
 
     @Override
@@ -35,7 +37,7 @@ public class IterationBelong implements Belong {
 
         List<JSONObject> objectList = new ArrayList<>();
         JSONObject objectData = new JSONObject();
-        objectData.put("uuid", "");
+        objectData.put("uuid", UUID.fromString(name()).toString().replaceAll("-", ""));
         objectData.put("name", "迭代");
         objectList.add(objectData);
         return objectList;

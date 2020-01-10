@@ -6,9 +6,7 @@ import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponent;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.TaskMapper;
 import codedriver.module.rdm.dto.TaskFileVo;
 import codedriver.module.rdm.dto.TaskVo;
 import codedriver.module.rdm.services.TaskService;
@@ -46,9 +44,9 @@ public class TaskFileSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "taskUuid", type = ApiParamType.STRING, desc = "任务uuid", isRequired = true),
-             @Param( name = "fileUuidList", type = ApiParamType.JSONARRAY, desc = "文件uuid集合", isRequired = true)})
-    @Output( {@Param( name = "idArray", type = ApiParamType.JSONARRAY, desc = "id集合")})
+    @Input({@Param(name = "taskUuid", type = ApiParamType.STRING, desc = "任务uuid", isRequired = true),
+            @Param(name = "fileUuidList", type = ApiParamType.JSONARRAY, desc = "文件uuid集合", isRequired = true)})
+    @Output({@Param(name = "idArray", type = ApiParamType.JSONARRAY, desc = "id集合")})
     @Description(desc = "任务附件保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -56,9 +54,9 @@ public class TaskFileSaveApi extends ApiComponentBase {
         TaskVo taskVo = new TaskVo();
         taskVo.setUuid(taskUuid);
         JSONArray fileUuidArray = jsonObj.getJSONArray("fileUuidList");
-        if (fileUuidArray.size() > 0){
+        if (fileUuidArray.size() > 0) {
             List<TaskFileVo> taskFileVoList = new ArrayList<>();
-            for (int i = 0; i < fileUuidArray.size(); i++){
+            for (int i = 0; i < fileUuidArray.size(); i++) {
                 String fileUuid = fileUuidArray.getString(i);
                 TaskFileVo fileVo = new TaskFileVo();
                 fileVo.setTaskUuid(taskUuid);

@@ -6,7 +6,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +21,11 @@ public class RelationFactory implements ApplicationListener<ContextRefreshedEven
 
     private static Map<String, Relation> relationMap = new ConcurrentHashMap<>();
 
+    public static Relation getRelation(String objectBelong, String targetObjectBelong) {
+        String key = objectBelong + "||" + targetObjectBelong;
+        return relationMap.get(key);
+    }
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext context = contextRefreshedEvent.getApplicationContext();
@@ -29,16 +33,11 @@ public class RelationFactory implements ApplicationListener<ContextRefreshedEven
         for (Map.Entry<String, Relation> entry : myMap.entrySet()) {
             Relation relation = entry.getValue();
             List<RelationVo> relationVoList = relation.getRelationList();
-            for(RelationVo relationVo : relationVoList){
-                String key = relationVo.getObjectBelong().name() +  "||" + relationVo.getTargteObjectBelong().name();
+            for (RelationVo relationVo : relationVoList) {
+                String key = relationVo.getObjectBelong().name() + "||" + relationVo.getTargteObjectBelong().name();
                 relationMap.put(key, relation);
             }
         }
-    }
-
-    public static Relation getRelation(String objectBelong, String targetObjectBelong) {
-        String key = objectBelong +  "||" + targetObjectBelong;
-        return relationMap.get(key);
     }
 
 

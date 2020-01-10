@@ -16,7 +16,8 @@
           `rdm_event_rule`
     </select>
 
-    <select id="getEvent" parameterType="codedriver.module.rdm.event.dto.EventVo" resultType="codedriver.module.rdm.event.dto.EventVo">
+    <select id="getEvent" parameterType="codedriver.module.rdm.event.dto.EventVo"
+            resultType="codedriver.module.rdm.event.dto.EventVo">
         SELECT
           `id`,
           `unique_key` AS uniqueKey,

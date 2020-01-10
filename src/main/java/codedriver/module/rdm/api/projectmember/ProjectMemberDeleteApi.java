@@ -2,9 +2,9 @@ package codedriver.module.rdm.api.projectmember;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
+import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.framework.restful.annotation.Input;
 import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
 import codedriver.module.rdm.dto.ProjectMemberVo;
 import com.alibaba.fastjson.JSONObject;
@@ -38,9 +38,9 @@ public class ProjectMemberDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param( name = "userId", type = ApiParamType.STRING, desc = "用户ID"),
-            @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid"),
-            @Param( name = "groupId", type = ApiParamType.LONG, desc = "成员组ID")})
+    @Input({@Param(name = "userId", type = ApiParamType.STRING, desc = "用户ID"),
+            @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid"),
+            @Param(name = "groupId", type = ApiParamType.LONG, desc = "成员组ID")})
     @Description(desc = "项目组成员删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

@@ -44,7 +44,7 @@ public class ProjectWorkflowGetApi extends ApiComponentBase {
             @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
     })
-    @Output({ @Param(name = "statusList", type = ApiParamType.JSONARRAY, desc = "项目状态集合", explode = ProjectWorkFlowStatusVo[].class)})
+    @Output({@Param(name = "statusList", type = ApiParamType.JSONARRAY, desc = "项目状态集合", explode = ProjectWorkFlowStatusVo[].class)})
     @Description(desc = "查询项目工作流接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

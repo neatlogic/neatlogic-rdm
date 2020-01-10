@@ -38,10 +38,10 @@ public class RoleCountApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "userId", type = ApiParamType.STRING, desc = "用户id"),
-             @Param( name = "role", type = ApiParamType.STRING, desc = "角色名称")})
-    @Output({ @Param( name = "count", type = ApiParamType.INTEGER, desc = "数量")})
-    @Description( desc = "系统角色数量查询接口")
+    @Input({@Param(name = "userId", type = ApiParamType.STRING, desc = "用户id"),
+            @Param(name = "role", type = ApiParamType.STRING, desc = "角色名称")})
+    @Output({@Param(name = "count", type = ApiParamType.INTEGER, desc = "数量")})
+    @Description(desc = "系统角色数量查询接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String userId = jsonObj.getString("userId");

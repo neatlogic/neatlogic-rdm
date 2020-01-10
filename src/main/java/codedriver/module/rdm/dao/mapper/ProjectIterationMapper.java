@@ -12,9 +12,9 @@ import java.util.List;
  * @Date 2019/12/18 14:24
  **/
 public interface ProjectIterationMapper {
-    ProjectIterationVo getProjectIterationByUuid(@Param("projectUuid")  String projectUuid, @Param("uuid")  String uuid);
+    ProjectIterationVo getProjectIterationByUuid(@Param("projectUuid") String projectUuid, @Param("uuid") String uuid);
 
-    void deleteProjectIteration(@Param("projectUuid")  String projectUuid, @Param("uuid")  String uuid);
+    void deleteProjectIteration(@Param("projectUuid") String projectUuid, @Param("uuid") String uuid);
 
     int checkProjectIterationExist(ProjectIterationVo projectIterationVo);
 
@@ -22,7 +22,7 @@ public interface ProjectIterationMapper {
 
     void insertProjectIteration(ProjectIterationVo projectIterationVo);
 
-    void associateTask(@Param("projectUuid")String projectUuid, @Param("projectIterationUuid")String projectIterationUuid, @Param("taskList")List<String> taskList);
+    void associateTask(@Param("projectUuid") String projectUuid, @Param("projectIterationUuid") String projectIterationUuid, @Param("taskList") List<String> taskList);
 
     List<ProjectIterationVo> searchProjectIteration(ProjectIterationVo projectIterationVo);
 

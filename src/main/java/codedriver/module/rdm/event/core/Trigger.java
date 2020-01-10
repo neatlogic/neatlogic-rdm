@@ -1,8 +1,6 @@
 package codedriver.module.rdm.event.core;
 
-import codedriver.framework.asynchronization.threadlocal.TenantContext;
 import codedriver.framework.asynchronization.threadpool.CommonThreadPool;
-import com.alibaba.fastjson.JSONObject;
 
 import java.util.List;
 
@@ -21,13 +19,12 @@ public class Trigger {
             protected void execute() {
                 String eventName = event.getName();
                 String uniqueKey = event.getUniqueKey();
-                JSONObject triggerParam = event.getParam();
                 String objectUuid = event.getObjectUuid();
                 String objectBelong = event.getBelong();
                 List<Listener> listenerList = ListenerFactory.getListenerByEventName(event.getName());
                 for (Listener listener : listenerList) {
                     //触发并生成事件
-                    listener.triggerEvent(uniqueKey, triggerParam, objectUuid, objectBelong, eventName);
+                    listener.triggerEvent(uniqueKey, objectUuid, objectBelong, eventName);
 
                     //校验事件是否完成
                     listener.completeEvent(uniqueKey, objectUuid, objectBelong, eventName);
@@ -40,7 +37,7 @@ public class Trigger {
     /*
      * 供外部调用的完成方法
      */
-    private static void complete(){
+    private static void complete() {
 
     }
 

@@ -29,7 +29,8 @@
         </where>
     </select>
 
-    <select id="searchRole" parameterType="codedriver.module.rdm.dto.RoleVo" resultType="codedriver.module.rdm.dto.RoleVo">
+    <select id="searchRole" parameterType="codedriver.module.rdm.dto.RoleVo"
+            resultType="codedriver.module.rdm.dto.RoleVo">
         SELECT
         a.`id`,
         a.`user_id` as `userId`,
@@ -47,7 +48,7 @@
         </where>
     </select>
 
-    <delete id="deleteRoleByUserId" >
+    <delete id="deleteRoleByUserId">
         DELETE FROM `rdm_role` WHERE `user_id` = #{userId}
     </delete>
 </mapper>

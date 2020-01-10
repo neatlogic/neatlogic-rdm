@@ -15,7 +15,7 @@ public class TemplateProcessAreaFieldVo {
     private String templateUuid;
     private String processAreaUuid;
 
-    @EntityField(name ="属性键名", type = ApiParamType.STRING)
+    @EntityField(name = "属性键名", type = ApiParamType.STRING)
     private String field;
 
     @EntityField(name = "属性显示名", type = ApiParamType.STRING)

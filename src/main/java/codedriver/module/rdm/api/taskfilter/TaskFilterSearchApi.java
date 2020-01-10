@@ -1,13 +1,8 @@
 package codedriver.module.rdm.api.taskfilter;
 
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.SystemFieldMapper;
-import codedriver.module.rdm.dto.FieldVo;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @ClassName FilterSearchApi

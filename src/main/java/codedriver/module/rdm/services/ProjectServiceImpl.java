@@ -61,26 +61,26 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public String saveProject(ProjectVo projectVo) {
         projectVo.setUpdateUser(UserContext.get().getUserId());
-        if (StringUtils.isBlank(projectVo.getUuid())){
+        if (StringUtils.isBlank(projectVo.getUuid())) {
             projectVo.setUuid(UuidUtil.getUuid());
             projectVo.setCreateUser(UserContext.get().getUserId());
             projectMapper.insertProject(projectVo);
-        }else {
+        } else {
             projectMapper.updateProject(projectVo);
         }
         copyTemplateData(projectVo.getTemplateUuid(), projectVo.getUuid());
         saveProjectRole(projectVo.getUuid());
         return projectVo.getUuid();
     }
-    
-    /** 
-    * @Description: 拷贝模板配置 
-    * @Param: [templateUuid, projectUuid] 
-    * @return: void  
-    */ 
+
+    /**
+     * @Description: 拷贝模板配置
+     * @Param: [templateUuid, projectUuid]
+     * @return: void
+     */
     public void copyTemplateData(String templateUuid, String projectUuid) {
         List<TemplateProcessAreaVo> processAreaVoList = templateMapper.getTemplateProcessAreaListByTemplateUuid(templateUuid);
-        for (TemplateProcessAreaVo areaVo : processAreaVoList){
+        for (TemplateProcessAreaVo areaVo : processAreaVoList) {
             ProjectProcessAreaVo projectProcessAreaVo = new ProjectProcessAreaVo();
             projectProcessAreaVo.setIsEnable(1);
             projectProcessAreaVo.setProcessAreaName(areaVo.getProcessAreaName());
@@ -90,7 +90,7 @@ public class ProjectServiceImpl implements ProjectService {
             projectMapper.insertProjectProcessArea(projectProcessAreaVo);
 
             List<TemplateProcessAreaFieldVo> areaFieldVoList = areaVo.getProcessAreaFieldVoList();
-            for (TemplateProcessAreaFieldVo areaFieldVo : areaFieldVoList){
+            for (TemplateProcessAreaFieldVo areaFieldVo : areaFieldVoList) {
                 ProjectProcessAreaFieldVo fieldVo = new ProjectProcessAreaFieldVo();
                 fieldVo.setConfig(areaFieldVo.getConfig());
                 fieldVo.setField(areaFieldVo.getField());
@@ -109,8 +109,8 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         List<TemplateProcessAreaTemplateVo> templateVos = templateMapper.getTemplateProcessAreaTemplateListByTemplateUuid(templateUuid);
-        if (templateVos != null && templateVos.size() > 0){
-            for (TemplateProcessAreaTemplateVo templateVo : templateVos){
+        if (templateVos != null && templateVos.size() > 0) {
+            for (TemplateProcessAreaTemplateVo templateVo : templateVos) {
                 ProjectProcessAreaTemplateVo projectTemplate = new ProjectProcessAreaTemplateVo();
                 projectTemplate.setContent(templateVo.getContent());
                 projectTemplate.setProcessAreaUuid(templateVo.getProcessAreaUuid());
@@ -120,12 +120,12 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    /** 
-    * @Description: 保存项目初始化角色 
-    * @Param: [projectUuid] 
-    * @return: void  
-    */ 
-    public void saveProjectRole(String projectUuid){
+    /**
+     * @Description: 保存项目初始化角色
+     * @Param: [projectUuid]
+     * @return: void
+     */
+    public void saveProjectRole(String projectUuid) {
         ProjectGroupVo groupVo = new ProjectGroupVo();
         groupVo.setProjectUuid(projectUuid);
         groupVo.setName("项目管理员");
@@ -142,14 +142,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectProcessAreaVo> searchProjectProcessArea(ProjectProcessAreaVo processAreaVo) {
         List<ProjectProcessAreaVo> areaVoList = projectMapper.getProjectProcessArea(processAreaVo);
-        for (ProjectProcessAreaVo areaVo : areaVoList){
+        for (ProjectProcessAreaVo areaVo : areaVoList) {
             String fieldSort = areaVo.getProcessAreaFieldSort();
             JSONArray sortArray = JSON.parseArray(fieldSort);
             List<ProjectProcessAreaFieldVo> fieldVoList = areaVo.getFieldList();
             List<ProjectProcessAreaFieldVo> sortFieldList = new ArrayList<>();
-            for (int i = 0; i < sortArray.size(); i ++){
-                for (ProjectProcessAreaFieldVo fieldVo : fieldVoList){
-                    if (sortArray.getLong(i) == fieldVo.getId()){
+            for (int i = 0; i < sortArray.size(); i++) {
+                for (ProjectProcessAreaFieldVo fieldVo : fieldVoList) {
+                    if (sortArray.getLong(i) == fieldVo.getId()) {
                         sortFieldList.add(fieldVo);
                         break;
                     }
@@ -170,23 +170,23 @@ public class ProjectServiceImpl implements ProjectService {
         List<ProjectProcessAreaFieldVo> fieldVoList = processAreaVo.getFieldList();
         List<ProjectProcessAreaFieldVo> systemFieldList = new ArrayList<>();
         JSONArray sortArray = new JSONArray();
-        for (ProjectProcessAreaFieldVo f : fieldVoList){
+        for (ProjectProcessAreaFieldVo f : fieldVoList) {
 
-            if (f.getId() != null && f.getId() != 0L){
-                if (f.getIsSystem() != 1){
+            if (f.getId() != null && f.getId() != 0L) {
+                if (f.getIsSystem() != 1) {
                     f.setFieldUuid(UuidUtil.getUuid());
                     projectMapper.insertProjectProcessAreaField(f);
-                }else {
+                } else {
                     systemFieldList.add(f);
                 }
-            }else {
+            } else {
                 f.setFieldUuid(UuidUtil.getUuid());
                 projectMapper.insertProjectProcessAreaField(f);
             }
             sortArray.add(f.getId());
         }
 
-        for (ProjectProcessAreaFieldVo field : systemFieldList){
+        for (ProjectProcessAreaFieldVo field : systemFieldList) {
             projectMapper.updateProjectProcessAreaFieldRequired(field);
         }
 
@@ -197,9 +197,9 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void saveProjectProcessAreaTemplate(ProjectProcessAreaTemplateVo templateVo) {
-        if (templateVo.getId() != null && templateVo.getId() != 0L){
+        if (templateVo.getId() != null && templateVo.getId() != 0L) {
             projectMapper.updteProjectProcessAreaTemplate(templateVo);
-        }else {
+        } else {
             projectMapper.insertProjectProcessAreaTemplate(templateVo);
         }
     }
@@ -209,19 +209,19 @@ public class ProjectServiceImpl implements ProjectService {
         projectMapper.updateProjectProcessAreaFieldConfig(fieldVo);
     }
 
-    public void insertProjectPriority(ProjectProcessAreaFieldVo fieldVo){
-        if(fieldVo.getField().equals("priority")){
+    public void insertProjectPriority(ProjectProcessAreaFieldVo fieldVo) {
+        if (fieldVo.getField().equals("priority")) {
             String config = fieldVo.getConfig();
-            if (JSONArray.isValid(config)){
+            if (JSONArray.isValid(config)) {
                 JSONArray configArray = JSONArray.parseArray(config);
-                for (int i = 0 ; i < configArray.size() ; i++){
+                for (int i = 0; i < configArray.size(); i++) {
                     JSONObject priority = configArray.getJSONObject(i);
                     ProjectPriorityVo priorityVo = new ProjectPriorityVo();
                     priorityVo.setColor(priority.getString("color"));
                     priorityVo.setName(priority.getString("name"));
-                    if (priority.getBooleanValue("isdefault")){
+                    if (priority.getBooleanValue("isdefault")) {
                         priorityVo.setIsDefault(1);
-                    }else {
+                    } else {
                         priorityVo.setIsDefault(0);
                     }
                     priorityVo.setProcessAreaUuid(fieldVo.getProcessAreaUuid());
@@ -235,15 +235,15 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    public void insertProjectStatus(ProjectProcessAreaFieldVo fieldVo){
-        if (fieldVo.getField().equals("status")){
+    public void insertProjectStatus(ProjectProcessAreaFieldVo fieldVo) {
+        if (fieldVo.getField().equals("status")) {
             String config = fieldVo.getConfig();
-            if (JSONArray.isValid(config)){
+            if (JSONArray.isValid(config)) {
                 Map<String, JSONArray> transferArray = new HashMap<>();
                 Map<String, String> statusMap = new HashMap<>();
                 JSONArray statusArray = JSONArray.parseArray(config);
                 //录入流转状态
-                for (int i = 0; i < statusArray.size(); i++){
+                for (int i = 0; i < statusArray.size(); i++) {
                     JSONObject obj = statusArray.getJSONObject(i);
                     ProjectWorkFlowStatusVo statusVo = new ProjectWorkFlowStatusVo();
                     statusVo.setProcessAreaUuid(fieldVo.getProcessAreaUuid());
@@ -258,11 +258,11 @@ public class ProjectServiceImpl implements ProjectService {
                     transferArray.put(statusVo.getUuid(), array);
                 }
                 //录入流转关联状态
-                for (Map.Entry<String, JSONArray> entry : transferArray.entrySet()){
+                for (Map.Entry<String, JSONArray> entry : transferArray.entrySet()) {
                     String uuid = entry.getKey();
                     JSONArray transfers = entry.getValue();
-                    for (int i = 0; i < transfers.size(); i++){
-                        String transferUuid =statusMap.get(transfers.getString(i));
+                    for (int i = 0; i < transfers.size(); i++) {
+                        String transferUuid = statusMap.get(transfers.getString(i));
                         workflowMapper.insertProjectWorkflowStatusTransfer(uuid, transferUuid);
                     }
                 }

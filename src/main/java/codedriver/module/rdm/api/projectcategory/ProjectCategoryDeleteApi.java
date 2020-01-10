@@ -36,7 +36,7 @@ public class ProjectCategoryDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "uuid", type = ApiParamType.STRING, desc = "类别uuid", isRequired = true)})
+    @Input({@Param(name = "uuid", type = ApiParamType.STRING, desc = "类别uuid", isRequired = true)})
     @Description(desc = "项目类别移除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

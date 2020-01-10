@@ -2,9 +2,9 @@ package codedriver.module.rdm.api.task;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
+import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.framework.restful.annotation.Input;
 import codedriver.module.rdm.dao.mapper.TaskMapper;
 import codedriver.module.rdm.dto.TaskFileVo;
 import com.alibaba.fastjson.JSONObject;
@@ -37,8 +37,8 @@ public class TaskFileDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "fileUuid", type = ApiParamType.STRING, desc = "文件Uuid", isRequired = true),
-             @Param(name = "taskUuid", type = ApiParamType.STRING, desc = "任务Uuid", isRequired = true)})
+    @Input({@Param(name = "fileUuid", type = ApiParamType.STRING, desc = "文件Uuid", isRequired = true),
+            @Param(name = "taskUuid", type = ApiParamType.STRING, desc = "任务Uuid", isRequired = true)})
     @Description(desc = "任务附件删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

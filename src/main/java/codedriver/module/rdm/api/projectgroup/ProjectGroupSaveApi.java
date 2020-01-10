@@ -38,11 +38,11 @@ public class ProjectGroupSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "id", type = ApiParamType.LONG, desc = "主键ID"),
-             @Param( name = "name", type = ApiParamType.STRING, desc = "项目组名称", isRequired = true),
-             @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目Uuid", isRequired = true),
-             @Param( name = "role", type = ApiParamType.STRING, isRequired = true)})
-    @Output( @Param( name = "id", type = ApiParamType.LONG, desc = "主键ID"))
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "主键ID"),
+            @Param(name = "name", type = ApiParamType.STRING, desc = "项目组名称", isRequired = true),
+            @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目Uuid", isRequired = true),
+            @Param(name = "role", type = ApiParamType.STRING, isRequired = true)})
+    @Output(@Param(name = "id", type = ApiParamType.LONG, desc = "主键ID"))
     @Description(desc = "项目组保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

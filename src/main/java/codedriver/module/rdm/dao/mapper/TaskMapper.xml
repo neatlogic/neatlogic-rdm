@@ -38,7 +38,7 @@
         </collection>
 
         <collection property="processAccountIdList" ofType="java.lang.String">
-            <result column="processAccount" />
+            <result column="processAccount"/>
         </collection>
     </resultMap>
 

@@ -14,83 +14,63 @@ import java.util.List;
  **/
 public class TaskVo {
 
-    private Long id;
-
-    @EntityField(name = "任务uuid",type = ApiParamType.STRING)
-    private String uuid;
-
-    @EntityField(name = "任务名称",type = ApiParamType.STRING)
-    private String name;
-
-    @EntityField(name = "任务描述",type = ApiParamType.STRING)
-    private String description;
-
-    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
-    private String projectUuid;
-
-    @EntityField(name = "项目名称",type = ApiParamType.STRING)
-    private String projectName;
-
-    @EntityField(name = "迭代id",type = ApiParamType.STRING)
-    private String iterationUuid;
-
-    @EntityField(name = "迭代名称",type = ApiParamType.STRING)
-    private String iterationName;
-
-    @EntityField(name = "迭代名称",type = ApiParamType.STRING)
-    private String processAreaUuid;
-
-    @EntityField(name = "过程域名称",type = ApiParamType.STRING)
-    private String processAreaName;
-
-    @EntityField(name = "父任务Uuid",type = ApiParamType.STRING)
-    private String parentUuid;
-
-    @EntityField(name = "状态uuid",type = ApiParamType.STRING)
-    private String statusUuid;
-
-    @EntityField(name = "状态名称",type = ApiParamType.STRING)
-    private String statusName;
-
-    @EntityField(name = "优先级uuid",type = ApiParamType.STRING)
-    private String priorityUuid;
-
-    @EntityField(name = "优先级名称",type = ApiParamType.STRING)
-    private String priorityName;
-
-    @EntityField(name = "优先级颜色",type = ApiParamType.STRING)
-    private String priorityColor;
-
-    @EntityField(name = "类别Uuid",type = ApiParamType.STRING)
-    private String categoryUuid;
-
-    @EntityField(name = "类别名称",type = ApiParamType.STRING)
-    private String categoryName;
-
-    @EntityField(name = "处理人id集合",type = ApiParamType.JSONARRAY)
-    private List<String> processAccountIdList;
-
     /**
      * 处理人集合
      */
     public List<UserVo> processAccountList;
-
-    @EntityField(name = "开始时间",type = ApiParamType.STRING)
+    private Long id;
+    @EntityField(name = "任务uuid", type = ApiParamType.STRING)
+    private String uuid;
+    @EntityField(name = "任务名称", type = ApiParamType.STRING)
+    private String name;
+    @EntityField(name = "任务描述", type = ApiParamType.STRING)
+    private String description;
+    @EntityField(name = "项目uuid", type = ApiParamType.STRING)
+    private String projectUuid;
+    @EntityField(name = "项目名称", type = ApiParamType.STRING)
+    private String projectName;
+    @EntityField(name = "迭代id", type = ApiParamType.STRING)
+    private String iterationUuid;
+    @EntityField(name = "迭代名称", type = ApiParamType.STRING)
+    private String iterationName;
+    @EntityField(name = "迭代名称", type = ApiParamType.STRING)
+    private String processAreaUuid;
+    @EntityField(name = "过程域名称", type = ApiParamType.STRING)
+    private String processAreaName;
+    @EntityField(name = "父任务Uuid", type = ApiParamType.STRING)
+    private String parentUuid;
+    @EntityField(name = "状态uuid", type = ApiParamType.STRING)
+    private String statusUuid;
+    @EntityField(name = "状态名称", type = ApiParamType.STRING)
+    private String statusName;
+    @EntityField(name = "优先级uuid", type = ApiParamType.STRING)
+    private String priorityUuid;
+    @EntityField(name = "优先级名称", type = ApiParamType.STRING)
+    private String priorityName;
+    @EntityField(name = "优先级颜色", type = ApiParamType.STRING)
+    private String priorityColor;
+    @EntityField(name = "类别Uuid", type = ApiParamType.STRING)
+    private String categoryUuid;
+    @EntityField(name = "类别名称", type = ApiParamType.STRING)
+    private String categoryName;
+    @EntityField(name = "处理人id集合", type = ApiParamType.JSONARRAY)
+    private List<String> processAccountIdList;
+    @EntityField(name = "开始时间", type = ApiParamType.STRING)
     private String startTime;
 
-    @EntityField(name = "结束时间",type = ApiParamType.STRING)
+    @EntityField(name = "结束时间", type = ApiParamType.STRING)
     private String endTime;
 
-    @EntityField(name = "创建人",type = ApiParamType.STRING)
+    @EntityField(name = "创建人", type = ApiParamType.STRING)
     private String createUser;
 
-    @EntityField(name = "创建时间",type = ApiParamType.STRING)
+    @EntityField(name = "创建时间", type = ApiParamType.STRING)
     private String createTime;
 
-    @EntityField(name = "修改人",type = ApiParamType.STRING)
+    @EntityField(name = "修改人", type = ApiParamType.STRING)
     private String updateUser;
 
-    @EntityField(name = "修改时间",type = ApiParamType.STRING)
+    @EntityField(name = "修改时间", type = ApiParamType.STRING)
     private String updateTime;
 
     /**
@@ -98,10 +78,10 @@ public class TaskVo {
      */
     private String customFields;
 
-    @EntityField(name = "任务属性集合",type = ApiParamType.JSONARRAY)
+    @EntityField(name = "任务属性集合", type = ApiParamType.JSONARRAY)
     private List<FieldVo> taskFieldList;
 
-    @EntityField(name = "任务附件集合",type = ApiParamType.JSONARRAY)
+    @EntityField(name = "任务附件集合", type = ApiParamType.JSONARRAY)
     private List<TaskFileVo> taskFileVoList;
 
     private List<TaskAssociateVo> associatedTaskList;

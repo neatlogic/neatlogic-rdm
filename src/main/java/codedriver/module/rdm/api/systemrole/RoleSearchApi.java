@@ -40,15 +40,15 @@ public class RoleSearchApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "role", type = ApiParamType.STRING, desc = "角色类型", isRequired = true)})
-    @Output({ @Param( name = "roleUserList", explode = RoleVo[].class, desc = "角色用户集合")})
-    @Description( desc = "系统角色查询接口")
+    @Input({@Param(name = "role", type = ApiParamType.STRING, desc = "角色类型", isRequired = true)})
+    @Output({@Param(name = "roleUserList", explode = RoleVo[].class, desc = "角色用户集合")})
+    @Description(desc = "系统角色查询接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String role = jsonObj.getString("role");
         RoleVo roleVo = new RoleVo();
         roleVo.setRole(role);
-        List<RoleVo> roleUserList =  roleService.searchRole(roleVo);
+        List<RoleVo> roleUserList = roleService.searchRole(roleVo);
         JSONObject returnObj = new JSONObject();
         returnObj.put("roleUserList", roleUserList);
         return returnObj;

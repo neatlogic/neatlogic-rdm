@@ -11,7 +11,7 @@ public class TaskAssociateVo {
     private String targetTaskUuid;
     private String type;
 
-    public TaskAssociateVo(){
+    public TaskAssociateVo() {
 
     }
 

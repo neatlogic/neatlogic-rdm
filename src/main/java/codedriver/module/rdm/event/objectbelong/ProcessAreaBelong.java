@@ -19,8 +19,23 @@ import java.util.List;
 @Service
 public class ProcessAreaBelong implements Belong {
 
+    private String processAreaUuid;
     @Resource
     private ProcessAreaMapper processAreaMapper;
+
+    public ProcessAreaBelong() {
+
+    }
+
+
+    public ProcessAreaBelong(String _processAreaUuid) {
+        this.processAreaUuid = _processAreaUuid;
+    }
+
+    @Override
+    public String getBelongUuid() {
+        return processAreaUuid;
+    }
 
     @Override
     public String name() {
@@ -34,12 +49,12 @@ public class ProcessAreaBelong implements Belong {
 
     @Override
     public List<JSONObject> getBelongObjects() {
-        List<ProcessAreaVo> processAreaVoList = processAreaMapper.searchProcessArea(new ProcessAreaVo(){{
+        List<ProcessAreaVo> processAreaVoList = processAreaMapper.searchProcessArea(new ProcessAreaVo() {{
             setNeedPage(false);
         }});
 
         List<JSONObject> objectList = new ArrayList<>();
-        for(ProcessAreaVo processAreaVo : processAreaVoList){
+        for (ProcessAreaVo processAreaVo : processAreaVoList) {
             JSONObject objectData = new JSONObject();
             objectData.put("uuid", processAreaVo.getUuid());
             objectData.put("name", processAreaVo.getName());

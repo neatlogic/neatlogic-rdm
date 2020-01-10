@@ -39,12 +39,12 @@ public class ProjectMemberSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
-             @Param(name = "userList", type = ApiParamType.JSONARRAY, desc = "用户id集合,[{\"userId\":\"wang\",\n" +
-                     "\"isLeader\":\"1\"\n" +
-                     "},{\"userId\":\"lee\", \"isLeader\":\"1\"}]", isRequired = true),
-             @Param(name = "groupId", type = ApiParamType.LONG, desc = "成员组Id", isRequired = true)})
-    @Output({ @Param(name = "idList", type = ApiParamType.JSONARRAY, desc = "主键ID集合")})
+    @Input({@Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
+            @Param(name = "userList", type = ApiParamType.JSONARRAY, desc = "用户id集合,[{\"userId\":\"wang\",\n" +
+                    "\"isLeader\":\"1\"\n" +
+                    "},{\"userId\":\"lee\", \"isLeader\":\"1\"}]", isRequired = true),
+            @Param(name = "groupId", type = ApiParamType.LONG, desc = "成员组Id", isRequired = true)})
+    @Output({@Param(name = "idList", type = ApiParamType.JSONARRAY, desc = "主键ID集合")})
     @Description(desc = "项目成员保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -57,7 +57,7 @@ public class ProjectMemberSaveApi extends ApiComponentBase {
         member.setProjectUuid(projectUuid);
         memberMapper.deleteProjectMember(member);
         JSONArray userArray = jsonObj.getJSONArray("userList");
-        for (int i = 0; i < userArray.size(); i++){
+        for (int i = 0; i < userArray.size(); i++) {
             JSONObject obj = userArray.getJSONObject(i);
             String userId = obj.getString("userId");
             int isLeader = obj.getInteger("isLeader");

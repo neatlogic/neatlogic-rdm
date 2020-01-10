@@ -31,8 +31,10 @@ public abstract class ListenerTemplate implements Listener {
     @Resource
     private RdmEventMapper rdmEventMapper;
 
+    protected abstract JSONObject getTriggerParam(String uniqueKey);
+
     @Override
-    public List<Long> triggerEvent(String uniqueKey, JSONObject triggerParam, String objectUuid, String objectBelong, String eventName) {
+    public List<Long> triggerEvent(String uniqueKey, String objectUuid, String objectBelong, String eventName) {
         List<Long> eventIdList = new ArrayList<>();
         List<EventRuleVo> ruleList = eventRuleFactory.findMatchRule(objectUuid, objectBelong, eventName);
         for (EventRuleVo rule : ruleList) {
@@ -45,13 +47,13 @@ public abstract class ListenerTemplate implements Listener {
 
             // 校验触发规则 , 没有触发规则则事件触发即默认生成任务
             boolean needTrigger = true;
-            if(StringUtils.isNotBlank(triggerRule)){
-                needTrigger = runScript(triggerParam, triggerRule);
+            if (StringUtils.isNotBlank(triggerRule)) {
+                needTrigger = runScript(getTriggerParam(uniqueKey), triggerRule);
             }
 
 
             //检验通过检查事件是否存在，不存在就创建 , 测试一直为true
-            needTrigger =  true;
+            needTrigger = true;
             if (needTrigger) {
                 EventVo eventResultVo = rdmEventMapper.getEvent(event);
                 if (eventResultVo == null) {
@@ -80,12 +82,12 @@ public abstract class ListenerTemplate implements Listener {
 
         String targetObjectUuid = eventRuleVo.getTargetObjectUuid();
         String targetObjectBelong = eventRuleVo.getTargetObjectBelong();
-        JSONObject completeParam = matchRelationAndGetCheckParam(uniqueKey, objectBelong, objectUuid, targetObjectBelong, targetObjectUuid );
+        JSONObject completeParam = matchRelationAndGetCheckParam(uniqueKey, objectBelong, objectUuid, targetObjectBelong, targetObjectUuid);
 
         boolean complete;
         if (StringUtils.isBlank(completeRule)) {
             //如果没有关闭规则，则默认 有关联即关闭
-            complete = completeParam.getIntValue("relationCount") > 0 ;
+            complete = completeParam.getIntValue("relationCount") > 0;
         } else {
             complete = runScript(completeParam, completeRule);
         }
@@ -95,7 +97,7 @@ public abstract class ListenerTemplate implements Listener {
         }
     }
 
-    private JSONObject matchRelationAndGetCheckParam(String uniqueKey, String objectBelong, String objectUuid, String targetObjectBelong, String targetObjectUuid){
+    private JSONObject matchRelationAndGetCheckParam(String uniqueKey, String objectBelong, String objectUuid, String targetObjectBelong, String targetObjectUuid) {
         JSONObject result = new JSONObject();
         String key = objectBelong + "||" + targetObjectBelong;
         Relation relation = RelationFactory.getRelation(objectBelong, targetObjectBelong);

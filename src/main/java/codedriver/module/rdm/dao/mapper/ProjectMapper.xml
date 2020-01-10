@@ -25,7 +25,7 @@
 
     <select id="searchProjectCount" parameterType="codedriver.module.rdm.dto.ProjectVo" resultType="int">
         SELECT
-            COUNT(id)
+        COUNT(id)
         FROM `rdm_project` a
         WHERE 1 = 1
         <if test="keyword != null and keyword != ''">
@@ -33,7 +33,8 @@
         </if>
     </select>
 
-    <select id="getProjectProcessArea" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo" resultMap="projectProcessArea">
+    <select id="getProjectProcessArea" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaVo"
+            resultMap="projectProcessArea">
         SELECT
         a.`id`,
         a.`project_uuid` as `projectUuid`,
@@ -53,16 +54,17 @@
         LEFT JOIN `rdm_project_field` b ON a.project_uuid = b.project_uuid AND a.process_area_uuid = b.process_area_uuid
         <where>
             <if test="projectUuid != null">
-              and  a.`project_uuid` = #{projectUuid}
+                and a.`project_uuid` = #{projectUuid}
             </if>
 
             <if test="processAreaUuid != null">
-             and   a.`process_area_uuid` = #{processAreaUuid}
+                and a.`process_area_uuid` = #{processAreaUuid}
             </if>
         </where>
     </select>
 
-    <select id="searchProject" parameterType="codedriver.module.rdm.dto.ProjectVo" resultType="codedriver.module.rdm.dto.ProjectVo">
+    <select id="searchProject" parameterType="codedriver.module.rdm.dto.ProjectVo"
+            resultType="codedriver.module.rdm.dto.ProjectVo">
         SELECT
         `id`,
         `name`,
@@ -82,7 +84,7 @@
         <if test="needPage == true">
             LIMIT #{startNum}, #{pageSize}
         </if>
-	</select>
+    </select>
 
     <select id="getProjectByUuid" resultType="codedriver.module.rdm.dto.ProjectVo">
         SELECT
@@ -133,7 +135,7 @@
         `process_area_name`,
         `process_area_field_sort`,
         `is_enable`
-        )  VALUES (
+        ) VALUES (
         #{projectUuid},
         #{processAreaUuid},
         #{processAreaName},
@@ -141,7 +143,7 @@
         #{isEnable}
         )
     </insert>
-    
+
     <insert id="insertProjectProcessAreaField" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
         <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
             select LAST_INSERT_ID() as id
@@ -172,7 +174,8 @@
         )
     </insert>
 
-    <insert id="insertProjectProcessAreaTemplate" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaTemplateVo">
+    <insert id="insertProjectProcessAreaTemplate"
+            parameterType="codedriver.module.rdm.dto.ProjectProcessAreaTemplateVo">
         <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
             select LAST_INSERT_ID() as id
         </selectKey>
@@ -214,19 +217,22 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateProjectProcessAreaFieldConfig" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+    <update id="updateProjectProcessAreaFieldConfig"
+            parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
         UPDATE `rdm_project_field` SET `config` = #{config} WHERE field_uuid = #{fieldUuid}
     </update>
 
-    <update id="updateProjectProcessAreaFieldRequired" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+    <update id="updateProjectProcessAreaFieldRequired"
+            parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
         UPDATE `rdm_project_field` SET `is_required` = #{isRequired} WHERE field_uuid = #{fieldUuid}
     </update>
 
-    <delete id="deleteProject" >
+    <delete id="deleteProject">
         DELETE FROM `rdm_project_field` WHERE uuid = #{value}
     </delete>
 
-    <delete id="deleteProjectProcessAreaCustomFiled" parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
+    <delete id="deleteProjectProcessAreaCustomFiled"
+            parameterType="codedriver.module.rdm.dto.ProjectProcessAreaFieldVo">
         DELETE FROM `rdm_project_field`
         WHERE `is_system` = 0
         <if test="projectUuid != null">

@@ -50,7 +50,7 @@ public class ProjectPrioritySaveApi extends ApiComponentBase {
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "状态uuid", isRequired = false)
     })
     @Output({@Param(name = "projectPriorityVo", type = ApiParamType.JSONOBJECT, desc = "projectPriorityVo", explode = ProjectPriorityVo.class)})
-    @Description(desc="保存项目优先级接口")
+    @Description(desc = "保存项目优先级接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
 
@@ -68,11 +68,11 @@ public class ProjectPrioritySaveApi extends ApiComponentBase {
         projectPriorityVo.setColor(color);
 
 
-        if(jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))){
+        if (jsonObj.containsKey("uuid") && StringUtils.isNotBlank(jsonObj.getString("uuid"))) {
             String uuid = jsonObj.getString("uuid");
             projectPriorityVo.setUuid(uuid);
             projectPriorityVo.setUpdateUser(UserContext.get().getUserId());
-        }else{
+        } else {
             projectPriorityVo.setCreateUser(UserContext.get().getUserId());
         }
 

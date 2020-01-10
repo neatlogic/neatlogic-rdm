@@ -4,20 +4,18 @@ import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.common.dto.BasePageVo;
 import codedriver.framework.restful.annotation.EntityField;
 
-import java.util.Date;
-
 /**
  * @ClassName Itearator
  * @Description 迭代类
  * @Auther
  * @Date 2019/12/4 18:10
  **/
-public class ProjectIterationVo  extends BasePageVo {
+public class ProjectIterationVo extends BasePageVo {
 
     /**
      * 自增主键
      */
-    @EntityField(name = "自增主键",type = ApiParamType.LONG)
+    @EntityField(name = "自增主键", type = ApiParamType.LONG)
     private Long id;
 
     /**
@@ -28,31 +26,31 @@ public class ProjectIterationVo  extends BasePageVo {
     /**
      * 项目uuid
      */
-    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
+    @EntityField(name = "项目uuid", type = ApiParamType.STRING)
     private String projectUuid;
 
     /**
      * 项目迭代uuid
      */
-    @EntityField(name = "项目迭代uuid",type = ApiParamType.STRING)
+    @EntityField(name = "项目迭代uuid", type = ApiParamType.STRING)
     private String uuid;
 
     /**
      * 迭代名称
      */
-    @EntityField(name = "迭代名称",type = ApiParamType.STRING)
+    @EntityField(name = "迭代名称", type = ApiParamType.STRING)
     private String name;
 
     /**
      * 迭代开始时间
      */
-    @EntityField(name = "迭代开始时间",type = ApiParamType.STRING)
+    @EntityField(name = "迭代开始时间", type = ApiParamType.STRING)
     private String startDate;
 
     /**
      * 迭代结束时间
      */
-    @EntityField(name = "迭代结束时间",type = ApiParamType.STRING)
+    @EntityField(name = "迭代结束时间", type = ApiParamType.STRING)
     private String endDate;
 
     /**

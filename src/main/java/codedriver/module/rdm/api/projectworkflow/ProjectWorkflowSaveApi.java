@@ -57,15 +57,15 @@ public class ProjectWorkflowSaveApi extends ApiComponentBase {
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         JSONArray statusArray = jsonObj.getJSONArray("statusList");
         List<ProjectWorkFlowStatusVo> statusList = new ArrayList<>();
-        for(Object statusObject : statusArray){
+        for (Object statusObject : statusArray) {
             ProjectWorkFlowStatusVo projectWorkFlowStatusVo = new ProjectWorkFlowStatusVo();
             JSONObject statusJsonObject = JSONObject.parseObject(statusObject.toString());
             String statusName = statusJsonObject.getString("statusName");
             String statusUuid = statusJsonObject.getString("statusUuid");
             String statusType = statusJsonObject.getString("statusType");
-            JSONArray transferArray  = statusJsonObject.getJSONArray("transferList");
+            JSONArray transferArray = statusJsonObject.getJSONArray("transferList");
             List<String> transferList = new ArrayList<>();
-            for(Object transferObject : transferArray){
+            for (Object transferObject : transferArray) {
                 transferList.add(transferObject.toString());
             }
 
