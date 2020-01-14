@@ -33,7 +33,7 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/projectroleaction/search";
+        return "module/rdm/projectgroupaction/search";
     }
 
     @Override

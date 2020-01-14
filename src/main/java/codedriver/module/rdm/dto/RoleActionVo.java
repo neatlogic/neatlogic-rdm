@@ -7,7 +7,7 @@ package codedriver.module.rdm.dto;
  **/
 public class RoleActionVo {
     private Long id;
-    private Long groupUuid;
+    private String groupUuid;
     private String action;
     private String module;
     private String createUser;
@@ -21,11 +21,11 @@ public class RoleActionVo {
         this.id = id;
     }
 
-    public Long getGroupUuid() {
+    public String getGroupUuid() {
         return groupUuid;
     }
 
-    public void setGroupUuid(Long groupUuid) {
+    public void setGroupUuid(String groupUuid) {
         this.groupUuid = groupUuid;
     }
 

@@ -29,7 +29,7 @@ public class ProjectRoleActionSaveApi extends ApiComponentBase {
 
     @Override
     public String getToken() {
-        return "module/rdm/projectroleaction/save";
+        return "module/rdm/projectgroupaction/save";
     }
 
     @Override
@@ -42,11 +42,11 @@ public class ProjectRoleActionSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "groupId", type = ApiParamType.LONG, desc = "组ID", isRequired = true),
+    @Input({ @Param( name = "groupUuid", type = ApiParamType.STRING, desc = "组UUID", isRequired = true),
              @Param( name = "moduleList", type = ApiParamType.JSONARRAY, desc = "模块权限操作集合", isRequired = true)})
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
-        Long groupId = jsonObj.getLong("groupId");
+        String groupUuid = jsonObj.getString("groupUuid");
         JSONArray actionArray = jsonObj.getJSONArray("moduleList");
         List<RoleActionVo> roleActionVoList = new ArrayList<>();
         for (int i = 0 ; i < actionArray.size(); i++){
@@ -56,13 +56,13 @@ public class ProjectRoleActionSaveApi extends ApiComponentBase {
             for (int j = 0; j < actionList.size(); j++){
                 RoleActionVo actionVo = new RoleActionVo();
                 actionVo.setAction(actionList.getString(j));
-                actionVo.setGroupId(groupId);
+                actionVo.setGroupUuid(groupUuid);
                 actionVo.setCreateUser(UserContext.get().getUserId());
                 actionVo.setModule(module);
                 roleActionVoList.add(actionVo);
             }
         }
-        roleService.saveProjectRoleAction(groupId, roleActionVoList);
+        roleService.saveProjectRoleAction(groupUuid, roleActionVoList);
         return new JSONObject();
     }
 }
