@@ -7,7 +7,7 @@ import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectGroupMemberMapper;
 import codedriver.module.rdm.dto.ProjectGroupMemberVo;
-import codedriver.module.rdm.dto.RoleActionVo;
+import codedriver.module.rdm.dto.ProjectGroupActionVo;
 import codedriver.module.rdm.services.ProjectRoleService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
         String projectUuid = jsonObj.getString("projectUuid");
         ProjectGroupMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
         if (memberVo != null){
-            List<RoleActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupUuid(), module);
+            List<ProjectGroupActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupUuid(), module);
             List<String> actionNameList = new ArrayList<>();
             actionVoList.stream().forEach(e -> actionNameList.add(e.getAction()));
             JSONObject returnObj = new JSONObject();

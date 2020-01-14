@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectRoleMapper">
-    <resultMap id="RoleActionMap" type="codedriver.module.rdm.dto.RoleActionVo">
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectGroupActionMapper">
+    <resultMap id="RoleActionMap" type="codedriver.module.rdm.dto.ProjectGroupActionVo">
         <id column="id" property="id"/>
         <result column="groupUuid" property="groupUuid"/>
         <result column="action" property="action"/>
@@ -9,7 +9,7 @@
         <result column="createTime" property="createTime"/>
         <result column="module" property="module"/>
     </resultMap>
-    <select id="searchRoleActionByGroupUuidAndModule" resultMap="RoleActionMap">
+    <select id="searchGroupActionByGroupUuidAndModule" resultMap="RoleActionMap">
         SELECT
         a.`id`,
         a.`group_uuid` as `groupUuid`,
@@ -21,7 +21,7 @@
         WHERE a.`group_uuid` = #{groupUuid} AND a.`module` = #{module}
     </select>
 
-    <insert id="insertProjectRoleAction" parameterType="codedriver.module.rdm.dto.RoleActionVo">
+    <insert id="insertProjectGroupAction" parameterType="codedriver.module.rdm.dto.ProjectGroupActionVo">
         INSERT INTO `rdm_project_group_action`
         (
         `group_uuid`,
@@ -38,7 +38,26 @@
         )
     </insert>
 
-    <delete id="deleteProjectRoleAction" parameterType="java.lang.String">
+    <insert id="insertProjectGroupActionProcess">
+        INSERT INTO
+         `rdm_project_group_action_process`(
+         `group_action_id`,
+         `process_area_uuid`
+         )VALUES(
+         #{groupActionId},
+         #{processAreaUuid}
+         )
+    </insert>
+
+    <delete id="deleteProjectGroupAction" parameterType="java.lang.String">
         DELETE FROM `rdm_project_group_action` WHERE `group_uuid` = #{groupUuid}
+    </delete>
+
+    <delete id="deleteGroupActionProcessArea" parameterType="java.util.List">
+        DELETE FROM `rdm_project_group_action_process` WHERE `group_action_id`
+        IN
+        <foreach collection="groupActionIdList" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
     </delete>
 </mapper>

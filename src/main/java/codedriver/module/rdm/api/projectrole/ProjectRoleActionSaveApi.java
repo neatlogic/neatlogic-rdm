@@ -5,7 +5,7 @@ import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.module.rdm.dto.RoleActionVo;
+import codedriver.module.rdm.dto.ProjectGroupActionVo;
 import codedriver.module.rdm.services.ProjectRoleService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -42,19 +42,24 @@ public class ProjectRoleActionSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "groupUuid", type = ApiParamType.STRING, desc = "组UUID", isRequired = true),
+    @Input({ @Param( name = "groupUuid", type = ApiParamType.STRING, desc = "组uuid", isRequired = true),
              @Param( name = "moduleList", type = ApiParamType.JSONARRAY, desc = "模块权限操作集合", isRequired = true)})
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String groupUuid = jsonObj.getString("groupUuid");
         JSONArray actionArray = jsonObj.getJSONArray("moduleList");
-        List<RoleActionVo> roleActionVoList = new ArrayList<>();
+        List<ProjectGroupActionVo> roleActionVoList = new ArrayList<>();
         for (int i = 0 ; i < actionArray.size(); i++){
             JSONObject obj = actionArray.getJSONObject(i);
             String module = obj.getString("module");
+            String processAreaUuid = "";
+            if (obj.containsKey("processAreaUuid")){
+                processAreaUuid = obj.getString("processAreaUuid");
+            }
             JSONArray actionList = obj.getJSONArray("actionList");
             for (int j = 0; j < actionList.size(); j++){
-                RoleActionVo actionVo = new RoleActionVo();
+                ProjectGroupActionVo actionVo = new ProjectGroupActionVo();
+                actionVo.setProcessAreaUuid(processAreaUuid);
                 actionVo.setAction(actionList.getString(j));
                 actionVo.setGroupUuid(groupUuid);
                 actionVo.setCreateUser(UserContext.get().getUserId());

@@ -5,13 +5,22 @@ package codedriver.module.rdm.dto;
  * @description:
  * @create: 2020-01-08 11:08
  **/
-public class RoleActionVo {
+public class ProjectGroupActionVo {
     private Long id;
     private String groupUuid;
     private String action;
     private String module;
     private String createUser;
     private String createTime;
+    private String processAreaUuid;
+
+    public String getProcessAreaUuid() {
+        return processAreaUuid;
+    }
+
+    public void setProcessAreaUuid(String processAreaUuid) {
+        this.processAreaUuid = processAreaUuid;
+    }
 
     public Long getId() {
         return id;

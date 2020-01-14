@@ -63,7 +63,7 @@
         <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
             select LAST_INSERT_ID() as id
         </selectKey>
-        INSERT INTO `rdm_project_member`
+        INSERT INTO `rdm_project_group_member`
         (
         `user_id`,
         `group_uuid`
