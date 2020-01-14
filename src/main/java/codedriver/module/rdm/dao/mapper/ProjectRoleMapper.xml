@@ -4,30 +4,21 @@
     <resultMap id="RoleActionMap" type="codedriver.module.rdm.dto.RoleActionVo">
         <id column="id" property="id"/>
         <result column="groupId" property="groupId"/>
-        <result column="actionId" property="actionId"/>
+        <result column="action" property="action"/>
         <result column="createUser" property="createUser"/>
         <result column="createTime" property="createTime"/>
-        <association property="actionVo" javaType="codedriver.module.rdm.dto.ActionVo">
-            <id column="actionId" property="id"/>
-            <result column="module" property="module"/>
-            <result column="name" property="name"/>
-            <result column="url" property="url"/>
-        </association>
+        <result column="module" property="module"/>
     </resultMap>
     <select id="searchRoleActionByGroupIdAndModule" resultMap="RoleActionMap">
         SELECT
         a.`id`,
         a.`group_id` as `groupId`,
-        a.`action_id` as `actionId`,
+        a.`action`,
         a.`create_user` as `createUser`,
         a.`create_time` as `createTime`,
-        b.`id` as `actionId`,
-        b.`module`,
-        b.`name`,
-        b.`url`
+        a.`module`
         FROM `rdm_role_action` a
-        LEFT JOIN `rdm_action` b ON a.`action_id` = b.`id`
-        WHERE a.`group_id` = #{groupId} AND b.`module` = #{module}
+        WHERE a.`group_id` = #{groupId} AND a.`module` = #{module}
     </select>
 
     <select id="checkRoleAction" resultType="java.lang.Integer">
@@ -38,12 +29,14 @@
         INSERT INTO `rdm_role_action`
         (
         `group_id`,
-        `action_id`,
+        `action`,
+        `module`,
         `create_user`,
         `create_time`
         ) VALUES (
         #{groupId},
-        #{actionId},
+        #{action},
+        #{module},
         #{createUser},
         NOW()
         )

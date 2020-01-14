@@ -1,8 +1,9 @@
 package codedriver.module.rdm.services;
 
-import codedriver.framework.asynchronization.threadlocal.UserContext;
-import codedriver.module.rdm.annotation.RoleAction;
+import codedriver.module.rdm.annotation.ActionCheck;
+import codedriver.module.rdm.annotation.InputParam;
 import codedriver.module.rdm.dao.mapper.ProjectRoleMapper;
+import codedriver.module.rdm.dto.ActionCheckVo;
 import codedriver.module.rdm.dto.RoleActionVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,6 @@ import java.util.List;
  * @create: 2020-01-08 11:31
  **/
 @Transactional
-@RoleAction
 @Service
 public class ProjectRoleServiceImpl implements ProjectRoleService {
 
@@ -24,13 +24,9 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
     private ProjectRoleMapper roleMapper;
 
     @Override
-    public void saveProjectRoleAction(Long groupId, List<Long> actionIdList) {
+    public void saveProjectRoleAction(Long groupId, List<RoleActionVo> roleActionVoList) {
         roleMapper.deleteProjectRoleAction(groupId);
-        for (Long actionId : actionIdList){
-            RoleActionVo actionVo = new RoleActionVo();
-            actionVo.setActionId(actionId);
-            actionVo.setGroupId(groupId);
-            actionVo.setCreateUser(UserContext.get().getUserId());
+        for (RoleActionVo actionVo : roleActionVoList){
             roleMapper.insertProjectRoleAction(actionVo);
         }
     }
@@ -38,5 +34,11 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
     @Override
     public List<RoleActionVo> searchProjectRoleAction(Long groupId, String module) {
         return roleMapper.searchRoleActionByGroupIdAndModule(groupId, module);
+    }
+
+    @ActionCheck(name = "检查", value = "check")
+    @Override
+    public void test(@InputParam ActionCheckVo actionCheckVo) {
+        System.out.println("aa");
     }
 }

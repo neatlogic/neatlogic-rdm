@@ -56,7 +56,7 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
         if (memberVo != null){
             List<RoleActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupId(), module);
             List<String> actionNameList = new ArrayList<>();
-            actionVoList.stream().forEach(e -> actionNameList.add(e.getActionVo().getName()));
+            actionVoList.stream().forEach(e -> actionNameList.add(e.getAction()));
             JSONObject returnObj = new JSONObject();
             returnObj.put("actionList", actionNameList);
             return returnObj;

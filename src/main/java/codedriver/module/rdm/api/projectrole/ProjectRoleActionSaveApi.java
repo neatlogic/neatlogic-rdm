@@ -1,9 +1,11 @@
 package codedriver.module.rdm.api.projectrole;
 
 import codedriver.framework.apiparam.core.ApiParamType;
+import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.framework.restful.annotation.Input;
+import codedriver.module.rdm.dto.RoleActionVo;
 import codedriver.module.rdm.services.ProjectRoleService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -41,16 +43,26 @@ public class ProjectRoleActionSaveApi extends ApiComponentBase {
     }
 
     @Input({ @Param( name = "groupId", type = ApiParamType.LONG, desc = "组ID", isRequired = true),
-             @Param( name = "actionIdList", type = ApiParamType.JSONARRAY, desc = "权限操作id集合", isRequired = true)})
+             @Param( name = "moduleList", type = ApiParamType.JSONARRAY, desc = "模块权限操作集合", isRequired = true)})
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         Long groupId = jsonObj.getLong("groupId");
-        JSONArray actionArray = jsonObj.getJSONArray("actionIdList");
-        List<Long> actionList = new ArrayList<>();
+        JSONArray actionArray = jsonObj.getJSONArray("moduleList");
+        List<RoleActionVo> roleActionVoList = new ArrayList<>();
         for (int i = 0 ; i < actionArray.size(); i++){
-            actionList.add(actionArray.getLong(i));
+            JSONObject obj = actionArray.getJSONObject(i);
+            String module = obj.getString("module");
+            JSONArray actionList = obj.getJSONArray("actionList");
+            for (int j = 0; j < actionList.size(); j++){
+                RoleActionVo actionVo = new RoleActionVo();
+                actionVo.setAction(actionList.getString(j));
+                actionVo.setGroupId(groupId);
+                actionVo.setCreateUser(UserContext.get().getUserId());
+                actionVo.setModule(module);
+                roleActionVoList.add(actionVo);
+            }
         }
-        roleService.saveProjectRoleAction(groupId, actionList);
+        roleService.saveProjectRoleAction(groupId, roleActionVoList);
         return new JSONObject();
     }
 }

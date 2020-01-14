@@ -39,7 +39,7 @@ public class RoleActionHandler {
         List<RoleActionVo> actionVoList = roleMapper.searchRoleActionByGroupIdAndModule(memberVo.getGroupId(), checkVo.getModule());
         boolean auth = false;
         for (RoleActionVo actionVo : actionVoList){
-            if (actionCheck.value().equals(actionVo.getActionVo().getName())){
+            if (actionCheck.value().equals(actionVo.getAction())){
                 auth = true;
                 break;
             }

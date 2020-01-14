@@ -8,10 +8,10 @@ package codedriver.module.rdm.dto;
 public class RoleActionVo {
     private Long id;
     private Long groupId;
-    private Long actionId;
+    private String action;
+    private String module;
     private String createUser;
     private String createTime;
-    private ActionVo actionVo;
 
     public Long getId() {
         return id;
@@ -29,12 +29,20 @@ public class RoleActionVo {
         this.groupId = groupId;
     }
 
-    public Long getActionId() {
-        return actionId;
+    public String getAction() {
+        return action;
     }
 
-    public void setActionId(Long actionId) {
-        this.actionId = actionId;
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
     }
 
     public String getCreateUser() {
@@ -51,13 +59,5 @@ public class RoleActionVo {
 
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
-    }
-
-    public ActionVo getActionVo() {
-        return actionVo;
-    }
-
-    public void setActionVo(ActionVo actionVo) {
-        this.actionVo = actionVo;
     }
 }
