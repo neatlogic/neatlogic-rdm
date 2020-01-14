@@ -46,7 +46,7 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectGroupMapper groupMapper;
 
     @Autowired
-    private ProjectMemberMapper memberMapper;
+    private ProjectGroupMemberMapper memberMapper;
 
     @Override
     public List<ProjectVo> searchProject(ProjectVo projectVo) {
@@ -131,11 +131,9 @@ public class ProjectServiceImpl implements ProjectService {
         groupVo.setName("项目管理员");
         groupVo.setRole(RoleType.MANAGER.getValue());
         groupMapper.insertProjectGroup(groupVo);
-        ProjectMemberVo memberVo = new ProjectMemberVo();
-        memberVo.setGroupId(groupVo.getId());
-        memberVo.setProjectUuid(projectUuid);
+        ProjectGroupMemberVo memberVo = new ProjectGroupMemberVo();
+        memberVo.setGroupUuid(groupVo.getUuid());
         memberVo.setUserId(UserContext.get().getUserId());
-        memberVo.setIsLeader(0);
         memberMapper.insertProjectMember(memberVo);
     }
 

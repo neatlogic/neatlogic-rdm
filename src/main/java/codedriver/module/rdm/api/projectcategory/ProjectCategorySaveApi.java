@@ -7,7 +7,6 @@ import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectCategoryMapper;
-import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
 import codedriver.module.rdm.dto.CategoryVo;
 import codedriver.module.rdm.util.UuidUtil;
 import com.alibaba.fastjson.JSONObject;

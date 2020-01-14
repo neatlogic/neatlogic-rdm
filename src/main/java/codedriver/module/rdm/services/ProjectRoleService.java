@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface ProjectRoleService {
 
-    public void saveProjectRoleAction(Long groupId, List<RoleActionVo> roleActionVoList);
+    public void saveProjectRoleAction(String groupUuId, List<RoleActionVo> roleActionVoList);
 
-    public List<RoleActionVo> searchProjectRoleAction(Long groupId, String module);
+    public List<RoleActionVo> searchProjectRoleAction(String groupUuid, String module);
 
     public void test(ActionCheckVo actionCheckVo);
 

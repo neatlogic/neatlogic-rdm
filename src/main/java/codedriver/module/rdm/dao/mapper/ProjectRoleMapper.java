@@ -8,9 +8,7 @@ import java.util.List;
 public interface ProjectRoleMapper {
     public void insertProjectRoleAction(RoleActionVo roleActionVo);
 
-    public void deleteProjectRoleAction(Long groupId);
+    public void deleteProjectRoleAction(String groupUuid);
 
-    public List<RoleActionVo> searchRoleActionByGroupIdAndModule(@Param("groupId") Long groupId, @Param("module") String module);
-
-    public int checkRoleAction(@Param("projectUuid") String projectUuid, @Param("userId") String userId, @Param("module")String module);
+    public List<RoleActionVo> searchRoleActionByGroupUuidAndModule(@Param("groupUuid") String groupUuid, @Param("module") String module);
 }

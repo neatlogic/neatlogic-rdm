@@ -24,16 +24,16 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
     private ProjectRoleMapper roleMapper;
 
     @Override
-    public void saveProjectRoleAction(Long groupId, List<RoleActionVo> roleActionVoList) {
-        roleMapper.deleteProjectRoleAction(groupId);
+    public void saveProjectRoleAction(String groupUuid, List<RoleActionVo> roleActionVoList) {
+        roleMapper.deleteProjectRoleAction(groupUuid);
         for (RoleActionVo actionVo : roleActionVoList){
             roleMapper.insertProjectRoleAction(actionVo);
         }
     }
 
     @Override
-    public List<RoleActionVo> searchProjectRoleAction(Long groupId, String module) {
-        return roleMapper.searchRoleActionByGroupIdAndModule(groupId, module);
+    public List<RoleActionVo> searchProjectRoleAction(String groupUuid, String module) {
+        return roleMapper.searchRoleActionByGroupUuidAndModule(groupUuid, module);
     }
 
     @ActionCheck(name = "检查", value = "check")

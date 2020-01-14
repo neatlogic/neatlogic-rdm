@@ -1,11 +1,10 @@
 package codedriver.module.rdm.authority;
 
-import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.module.rdm.annotation.ActionCheck;
-import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
+import codedriver.module.rdm.dao.mapper.ProjectGroupMemberMapper;
 import codedriver.module.rdm.dao.mapper.ProjectRoleMapper;
 import codedriver.module.rdm.dto.ActionCheckVo;
-import codedriver.module.rdm.dto.ProjectMemberVo;
+import codedriver.module.rdm.dto.ProjectGroupMemberVo;
 import codedriver.module.rdm.dto.RoleActionVo;
 import codedriver.module.rdm.exception.role.ActionCheckFailedException;
 import org.aspectj.lang.JoinPoint;
@@ -26,7 +25,7 @@ import java.util.List;
 public class RoleActionHandler {
 
     @Autowired
-    private ProjectMemberMapper memberMapper;
+    private ProjectGroupMemberMapper memberMapper;
 
     @Autowired
     private ProjectRoleMapper roleMapper;
@@ -35,8 +34,8 @@ public class RoleActionHandler {
     public void ActionCheck(JoinPoint point, ActionCheck actionCheck){
         Object[] params = point.getArgs();
         ActionCheckVo checkVo = (ActionCheckVo)params[0];
-        ProjectMemberVo memberVo = memberMapper.getProjectMember(checkVo.getProjectUuid(), checkVo.getUserId());
-        List<RoleActionVo> actionVoList = roleMapper.searchRoleActionByGroupIdAndModule(memberVo.getGroupId(), checkVo.getModule());
+        ProjectGroupMemberVo memberVo = memberMapper.getProjectMember(checkVo.getProjectUuid(), checkVo.getUserId());
+        List<RoleActionVo> actionVoList = roleMapper.searchRoleActionByGroupUuidAndModule(memberVo.getGroupUuid(), checkVo.getModule());
         boolean auth = false;
         for (RoleActionVo actionVo : actionVoList){
             if (actionCheck.value().equals(actionVo.getAction())){

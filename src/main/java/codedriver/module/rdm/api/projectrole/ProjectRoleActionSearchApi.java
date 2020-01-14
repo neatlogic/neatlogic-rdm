@@ -5,8 +5,8 @@ import codedriver.framework.asynchronization.threadlocal.UserContext;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
-import codedriver.module.rdm.dto.ProjectMemberVo;
+import codedriver.module.rdm.dao.mapper.ProjectGroupMemberMapper;
+import codedriver.module.rdm.dto.ProjectGroupMemberVo;
 import codedriver.module.rdm.dto.RoleActionVo;
 import codedriver.module.rdm.services.ProjectRoleService;
 import com.alibaba.fastjson.JSONObject;
@@ -26,7 +26,7 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
 
 
     @Autowired
-    private ProjectMemberMapper memberMapper;
+    private ProjectGroupMemberMapper memberMapper;
 
     @Autowired
     private ProjectRoleService roleService;
@@ -52,9 +52,9 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String module = jsonObj.getString("module");
         String projectUuid = jsonObj.getString("projectUuid");
-        ProjectMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
+        ProjectGroupMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
         if (memberVo != null){
-            List<RoleActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupId(), module);
+            List<RoleActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupUuid(), module);
             List<String> actionNameList = new ArrayList<>();
             actionVoList.stream().forEach(e -> actionNameList.add(e.getAction()));
             JSONObject returnObj = new JSONObject();

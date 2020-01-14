@@ -10,23 +10,19 @@ import codedriver.framework.restful.annotation.EntityField;
  * @description:
  * @create: 2019-12-23 18:25
  **/
-public class ProjectMemberVo extends BasePageVo {
+public class ProjectGroupMemberVo extends BasePageVo {
 
     @EntityField(name = "主键ID", type = ApiParamType.LONG)
     private Long id;
 
-    @EntityField(name = "项目Uuid", type = ApiParamType.STRING)
-    private String projectUuid;
-
     @EntityField(name = "用户id", type = ApiParamType.STRING)
     private String userId;
+
+    @EntityField(name = "项目组uuid", type = ApiParamType.LONG)
+    private String groupUuid;
+
     private UserVo userVo;
 
-    @EntityField(name = "是否为组长", type = ApiParamType.INTEGER)
-    private int isLeader;
-
-    @EntityField(name = "项目组id", type = ApiParamType.LONG)
-    private Long groupId;
     private ProjectGroupVo groupVo;
 
     public Long getId() {
@@ -35,14 +31,6 @@ public class ProjectMemberVo extends BasePageVo {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getProjectUuid() {
-        return projectUuid;
-    }
-
-    public void setProjectUuid(String projectUuid) {
-        this.projectUuid = projectUuid;
     }
 
     public String getUserId() {
@@ -61,20 +49,12 @@ public class ProjectMemberVo extends BasePageVo {
         this.userVo = userVo;
     }
 
-    public int getIsLeader() {
-        return isLeader;
+    public String getGroupUuid() {
+        return groupUuid;
     }
 
-    public void setIsLeader(int isLeader) {
-        this.isLeader = isLeader;
-    }
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
+    public void setGroupUuid(String groupUuid) {
+        this.groupUuid = groupUuid;
     }
 
     public ProjectGroupVo getGroupVo() {

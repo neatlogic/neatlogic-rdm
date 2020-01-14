@@ -8,6 +8,7 @@ package codedriver.module.rdm.dto;
 public class ProjectGroupVo {
     private Long id;
     private String name;
+    private String uuid;
     private String projectUuid;
     private String role;
 
@@ -41,5 +42,13 @@ public class ProjectGroupVo {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

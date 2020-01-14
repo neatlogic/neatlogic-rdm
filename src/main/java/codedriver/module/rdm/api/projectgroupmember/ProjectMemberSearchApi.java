@@ -1,4 +1,4 @@
-package codedriver.module.rdm.api.projectmember;
+package codedriver.module.rdm.api.projectgroupmember;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
@@ -6,8 +6,8 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
-import codedriver.module.rdm.dto.ProjectMemberVo;
+import codedriver.module.rdm.dto.ProjectGroupMemberVo;
+import codedriver.module.rdm.services.ProjectGroupMemberService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class ProjectMemberSearchApi extends ApiComponentBase {
 
     @Autowired
-    private ProjectMemberMapper memberMapper;
+    private ProjectGroupMemberService memberService;
 
     @Override
     public String getToken() {
@@ -39,13 +39,13 @@ public class ProjectMemberSearchApi extends ApiComponentBase {
     }
 
     @Input({ @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
-    @Output({ @Param(name = "projectMemberList", explode = ProjectMemberVo[].class, desc = "项目成员列表")})
+    @Output({ @Param(name = "projectMemberList", explode = ProjectGroupMemberVo[].class, desc = "项目成员列表")})
     @Description(desc = "项目组成员列表返回接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String projectUuid = jsonObj.getString("projectUuid");
         JSONObject returnObj = new JSONObject();
-        returnObj.put("projectMemberList", memberMapper.getProjectMemberList(projectUuid));
+        returnObj.put("projectMemberList", memberService.searchProjectGroupMemberList(projectUuid));
         return returnObj;
     }
 }

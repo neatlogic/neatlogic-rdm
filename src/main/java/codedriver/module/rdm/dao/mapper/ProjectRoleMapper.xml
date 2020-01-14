@@ -3,38 +3,34 @@
 <mapper namespace="codedriver.module.rdm.dao.mapper.ProjectRoleMapper">
     <resultMap id="RoleActionMap" type="codedriver.module.rdm.dto.RoleActionVo">
         <id column="id" property="id"/>
-        <result column="groupId" property="groupId"/>
+        <result column="groupUuid" property="groupUuid"/>
         <result column="action" property="action"/>
         <result column="createUser" property="createUser"/>
         <result column="createTime" property="createTime"/>
         <result column="module" property="module"/>
     </resultMap>
-    <select id="searchRoleActionByGroupIdAndModule" resultMap="RoleActionMap">
+    <select id="searchRoleActionByGroupUuidAndModule" resultMap="RoleActionMap">
         SELECT
         a.`id`,
-        a.`group_id` as `groupId`,
+        a.`group_uuid` as `groupUuid`,
         a.`action`,
         a.`create_user` as `createUser`,
         a.`create_time` as `createTime`,
         a.`module`
-        FROM `rdm_role_action` a
-        WHERE a.`group_id` = #{groupId} AND a.`module` = #{module}
-    </select>
-
-    <select id="checkRoleAction" resultType="java.lang.Integer">
-        SELECT
+        FROM `rdm_project_group_action` a
+        WHERE a.`group_uuid` = #{groupUuid} AND a.`module` = #{module}
     </select>
 
     <insert id="insertProjectRoleAction" parameterType="codedriver.module.rdm.dto.RoleActionVo">
-        INSERT INTO `rdm_role_action`
+        INSERT INTO `rdm_project_group_action`
         (
-        `group_id`,
+        `group_uuid`,
         `action`,
         `module`,
         `create_user`,
         `create_time`
         ) VALUES (
-        #{groupId},
+        #{groupUuid},
         #{action},
         #{module},
         #{createUser},
@@ -42,7 +38,7 @@
         )
     </insert>
 
-    <delete id="deleteProjectRoleAction" parameterType="java.lang.Long">
-        DELETE FROM `rdm_role_action` WHERE `group_id` = #{groupId}
+    <delete id="deleteProjectRoleAction" parameterType="java.lang.String">
+        DELETE FROM `rdm_project_group_action` WHERE `group_uuid` = #{groupUuid}
     </delete>
 </mapper>
