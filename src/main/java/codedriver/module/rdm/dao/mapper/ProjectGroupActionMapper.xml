@@ -24,10 +24,10 @@
                 a.`group_uuid` = #{groupUuid}
             </if>
             <if test="module != null and module != ''">
-                a.`module` = #{module}
+                AND a.`module` = #{module}
             </if>
             <if test="processAreaUuid != null and processAreaUuid != ''">
-                AND b.`process_area_uuid` = #{processAreaUuid}
+                AND  b.`process_area_uuid` = #{processAreaUuid}
             </if>
         </where>
     </select>

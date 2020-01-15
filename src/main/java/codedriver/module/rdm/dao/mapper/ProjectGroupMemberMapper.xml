@@ -78,7 +78,7 @@
         FROM `rdm_project_group_member`
         <where>
             <if test="userId !=null and userId != ''">
-                AND `user_id` = #{userId}
+               `user_id` = #{userId}
             </if>
             <if test="groupUuid != null and groupUuid != ''">
                 AND `group_uuid` = #{groupUuid}

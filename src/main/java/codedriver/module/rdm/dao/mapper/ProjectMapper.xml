@@ -53,11 +53,11 @@
         LEFT JOIN `rdm_project_field` b ON a.project_uuid = b.project_uuid AND a.process_area_uuid = b.process_area_uuid
         <where>
             <if test="projectUuid != null">
-              and  a.`project_uuid` = #{projectUuid}
+              a.`project_uuid` = #{projectUuid}
             </if>
 
             <if test="processAreaUuid != null">
-             and   a.`process_area_uuid` = #{processAreaUuid}
+             AND   a.`process_area_uuid` = #{processAreaUuid}
             </if>
         </where>
     </select>
