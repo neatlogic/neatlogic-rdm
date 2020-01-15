@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface ProjectGroupMemberMapper {
 
-    List<ProjectGroupMemberVo> getProjectMemberList(String projectUuid);
+    List<ProjectGroupMemberVo> getProjectGroupMemberList(String projectUuid);
 
-    void insertProjectMember(ProjectGroupMemberVo memberVo);
+    void insertProjectGroupMember(ProjectGroupMemberVo memberVo);
 
-    void deleteProjectMember(ProjectGroupMemberVo memberVo);
+    void deleteProjectGroupMember(ProjectGroupMemberVo memberVo);
 
-    ProjectGroupMemberVo getProjectMember(@Param("projectUuid") String projectUuid, @Param("userId") String userId);
+    ProjectGroupMemberVo getProjectGroupMember(@Param("projectUuid") String projectUuid, @Param("userId") String userId);
 }

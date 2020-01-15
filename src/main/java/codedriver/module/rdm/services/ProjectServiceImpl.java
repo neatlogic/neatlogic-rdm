@@ -130,11 +130,12 @@ public class ProjectServiceImpl implements ProjectService {
         groupVo.setProjectUuid(projectUuid);
         groupVo.setName("项目管理员");
         groupVo.setRole(RoleType.MANAGER.getValue());
+        groupVo.setUuid(UuidUtil.getUuid());
         groupMapper.insertProjectGroup(groupVo);
         ProjectGroupMemberVo memberVo = new ProjectGroupMemberVo();
         memberVo.setGroupUuid(groupVo.getUuid());
         memberVo.setUserId(UserContext.get().getUserId());
-        memberMapper.insertProjectMember(memberVo);
+        memberMapper.insertProjectGroupMember(memberVo);
     }
 
     @Override

@@ -19,26 +19,26 @@ public class ProjectGroupMemberServiceImpl implements ProjectGroupMemberService 
 
     @Override
     public void deleteProjectGroupMember(ProjectGroupMemberVo memberVo) {
-        memberMapper.deleteProjectMember(memberVo);
+        memberMapper.deleteProjectGroupMember(memberVo);
     }
 
     @Override
     public List<ProjectGroupMemberVo> searchProjectGroupMemberList(String projectUuid) {
-        return memberMapper.getProjectMemberList(projectUuid);
+        return memberMapper.getProjectGroupMemberList(projectUuid);
     }
 
     @Override
     public List<Long> saveProjectGroupMember(String groupUuid, List<String> userIdList) {
         ProjectGroupMemberVo member = new ProjectGroupMemberVo();
         member.setGroupUuid(groupUuid);
-        memberMapper.deleteProjectMember(member);
+        memberMapper.deleteProjectGroupMember(member);
 
         List<Long> idList = new ArrayList<>();
         for (String userId : userIdList){
             ProjectGroupMemberVo memberVo = new ProjectGroupMemberVo();
             memberVo.setUserId(userId);
             memberVo.setGroupUuid(groupUuid);
-            memberMapper.insertProjectMember(memberVo);
+            memberMapper.insertProjectGroupMember(memberVo);
             idList.add(memberVo.getId());
         }
         return idList;

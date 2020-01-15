@@ -21,7 +21,7 @@
         </association>
     </resultMap>
 
-    <select id="getProjectMemberList" parameterType="java.lang.String" resultMap="memberMap">
+    <select id="getProjectGroupMemberList" parameterType="java.lang.String" resultMap="memberMap">
         SELECT
         a.`id`,
         a.`user_id` as `userId`,
@@ -39,7 +39,7 @@
         WHERE b.`is_active` = 1 AND c.`project_uuid` = #{projectUuid}
     </select>
 
-    <select id="getProjectMember" resultMap="memberMap">
+    <select id="getProjectGroupMember" resultMap="memberMap">
         SELECT
         a.`id`,
         a.`user_id` as `userId`,
@@ -59,7 +59,7 @@
         AND a.`user_id` = #{userId}
     </select>
 
-    <insert id="insertProjectMember" parameterType="codedriver.module.rdm.dto.ProjectGroupMemberVo">
+    <insert id="insertProjectGroupMember" parameterType="codedriver.module.rdm.dto.ProjectGroupMemberVo">
         <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
             select LAST_INSERT_ID() as id
         </selectKey>
@@ -73,7 +73,7 @@
         )
     </insert>
 
-    <delete id="deleteProjectMember" parameterType="codedriver.module.rdm.dto.ProjectGroupMemberVo">
+    <delete id="deleteProjectGroupMember" parameterType="codedriver.module.rdm.dto.ProjectGroupMemberVo">
         DELETE
         FROM `rdm_project_group_member`
         <where>

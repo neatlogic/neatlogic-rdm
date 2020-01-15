@@ -52,7 +52,7 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String module = jsonObj.getString("module");
         String projectUuid = jsonObj.getString("projectUuid");
-        ProjectGroupMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
+        ProjectGroupMemberVo memberVo = memberMapper.getProjectGroupMember(projectUuid, UserContext.get().getUserId());
         if (memberVo != null){
             List<ProjectGroupActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupUuid(), module);
             List<String> actionNameList = new ArrayList<>();
