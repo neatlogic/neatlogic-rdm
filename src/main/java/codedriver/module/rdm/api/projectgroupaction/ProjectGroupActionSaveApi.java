@@ -1,4 +1,4 @@
-package codedriver.module.rdm.api.projectrole;
+package codedriver.module.rdm.api.projectgroupaction;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.asynchronization.threadlocal.UserContext;
@@ -21,7 +21,7 @@ import java.util.List;
  * @create: 2020-01-08 11:01
  **/
 @Service
-public class ProjectRoleActionSaveApi extends ApiComponentBase {
+public class ProjectGroupActionSaveApi extends ApiComponentBase {
 
 
     @Autowired
