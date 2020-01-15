@@ -9,6 +9,7 @@ import codedriver.module.rdm.dao.mapper.ProjectGroupMemberMapper;
 import codedriver.module.rdm.dto.ProjectGroupMemberVo;
 import codedriver.module.rdm.dto.ProjectGroupActionVo;
 import codedriver.module.rdm.services.ProjectRoleService;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,13 +53,20 @@ public class ProjectRoleActionSearchApi extends ApiComponentBase {
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String module = jsonObj.getString("module");
         String projectUuid = jsonObj.getString("projectUuid");
-        ProjectGroupMemberVo memberVo = memberMapper.getProjectGroupMember(projectUuid, UserContext.get().getUserId());
-        if (memberVo != null){
-            List<ProjectGroupActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupUuid(), module);
-            List<String> actionNameList = new ArrayList<>();
-            actionVoList.stream().forEach(e -> actionNameList.add(e.getAction()));
+        List<ProjectGroupMemberVo> memberList = memberMapper.getProjectGroupMember(projectUuid, UserContext.get().getUserId());
+        if (memberList != null && memberList.size() > 0){
+            JSONArray returnArray = new JSONArray();
+            for (ProjectGroupMemberVo memberVo : memberList){
+                List<ProjectGroupActionVo> actionVoList = roleService.searchProjectRoleAction(memberVo.getGroupUuid(), module);
+                List<String> actionNameList = new ArrayList<>();
+                actionVoList.stream().forEach(e -> actionNameList.add(e.getAction()));
+                JSONObject dataObj = new JSONObject();
+                dataObj.put("actionList", actionNameList);
+                dataObj.put("member", memberVo);
+                returnArray.add(dataObj);
+            }
             JSONObject returnObj = new JSONObject();
-            returnObj.put("actionList", actionNameList);
+            returnObj.put("actionArray", returnArray);
             return returnObj;
         }
         return new JSONObject();

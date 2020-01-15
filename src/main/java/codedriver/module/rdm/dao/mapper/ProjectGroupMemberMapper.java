@@ -13,5 +13,5 @@ public interface ProjectGroupMemberMapper {
 
     void deleteProjectGroupMember(ProjectGroupMemberVo memberVo);
 
-    ProjectGroupMemberVo getProjectGroupMember(@Param("projectUuid") String projectUuid, @Param("userId") String userId);
+    List<ProjectGroupMemberVo> getProjectGroupMember(@Param("projectUuid") String projectUuid, @Param("userId") String userId);
 }

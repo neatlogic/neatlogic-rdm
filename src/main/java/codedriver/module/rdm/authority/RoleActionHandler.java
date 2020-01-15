@@ -34,14 +34,19 @@ public class RoleActionHandler {
     public void ActionCheck(JoinPoint point, ActionCheck actionCheck){
         Object[] params = point.getArgs();
         ActionCheckVo checkVo = (ActionCheckVo)params[0];
-        ProjectGroupMemberVo memberVo = memberMapper.getProjectGroupMember(checkVo.getProjectUuid(), checkVo.getUserId());
-        List<ProjectGroupActionVo> actionVoList = roleMapper.searchGroupActionByGroupUuidAndModule(memberVo.getGroupUuid(), checkVo.getModule());
         boolean auth = false;
-        for (ProjectGroupActionVo actionVo : actionVoList){
-            if (actionCheck.value().equals(actionVo.getAction())){
-                auth = true;
-                break;
+        List<ProjectGroupMemberVo> memberVoList = memberMapper.getProjectGroupMember(checkVo.getProjectUuid(), checkVo.getUserId());
+        if (memberVoList != null && memberVoList.size() > 0){
+            for (ProjectGroupMemberVo member : memberVoList){
+                List<ProjectGroupActionVo> actionVoList = roleMapper.searchGroupActionByGroupUuidAndModule(member.getGroupUuid(), checkVo.getModule());
+                for (ProjectGroupActionVo actionVo : actionVoList){
+                    if (actionCheck.value().equals(actionVo.getAction())){
+                        auth = true;
+                        break;
+                    }
+                }
             }
+
         }
         if (!auth){
             throw new ActionCheckFailedException();
