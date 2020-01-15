@@ -1,9 +1,9 @@
 package codedriver.module.rdm.constants;
 
 public enum RoleType {
-    ADMIN("admin","系统管理员"),
-    MANAGER("manager", "项目管理员"),
-    ORDINARY("ordinary", "普通成员");
+    ADMIN("系统管理员","admin"),
+    MANAGER("项目管理员", "manager"),
+    ORDINARY("普通成员", "ordinary");
 
     private String text;
     private String value;

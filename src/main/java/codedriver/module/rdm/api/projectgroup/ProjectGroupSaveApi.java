@@ -38,22 +38,22 @@ public class ProjectGroupSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "id", type = ApiParamType.LONG, desc = "主键ID"),
+    @Input({ @Param( name = "uuid", type = ApiParamType.STRING, desc = "组uuid"),
              @Param( name = "name", type = ApiParamType.STRING, desc = "项目组名称", isRequired = true),
              @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目Uuid", isRequired = true),
              @Param( name = "role", type = ApiParamType.STRING, isRequired = true)})
-    @Output( @Param( name = "id", type = ApiParamType.LONG, desc = "主键ID"))
+    @Output( @Param( name = "uuid", type = ApiParamType.STRING, desc = "组uuid"))
     @Description(desc = "项目组保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         ProjectGroupVo groupVo = new ProjectGroupVo();
-        groupVo.setId(jsonObj.getLong("id"));
+        groupVo.setUuid(jsonObj.getString("uuid"));
         groupVo.setName(jsonObj.getString("name"));
         groupVo.setProjectUuid(jsonObj.getString("projectUuid"));
         groupVo.setRole(jsonObj.getString("role"));
         groupService.saveProjectGroup(groupVo);
         JSONObject returnObj = new JSONObject();
-        returnObj.put("id", groupVo.getId());
+        returnObj.put("uuid", groupVo.getUuid());
         return returnObj;
     }
 }

@@ -14,5 +14,5 @@ public interface ProjectGroupActionMapper {
 
     public List<ProjectGroupActionVo> searchGroupActionByGroupUuidAndModule(@Param("groupUuid") String groupUuid, @Param("module") String module);
 
-    public void deleteGroupActionProcessArea(List<Long> groupActionIdList);
+    public void deleteGroupActionProcessArea(@Param("groupActionIdList") List<Long> groupActionIdList);
 }

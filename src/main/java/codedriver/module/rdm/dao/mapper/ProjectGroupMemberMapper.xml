@@ -80,7 +80,7 @@
             <if test="userId !=null and userId != ''">
                 AND `user_id` = #{userId}
             </if>
-            <if test="groupId != null and groupId != 0L">
+            <if test="groupUuid != null and groupUuid != ''">
                 AND `group_uuid` = #{groupUuid}
             </if>
         </where>

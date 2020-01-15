@@ -2,8 +2,8 @@ package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectGroupMemberMapper;
 import codedriver.module.rdm.dto.ProjectGroupMemberVo;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,10 @@ import java.util.List;
  * @description:
  * @create: 2020-01-14 17:05
  **/
+@Service
 public class ProjectGroupMemberServiceImpl implements ProjectGroupMemberService {
 
+    @Autowired
     private ProjectGroupMemberMapper memberMapper;
 
     @Override

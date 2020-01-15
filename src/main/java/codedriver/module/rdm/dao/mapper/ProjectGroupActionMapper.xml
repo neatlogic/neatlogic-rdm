@@ -22,6 +22,9 @@
     </select>
 
     <insert id="insertProjectGroupAction" parameterType="codedriver.module.rdm.dto.ProjectGroupActionVo">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
         INSERT INTO `rdm_project_group_action`
         (
         `group_uuid`,
@@ -39,6 +42,9 @@
     </insert>
 
     <insert id="insertProjectGroupActionProcess">
+        <selectKey keyProperty="id" resultType="java.lang.Long" order="AFTER">
+            select LAST_INSERT_ID() as id
+        </selectKey>
         INSERT INTO
          `rdm_project_group_action_process`(
          `group_action_id`,

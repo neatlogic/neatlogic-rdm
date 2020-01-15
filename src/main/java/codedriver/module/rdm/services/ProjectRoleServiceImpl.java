@@ -30,8 +30,10 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
         List<ProjectGroupActionVo> actionVoList = groupActionMapper.searchGroupActionByGroupUuidAndModule(groupUuid, ModuleType.PROCESS.getValue());
         List<Long> groupActionIdList = new ArrayList<>();
         actionVoList.stream().forEach(e -> groupActionIdList.add(e.getId()));
-        groupActionMapper.deleteGroupActionProcessArea(groupActionIdList);
-        groupActionMapper.deleteProjectGroupAction(groupUuid);
+        if (groupActionIdList.size() >0){
+            groupActionMapper.deleteGroupActionProcessArea(groupActionIdList);
+            groupActionMapper.deleteProjectGroupAction(groupUuid);
+        }
         for (ProjectGroupActionVo actionVo : roleActionVoList){
             groupActionMapper.insertProjectGroupAction(actionVo);
             if (ModuleType.PROCESS.getValue().equals(actionVo.getModule())){
