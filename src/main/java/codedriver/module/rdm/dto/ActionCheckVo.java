@@ -9,6 +9,7 @@ public class ActionCheckVo {
     private String projectUuid;
     private String module;
     private String userId;
+    private String processAreaUuid;
 
     public String getProjectUuid() {
         return projectUuid;
@@ -32,5 +33,13 @@ public class ActionCheckVo {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getProcessAreaUuid() {
+        return processAreaUuid;
+    }
+
+    public void setProcessAreaUuid(String processAreaUuid) {
+        this.processAreaUuid = processAreaUuid;
     }
 }

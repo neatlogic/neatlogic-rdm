@@ -9,7 +9,7 @@
         <result column="createTime" property="createTime"/>
         <result column="module" property="module"/>
     </resultMap>
-    <select id="searchGroupActionByGroupUuidAndModule" resultMap="RoleActionMap">
+    <select id="searchGroupActionByParams" resultMap="RoleActionMap" parameterType="codedriver.module.rdm.dto.ProjectGroupActionVo">
         SELECT
         a.`id`,
         a.`group_uuid` as `groupUuid`,
@@ -18,7 +18,18 @@
         a.`create_time` as `createTime`,
         a.`module`
         FROM `rdm_project_group_action` a
-        WHERE a.`group_uuid` = #{groupUuid} AND a.`module` = #{module}
+        LEFT JOIN `rdm_project_group_action_process` b ON a.id = b.`group_action_id`
+        <where>
+            <if test="groupUuid != null and groupUuid != ''">
+                a.`group_uuid` = #{groupUuid}
+            </if>
+            <if test="module != null and module != ''">
+                a.`module` = #{module}
+            </if>
+            <if test="processAreaUuid != null and processAreaUuid != ''">
+                AND b.`process_area_uuid` = #{processAreaUuid}
+            </if>
+        </where>
     </select>
 
     <insert id="insertProjectGroupAction" parameterType="codedriver.module.rdm.dto.ProjectGroupActionVo">
@@ -59,11 +70,7 @@
         DELETE FROM `rdm_project_group_action` WHERE `group_uuid` = #{groupUuid}
     </delete>
 
-    <delete id="deleteGroupActionProcessArea" parameterType="java.util.List">
-        DELETE FROM `rdm_project_group_action_process` WHERE `group_action_id`
-        IN
-        <foreach collection="groupActionIdList" separator="," open="(" close=")" item="id">
-            #{id}
-        </foreach>
+    <delete id="deleteGroupActionProcessArea" parameterType="java.lang.Long">
+        DELETE FROM `rdm_project_group_action_process` WHERE `group_action_id` = #{groupActionId}
     </delete>
 </mapper>

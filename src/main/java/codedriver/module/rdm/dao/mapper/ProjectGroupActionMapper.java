@@ -12,7 +12,9 @@ public interface ProjectGroupActionMapper {
 
     public void deleteProjectGroupAction(String groupUuid);
 
-    public List<ProjectGroupActionVo> searchGroupActionByGroupUuidAndModule(@Param("groupUuid") String groupUuid, @Param("module") String module);
+    public List<ProjectGroupActionVo> searchGroupActionByParams(ProjectGroupActionVo actionVo);
 
-    public void deleteGroupActionProcessArea(@Param("groupActionIdList") List<Long> groupActionIdList);
+    public void deleteGroupActionProcessArea(Long groupActionId);
+
+
 }

@@ -27,13 +27,18 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
 
     @Override
     public void saveProjectRoleAction(String groupUuid, List<ProjectGroupActionVo> roleActionVoList) {
-        List<ProjectGroupActionVo> actionVoList = groupActionMapper.searchGroupActionByGroupUuidAndModule(groupUuid, ModuleType.PROCESS.getValue());
+        ProjectGroupActionVo actionParam = new ProjectGroupActionVo();
+        actionParam.setGroupUuid(groupUuid);
+        List<ProjectGroupActionVo> actionVoList = groupActionMapper.searchGroupActionByParams(actionParam);
         List<Long> groupActionIdList = new ArrayList<>();
         actionVoList.stream().forEach(e -> groupActionIdList.add(e.getId()));
         if (groupActionIdList.size() >0){
-            groupActionMapper.deleteGroupActionProcessArea(groupActionIdList);
+            for (Long groupActionId : groupActionIdList){
+                groupActionMapper.deleteGroupActionProcessArea(groupActionId);
+            }
             groupActionMapper.deleteProjectGroupAction(groupUuid);
         }
+
         for (ProjectGroupActionVo actionVo : roleActionVoList){
             groupActionMapper.insertProjectGroupAction(actionVo);
             if (ModuleType.PROCESS.getValue().equals(actionVo.getModule())){
@@ -44,12 +49,9 @@ public class ProjectRoleServiceImpl implements ProjectRoleService {
 
     @Override
     public List<ProjectGroupActionVo> searchProjectRoleAction(String groupUuid, String module) {
-        return groupActionMapper.searchGroupActionByGroupUuidAndModule(groupUuid, module);
-    }
-
-    @ActionCheck(name = "检查", value = "check")
-    @Override
-    public void test(@InputParam ActionCheckVo actionCheckVo) {
-        System.out.println("aa");
+        ProjectGroupActionVo actionVo = new ProjectGroupActionVo();
+        actionVo.setGroupUuid(groupUuid);
+        actionVo.setModule(module);
+        return groupActionMapper.searchGroupActionByParams(actionVo);
     }
 }

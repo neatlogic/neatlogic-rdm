@@ -11,6 +11,4 @@ public interface ProjectRoleService {
 
     public List<ProjectGroupActionVo> searchProjectRoleAction(String groupUuid, String module);
 
-    public void test(ActionCheckVo actionCheckVo);
-
 }
