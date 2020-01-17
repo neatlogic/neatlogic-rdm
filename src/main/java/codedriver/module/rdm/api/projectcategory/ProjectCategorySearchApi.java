@@ -42,24 +42,24 @@ public class ProjectCategorySearchApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "uuid", type = ApiParamType.STRING, desc = "项目类别uuid"),
-             @Param( name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
-             @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
-    @Output({ @Param(name = "categoryList", explode = CategoryVo[].class, desc = "项目类别集合")})
+    @Input({@Param(name = "uuid", type = ApiParamType.STRING, desc = "项目类别uuid"),
+            @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
+            @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true)})
+    @Output({@Param(name = "categoryList", explode = CategoryVo[].class, desc = "项目类别集合")})
     @Description(desc = "项目类别首层/单个检索接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         CategoryVo categoryVo = new CategoryVo();
-        if (jsonObj.containsKey("uuid")){
+        if (jsonObj.containsKey("uuid")) {
             categoryVo.setUuid(jsonObj.getString("uuid"));
         }
         categoryVo.setProjectUuid(jsonObj.getString("projectUuid"));
         categoryVo.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
         List<CategoryVo> categoryVoList = categoryMapper.searchProjectCategory(categoryVo);
-        if (categoryVoList.size() > 1){
+        if (categoryVoList.size() > 1) {
             List<CategoryVo> rootCateGory = new ArrayList<>();
-            for (CategoryVo category : categoryVoList){
-                if (StringUtils.isBlank(category.getParentUuid())){
+            for (CategoryVo category : categoryVoList) {
+                if (StringUtils.isBlank(category.getParentUuid())) {
                     rootCateGory.add(category);
                 }
             }

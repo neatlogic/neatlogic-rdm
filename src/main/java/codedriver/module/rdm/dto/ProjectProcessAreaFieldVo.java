@@ -2,7 +2,6 @@ package codedriver.module.rdm.dto;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.EntityField;
-import codedriver.framework.restful.core.ApiComponent;
 
 /**
  * @program: codedriver
@@ -10,7 +9,7 @@ import codedriver.framework.restful.core.ApiComponent;
  * @create: 2019-12-19 14:38
  **/
 public class ProjectProcessAreaFieldVo {
-    @EntityField( name = "主键ID", type = ApiParamType.LONG)
+    @EntityField(name = "主键ID", type = ApiParamType.LONG)
     private Long id;
 
     @EntityField(name = "项目uuid", type = ApiParamType.STRING)

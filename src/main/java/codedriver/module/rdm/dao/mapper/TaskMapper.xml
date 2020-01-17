@@ -38,7 +38,7 @@
         </collection>
 
         <collection property="processAccountIdList" ofType="java.lang.String">
-            <result column="processAccount" />
+            <result column="processAccount"/>
         </collection>
     </resultMap>
 
@@ -99,6 +99,19 @@
         LEFT JOIN `file` f ON rta.`file_uuid` = f.`uuid`
         LEFT JOIN `rdm_task_associated` rtas ON rt.`uuid` = rtas.`task_uuid`
         WHERE rt.uuid = #{uuid}
+    </select>
+
+    <select id="getTaskAssociationCount" resultType="int">
+        SELECT
+        COUNT(1)
+        FROM
+          `rdm_task_associated`
+        WHERE `task_uuid` = #{taskUuid}
+        AND `target_task_process_area_uuid` = #{targetTaskProcessAreaUuid}
+    </select>
+
+    <select id="getTaskIterationCount" resultType="string">
+        SELECT iteration_uuid FROM rdm_task WHERE   `uuid` = #{uuid}
     </select>
 
     <insert id="insertTask" parameterType="codedriver.module.rdm.dto.TaskVo">
@@ -168,7 +181,7 @@
     </insert>
 
     <insert id="insertTaskDescription">
-        INSERT INTO `rdm_task_descpiption` (
+        INSERT INTO `rdm_task_description` (
             `task_uuid`,
             `description`
         )

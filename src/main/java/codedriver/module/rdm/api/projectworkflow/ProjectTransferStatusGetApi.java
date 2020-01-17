@@ -51,7 +51,7 @@ public class ProjectTransferStatusGetApi extends ApiComponentBase {
         String projectUuid = jsonObj.getString("projectUuid");
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         String statusUuid = jsonObj.getString("statusUuid");
-        result.put("statusList", projectWorkflowMapper.getTransferStatusList(projectUuid,processAreaUuid,statusUuid ));
+        result.put("statusList", projectWorkflowMapper.getTransferStatusList(projectUuid, processAreaUuid, statusUuid));
         return result;
     }
 }

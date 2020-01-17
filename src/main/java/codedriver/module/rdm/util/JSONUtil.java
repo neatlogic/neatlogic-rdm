@@ -13,15 +13,15 @@ import java.util.List;
 public class JSONUtil {
 
     /*
-      * @Description: 页面数据统一处理
-      * @param dataList 数据集合
-      * @param rownum  总条数
-      * @param pageCount 页数
-      * @param pageSize  每页数量
-      * @param currentPage 当前页
-      * @return: com.alibaba.fastjson.JSONObject
-      * @Date 11:12 2019/12/9
-      */
+     * @Description: 页面数据统一处理
+     * @param dataList 数据集合
+     * @param rownum  总条数
+     * @param pageCount 页数
+     * @param pageSize  每页数量
+     * @param currentPage 当前页
+     * @return: com.alibaba.fastjson.JSONObject
+     * @Date 11:12 2019/12/9
+     */
     public static JSONObject parsePage(List<?> dataList, Integer rownum, Integer pageCount, Integer pageSize, Integer currentPage) {
         JSONObject data = new JSONObject();
         data.put("dataList", dataList);

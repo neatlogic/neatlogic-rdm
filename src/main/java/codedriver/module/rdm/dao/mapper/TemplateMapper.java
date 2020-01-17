@@ -4,7 +4,6 @@ import codedriver.module.rdm.dto.TemplateProcessAreaFieldVo;
 import codedriver.module.rdm.dto.TemplateProcessAreaTemplateVo;
 import codedriver.module.rdm.dto.TemplateProcessAreaVo;
 import codedriver.module.rdm.dto.TemplateVo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

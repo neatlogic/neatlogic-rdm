@@ -57,12 +57,12 @@ public class CategoryVo {
      * 项目uuid
      */
     private String projectUuid;
-    
-    /** 
-    * @Description: 是否有效 
-    * @Param:  
-    * @return:   
-    */ 
+
+    /**
+     * @Description: 是否有效
+     * @Param:
+     * @return:
+     */
     private int isActive;
 
     public int getIsActive() {

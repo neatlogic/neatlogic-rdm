@@ -3,7 +3,6 @@ package codedriver.module.rdm.api.projectgroup;
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.ProjectGroupVo;
@@ -38,8 +37,8 @@ public class ProjectGroupDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "id", type = ApiParamType.LONG, desc = "主键ID"),
-             @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目Uuid")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "主键ID"),
+            @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目Uuid")})
     @Description(desc = "项目组删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

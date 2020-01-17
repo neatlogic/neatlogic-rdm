@@ -3,13 +3,13 @@
 <mapper namespace="codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper">
     <resultMap id="projectWorkflowMap" type="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo">
         <id property="uuid" column="uuid"/>
-        <id property="projectUuid" column="projectUuid" />
-        <id property="processAreaUuid" column="processAreaUuid" />
-        <result property="name" column="name" />
-        <result property="type" column="type" />
+        <id property="projectUuid" column="projectUuid"/>
+        <id property="processAreaUuid" column="processAreaUuid"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
         <result property="color" column="color"/>
         <collection property="transferTo" ofType="java.lang.String">
-            <result column="transferTo" />
+            <result column="transferTo"/>
         </collection>
     </resultMap>
 
@@ -56,7 +56,8 @@
         AND a.uuid = #{uuid}
     </select>
 
-    <select id="checkProjectStatusExist" parameterType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo" resultType="int">
+    <select id="checkProjectStatusExist" parameterType="codedriver.module.rdm.dto.ProjectWorkFlowStatusVo"
+            resultType="int">
         SELECT
         COUNT(id)
         FROM `rdm_project_status` a

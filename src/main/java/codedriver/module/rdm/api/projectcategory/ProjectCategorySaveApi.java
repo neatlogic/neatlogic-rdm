@@ -41,13 +41,13 @@ public class ProjectCategorySaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
-             @Param( name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
-             @Param( name = "uuid", type = ApiParamType.STRING, desc = "主键uuid"),
-             @Param( name = "parentUuid", type = ApiParamType.STRING, desc = "父级类别uuid"),
-             @Param( name = "name", type = ApiParamType.STRING, desc = "类别名称", isRequired = true, xss = true),
-             @Param( name = "description", type = ApiParamType.STRING, desc = "类别描述", xss = true)})
-    @Output({ @Param( name = "uuid", type = ApiParamType.STRING, desc = "类别主键uuid")})
+    @Input({@Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid", isRequired = true),
+            @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "主键uuid"),
+            @Param(name = "parentUuid", type = ApiParamType.STRING, desc = "父级类别uuid"),
+            @Param(name = "name", type = ApiParamType.STRING, desc = "类别名称", isRequired = true, xss = true),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "类别描述", xss = true)})
+    @Output({@Param(name = "uuid", type = ApiParamType.STRING, desc = "类别主键uuid")})
     @Description(desc = "项目类别保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -55,19 +55,19 @@ public class ProjectCategorySaveApi extends ApiComponentBase {
         category.setProjectUuid(jsonObj.getString("projectUuid"));
         category.setProcessAreaUuid(jsonObj.getString("processAreaUuid"));
         category.setName(jsonObj.getString("name"));
-        if (jsonObj.containsKey("uuid")){
+        if (jsonObj.containsKey("uuid")) {
             category.setUuid(jsonObj.getString("uuid"));
         }
-        if (jsonObj.containsKey("parentUuid")){
+        if (jsonObj.containsKey("parentUuid")) {
             category.setParentUuid(jsonObj.getString("parentUuid"));
         }
-        if (jsonObj.containsKey("description")){
+        if (jsonObj.containsKey("description")) {
             category.setDescription(jsonObj.getString("description"));
         }
 
-        if (StringUtils.isNotBlank(category.getUuid())){
+        if (StringUtils.isNotBlank(category.getUuid())) {
             categoryMapper.updateProjectCategoryByUuid(category);
-        }else {
+        } else {
             category.setUuid(UuidUtil.getUuid());
             category.setIsActive(1);
             categoryMapper.insertProjectCategory(category);

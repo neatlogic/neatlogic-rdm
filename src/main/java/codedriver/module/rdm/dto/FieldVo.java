@@ -1,7 +1,5 @@
 package codedriver.module.rdm.dto;
 
-import codedriver.module.rdm.constants.FieldType;
-
 /**
  * @ClassName FieldVo
  * @Description 属性类
@@ -83,11 +81,11 @@ public class FieldVo {
     private String value;
 
 
-    public FieldVo(){
+    public FieldVo() {
 
     }
 
-    public FieldVo(String _field, String _name, String _uuid, String _type, String _config, Integer _sort){
+    public FieldVo(String _field, String _name, String _uuid, String _type, String _config, Integer _sort) {
         this.field = _field;
         this.name = _name;
         this.uuid = _uuid;
@@ -141,16 +139,16 @@ public class FieldVo {
         return alias;
     }
 
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     public String getField() {
         return field;
     }
 
     public void setField(String field) {
         this.field = field;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
     }
 
     public String getDescription() {

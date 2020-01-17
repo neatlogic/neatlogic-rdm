@@ -45,13 +45,13 @@ public class ProcessAreaSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name="name", type = ApiParamType.STRING, desc = "过程域名称", isRequired = true),
-            @Param(name="id", type = ApiParamType.STRING, desc = "过程域id", isRequired = false),
-            @Param(name="uuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = false),
-            @Param(name="description", type = ApiParamType.STRING, desc = "过程域描述", isRequired = false),
-            @Param(name="fieldList", type = ApiParamType.JSONARRAY, desc = "过程域字段列表", isRequired = false),
+    @Input({@Param(name = "name", type = ApiParamType.STRING, desc = "过程域名称", isRequired = true),
+            @Param(name = "id", type = ApiParamType.STRING, desc = "过程域id", isRequired = false),
+            @Param(name = "uuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = false),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "过程域描述", isRequired = false),
+            @Param(name = "fieldList", type = ApiParamType.JSONARRAY, desc = "过程域字段列表", isRequired = false),
     })
-    @Output({@Param(name="uuid", type = ApiParamType.STRING, desc = "过程域uuid")})
+    @Output({@Param(name = "uuid", type = ApiParamType.STRING, desc = "过程域uuid")})
     @Description(desc = "保存过程域接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
@@ -62,26 +62,26 @@ public class ProcessAreaSaveApi extends ApiComponentBase {
 
         processAreaVo.setName(name);
         processAreaVo.setDescription(description);
-        if(jsonObj.containsKey("uuid")){
+        if (jsonObj.containsKey("uuid")) {
             String uuid = jsonObj.getString("uuid");
             processAreaVo.setUuid(uuid);
             processAreaVo.setUpdateUser(UserContext.get().getUserId());
-        }else{
+        } else {
             processAreaVo.setCreateUser(UserContext.get().getUserId());
         }
 
 
         JSONArray fieldArray = jsonObj.getJSONArray("fieldList");
-        if(fieldArray != null && fieldArray.size() > 0 ){
+        if (fieldArray != null && fieldArray.size() > 0) {
             List<FieldVo> fieldList = new ArrayList<>();
-            for(Object fieldObject :fieldArray){
+            for (Object fieldObject : fieldArray) {
                 JSONObject fieldJson = JSONObject.parseObject(fieldObject.toString());
                 String field = fieldJson.getString("field");
                 String fieldName = fieldJson.getString("name");
                 String fieldUuid = fieldJson.getString("uuid");
-                String fieldType= fieldJson.getString("type");
+                String fieldType = fieldJson.getString("type");
                 String config = fieldJson.getString("config");
-                Integer sort= fieldJson.getInteger("sort");
+                Integer sort = fieldJson.getInteger("sort");
                 fieldList.add(new FieldVo(field, fieldName, fieldUuid, fieldType, config, sort));
             }
 

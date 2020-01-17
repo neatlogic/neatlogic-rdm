@@ -6,8 +6,8 @@
             select LAST_INSERT_ID() as id
         </selectKey>
         INSERT INTO
-         `rdm_project_group`
-         (
+        `rdm_project_group`
+        (
         `id`,
         `name`,
         `project_uuid`,

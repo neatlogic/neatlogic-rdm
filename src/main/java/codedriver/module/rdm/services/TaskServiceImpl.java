@@ -45,9 +45,9 @@ public class TaskServiceImpl implements TaskService {
         String projectUuid = taskVo.getProjectUuid();
         String iterationUuid = taskVo.getIterationUuid();
         String iterationName = taskVo.getIterationName();
-        if(StringUtils.isNotBlank(iterationUuid)){
+        if (StringUtils.isNotBlank(iterationUuid)) {
             ProjectIterationVo iterationVo = projectIterationMapper.getProjectIterationByUuid(projectUuid, iterationUuid);
-            if(iterationVo == null){
+            if (iterationVo == null) {
                 throw new ProjectIterationNotExistException(iterationName);
             }
         }
@@ -55,9 +55,9 @@ public class TaskServiceImpl implements TaskService {
         String statusUuid = taskVo.getStatusUuid();
         String statusName = taskVo.getStatusName();
         String processAreaUuid = taskVo.getProcessAreaUuid();
-        if(StringUtils.isNotBlank(statusUuid)){
+        if (StringUtils.isNotBlank(statusUuid)) {
             ProjectWorkFlowStatusVo statusVo = projectWorkflowMapper.getProjectWorkflowStatus(projectUuid, processAreaUuid, statusUuid);
-            if(statusVo == null){
+            if (statusVo == null) {
                 throw new ProjectStatusNotExistException(statusName);
             }
         }
@@ -80,12 +80,12 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        if(StringUtils.isNotBlank(taskVo.getDescription())){
+        if (StringUtils.isNotBlank(taskVo.getDescription())) {
             taskMapper.insertTaskDescription(uuid, taskVo.getDescription());
         }
 
-        if (taskVo.getTaskFileVoList() != null && taskVo.getTaskFileVoList().size() > 0){
-            for (TaskFileVo fileVo : taskVo.getTaskFileVoList()){
+        if (taskVo.getTaskFileVoList() != null && taskVo.getTaskFileVoList().size() > 0) {
+            for (TaskFileVo fileVo : taskVo.getTaskFileVoList()) {
                 fileVo.setTaskUuid(uuid);
                 taskMapper.insertTaskFile(fileVo);
             }
@@ -96,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void associateTask(List<TaskAssociateVo> associateList) {
-        for(TaskAssociateVo taskAssociateVo : associateList){
+        for (TaskAssociateVo taskAssociateVo : associateList) {
             taskMapper.replaceAssociate(taskAssociateVo);
         }
     }
@@ -113,7 +113,7 @@ public class TaskServiceImpl implements TaskService {
         param.setTaskUuid(uuid);
         taskMapper.deleteTaskFile(param);
         List<Long> idList = new ArrayList<>();
-        for (TaskFileVo fileVo : taskVo.getTaskFileVoList()){
+        for (TaskFileVo fileVo : taskVo.getTaskFileVoList()) {
             taskMapper.insertTaskFile(fileVo);
             idList.add(fileVo.getId());
         }

@@ -43,7 +43,7 @@ public class ProjectStatusDeleteApi extends ApiComponentBase {
             @Param(name = "processAreaUuid", type = ApiParamType.STRING, desc = "过程域uuid", isRequired = true),
             @Param(name = "uuid", type = ApiParamType.STRING, desc = "状态uuid", isRequired = true)
     })
-    @Description(desc="删除项目状态接口")
+    @Description(desc = "删除项目状态接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String uuid = jsonObj.getString("uuid");

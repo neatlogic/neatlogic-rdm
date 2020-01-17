@@ -13,11 +13,11 @@ public class ProcessAreaFieldVo extends FieldVo {
      */
     private String processAreaUuid;
 
-    public ProcessAreaFieldVo(){
+    public ProcessAreaFieldVo() {
 
     }
 
-    public ProcessAreaFieldVo(FieldVo _fieldVo){
+    public ProcessAreaFieldVo(FieldVo _fieldVo) {
         this.setName(_fieldVo.getName());
         this.setField(_fieldVo.getField());
         this.setUuid(_fieldVo.getUuid());

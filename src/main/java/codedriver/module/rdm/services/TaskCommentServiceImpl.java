@@ -1,14 +1,8 @@
 package codedriver.module.rdm.services;
 
 import codedriver.framework.asynchronization.threadlocal.UserContext;
-import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
-import codedriver.module.rdm.dao.mapper.ProjectWorkflowMapper;
 import codedriver.module.rdm.dao.mapper.TaskMapper;
-import codedriver.module.rdm.dto.*;
-import codedriver.module.rdm.exception.projectiteration.ProjectIterationNotExistException;
-import codedriver.module.rdm.exception.projectstatus.ProjectStatusNotExistException;
-import codedriver.module.rdm.util.UuidUtil;
-import org.apache.commons.lang3.StringUtils;
+import codedriver.module.rdm.dto.TaskCommentVo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +25,21 @@ public class TaskCommentServiceImpl implements TaskCommentService {
     @Resource
     private TaskMapper taskMapper;
 
+    public static void main(String[] args) {
+        String comment = "@张三(zhangsan)夫卡了就释放了是否能解决@@李四(lis)";
+        Pattern pattern = Pattern.compile("([^@]+)\\((.*?)\\)");
+        Matcher matcher = pattern.matcher(comment);
+        while (matcher.find()) {
+            System.out.println(matcher.group(2));
+        }
+    }
+
     @Override
     public void saveTaskComment(TaskCommentVo taskCommentVo) {
-        if(null != taskCommentVo.getId()){
+        if (null != taskCommentVo.getId()) {
             taskCommentVo.setCreateUser(UserContext.get().getUserId());
             taskMapper.insertTaskComment(taskCommentVo);
-        }else{
+        } else {
             taskCommentVo.setUpdateUser(UserContext.get().getUserId());
             taskMapper.updateTaskComment(taskCommentVo);
         }
@@ -46,19 +49,10 @@ public class TaskCommentServiceImpl implements TaskCommentService {
         String comment = taskCommentVo.getComment();
         Pattern pattern = Pattern.compile("([^@ ]*)\\((.*?)\\)");
         Matcher matcher = pattern.matcher(comment);
-        while(matcher.find()) {
+        while (matcher.find()) {
             userList.add(matcher.group(1));
         }
 
 
-    }
-
-    public static void main(String[] args) {
-        String comment = "@张三(zhangsan)夫卡了就释放了是否能解决@@李四(lis)";
-        Pattern pattern = Pattern.compile("([^@]+)\\((.*?)\\)");
-        Matcher matcher = pattern.matcher(comment);
-        while(matcher.find()) {
-            System.out.println(matcher.group(2));
-        }
     }
 }

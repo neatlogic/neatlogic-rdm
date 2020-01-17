@@ -11,7 +11,7 @@ import java.util.List;
  * @Date 2019/12/9 11:40
  **/
 public interface ProcessAreaService {
-    List <ProcessAreaVo> searchProcessArea(ProcessAreaVo processAreaVo);
+    List<ProcessAreaVo> searchProcessArea(ProcessAreaVo processAreaVo);
 
     String saveProcessArea(ProcessAreaVo processAreaVo);
 }

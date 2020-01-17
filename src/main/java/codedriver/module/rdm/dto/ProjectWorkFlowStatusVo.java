@@ -14,47 +14,40 @@ import java.util.List;
 public class ProjectWorkFlowStatusVo {
 
     /**
+     * 状态转移列表
+     */
+    @EntityField(name = "状态转移列表", type = ApiParamType.JSONARRAY)
+    public List<String> transferTo;
+    /**
      * 自增主键
      */
-    @EntityField(name = "自增主键",type = ApiParamType.STRING)
+    @EntityField(name = "自增主键", type = ApiParamType.STRING)
     private Long id;
-
     /**
      * 状态uuid
      */
-    @EntityField(name = "状态uuid",type = ApiParamType.STRING)
+    @EntityField(name = "状态uuid", type = ApiParamType.STRING)
     private String uuid;
-
     /**
      * 状态名称
      */
-    @EntityField(name = "状态名称",type = ApiParamType.STRING)
+    @EntityField(name = "状态名称", type = ApiParamType.STRING)
     private String name;
-
     /**
      * 项目uuid
      */
-    @EntityField(name = "项目uuid",type = ApiParamType.STRING)
+    @EntityField(name = "项目uuid", type = ApiParamType.STRING)
     private String projectUuid;
-
     /**
      * 过程域uuid
      */
-    @EntityField(name = "过程域uuid",type = ApiParamType.STRING)
+    @EntityField(name = "过程域uuid", type = ApiParamType.STRING)
     private String processAreaUuid;
-
     /**
      * 类型
      */
-    @EntityField(name = "类型",type = ApiParamType.STRING)
+    @EntityField(name = "类型", type = ApiParamType.STRING)
     private String type;
-
-    /**
-     * 状态转移列表
-     */
-    @EntityField(name = "状态转移列表",type = ApiParamType.JSONARRAY)
-    public List<String> transferTo;
-
     @EntityField(name = "颜色", type = ApiParamType.STRING)
     private String color;
 

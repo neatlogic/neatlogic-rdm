@@ -53,7 +53,7 @@ public class TaskAssociateAddApi extends ApiComponentBase {
         JSONArray targetList = jsonObj.getJSONArray("targetUuidList");
 
         List<TaskAssociateVo> associateList = new ArrayList<>();
-        for(Object target : targetList){
+        for (Object target : targetList) {
             TaskAssociateVo taskAssociateVo = new TaskAssociateVo(taskUuid, target.toString(), type);
             associateList.add(taskAssociateVo);
         }

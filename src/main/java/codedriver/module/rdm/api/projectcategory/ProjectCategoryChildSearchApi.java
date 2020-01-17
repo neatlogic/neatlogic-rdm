@@ -40,8 +40,8 @@ public class ProjectCategoryChildSearchApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "uuid", type = ApiParamType.STRING, desc = "主键uuid", isRequired = true)})
-    @Output({ @Param(name = "categoryList", explode = CategoryVo[].class, desc = "子分类集合")})
+    @Input({@Param(name = "uuid", type = ApiParamType.STRING, desc = "主键uuid", isRequired = true)})
+    @Output({@Param(name = "categoryList", explode = CategoryVo[].class, desc = "子分类集合")})
     @Description(desc = "项目子类别集合检索接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

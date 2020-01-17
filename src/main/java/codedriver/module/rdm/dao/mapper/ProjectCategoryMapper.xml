@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.rdm.dao.mapper.ProjectCategoryMapper">
-    <select id="searchProjectCategory" parameterType="codedriver.module.rdm.dto.CategoryVo" resultType="codedriver.module.rdm.dto.CategoryVo">
+    <select id="searchProjectCategory" parameterType="codedriver.module.rdm.dto.CategoryVo"
+            resultType="codedriver.module.rdm.dto.CategoryVo">
         SELECT
         `id`,
         `project_uuid` as `projectUuid`,
@@ -27,7 +28,7 @@
     </select>
 
 
-   <update id="updateProjectCategoryByUuid" parameterType="codedriver.module.rdm.dto.CategoryVo">
+    <update id="updateProjectCategoryByUuid" parameterType="codedriver.module.rdm.dto.CategoryVo">
        UPDATE `rdm_category` SET
        `parent_uuid` = #{parentUuid},
        `name` = #{name},

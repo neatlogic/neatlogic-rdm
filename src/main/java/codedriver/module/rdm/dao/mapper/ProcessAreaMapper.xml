@@ -4,7 +4,7 @@
 
     <select id="searchProcessAreaCount" parameterType="codedriver.module.rdm.dto.ProcessAreaVo" resultType="int">
         SELECT
-            COUNT(id)
+        COUNT(id)
         FROM `rdm_process_area` a
         WHERE 1 = 1
         <if test="keyword != null and keyword != ''">
@@ -22,7 +22,8 @@
         </if>
     </select>
 
-    <select id="searchProcessArea" parameterType="codedriver.module.rdm.dto.ProcessAreaVo" resultType="codedriver.module.rdm.dto.ProcessAreaVo">
+    <select id="searchProcessArea" parameterType="codedriver.module.rdm.dto.ProcessAreaVo"
+            resultType="codedriver.module.rdm.dto.ProcessAreaVo">
         SELECT
         `id`,
         `name`,
@@ -33,7 +34,7 @@
         DATE_FORMAT(a.update_time, '%Y-%m-%d %H:%i:%s') AS updateTime,
         `update_user` AS updateUser
         FROM
-          `rdm_process_area` a
+        `rdm_process_area` a
         WHERE 1 = 1
         <if test="keyword != null and keyword != ''">
             AND a.name LIKE CONCAT('%', #{keyword}, '%')
@@ -42,7 +43,7 @@
         <if test="needPage == true">
             LIMIT #{startNum}, #{pageSize}
         </if>
-	</select>
+    </select>
 
     <select id="getProcessAreaByUuid" resultType="codedriver.module.rdm.dto.ProcessAreaVo">
         SELECT
@@ -117,7 +118,7 @@
         WHERE `uuid` = #{uuid}
     </update>
 
-    <delete id="deleteProcessArea" >
+    <delete id="deleteProcessArea">
         DELETE FROM `rdm_process_area` WHERE uuid = #{value}
     </delete>
 

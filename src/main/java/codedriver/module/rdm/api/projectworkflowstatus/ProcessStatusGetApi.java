@@ -47,7 +47,7 @@ public class ProcessStatusGetApi extends ApiComponentBase {
     })
 
     @Output({
-            @Param(name = "projectWorkFlowStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态属性",explode = ProjectWorkFlowStatusVo.class )
+            @Param(name = "projectWorkFlowStatusVo", type = ApiParamType.JSONOBJECT, desc = "状态属性", explode = ProjectWorkFlowStatusVo.class)
     })
     @Description(desc = "根据uuid查询状态接口")
     @Override
@@ -56,7 +56,7 @@ public class ProcessStatusGetApi extends ApiComponentBase {
         String projectUuid = jsonObj.getString("projectUuid");
         String processAreaUuid = jsonObj.getString("processAreaUuid");
         String uuid = jsonObj.getString("uuid");
-        ProjectWorkFlowStatusVo ProjectWorkFlowStatusVo =  projectWorkflowMapper.getProjectWorkflowStatus(projectUuid, processAreaUuid, uuid);
+        ProjectWorkFlowStatusVo ProjectWorkFlowStatusVo = projectWorkflowMapper.getProjectWorkflowStatus(projectUuid, processAreaUuid, uuid);
         return ProjectWorkFlowStatusVo;
     }
 

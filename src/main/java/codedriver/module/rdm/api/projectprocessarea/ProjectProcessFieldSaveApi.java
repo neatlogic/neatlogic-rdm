@@ -3,8 +3,8 @@ package codedriver.module.rdm.api.projectprocessarea;
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.framework.restful.annotation.Param;
+import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.ProjectProcessAreaFieldVo;
 import codedriver.module.rdm.services.ProjectService;
 import com.alibaba.fastjson.JSONObject;
@@ -38,8 +38,8 @@ public class ProjectProcessFieldSaveApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({ @Param( name = "fieldUuid", type = ApiParamType.STRING, desc = "属性uuid", isRequired = true),
-             @Param(name = "config", type = ApiParamType.JSONOBJECT, desc = "属性配置", isRequired = true)})
+    @Input({@Param(name = "fieldUuid", type = ApiParamType.STRING, desc = "属性uuid", isRequired = true),
+            @Param(name = "config", type = ApiParamType.JSONOBJECT, desc = "属性配置", isRequired = true)})
     @Description(desc = "项目过程域属性保存接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {

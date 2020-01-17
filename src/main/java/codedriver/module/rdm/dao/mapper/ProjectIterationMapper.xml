@@ -4,18 +4,18 @@
 
     <select id="searchProjectIteration" resultType="codedriver.module.rdm.dto.ProjectIterationVo">
         SELECT
-          `project_uuid` AS projectUuid,
-          `name`,
-          `uuid`,
-          `description`,
-          DATE_FORMAT(start_date, '%Y-%m-%d') AS startDate,
-          DATE_FORMAT(end_date, '%Y-%m-%d') AS endDate,
-          `create_user` AS createUser,
-          DATE_FORMAT(create_time, '%Y-%m-%d %H:%i:%s') AS createTime,
-          `update_user` AS updateUser,
-          DATE_FORMAT(update_time, '%Y-%m-%d %H:%i:%s') AS updateTime
+        `project_uuid` AS projectUuid,
+        `name`,
+        `uuid`,
+        `description`,
+        DATE_FORMAT(start_date, '%Y-%m-%d') AS startDate,
+        DATE_FORMAT(end_date, '%Y-%m-%d') AS endDate,
+        `create_user` AS createUser,
+        DATE_FORMAT(create_time, '%Y-%m-%d %H:%i:%s') AS createTime,
+        `update_user` AS updateUser,
+        DATE_FORMAT(update_time, '%Y-%m-%d %H:%i:%s') AS updateTime
         FROM
-          `rdm_project_iteration`
+        `rdm_project_iteration`
         WHERE project_uuid = #{projectUuid}
         <if test="keyword != null and keyword != ''">
             AND name LIKE CONCAT('%', #{keyword}, '%')
@@ -65,7 +65,8 @@
         AND uuid = #{uuid}
     </select>
 
-    <select id="checkProjectIterationExist" parameterType="codedriver.module.rdm.dto.ProjectIterationVo" resultType="int">
+    <select id="checkProjectIterationExist" parameterType="codedriver.module.rdm.dto.ProjectIterationVo"
+            resultType="int">
         SELECT
         COUNT(id)
         FROM `rdm_project_iteration` a
@@ -92,7 +93,7 @@
 
     <update id="associateTask">
         UPDATE
-          `rdm_task`
+        `rdm_task`
         SET
         `iteration_uuid` = #{projectIterationUuid}
         WHERE `project_uuid` = #{projectUuid}

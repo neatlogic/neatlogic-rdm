@@ -6,12 +6,15 @@ import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
 import codedriver.module.rdm.dto.FieldVo;
-import codedriver.module.rdm.dto.TaskFieldVo;
 import codedriver.module.rdm.dto.TaskFileVo;
 import codedriver.module.rdm.dto.TaskVo;
+import codedriver.module.rdm.event.core.Trigger;
+import codedriver.module.rdm.event.eventdefine.TaskSaveEvent;
+import codedriver.module.rdm.event.objectbelong.ProcessAreaBelong;
 import codedriver.module.rdm.services.TaskService;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +32,9 @@ public class TaskSaveApi extends ApiComponentBase {
 
     @Resource
     private TaskService taskService;
+
+    @Resource
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public String getToken() {
@@ -102,40 +108,40 @@ public class TaskSaveApi extends ApiComponentBase {
         taskVo.setDescription(description);
 
         //处理人
-        if(processAccountIdArray != null && processAccountIdArray.size() > 0 ){
+        if (processAccountIdArray != null && processAccountIdArray.size() > 0) {
             List<String> accountIdList = new ArrayList<>();
-            for(Object account : processAccountIdArray){
+            for (Object account : processAccountIdArray) {
                 accountIdList.add(account.toString());
             }
             taskVo.setProcessAccountIdList(accountIdList);
         }
 
         //自定义属性
-        if(fieldArray != null && fieldArray.size() > 0 ){
+        if (fieldArray != null && fieldArray.size() > 0) {
             List<FieldVo> fieldList = new ArrayList<>();
-            for(Object field : fieldArray){
-               JSONObject fieldObj = JSONObject.parseObject(field.toString());
-               FieldVo fieldVo = new FieldVo();
+            for (Object field : fieldArray) {
+                JSONObject fieldObj = JSONObject.parseObject(field.toString());
+                FieldVo fieldVo = new FieldVo();
 
-               String tField = fieldObj.getString("field");
-               String tName = fieldObj.getString("name");
-               String tUuid = fieldObj.getString("uuid");
-               String tType = fieldObj.getString("type");
-               String tValue = fieldObj.getString("value");
-               fieldVo.setUuid(tUuid);
-               fieldVo.setName(tName);
-               fieldVo.setField(tField);
-               fieldVo.setType(tType);
-               fieldVo.setValue(tValue);
-               fieldList.add(fieldVo);
+                String tField = fieldObj.getString("field");
+                String tName = fieldObj.getString("name");
+                String tUuid = fieldObj.getString("uuid");
+                String tType = fieldObj.getString("type");
+                String tValue = fieldObj.getString("value");
+                fieldVo.setUuid(tUuid);
+                fieldVo.setName(tName);
+                fieldVo.setField(tField);
+                fieldVo.setType(tType);
+                fieldVo.setValue(tValue);
+                fieldList.add(fieldVo);
             }
             taskVo.setTaskFieldList(fieldList);
         }
 
         //附件
-        if (fileUuidArray != null && fileUuidArray.size() > 0){
+        if (fileUuidArray != null && fileUuidArray.size() > 0) {
             List<TaskFileVo> taskFileVoList = new ArrayList<>();
-            for (int i = 0; i < fileUuidArray.size(); i++){
+            for (int i = 0; i < fileUuidArray.size(); i++) {
                 String fileUuid = fileUuidArray.getString(i);
                 TaskFileVo fileVo = new TaskFileVo();
                 fileVo.setFileUuid(fileUuid);
@@ -146,7 +152,14 @@ public class TaskSaveApi extends ApiComponentBase {
         }
 
         String uuid = taskService.saveTask(taskVo);
-        result.put("uuid",uuid);
+        result.put("uuid", uuid);
+
+        //方式 1 ： spring 事件监听
+//        applicationEventPublisher.publishEvent(new TaskSaveEvent( this, JSONObject.parseObject(JSONObject.toJSONString(taskVo)), tenantUuid));
+
+        //方式2 ： 事件触发
+        Trigger.trigger(new TaskSaveEvent(uuid, new ProcessAreaBelong(taskVo.getProcessAreaUuid())));
+
         return result;
     }
 

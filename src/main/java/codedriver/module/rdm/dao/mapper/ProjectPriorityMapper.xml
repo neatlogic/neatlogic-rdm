@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="codedriver.module.rdm.dao.mapper.ProjectPriorityMapper">
 
-    <select id="searchProjectPriorityCount" parameterType="codedriver.module.rdm.dto.ProjectPriorityVo" resultType="int">
+    <select id="searchProjectPriorityCount" parameterType="codedriver.module.rdm.dto.ProjectPriorityVo"
+            resultType="int">
         SELECT
         COUNT(id)
         FROM `rdm_project_priority` a
@@ -25,7 +26,8 @@
         </if>
     </select>
 
-    <select id="searchProjectPriority" parameterType="codedriver.module.rdm.dto.ProjectPriorityVo" resultType="codedriver.module.rdm.dto.ProjectPriorityVo">
+    <select id="searchProjectPriority" parameterType="codedriver.module.rdm.dto.ProjectPriorityVo"
+            resultType="codedriver.module.rdm.dto.ProjectPriorityVo">
         SELECT
         `id`,
         `name`,

@@ -19,12 +19,12 @@ public interface ProjectPriorityMapper {
 
     void insertProjectPriority(ProjectPriorityVo projectPriorityVo);
 
-    ProjectPriorityVo getProjectPriorityByUuid(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid,@Param("uuid") String uuid);
+    ProjectPriorityVo getProjectPriorityByUuid(@Param("projectUuid") String projectUuid, @Param("processAreaUuid") String processAreaUuid, @Param("uuid") String uuid);
 
     int searchProjectPriorityCount(ProjectPriorityVo projectPriorityVo);
 
     List<ProjectPriorityVo> searchProjectPriority(ProjectPriorityVo projectPriorityVo);
 
-    void deleteProjectPriority(@Param("projectUuid") String projectUuid, @Param("processAreaUuid")String processAreaUuid,@Param("uuid") String uuid);
+    void deleteProjectPriority(@Param("projectUuid") String projectUuid, @Param("processAreaUuid") String processAreaUuid, @Param("uuid") String uuid);
 
 }

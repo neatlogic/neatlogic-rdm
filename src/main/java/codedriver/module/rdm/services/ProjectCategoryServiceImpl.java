@@ -26,17 +26,17 @@ public class ProjectCategoryServiceImpl implements ProjectCategoryService {
         List<String> uuidList = new ArrayList<>();
         iterateChildCategory(uuid, uuidList);
         uuidList.add(uuid);
-        for (String delUuid: uuidList){
+        for (String delUuid : uuidList) {
             categoryMapper.deleteProjectCategoryByUuid(delUuid);
         }
     }
 
-    public void iterateChildCategory(String uuid, List<String> uuidList){
+    public void iterateChildCategory(String uuid, List<String> uuidList) {
         CategoryVo categoryVo = new CategoryVo();
         categoryVo.setParentUuid(uuid);
         List<CategoryVo> childCategoryList = categoryMapper.searchProjectCategory(categoryVo);
-        if (childCategoryList.size() > 0){
-            for (CategoryVo category : childCategoryList){
+        if (childCategoryList.size() > 0) {
+            for (CategoryVo category : childCategoryList) {
                 uuidList.add(category.getUuid());
                 iterateChildCategory(category.getUuid(), uuidList);
             }
