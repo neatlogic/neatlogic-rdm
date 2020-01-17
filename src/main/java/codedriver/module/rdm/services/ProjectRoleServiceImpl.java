@@ -1,14 +1,16 @@
 package codedriver.module.rdm.services;
 
-import codedriver.framework.asynchronization.threadlocal.UserContext;
-import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
-import codedriver.module.rdm.dao.mapper.ProjectRoleMapper;
-import codedriver.module.rdm.dto.ProjectMemberVo;
-import codedriver.module.rdm.dto.RoleActionVo;
+import codedriver.module.rdm.annotation.ActionCheck;
+import codedriver.module.rdm.annotation.InputParam;
+import codedriver.module.rdm.constants.ModuleType;
+import codedriver.module.rdm.dao.mapper.ProjectGroupActionMapper;
+import codedriver.module.rdm.dto.ActionCheckVo;
+import codedriver.module.rdm.dto.ProjectGroupActionVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,42 +23,35 @@ import java.util.List;
 public class ProjectRoleServiceImpl implements ProjectRoleService {
 
     @Autowired
-    private ProjectRoleMapper roleMapper;
-
-    @Autowired
-    private ProjectMemberMapper memberMapper;
+    private ProjectGroupActionMapper groupActionMapper;
 
     @Override
-    public void saveProjectRoleAction(Long groupId, List<Long> actionIdList) {
-        roleMapper.deleteProjectRoleAction(groupId);
-        for (Long actionId : actionIdList) {
-            RoleActionVo actionVo = new RoleActionVo();
-            actionVo.setActionId(actionId);
-            actionVo.setGroupId(groupId);
-            actionVo.setCreateUser(UserContext.get().getUserId());
-            roleMapper.insertProjectRoleAction(actionVo);
+    public void saveProjectRoleAction(String groupUuid, List<ProjectGroupActionVo> roleActionVoList) {
+        ProjectGroupActionVo actionParam = new ProjectGroupActionVo();
+        actionParam.setGroupUuid(groupUuid);
+        List<ProjectGroupActionVo> actionVoList = groupActionMapper.searchGroupActionByParams(actionParam);
+        List<Long> groupActionIdList = new ArrayList<>();
+        actionVoList.stream().forEach(e -> groupActionIdList.add(e.getId()));
+        if (groupActionIdList.size() >0){
+            for (Long groupActionId : groupActionIdList){
+                groupActionMapper.deleteGroupActionProcessArea(groupActionId);
+            }
+            groupActionMapper.deleteProjectGroupAction(groupUuid);
         }
-    }
 
-    @Override
-    public List<RoleActionVo> searchProjectRoleAction(Long groupId, String module) {
-        return roleMapper.searchRoleActionByGroupIdAndModule(groupId, module);
-    }
-
-    /**
-     * @Description: 项目Uuid, 操作名称，操作所属模块（过程域/知识库等）
-     * @Param: [projectUuid, actionName, module]
-     * @return: boolean
-     */
-    @Override
-    public boolean checkUserActionRole(String projectUuid, String actionName, String module) {
-        ProjectMemberVo memberVo = memberMapper.getProjectMember(projectUuid, UserContext.get().getUserId());
-        List<RoleActionVo> actionVoList = roleMapper.searchRoleActionByGroupIdAndModule(memberVo.getGroupId(), module);
-        for (RoleActionVo actionVo : actionVoList) {
-            if (actionName.equals(actionVo.getActionVo().getName())) {
-                return true;
+        for (ProjectGroupActionVo actionVo : roleActionVoList){
+            groupActionMapper.insertProjectGroupAction(actionVo);
+            if (ModuleType.PROCESS.getValue().equals(actionVo.getModule())){
+                groupActionMapper.insertProjectGroupActionProcess(actionVo.getId(), actionVo.getProcessAreaUuid());
             }
         }
-        return false;
+    }
+
+    @Override
+    public List<ProjectGroupActionVo> searchProjectRoleAction(String groupUuid, String module) {
+        ProjectGroupActionVo actionVo = new ProjectGroupActionVo();
+        actionVo.setGroupUuid(groupUuid);
+        actionVo.setModule(module);
+        return groupActionMapper.searchGroupActionByParams(actionVo);
     }
 }

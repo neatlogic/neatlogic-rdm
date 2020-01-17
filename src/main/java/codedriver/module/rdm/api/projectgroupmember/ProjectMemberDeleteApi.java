@@ -1,12 +1,12 @@
-package codedriver.module.rdm.api.projectmember;
+package codedriver.module.rdm.api.projectgroupmember;
 
 import codedriver.framework.apiparam.core.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
-import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dao.mapper.ProjectMemberMapper;
-import codedriver.module.rdm.dto.ProjectMemberVo;
+import codedriver.framework.restful.annotation.Input;
+import codedriver.module.rdm.dto.ProjectGroupMemberVo;
+import codedriver.module.rdm.services.ProjectGroupMemberService;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 public class ProjectMemberDeleteApi extends ApiComponentBase {
 
     @Autowired
-    private ProjectMemberMapper memberMapper;
+    private ProjectGroupMemberService memberService;
 
     @Override
     public String getToken() {
@@ -38,20 +38,17 @@ public class ProjectMemberDeleteApi extends ApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "userId", type = ApiParamType.STRING, desc = "用户ID"),
-            @Param(name = "projectUuid", type = ApiParamType.STRING, desc = "项目uuid"),
-            @Param(name = "groupId", type = ApiParamType.LONG, desc = "成员组ID")})
+    @Input({@Param( name = "userId", type = ApiParamType.STRING, desc = "用户ID"),
+            @Param( name = "groupUuid", type = ApiParamType.STRING, desc = "成员组UUID")})
     @Description(desc = "项目组成员删除接口")
     @Override
     public Object myDoService(JSONObject jsonObj) throws Exception {
         String userId = jsonObj.getString("userId");
-        String projectUuid = jsonObj.getString("projectUuid");
-        Long groupId = jsonObj.getLong("groupId");
-        ProjectMemberVo memberVo = new ProjectMemberVo();
+        String groupUuid = jsonObj.getString("groupUuid");
+        ProjectGroupMemberVo memberVo = new ProjectGroupMemberVo();
         memberVo.setUserId(userId);
-        memberVo.setProjectUuid(projectUuid);
-        memberVo.setGroupId(groupId);
-        memberMapper.deleteProjectMember(memberVo);
+        memberVo.setGroupUuid(groupUuid);
+        memberService.deleteProjectGroupMember(memberVo);
         return new JSONObject();
     }
 }

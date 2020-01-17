@@ -2,6 +2,7 @@ package codedriver.module.rdm.services;
 
 import codedriver.module.rdm.dao.mapper.ProjectGroupMapper;
 import codedriver.module.rdm.dto.ProjectGroupVo;
+import codedriver.module.rdm.util.UuidUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +21,10 @@ public class ProjectGroupServiceImpl implements ProjectGroupService {
 
     @Override
     public void saveProjectGroup(ProjectGroupVo groupVo) {
-        if (groupVo.getId() != null && groupVo.getId() != 0L) {
+        if (groupVo.getId() != null && groupVo.getId() != 0L){
             groupMapper.updateProjectGroup(groupVo);
-        } else {
+        }else {
+            groupVo.setUuid(UuidUtil.getUuid());
             groupMapper.insertProjectGroup(groupVo);
         }
     }

@@ -182,7 +182,7 @@
                 `id` = #{id}
             </if>
             <if test="templateUuid != null">
-                `template_uuid` = #{templateUuid}
+              AND `template_uuid` = #{templateUuid}
             </if>
         </where>
     </delete>
@@ -195,7 +195,7 @@
                 `process_area_uuid` = #{processAreaUuid}
             </if>
             <if test="templateUuid != null">
-                `template_uuid` = #{templateUuid}
+              AND `template_uuid` = #{templateUuid}
             </if>
         </where>
     </delete>
@@ -221,7 +221,7 @@
                 `template_uuid` = #{templateUuid}
             </if>
             <if test="processAreaUuid != null">
-                `process_area_uuid` = #{processAreaUuid}
+              AND  `process_area_uuid` = #{processAreaUuid}
             </if>
         </where>
     </delete>
