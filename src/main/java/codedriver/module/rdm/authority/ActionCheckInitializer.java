@@ -5,7 +5,6 @@ import codedriver.module.rdm.annotation.InputParam;
 import codedriver.module.rdm.dto.ActionCheckVo;
 import codedriver.module.rdm.exception.role.ActionCheckParamErrorException;
 import codedriver.module.rdm.exception.role.ActionCheckValueConflictException;
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Annotated;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.springframework.core.annotation.AnnotationUtils;
