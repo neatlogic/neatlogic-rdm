@@ -1,14 +1,21 @@
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.module.rdm.api.projectcategory;
 
-import codedriver.framework.apiparam.core.ApiParamType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+
+import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.rdm.services.ProjectCategoryService;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * @program: codedriver
@@ -16,7 +23,7 @@ import org.springframework.stereotype.Service;
  * @create: 2019-12-24 14:48
  **/
 @Service
-public class ProjectCategoryDeleteApi extends ApiComponentBase {
+public class ProjectCategoryDeleteApi extends PrivateApiComponentBase {
 
     @Autowired
     private ProjectCategoryService categoryService;

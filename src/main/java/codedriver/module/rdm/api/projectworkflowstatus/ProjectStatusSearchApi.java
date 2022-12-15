@@ -1,12 +1,19 @@
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.module.rdm.api.projectworkflowstatus;
 
-import codedriver.framework.apiparam.core.ApiParamType;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+
+import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.stereotype.Service;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 
 /**
  * @ClassName ProjectStatusSearchApi
@@ -16,7 +23,7 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 @Deprecated
-public class ProjectStatusSearchApi extends ApiComponentBase {
+public class ProjectStatusSearchApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {

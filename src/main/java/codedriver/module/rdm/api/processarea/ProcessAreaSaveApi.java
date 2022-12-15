@@ -1,22 +1,30 @@
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.module.rdm.api.processarea;
 
-import codedriver.framework.apiparam.core.ApiParamType;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import codedriver.framework.asynchronization.threadlocal.UserContext;
+import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.rdm.dto.FieldVo;
 import codedriver.module.rdm.dto.ProcessAreaVo;
 import codedriver.module.rdm.services.ProcessAreaService;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @ClassName ProcessAreaSaveApi
@@ -25,7 +33,7 @@ import java.util.List;
  * @Date 2019/12/4 9:52
  **/
 @Service
-public class ProcessAreaSaveApi extends ApiComponentBase {
+public class ProcessAreaSaveApi extends PrivateApiComponentBase {
 
     @Resource
     private ProcessAreaService processAreaService;

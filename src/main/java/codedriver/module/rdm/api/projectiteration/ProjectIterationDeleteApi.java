@@ -1,15 +1,22 @@
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.module.rdm.api.projectiteration;
 
-import codedriver.framework.apiparam.core.ApiParamType;
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+
+import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectIterationMapper;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 /**
  * @ClassName ProjectIterationDeleteApi
@@ -18,7 +25,7 @@ import javax.annotation.Resource;
  * @Date 2019/12/4 9:52
  **/
 @Service
-public class ProjectIterationDeleteApi extends ApiComponentBase {
+public class ProjectIterationDeleteApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectIterationMapper projectIterationMapper;

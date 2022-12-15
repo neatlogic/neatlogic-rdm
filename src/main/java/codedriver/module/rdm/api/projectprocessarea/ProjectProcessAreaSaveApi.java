@@ -1,20 +1,27 @@
-package codedriver.module.rdm.api.projectprocessarea;
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
 
-import codedriver.framework.apiparam.core.ApiParamType;
-import codedriver.framework.restful.annotation.Description;
-import codedriver.framework.restful.annotation.Input;
-import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
-import codedriver.module.rdm.dto.ProjectProcessAreaFieldVo;
-import codedriver.module.rdm.dto.ProjectProcessAreaVo;
-import codedriver.module.rdm.services.ProjectService;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+package codedriver.module.rdm.api.projectprocessarea;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import codedriver.framework.common.constvalue.ApiParamType;
+import codedriver.framework.restful.annotation.Description;
+import codedriver.framework.restful.annotation.Input;
+import codedriver.framework.restful.annotation.Param;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+import codedriver.module.rdm.dto.ProjectProcessAreaFieldVo;
+import codedriver.module.rdm.dto.ProjectProcessAreaVo;
+import codedriver.module.rdm.services.ProjectService;
 
 /**
  * @ClassName ProjectFieldSaveApi
@@ -23,7 +30,7 @@ import java.util.List;
  * @Date 2019/12/4 9:52
  **/
 @Service
-public class ProjectProcessAreaSaveApi extends ApiComponentBase {
+public class ProjectProcessAreaSaveApi extends PrivateApiComponentBase {
 
     @Autowired
     private ProjectService projectService;

@@ -1,16 +1,22 @@
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.module.rdm.api.project;
 
-import codedriver.framework.apiparam.core.ApiParamType;
+import javax.annotation.Resource;
+
+import com.alibaba.fastjson.JSONObject;
+
+import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.restful.annotation.Description;
 import codedriver.framework.restful.annotation.Input;
 import codedriver.framework.restful.annotation.Output;
 import codedriver.framework.restful.annotation.Param;
-import codedriver.framework.restful.core.ApiComponentBase;
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 import codedriver.module.rdm.dao.mapper.ProjectMapper;
 import codedriver.module.rdm.dto.ProjectVo;
-import com.alibaba.fastjson.JSONObject;
-
-import javax.annotation.Resource;
 
 /**
  * @ClassName ProjectGetApi
@@ -18,7 +24,7 @@ import javax.annotation.Resource;
  * @Auther
  * @Date 2019/12/10 17:31
  **/
-public class ProjectGetApi extends ApiComponentBase {
+public class ProjectGetApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectMapper projectMapper;

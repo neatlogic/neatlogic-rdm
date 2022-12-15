@@ -1,8 +1,15 @@
+/*
+ * Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+ * 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+ */
+
 package codedriver.module.rdm.api.task;
 
-import codedriver.framework.restful.core.ApiComponentBase;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+
+import com.alibaba.fastjson.JSONObject;
+
+import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
 
 /**
  * @ClassName TaskDeleteApi
@@ -11,7 +18,7 @@ import org.springframework.stereotype.Service;
  * @Date 2019/12/3 15:35
  **/
 @Service
-public class TaskDeleteApi extends ApiComponentBase {
+public class TaskDeleteApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
