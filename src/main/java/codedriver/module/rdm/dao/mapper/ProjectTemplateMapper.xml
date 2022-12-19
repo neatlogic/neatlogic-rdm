@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright(c) 2022 TechSure Co., Ltd. All Rights Reserved.
+  ~ 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="codedriver.module.rdm.dao.mapper.ProjectTemplateMapper">
+    <resultMap id="projectTemplateResultMap" type="codedriver.framework.rdm.dto.ProjectTemplateVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="isActive" column="isActive"/>
+        <collection property="objectTypeList" ofType="codedriver.framework.rdm.dto.ProjectTemplateObjectTypeVo">
+            <id property="name" column="objectType"/>
+            <result property="sort" column="sort"/>
+        </collection>
+    </resultMap>
+
+    <select id="searchProjectTemplate" parameterType="codedriver.framework.rdm.dto.ProjectTemplateVo"
+            resultMap="projectTemplateResultMap">
+        select id, name ,is_active AS isActive,
+        b.object_type AS objectType,
+        b.sort FROM rdm_project_template a
+        LEFT JOIN rdm_project_template_objecttype b ON a.id = b.template_id
+        <where>
+            <if test="isActive != null">
+                AND is_active = #{isActive}
+            </if>
+        </where>
+    </select>
+</mapper>
