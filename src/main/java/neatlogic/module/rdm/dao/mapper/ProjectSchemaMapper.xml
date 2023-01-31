@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright(c) 2023 TechSure Co., Ltd. All Rights Reserved.
+  ~ 本内容仅限于深圳市赞悦科技有限公司内部传阅，禁止外泄以及用于其他的商业项目。
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper">
+    <select id="checkTableHasData" parameterType="java.lang.String" resultType="int">
+        SELECT COUNT(1)
+        FROM ${value}
+        LIMIT 1
+    </select>
+
+    <select id="checkTableIsExists" resultType="int">
+        select count(1)
+        from information_schema.tables a
+        where a.TABLE_SCHEMA = #{schemaName}
+          and a.TABLE_NAME = #{tableName}
+    </select>
+
+    <select id="checkSchemaIsExists" parameterType="java.lang.String" resultType="int">
+        SELECT COUNT(1)
+        FROM information_schema.`SCHEMATA`
+        WHERE schema_name = #{value}
+    </select>
+
+    <insert id="insertObjectTableAttr">
+        ALTER TABLE ${tableName}
+        ADD COLUMN `${objectAttrVo.id}`
+        <choose>
+            <when test="objectAttrVo.type == 'number'">
+                decimal(50,4)
+            </when>
+            <when test="objectAttrVo.type == 'date'">
+                date
+            </when>
+            <when test="objectAttrVo.type == 'time'">
+                time
+            </when>
+            <when test="objectAttrVo.type == 'datetime'">
+                timestamp
+            </when>
+            <when test="objectAttrVo.type == 'enum'">
+                char(30)
+            </when>
+            <otherwise>TEXT</otherwise>
+        </choose>
+        NULL COMMENT '${objectAttrVo.label}',
+        ADD COLUMN `${objectAttrVo.id}_hash` CHAR(32) NULL COMMENT '${objectAttrVo.label}值散列码',
+        <choose>
+            <when test="objectAttrVo.type == 'number' or objectAttrVo.type == 'date' or objectAttrVo.type == 'time' or objectAttrVo.type == 'datetime' or objectAttrVo.type == 'enum'">
+                ADD KEY `index_${objectAttrVo.id}` (`${objectAttrVo.id}`),
+            </when>
+        </choose>
+        ADD KEY `index_${objectAttrVo.id}_hash` (`${objectAttrVo.id}_hash`);
+    </insert>
+
+    <insert id="insertObjectTable">
+        CREATE TABLE IF NOT EXISTS ${tableName}
+        (
+            `issue_id` bigint(20) NOT NULL COMMENT 'rdm_issue表id',
+            PRIMARY KEY (`issue_id`)
+        ) ENGINE = INNODB
+          DEFAULT CHARSET = utf8mb4
+    </insert>
+
+    <delete id="deleteObjectTable">
+        DROP TABLE IF EXISTS ${tableName}
+    </delete>
+
+    <delete id="deleteObjectTableAttr">
+        ALTER TABLE ${tableName}
+            DROP COLUMN `${objectAttrVo.id}`,
+            DROP COLUMN `${objectAttrVo.id}_hash`
+    </delete>
+</mapper>
