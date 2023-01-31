@@ -68,4 +68,10 @@
     <delete id="deleteObjectTable">
         DROP TABLE IF EXISTS ${tableName}
     </delete>
+
+    <delete id="deleteObjectTableAttr">
+        ALTER TABLE ${tableName}
+            DROP COLUMN `${objectAttrVo.id}`,
+            DROP COLUMN `${objectAttrVo.id}_hash`
+    </delete>
 </mapper>

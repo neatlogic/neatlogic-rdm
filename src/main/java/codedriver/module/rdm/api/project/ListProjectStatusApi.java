@@ -8,7 +8,7 @@ package codedriver.module.rdm.api.project;
 import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.rdm.auth.label.RDM_BASE;
-import codedriver.framework.rdm.dto.ProjectVo;
+import codedriver.framework.rdm.dto.ProjectStatusVo;
 import codedriver.framework.restful.annotation.*;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -21,14 +21,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetProjectApi extends PrivateApiComponentBase {
+public class ListProjectStatusApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectMapper projectMapper;
 
     @Override
     public String getName() {
-        return "获取项目详情";
+        return "获取项目状态列表";
     }
 
     @Override
@@ -36,16 +36,16 @@ public class GetProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "项目id")})
-    @Output({@Param(explode = ProjectVo.class)})
-    @Description(desc = "获取项目详情接口")
+    @Input({@Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "项目id")})
+    @Output({@Param(explode = ProjectStatusVo[].class)})
+    @Description(desc = "获取项目状态列表接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return projectMapper.getProjectById(paramObj.getLong("id"));
+        return projectMapper.getStatusByProjectId(paramObj.getLong("projectId"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/get";
+        return "/rdm/project/status/list";
     }
 }

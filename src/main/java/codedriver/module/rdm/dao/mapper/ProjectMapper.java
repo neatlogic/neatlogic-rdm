@@ -5,10 +5,7 @@
 
 package codedriver.module.rdm.dao.mapper;
 
-import codedriver.framework.rdm.dto.ObjectAttrVo;
-import codedriver.framework.rdm.dto.ObjectVo;
-import codedriver.framework.rdm.dto.ProjectTemplateVo;
-import codedriver.framework.rdm.dto.ProjectVo;
+import codedriver.framework.rdm.dto.*;
 
 import java.util.List;
 
@@ -33,13 +30,30 @@ public interface ProjectMapper {
 
     ProjectTemplateVo getProjectTemplateById(Long templateId);
 
+    List<ProjectStatusVo> getStatusByProjectId(Long projectId);
+
+    List<ProjectStatusRelVo> getStatusRelByProjectId(Long projectId);
+
+    List<ObjectStatusVo> getStatusByObjectId(Long objectId);
+
+    List<ObjectStatusRelVo> getStatusRelByObjectId(Long objectId);
+
+    ProjectStatusVo getStatusById(Long id);
+
     void insertObject(ObjectVo objectVo);
 
+
+    void insertProjectUser(ProjectUserVo projectUserVo);
+
     void updateObjectAttrSort(ObjectAttrVo objectAttrVo);
+
+    void insertProjectStatusRel(ProjectStatusRelVo projectStatusRelVo);
 
     void updateObjectAttrIsActive(ObjectAttrVo objectAttrVo);
 
     void updateProject(ProjectVo projectVo);
+
+    void updateProjectStatus(ProjectStatusVo projectStatusVo);
 
     void updateObjectAttr(ObjectAttrVo objectAttrVo);
 
@@ -47,11 +61,17 @@ public interface ProjectMapper {
 
     void insertProject(ProjectVo projectVo);
 
+    void insertProjectStatus(ProjectStatusVo projectStatusVo);
+
     int checkProjectNameIsExists(ProjectVo projectVo);
 
     void deleteObjectAttrById(Long id);
 
+    void deleteProjectUserByProjectId(Long projectId);
+
     void deleteProjectById(Long id);
+
+    void deleteProjectStatusRel(ProjectStatusRelVo projectStatusRelVo);
 
     void deleteObjectById(Long id);
 

@@ -9,6 +9,7 @@ import codedriver.framework.auth.core.AuthAction;
 import codedriver.framework.common.constvalue.ApiParamType;
 import codedriver.framework.rdm.auth.label.RDM_BASE;
 import codedriver.framework.rdm.dto.ObjectAttrVo;
+import codedriver.framework.rdm.exception.DeleteAttrSchemaException;
 import codedriver.framework.rdm.exception.ObjectAttrDeleteException;
 import codedriver.framework.rdm.exception.ObjectAttrNotFoundException;
 import codedriver.framework.restful.annotation.Description;
@@ -17,16 +18,19 @@ import codedriver.framework.restful.annotation.OperationType;
 import codedriver.framework.restful.annotation.Param;
 import codedriver.framework.restful.constvalue.OperationTypeEnum;
 import codedriver.framework.restful.core.privateapi.PrivateApiComponentBase;
+import codedriver.framework.transaction.core.EscapeTransactionJob;
 import codedriver.module.rdm.dao.mapper.ProjectMapper;
 import codedriver.module.rdm.dao.mapper.ProjectSchemaMapper;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.DELETE)
+@Transactional
 public class DeleteAttrApi extends PrivateApiComponentBase {
 
     @Resource
@@ -54,10 +58,14 @@ public class DeleteAttrApi extends PrivateApiComponentBase {
         if (objectAttrVo == null) {
             throw new ObjectAttrNotFoundException(id);
         }
-        if (objectAttrVo.getIsPrivate().equals(0)) {
+        if (objectAttrVo.getIsPrivate().equals(1)) {
             throw new ObjectAttrDeleteException(objectAttrVo);
         }
         projectMapper.deleteObjectAttrById(id);
+        EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.deleteObjectTableAttr(objectAttrVo.getProjectTableName(), objectAttrVo)).execute();
+        if (!s.isSucceed()) {
+            throw new DeleteAttrSchemaException(objectAttrVo.getName());
+        }
         return null;
     }
 

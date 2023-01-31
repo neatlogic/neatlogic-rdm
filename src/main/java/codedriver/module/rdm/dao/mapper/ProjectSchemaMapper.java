@@ -21,4 +21,5 @@ public interface ProjectSchemaMapper {
 
     void deleteObjectTable(@Param("tableName") String tableName);
 
+    void deleteObjectTableAttr(@Param("tableName") String tableName, @Param("objectAttrVo") ObjectAttrVo objectAttrVo);
 }

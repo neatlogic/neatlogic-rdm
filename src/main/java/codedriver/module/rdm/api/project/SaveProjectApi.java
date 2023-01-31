@@ -51,7 +51,14 @@ public class SaveProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增项目"), @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "项目名称"), @Param(name = "templateId", type = ApiParamType.LONG, isRequired = true, desc = "项目类型"), @Param(name = "description", type = ApiParamType.STRING, desc = "说明", maxLength = 500, xss = true), @Param(name = "dateRange", type = ApiParamType.JSONARRAY, desc = "起止日期"), @Param(name = "userId", type = ApiParamType.JSONARRAY, desc = "负责人"), @Param(name = "color", type = ApiParamType.STRING, desc = "颜色标识")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增项目"),
+            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "项目名称"),
+            @Param(name = "templateId", type = ApiParamType.LONG, isRequired = true, desc = "项目类型"),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "说明", maxLength = 500, xss = true),
+            @Param(name = "dateRange", type = ApiParamType.JSONARRAY, desc = "起止日期"),
+            @Param(name = "memberIdList", type = ApiParamType.JSONARRAY, desc = "项目成员id列表"),
+            @Param(name = "leaderIdList", type = ApiParamType.JSONARRAY, desc = "项目负责人id列表"),
+            @Param(name = "color", type = ApiParamType.STRING, desc = "颜色标识")})
     @Output({@Param(name = "id", type = ApiParamType.STRING, desc = "模型id")})
     @Description(desc = "保存项目接口")
     @Override
@@ -114,6 +121,26 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 }
             }
             projectMapper.updateProject(projectVo);
+            //清除用户数据
+            projectMapper.deleteProjectUserByProjectId(projectVo.getId());
+        }
+        if (CollectionUtils.isNotEmpty(projectVo.getMemberIdList())) {
+            for (String userId : projectVo.getMemberIdList()) {
+                ProjectUserVo projectUserVo = new ProjectUserVo();
+                projectUserVo.setUserId(userId.replace("user#", ""));
+                projectUserVo.setUserType(ProjectUserType.MEMBER.getValue());
+                projectUserVo.setProjectId(projectVo.getId());
+                projectMapper.insertProjectUser(projectUserVo);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(projectVo.getLeaderIdList())) {
+            for (String userId : projectVo.getLeaderIdList()) {
+                ProjectUserVo projectUserVo = new ProjectUserVo();
+                projectUserVo.setUserId(userId.replace("user#", ""));
+                projectUserVo.setUserType(ProjectUserType.LEADER.getValue());
+                projectUserVo.setProjectId(projectVo.getId());
+                projectMapper.insertProjectUser(projectUserVo);
+            }
         }
         return projectVo.getId();
     }

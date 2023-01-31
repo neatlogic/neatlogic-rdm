@@ -228,6 +228,8 @@
                a.fcu,
                a.lcd,
                a.lcu,
+               b.user_id     AS userId,
+               b.user_type   AS userType,
                c.id          AS objectId,
                c.object_type AS objectType,
                c.sort        AS objectSort
@@ -237,6 +239,54 @@
         WHERE a.id = #{value}
         order by c.sort
     </select>
+
+    <select id="getStatusRelByProjectId" parameterType="java.lang.Long"
+            resultType="codedriver.framework.rdm.dto.ProjectStatusRelVo">
+        select id             as id,
+               from_status_id as fromStatusId,
+               to_status_id   as toStatusId,
+               project_id     as projectId
+        from rdm_project_status_rel
+        where project_id = #{value}
+    </select>
+
+    <select id="getStatusByProjectId" parameterType="java.lang.Long"
+            resultType="codedriver.framework.rdm.dto.ProjectStatusVo">
+        select id, project_id as projectId, name, label, sort, color
+        FROM rdm_project_status
+        WHERE project_id = #{value}
+        order by sort
+    </select>
+
+    <select id="getStatusByObjectId" parameterType="java.lang.Long"
+            resultType="codedriver.framework.rdm.dto.ObjectStatusVo">
+        select id, object_id as objectId, name, label, sort, color
+        FROM rdm_object_status
+        WHERE object_id = #{value}
+        order by sort
+    </select>
+
+    <select id="getStatusRelByObjectId" parameterType="java.lang.Long"
+            resultType="codedriver.framework.rdm.dto.ObjectStatusRelVo">
+        select id             as id,
+               from_status_id as fromStatusId,
+               to_status_id   as toStatusId,
+               object_id      as objectId
+        from rdm_object_status_rel
+        where object_id = #{value}
+    </select>
+
+    <select id="getStatusById" parameterType="java.lang.Long"
+            resultType="codedriver.framework.rdm.dto.ProjectStatusVo">
+        select id, project_id as projectId, name, label, sort, color
+        FROM rdm_project_status
+        WHERE id = #{value}
+    </select>
+
+    <update id="insertProjectStatusRel" parameterType="codedriver.framework.rdm.dto.ProjectStatusRelVo">
+        insert ignore into rdm_project_status_rel (id, project_id, from_status_id, to_status_id)
+        values (#{id}, #{projectId}, #{fromStatusId}, #{toStatusId})
+    </update>
 
     <update id="updateObjectAttrIsActive" parameterType="codedriver.framework.rdm.dto.ObjectAttrVo">
         update rdm_object_attr
@@ -264,16 +314,31 @@
 
     <update id="updateProject" parameterType="codedriver.framework.rdm.dto.ProjectVo">
         update rdm_project
-        set name        = #{name},
-            description = #{description},
-            start_date  = #{startDate},
-            end_date    = #{endDate},
-            color       = #{color},
-            lcd         = now(3),
-            lcu         = #{lcu}
-        WHERE id = #{id}
+        set `name`        = #{name},
+            `description` = #{description},
+            `start_date`  = #{startDate},
+            `end_date`    = #{endDate},
+            `color`       = #{color},
+            `lcd`         = now(3),
+            `lcu`         = #{lcu}
+        WHERE `id` = #{id}
     </update>
 
+    <update id="updateProjectStatus" parameterType="codedriver.framework.rdm.dto.ProjectStatusVo">
+        update rdm_project_status
+        set `name`        = #{name},
+            `label`       = #{label},
+            `color`       = #{color},
+            `description` = #{description}
+        where `id` = #{id}
+    </update>
+
+    <insert id="insertProjectUser" parameterType="codedriver.framework.rdm.dto.ProjectUserVo">
+        insert ignore into rdm_project_user (`user_id`, `user_type`, `project_id`)
+        values (#{userId},
+                #{userType},
+                #{projectId})
+    </insert>
 
     <insert id="insertObject" parameterType="codedriver.framework.rdm.dto.ObjectVo">
         insert rdm_object (id, object_type, project_id, sort)
@@ -328,6 +393,36 @@
                 #{configStr},
                 #{isActive})
     </insert>
+
+    <insert id="insertProjectStatus" parameterType="codedriver.framework.rdm.dto.ProjectStatusVo">
+        insert into rdm_project_status
+        (id,
+         project_id,
+         name,
+         label,
+         sort,
+         color)
+        values (#{id},
+                #{projectId},
+                #{name},
+                #{label},
+                #{sort},
+                #{color})
+    </insert>
+
+    <delete id="deleteProjectStatusRel" parameterType="codedriver.framework.rdm.dto.ProjectStatusRelVo">
+        delete
+        from rdm_project_status_rel
+        where project_id = #{projectId}
+          and from_status_id = #{fromStatusId}
+          and to_status_id = #{toStatusId}
+    </delete>
+
+    <delete id="deleteProjectUserByProjectId" parameterType="java.lang.Long">
+        delete
+        from rdm_project_user
+        where project_id = #{value}
+    </delete>
 
     <delete id="deleteObjectAttrById" parameterType="java.lang.Long">
         delete
