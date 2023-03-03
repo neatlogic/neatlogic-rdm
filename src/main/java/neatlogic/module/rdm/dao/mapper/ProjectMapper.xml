@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright(c) $today.year NeatLogic Co., Ltd. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.rdm.dao.mapper.ProjectMapper">
+    <select id="getMaxObjectAttrSortByObjectId" parameterType="java.lang.Long" resultType="int">
+        select max(sort)
+        FROM rdm_object_attr
+        WHERE object_id = #{value}
+    </select>
+
+    <select id="checkAttrNameIsExists" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo" resultType="int">
+        select count(1)
+        from rdm_object_attr
+        where object_id = #{objectId}
+          and id != #{id}
+          and name = #{name}
+    </select>
+
+    <select id="getAttrById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.ObjectAttrVo">
+        select id,
+               object_id   as objectId,
+               type,
+               name,
+               label,
+               description,
+               is_required AS isRequired,
+               sort,
+               is_private  AS isPrivate,
+               config      AS configStr,
+               is_active   AS isActive
+        FROM rdm_object_attr
+        where id = #{value}
+    </select>
+
+    <select id="searchObjectAttr" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo"
+            resultType="neatlogic.framework.rdm.dto.ObjectAttrVo">
+        select id,
+        object_id as objectId,
+        type,
+        name,
+        label,
+        description,
+        is_required AS isRequired,
+        sort,
+        is_private AS isPrivate,
+        config AS configStr,
+        is_active AS isActive
+        FROM rdm_object_attr
+        where
+        object_id = #{objectId}
+        <if test="isActive != null">
+            and is_active = #{isActive}
+        </if>
+        order by sort
+    </select>
+
+    <select id="getObjectById" parameterType="java.lang.Long" resultMap="objectResultMap">
+        select a.id,
+               a.object_type as objectType,
+               a.project_id  AS projectId,
+               a.sort,
+               b.id          as attrId,
+               b.type        as attrType,
+               b.name        as attrName,
+               b.label       as attrLabel,
+               b.description as attrDescription,
+               b.is_required as attrIsRequired,
+               b.sort        as attrSort,
+               b.is_private  as attrIsPrivate,
+               b.config      as attrConfigStr
+        from rdm_object a
+                 left join rdm_object_attr b
+                           on a.id = b.object_id
+        where a.id = #{value}
+        order by b.sort
+    </select>
+
+    <resultMap id="projectTemplateMap" type="neatlogic.framework.rdm.dto.ProjectTemplateVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="isActive" column="isActive"/>
+        <collection property="objectTypeList" ofType="neatlogic.framework.rdm.dto.ProjectTemplateObjectTypeVo">
+            <id property="name" column="objectType"/>
+            <result property="sort" column="sort"/>
+        </collection>
+    </resultMap>
+    <select id="getProjectTemplateById" parameterType="java.lang.Long" resultMap="projectTemplateMap">
+        SELECT a.id,
+               a.NAME,
+               a.is_active   AS isActive,
+               b.object_type AS objectType,
+               b.sort
+        FROM rdm_project_template a
+                 JOIN rdm_project_template_objecttype b ON a.id = b.template_id
+        WHERE a.id = #{value}
+        order by sort
+    </select>
+
+    <select id="checkProjectNameIsExists" parameterType="neatlogic.framework.rdm.dto.ProjectVo" resultType="int">
+        SELECT count(1)
+        from rdm_project
+        WHERE name = #{name}
+          AND id != #{id}
+    </select>
+
+    <sql id="searchProjectCondition">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE concat('%', #{keyword}, '%')
+                or description LIKE concat('%',#{keyword},'%')
+                )
+            </if>
+        </where>
+    </sql>
+
+    <resultMap id="projectResultMap" type="neatlogic.framework.rdm.dto.ProjectVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="startDate" column="startDate"/>
+        <result property="endDate" column="endDate"/>
+        <result property="color" column="color"/>
+        <result property="templateId" column="templateId"/>
+        <result property="type" column="type"/>
+        <result property="fcd" column="fcd"/>
+        <result property="fcu" column="fcu"/>
+        <result property="lcd" column="lcd"/>
+        <result property="lcu" column="lcu"/>
+        <collection property="userList" ofType="neatlogic.framework.rdm.dto.ProjectUserVo">
+            <id property="userId" column="userId"/>
+            <result property="userType" column="userType"/>
+        </collection>
+        <collection property="objectList" ofType="neatlogic.framework.rdm.dto.ObjectVo">
+            <id property="id" column="objectId"/>
+            <result property="type" column="objectType"/>
+            <result property="sort" column="objectSort"/>
+        </collection>
+    </resultMap>
+
+    <select id="searchProjectCount" parameterType="neatlogic.framework.rdm.dto.ProjectVo" resultType="int">
+        SELECT COUNT(distinct a.id)
+        FROM rdm_project a
+        LEFT JOIN rdm_project_user b ON a.id = b.project_id
+        <include refid="searchProjectCondition"></include>
+    </select>
+
+    <select id="searchProject" parameterType="neatlogic.framework.rdm.dto.ProjectVo"
+            resultMap="projectResultMap">
+        select
+        a.id,
+        a.name,
+        a.description,
+        a.start_date AS startDate,
+        a.end_date AS endDate,
+        a.color,
+        a.template_id AS templateId,
+        a.type AS type,
+        a.fcd,
+        a.fcu,
+        a.lcd,
+        a.lcu,
+        b.user_id AS userId,
+        b.user_type AS userType,
+        c.id AS objectId,
+        c.object_type AS objectType,
+        c.sort AS objectSort
+        from rdm_project a
+        LEFT JOIN rdm_project_user b ON a.id = b.project_id
+        LEFT JOIN rdm_object c ON a.id = c.project_id
+        <include refid="searchProjectCondition"></include>
+        ORDER by a.id desc, c.sort
+        LIMIT #{startNum}, #{pageSize}
+    </select>
+
+    <resultMap id="objectResultMap" type="neatlogic.framework.rdm.dto.ObjectVo">
+        <id property="id" column="id"/>
+        <result property="type" column="objectType"/>
+        <result property="projectId" column="projectId"/>
+        <result property="sort" column="sort"/>
+        <collection property="attrList" ofType="neatlogic.framework.rdm.dto.ObjectAttrVo">
+            <id property="id" column="attrId"/>
+            <result property="type" column="attrType"/>
+            <result property="name" column="attrName"/>
+            <result property="label" column="attrLabel"/>
+            <result property="description" column="attrDescription"/>
+            <result property="isRequired" column="attrIsRequired"/>
+            <result property="sort" column="attrSort"/>
+            <result property="isPrivate" column="attrIsPrivate"/>
+            <result property="configStr" column="attrConfigStr"/>
+        </collection>
+    </resultMap>
+
+    <select id="getObjectDetailByProjectId" parameterType="java.lang.Long" resultMap="objectResultMap">
+        select a.id,
+               a.object_type as objectType,
+               a.project_id  AS projectId,
+               a.sort,
+               b.id          as attrId,
+               b.type        as attrType,
+               b.name        as attrName,
+               b.label       as attrLabel,
+               b.description as attrDescription,
+               b.is_required as attrIsRequired,
+               b.sort        as attrSort,
+               b.is_private  as attrIsPrivate,
+               b.config      as attrConfigStr
+        from rdm_object a
+                 left join rdm_object_attr b
+                           on a.id = b.object_id
+        where a.project_id = #{value}
+        order by a.sort, b.sort
+    </select>
+
+    <select id="getProjectById" parameterType="java.lang.Long" resultMap="projectResultMap">
+        select a.id,
+               a.name,
+               a.description,
+               a.start_date  AS startDate,
+               a.end_date    AS endDate,
+               a.color,
+               a.template_id AS templateId,
+               a.type        AS type,
+               a.fcd,
+               a.fcu,
+               a.lcd,
+               a.lcu,
+               b.user_id     AS userId,
+               b.user_type   AS userType,
+               c.id          AS objectId,
+               c.object_type AS objectType,
+               c.sort        AS objectSort
+        from rdm_project a
+                 LEFT JOIN rdm_project_user b ON a.id = b.project_id
+                 LEFT JOIN rdm_object c ON a.id = c.project_id
+        WHERE a.id = #{value}
+        order by c.sort
+    </select>
+
+    <select id="getStatusRelByProjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.ProjectStatusRelVo">
+        select id             as id,
+               from_status_id as fromStatusId,
+               to_status_id   as toStatusId,
+               project_id     as projectId
+        from rdm_project_status_rel
+        where project_id = #{value}
+    </select>
+
+    <select id="getStatusByProjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.ProjectStatusVo">
+        select id, project_id as projectId, name, label, sort, color
+        FROM rdm_project_status
+        WHERE project_id = #{value}
+        order by sort
+    </select>
+
+    <select id="getStatusByObjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.ObjectStatusVo">
+        select id, object_id as objectId, name, label, sort, color
+        FROM rdm_object_status
+        WHERE object_id = #{value}
+        order by sort
+    </select>
+
+    <select id="getStatusRelByObjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.ObjectStatusRelVo">
+        select id             as id,
+               from_status_id as fromStatusId,
+               to_status_id   as toStatusId,
+               object_id      as objectId
+        from rdm_object_status_rel
+        where object_id = #{value}
+    </select>
+
+    <select id="getStatusById" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.ProjectStatusVo">
+        select id, project_id as projectId, name, label, sort, color
+        FROM rdm_project_status
+        WHERE id = #{value}
+    </select>
+
+    <update id="insertProjectStatusRel" parameterType="neatlogic.framework.rdm.dto.ProjectStatusRelVo">
+        insert ignore into rdm_project_status_rel (id, project_id, from_status_id, to_status_id)
+        values (#{id}, #{projectId}, #{fromStatusId}, #{toStatusId})
+    </update>
+
+    <update id="updateObjectAttrIsActive" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo">
+        update rdm_object_attr
+        set is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateObjectAttrSort" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo">
+        update rdm_object_attr
+        set sort = #{sort}
+        where id = #{id}
+    </update>
+
+    <update id="updateObjectAttr" parameterType="neatlogic.framework.rdm.dto.ObjectTypeVo">
+        update rdm_object_attr
+        set name        = #{name},
+            label       = #{label},
+            description =#{description},
+            is_required = #{isRequired},
+            sort        = #{sort},
+            config      = #{configStr},
+            is_active   = #{isActive}
+        where id = #{id}
+    </update>
+
+    <update id="updateProject" parameterType="neatlogic.framework.rdm.dto.ProjectVo">
+        update rdm_project
+        set `name`        = #{name},
+            `description` = #{description},
+            `start_date`  = #{startDate},
+            `end_date`    = #{endDate},
+            `color`       = #{color},
+            `lcd`         = now(3),
+            `lcu`         = #{lcu}
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="updateProjectStatus" parameterType="neatlogic.framework.rdm.dto.ProjectStatusVo">
+        update rdm_project_status
+        set `name`        = #{name},
+            `label`       = #{label},
+            `color`       = #{color},
+            `description` = #{description}
+        where `id` = #{id}
+    </update>
+
+    <insert id="insertProjectUser" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo">
+        insert ignore into rdm_project_user (`user_id`, `user_type`, `project_id`)
+        values (#{userId},
+                #{userType},
+                #{projectId})
+    </insert>
+
+    <insert id="insertObject" parameterType="neatlogic.framework.rdm.dto.ObjectVo">
+        insert rdm_object (id, object_type, project_id, sort)
+        values (#{id}, #{type}, #{projectId}, #{sort})
+    </insert>
+
+    <insert id="insertProject" parameterType="neatlogic.framework.rdm.dto.ProjectVo">
+        insert into rdm_project (id,
+                                 name,
+                                 description,
+                                 start_date,
+                                 end_date,
+                                 color,
+                                 type,
+                                 template_id,
+                                 fcd,
+                                 fcu)
+        values (#{id},
+                #{name},
+                #{description},
+                #{startDate},
+                #{endDate},
+                #{color},
+                #{type},
+                #{templateId},
+                NOW(3),
+                #{fcu})
+    </insert>
+
+    <insert id="insertObjectAttr" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo">
+        insert into rdm_object_attr
+        (id,
+         object_id,
+         type,
+         name,
+         label,
+         description,
+         is_required,
+         sort,
+         is_private,
+         config,
+         is_active)
+        values (#{id},
+                #{objectId},
+                #{type},
+                #{name},
+                #{label},
+                #{description},
+                #{isRequired},
+                #{sort},
+                #{isPrivate},
+                #{configStr},
+                #{isActive})
+    </insert>
+
+    <insert id="insertProjectStatus" parameterType="neatlogic.framework.rdm.dto.ProjectStatusVo">
+        insert into rdm_project_status
+        (id,
+         project_id,
+         name,
+         label,
+         sort,
+         color)
+        values (#{id},
+                #{projectId},
+                #{name},
+                #{label},
+                #{sort},
+                #{color})
+    </insert>
+
+    <delete id="deleteProjectStatusRel" parameterType="neatlogic.framework.rdm.dto.ProjectStatusRelVo">
+        delete
+        from rdm_project_status_rel
+        where project_id = #{projectId}
+          and from_status_id = #{fromStatusId}
+          and to_status_id = #{toStatusId}
+    </delete>
+
+    <delete id="deleteProjectUserByProjectId" parameterType="java.lang.Long">
+        delete
+        from rdm_project_user
+        where project_id = #{value}
+    </delete>
+
+    <delete id="deleteObjectAttrById" parameterType="java.lang.Long">
+        delete
+        from rdm_object_attr
+        where id = #{value}
+    </delete>
+
+    <delete id="deleteProjectById" parameterType="java.lang.Long">
+        DELETE a,b
+        FROM rdm_project a
+                 left join rdm_project_user b on a.id = b.project_id
+        WHERE a.id = #{value}
+    </delete>
+
+    <delete id="deleteObjectById" parameterType="java.lang.Long">
+        DELETE a,b,c,d,e
+        FROM rdm_object a
+                 left join rdm_object_attr b on a.id = b.object_id
+                 left join rdm_object_priority c on a.id = c.object_id
+                 left join rdm_object_status d on a.id = d.object_id
+                 left join rdm_object_status_rel e on a.id = e.object_id
+        where a.id = #{value}
+    </delete>
+</mapper>
