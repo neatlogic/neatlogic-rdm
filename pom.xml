@@ -43,6 +43,7 @@
                     <include>**/*.conf</include>
                     <include>**/*.txt</include>
                     <include>dict/**</include>
+                    <include>neatlogic/**</include>
                 </includes>
             </resource>
         </resources>
