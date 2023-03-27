@@ -34,8 +34,8 @@ limitations under the License.
 		http://neatlogic.com/schema/neatlogic
 		https://neatlogic.com/schema/neatlogic.xsd">
 
-    <neatlogic:module id="rdm" name="研发管理模块" groupName="研发管理" group="rdm" groupSort="6"
-                       groupDescription="研发管理平台"/>
+    <neatlogic:module id="rdm" name="研发管理模块" groupName="modulegroup.rdm" group="rdm" groupSort="6"
+                       groupDescription="modulegroup.rdm.desc"/>
 
     <context:component-scan base-package="neatlogic.module.rdm" use-default-filters="false">
         <context:include-filter type="annotation" expression="neatlogic.framework.common.RootComponent"/>
