@@ -21,17 +21,11 @@ import neatlogic.framework.rdm.dto.*;
 import java.util.List;
 
 public interface ProjectMapper {
-    int getMaxObjectAttrSortByObjectId(Long objectId);
 
     int checkAttrNameIsExists(ObjectAttrVo objectAttrVo);
 
     ObjectAttrVo getAttrById(Long attrId);
 
-    List<ObjectAttrVo> searchObjectAttr(ObjectAttrVo objectAttrVo);
-
-    ObjectVo getObjectById(Long id);
-
-    List<ObjectVo> getObjectDetailByProjectId(Long projectId);
 
     ProjectVo getProjectById(Long id);
 
@@ -45,7 +39,6 @@ public interface ProjectMapper {
 
     List<ProjectStatusRelVo> getStatusRelByProjectId(Long projectId);
 
-    List<ObjectStatusVo> getStatusByObjectId(Long objectId);
 
     List<ObjectStatusRelVo> getStatusRelByObjectId(Long objectId);
 
@@ -56,19 +49,15 @@ public interface ProjectMapper {
 
     void insertProjectUser(ProjectUserVo projectUserVo);
 
-    void updateObjectAttrSort(ObjectAttrVo objectAttrVo);
 
     void insertProjectStatusRel(ProjectStatusRelVo projectStatusRelVo);
 
-    void updateObjectAttrIsActive(ObjectAttrVo objectAttrVo);
 
     void updateProject(ProjectVo projectVo);
 
     void updateProjectStatus(ProjectStatusVo projectStatusVo);
 
-    void updateObjectAttr(ObjectAttrVo objectAttrVo);
 
-    void insertObjectAttr(ObjectAttrVo objectAttrVo);
 
     void insertProject(ProjectVo projectVo);
 

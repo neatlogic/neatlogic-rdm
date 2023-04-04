@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.objectattr;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
@@ -29,9 +30,9 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.framework.util.RegexUtils;
+import neatlogic.module.rdm.dao.mapper.ObjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -43,6 +44,9 @@ public class SaveAttrApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Resource
     private ProjectSchemaMapper projectSchemaMapper;
@@ -77,9 +81,9 @@ public class SaveAttrApi extends PrivateApiComponentBase {
         }
         Long id = paramObj.getLong("id");
         if (id == null) {
-            int maxSort = projectMapper.getMaxObjectAttrSortByObjectId(objectAttrVo.getObjectId());
+            int maxSort = objectMapper.getMaxObjectAttrSortByObjectId(objectAttrVo.getObjectId());
             objectAttrVo.setSort(maxSort + 1);
-            projectMapper.insertObjectAttr(objectAttrVo);
+            objectMapper.insertObjectAttr(objectAttrVo);
             EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.insertObjectTableAttr(objectAttrVo.getProjectTableName(), objectAttrVo)).execute();
             if (!s.isSucceed()) {
                 throw new InsertAttrToSchemaException(objectAttrVo.getName());
@@ -89,7 +93,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
             if (oldObjectAttrVo == null) {
                 throw new ObjectAttrNotFoundException(id);
             }
-            projectMapper.updateObjectAttr(objectAttrVo);
+            objectMapper.updateObjectAttr(objectAttrVo);
         }
         return objectAttrVo.getId();
     }

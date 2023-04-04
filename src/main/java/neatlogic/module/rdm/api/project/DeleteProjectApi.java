@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.project;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
@@ -29,9 +30,9 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.dao.mapper.ObjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.service.ProjectService;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,9 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
 
     @Resource
@@ -69,7 +73,7 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long projectId = paramObj.getLong("id");
-        List<ObjectVo> objectList = projectMapper.getObjectDetailByProjectId(projectId);
+        List<ObjectVo> objectList = objectMapper.getObjectDetailByProjectId(projectId);
         for (ObjectVo objectVo : objectList) {
             issueMapper.deleteIssueByObjectId(objectVo.getId());
             projectMapper.deleteObjectById(objectVo.getId());

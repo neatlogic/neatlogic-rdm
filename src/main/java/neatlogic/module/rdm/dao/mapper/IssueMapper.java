@@ -16,6 +16,13 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
+import neatlogic.framework.rdm.dto.IssueCountVo;
+
+import java.util.List;
+
 public interface IssueMapper {
+
+    List<IssueCountVo> getIssueCountByProjectId(IssueCountVo issueCountVo);
+
     void deleteIssueByObjectId(Long objectId);
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.object;
+package neatlogic.module.rdm.api.issue;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ObjectVo;
+import neatlogic.framework.rdm.dto.IssueCountVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.ObjectMapper;
+import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListProjectObjectApi extends PrivateApiComponentBase {
+public class GetIssueCountApi extends PrivateApiComponentBase {
 
     @Resource
-    private ObjectMapper objectMapper;
+    private IssueMapper issueMapper;
 
     @Override
     public String getName() {
-        return "获取项目对象列表";
+        return "获取任务数量";
     }
 
     @Override
@@ -47,16 +47,18 @@ public class ListProjectObjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "projectId", desc = "项目id", isRequired = true, type = ApiParamType.LONG)})
-    @Output({@Param(explode = ObjectVo[].class)})
-    @Description(desc = "获取项目对象列表接口")
+    @Input({@Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "项目id"),
+            @Param(name = "groupBy", type = ApiParamType.ENUM, rule = "day,month", isRequired = true, desc = "分组类型")})
+    @Output({@Param(explode = IssueCountVo[].class)})
+    @Description(desc = "获取任务数量接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return objectMapper.getObjectDetailByProjectId(paramObj.getLong("projectId"));
+        IssueCountVo issueCountVo = JSONObject.toJavaObject(paramObj, IssueCountVo.class);
+        return issueMapper.getIssueCountByProjectId(issueCountVo);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/object/get";
+        return "/rdm/project/issue/count";
     }
 }

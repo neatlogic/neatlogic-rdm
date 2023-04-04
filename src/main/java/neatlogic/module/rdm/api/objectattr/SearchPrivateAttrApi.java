@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.objectattr;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
@@ -24,8 +25,7 @@ import neatlogic.framework.rdm.dto.ObjectVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import com.alibaba.fastjson.JSONObject;
+import neatlogic.module.rdm.dao.mapper.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,7 +36,7 @@ import javax.annotation.Resource;
 public class SearchPrivateAttrApi extends PrivateApiComponentBase {
 
     @Resource
-    private ProjectMapper projectMapper;
+    private ObjectMapper objectMapper;
 
     @Override
     public String getName() {
@@ -54,7 +54,7 @@ public class SearchPrivateAttrApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         ObjectAttrVo objectAttrVo = JSONObject.toJavaObject(paramObj, ObjectAttrVo.class);
-        return projectMapper.searchObjectAttr(objectAttrVo);
+        return objectMapper.searchObjectAttr(objectAttrVo);
     }
 
     @Override

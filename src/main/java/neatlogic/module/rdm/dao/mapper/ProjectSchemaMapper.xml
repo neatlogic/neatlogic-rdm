@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-Copyright(c) $today.year NeatLogic Co., Ltd. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+  ~ Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
   -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
@@ -55,16 +55,20 @@ limitations under the License.
             <when test="objectAttrVo.type == 'enum'">
                 char(30)
             </when>
+            <when test="objectAttrVo.type == 'select'">
+                TEXT
+            </when>
             <otherwise>TEXT</otherwise>
         </choose>
         NULL COMMENT '${objectAttrVo.label}',
-        ADD COLUMN `${objectAttrVo.id}_hash` CHAR(32) NULL COMMENT '${objectAttrVo.label}值散列码',
         <choose>
             <when test="objectAttrVo.type == 'number' or objectAttrVo.type == 'date' or objectAttrVo.type == 'time' or objectAttrVo.type == 'datetime' or objectAttrVo.type == 'enum'">
                 ADD KEY `index_${objectAttrVo.id}` (`${objectAttrVo.id}`),
             </when>
+            <when test="objectAttrVo.type == 'select'">
+                ADD KEY `index_${objectAttrVo.id}` ((CAST(`${objectAttrVo.id}` AS CHAR(255) ARRAY)))
+            </when>
         </choose>
-        ADD KEY `index_${objectAttrVo.id}_hash` (`${objectAttrVo.id}_hash`);
     </insert>
 
     <insert id="insertObjectTable">

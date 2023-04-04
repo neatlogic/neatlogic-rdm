@@ -35,6 +35,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import neatlogic.module.rdm.dao.mapper.ObjectMapper;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public class SaveProjectApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
     @Resource
     private ProjectService projectService;
@@ -108,7 +112,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         objectAttrVo.setIsActive(1);
                         objectAttrVo.setObjectId(objectVo.getId());
                         objectVo.addObjectAttr(objectAttrVo);
-                        projectMapper.insertObjectAttr(objectAttrVo);
+                        objectMapper.insertObjectAttr(objectAttrVo);
                         sort += 1;
                     }
                 }

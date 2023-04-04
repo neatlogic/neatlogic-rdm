@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-Copyright(c) $today.year NeatLogic Co., Ltd. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+  ~ Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
   -->
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.ProjectMapper">
-    <select id="getMaxObjectAttrSortByObjectId" parameterType="java.lang.Long" resultType="int">
-        select max(sort)
-        FROM rdm_object_attr
-        WHERE object_id = #{value}
-    </select>
+
 
     <select id="checkAttrNameIsExists" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo" resultType="int">
         select count(1)
@@ -47,48 +43,6 @@ limitations under the License.
         where id = #{value}
     </select>
 
-    <select id="searchObjectAttr" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo"
-            resultType="neatlogic.framework.rdm.dto.ObjectAttrVo">
-        select id,
-        object_id as objectId,
-        type,
-        name,
-        label,
-        description,
-        is_required AS isRequired,
-        sort,
-        is_private AS isPrivate,
-        config AS configStr,
-        is_active AS isActive
-        FROM rdm_object_attr
-        where
-        object_id = #{objectId}
-        <if test="isActive != null">
-            and is_active = #{isActive}
-        </if>
-        order by sort
-    </select>
-
-    <select id="getObjectById" parameterType="java.lang.Long" resultMap="objectResultMap">
-        select a.id,
-               a.object_type as objectType,
-               a.project_id  AS projectId,
-               a.sort,
-               b.id          as attrId,
-               b.type        as attrType,
-               b.name        as attrName,
-               b.label       as attrLabel,
-               b.description as attrDescription,
-               b.is_required as attrIsRequired,
-               b.sort        as attrSort,
-               b.is_private  as attrIsPrivate,
-               b.config      as attrConfigStr
-        from rdm_object a
-                 left join rdm_object_attr b
-                           on a.id = b.object_id
-        where a.id = #{value}
-        order by b.sort
-    </select>
 
     <resultMap id="projectTemplateMap" type="neatlogic.framework.rdm.dto.ProjectTemplateVo">
         <id property="id" column="id"/>
@@ -187,44 +141,6 @@ limitations under the License.
         LIMIT #{startNum}, #{pageSize}
     </select>
 
-    <resultMap id="objectResultMap" type="neatlogic.framework.rdm.dto.ObjectVo">
-        <id property="id" column="id"/>
-        <result property="type" column="objectType"/>
-        <result property="projectId" column="projectId"/>
-        <result property="sort" column="sort"/>
-        <collection property="attrList" ofType="neatlogic.framework.rdm.dto.ObjectAttrVo">
-            <id property="id" column="attrId"/>
-            <result property="type" column="attrType"/>
-            <result property="name" column="attrName"/>
-            <result property="label" column="attrLabel"/>
-            <result property="description" column="attrDescription"/>
-            <result property="isRequired" column="attrIsRequired"/>
-            <result property="sort" column="attrSort"/>
-            <result property="isPrivate" column="attrIsPrivate"/>
-            <result property="configStr" column="attrConfigStr"/>
-        </collection>
-    </resultMap>
-
-    <select id="getObjectDetailByProjectId" parameterType="java.lang.Long" resultMap="objectResultMap">
-        select a.id,
-               a.object_type as objectType,
-               a.project_id  AS projectId,
-               a.sort,
-               b.id          as attrId,
-               b.type        as attrType,
-               b.name        as attrName,
-               b.label       as attrLabel,
-               b.description as attrDescription,
-               b.is_required as attrIsRequired,
-               b.sort        as attrSort,
-               b.is_private  as attrIsPrivate,
-               b.config      as attrConfigStr
-        from rdm_object a
-                 left join rdm_object_attr b
-                           on a.id = b.object_id
-        where a.project_id = #{value}
-        order by a.sort, b.sort
-    </select>
 
     <select id="getProjectById" parameterType="java.lang.Long" resultMap="projectResultMap">
         select a.id,
@@ -269,13 +185,6 @@ limitations under the License.
         order by sort
     </select>
 
-    <select id="getStatusByObjectId" parameterType="java.lang.Long"
-            resultType="neatlogic.framework.rdm.dto.ObjectStatusVo">
-        select id, object_id as objectId, name, label, sort, color
-        FROM rdm_object_status
-        WHERE object_id = #{value}
-        order by sort
-    </select>
 
     <select id="getStatusRelByObjectId" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.ObjectStatusRelVo">
@@ -299,29 +208,6 @@ limitations under the License.
         values (#{id}, #{projectId}, #{fromStatusId}, #{toStatusId})
     </update>
 
-    <update id="updateObjectAttrIsActive" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo">
-        update rdm_object_attr
-        set is_active = #{isActive}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateObjectAttrSort" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo">
-        update rdm_object_attr
-        set sort = #{sort}
-        where id = #{id}
-    </update>
-
-    <update id="updateObjectAttr" parameterType="neatlogic.framework.rdm.dto.ObjectTypeVo">
-        update rdm_object_attr
-        set name        = #{name},
-            label       = #{label},
-            description =#{description},
-            is_required = #{isRequired},
-            sort        = #{sort},
-            config      = #{configStr},
-            is_active   = #{isActive}
-        where id = #{id}
-    </update>
 
     <update id="updateProject" parameterType="neatlogic.framework.rdm.dto.ProjectVo">
         update rdm_project
@@ -379,31 +265,6 @@ limitations under the License.
                 #{fcu})
     </insert>
 
-    <insert id="insertObjectAttr" parameterType="neatlogic.framework.rdm.dto.ObjectAttrVo">
-        insert into rdm_object_attr
-        (id,
-         object_id,
-         type,
-         name,
-         label,
-         description,
-         is_required,
-         sort,
-         is_private,
-         config,
-         is_active)
-        values (#{id},
-                #{objectId},
-                #{type},
-                #{name},
-                #{label},
-                #{description},
-                #{isRequired},
-                #{sort},
-                #{isPrivate},
-                #{configStr},
-                #{isActive})
-    </insert>
 
     <insert id="insertProjectStatus" parameterType="neatlogic.framework.rdm.dto.ProjectStatusVo">
         insert into rdm_project_status
