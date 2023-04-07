@@ -21,7 +21,7 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
-import neatlogic.framework.rdm.enums.ObjectType;
+import neatlogic.framework.rdm.enums.AppType;
 import neatlogic.framework.rdm.enums.PrivateAttr;
 import neatlogic.framework.rdm.enums.ProjectUserType;
 import neatlogic.framework.rdm.exception.*;
@@ -30,12 +30,13 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
 import neatlogic.module.rdm.service.ProjectService;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import neatlogic.module.rdm.dao.mapper.ObjectMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -51,7 +52,10 @@ public class SaveProjectApi extends PrivateApiComponentBase {
     private ProjectMapper projectMapper;
 
     @Resource
-    private ObjectMapper objectMapper;
+    private ProjectTemplateMapper projectTemplateMapper;
+
+    @Resource
+    private AppMapper appMapper;
 
     @Resource
     private ProjectService projectService;
@@ -84,25 +88,25 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             throw new ProjectNameIsExistsException(projectVo.getName());
         }
         if (paramObj.getLong("id") == null) {
-            ProjectTemplateVo projectTemplateVo = projectMapper.getProjectTemplateById(projectVo.getTemplateId());
+            ProjectTemplateVo projectTemplateVo = projectTemplateMapper.getProjectTemplateById(projectVo.getTemplateId());
             if (projectTemplateVo == null) {
                 throw new ProjectTemplateNotFoundException(projectVo.getTemplateId());
             }
             projectVo.setType(projectTemplateVo.getName());
             projectMapper.insertProject(projectVo);
-            List<ObjectVo> objectList = new ArrayList<>();
-            for (ProjectTemplateObjectTypeVo objectType : projectTemplateVo.getObjectTypeList()) {
-                ObjectVo objectVo = new ObjectVo();
+            List<AppVo> objectList = new ArrayList<>();
+            for (ProjectTemplateAppTypeVo objectType : projectTemplateVo.getAppTypeList()) {
+                AppVo objectVo = new AppVo();
                 objectVo.setProjectId(projectVo.getId());
                 objectVo.setType(objectType.getName());
                 objectVo.setSort(objectType.getSort());
-                projectMapper.insertObject(objectVo);
+                appMapper.insertApp(objectVo);
 
-                PrivateAttr[] attrTypeList = ObjectType.getAttrList(objectType.getName());
+                PrivateAttr[] attrTypeList = AppType.getAttrList(objectType.getName());
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (PrivateAttr attrType : attrTypeList) {
-                        ObjectAttrVo objectAttrVo = new ObjectAttrVo();
+                        AppAttrVo objectAttrVo = new AppAttrVo();
                         objectAttrVo.setName(attrType.getName());
                         objectAttrVo.setLabel(attrType.getLabel());
                         objectAttrVo.setType(attrType.getType());
@@ -110,15 +114,15 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         objectAttrVo.setIsRequired(0);
                         objectAttrVo.setIsPrivate(1);
                         objectAttrVo.setIsActive(1);
-                        objectAttrVo.setObjectId(objectVo.getId());
-                        objectVo.addObjectAttr(objectAttrVo);
-                        objectMapper.insertObjectAttr(objectAttrVo);
+                        objectAttrVo.setAppId(objectVo.getId());
+                        objectVo.addAppAttr(objectAttrVo);
+                        appMapper.insertAppAttr(objectAttrVo);
                         sort += 1;
                     }
                 }
                 objectList.add(objectVo);
             }
-            for (ObjectVo objectVo : objectList) {
+            for (AppVo objectVo : objectList) {
                 EscapeTransactionJob.State s = projectService.buildObjectSchema(objectVo);
                 if (!s.isSucceed()) {
                     throw new CreateObjectSchemaException(objectVo.getName());

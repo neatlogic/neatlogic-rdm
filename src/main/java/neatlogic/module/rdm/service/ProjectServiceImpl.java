@@ -18,8 +18,8 @@ package neatlogic.module.rdm.service;
 
 import neatlogic.framework.asynchronization.threadlocal.TenantContext;
 import neatlogic.framework.exception.database.DataBaseNotFoundException;
-import neatlogic.framework.rdm.dto.ObjectAttrVo;
-import neatlogic.framework.rdm.dto.ObjectVo;
+import neatlogic.framework.rdm.dto.AppAttrVo;
+import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
@@ -36,10 +36,10 @@ public class ProjectServiceImpl implements ProjectService {
     @Resource
     private ProjectMapper projectMapper;
 
-    public EscapeTransactionJob.State dropObjectSchema(ObjectVo objectVo) {
+    public EscapeTransactionJob.State dropObjectSchema(AppVo objectVo) {
         return new EscapeTransactionJob(() -> {
             if (projectSchemaMapper.checkSchemaIsExists(TenantContext.get().getDataDbName()) > 0) {
-                projectSchemaMapper.deleteObjectTable(objectVo.getTableName());
+                projectSchemaMapper.deleteAppTable(objectVo.getTableName());
             } else {
                 throw new DataBaseNotFoundException();
             }
@@ -47,20 +47,20 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-    public EscapeTransactionJob.State buildObjectSchema(ObjectVo objectVo) {
+    public EscapeTransactionJob.State buildObjectSchema(AppVo objectVo) {
         return new EscapeTransactionJob(() -> {
             if (projectSchemaMapper.checkSchemaIsExists(TenantContext.get().getDataDbName()) > 0) {
                 if (projectSchemaMapper.checkTableIsExists(TenantContext.get().getDataDbName(), "rdm_object_" + objectVo.getId()) <= 0) {
                     //创建配置项表
-                    projectSchemaMapper.insertObjectTable(objectVo.getTableName());
+                    projectSchemaMapper.insertAppTable(objectVo.getTableName());
                 } else {
                     //如果已存在但没有数据，重建表
                     if (projectSchemaMapper.checkTableHasData(objectVo.getTableName()) <= 0) {
-                        projectSchemaMapper.deleteObjectTable(objectVo.getTableName());
-                        projectSchemaMapper.insertObjectTable(objectVo.getTableName());
-                        for (ObjectAttrVo attrVo : objectVo.getAttrList()) {
+                        projectSchemaMapper.deleteAppTable(objectVo.getTableName());
+                        projectSchemaMapper.insertAppTable(objectVo.getTableName());
+                        for (AppAttrVo attrVo : objectVo.getAttrList()) {
                             if (attrVo.getIsPrivate().equals(0)) {
-                                projectSchemaMapper.insertObjectTableAttr(objectVo.getTableName(), attrVo);
+                                projectSchemaMapper.insertAppTableAttr(objectVo.getTableName(), attrVo);
                             }
                         }
                     }

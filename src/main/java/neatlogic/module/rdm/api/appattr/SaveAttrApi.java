@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.objectattr;
+package neatlogic.module.rdm.api.appattr;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ObjectAttrVo;
+import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.exception.InsertAttrToSchemaException;
-import neatlogic.framework.rdm.exception.ObjectAttrNameIsExistsException;
-import neatlogic.framework.rdm.exception.ObjectAttrNotFoundException;
+import neatlogic.framework.rdm.exception.AppAttrNameIsExistsException;
+import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.framework.util.RegexUtils;
-import neatlogic.module.rdm.dao.mapper.ObjectMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
 import org.springframework.stereotype.Service;
@@ -46,14 +46,14 @@ public class SaveAttrApi extends PrivateApiComponentBase {
     private ProjectMapper projectMapper;
 
     @Resource
-    private ObjectMapper objectMapper;
+    private AppMapper appMapper;
 
     @Resource
     private ProjectSchemaMapper projectSchemaMapper;
 
     @Override
     public String getName() {
-        return "保存对象属性";
+        return "保存应用属性";
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "属性id，不提供代表新增"),
-            @Param(name = "objectId", type = ApiParamType.LONG, desc = "对象id", isRequired = true),
+            @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
             @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, desc = "唯一标识", isRequired = true, maxLength = 50),
             @Param(name = "label", type = ApiParamType.STRING, desc = "名称", isRequired = true, maxLength = 50),
             @Param(name = "type", type = ApiParamType.ENUM, desc = "类型", isRequired = true, member = AttrType.class),
@@ -71,35 +71,35 @@ public class SaveAttrApi extends PrivateApiComponentBase {
             @Param(name = "description", type = ApiParamType.STRING, desc = "说明", maxLength = 500)
     })
     @Output({@Param(name = "id", desc = "属性id", type = ApiParamType.LONG)})
-    @Description(desc = "保存对象属性接口")
+    @Description(desc = "保存应用属性接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        ObjectAttrVo objectAttrVo = JSONObject.toJavaObject(paramObj, ObjectAttrVo.class);
-        objectAttrVo.setIsPrivate(0);
-        if (projectMapper.checkAttrNameIsExists(objectAttrVo) > 0) {
-            throw new ObjectAttrNameIsExistsException(objectAttrVo.getName());
+        AppAttrVo appAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
+        appAttrVo.setIsPrivate(0);
+        if (projectMapper.checkAttrNameIsExists(appAttrVo) > 0) {
+            throw new AppAttrNameIsExistsException(appAttrVo.getName());
         }
         Long id = paramObj.getLong("id");
         if (id == null) {
-            int maxSort = objectMapper.getMaxObjectAttrSortByObjectId(objectAttrVo.getObjectId());
-            objectAttrVo.setSort(maxSort + 1);
-            objectMapper.insertObjectAttr(objectAttrVo);
-            EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.insertObjectTableAttr(objectAttrVo.getProjectTableName(), objectAttrVo)).execute();
+            int maxSort = appMapper.getMaxAppAttrSortByAppId(appAttrVo.getAppId());
+            appAttrVo.setSort(maxSort + 1);
+            appMapper.insertAppAttr(appAttrVo);
+            EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.insertAppTableAttr(appAttrVo.getProjectTableName(), appAttrVo)).execute();
             if (!s.isSucceed()) {
-                throw new InsertAttrToSchemaException(objectAttrVo.getName());
+                throw new InsertAttrToSchemaException(appAttrVo.getName());
             }
         } else {
-            ObjectAttrVo oldObjectAttrVo = projectMapper.getAttrById(id);
-            if (oldObjectAttrVo == null) {
-                throw new ObjectAttrNotFoundException(id);
+            AppAttrVo oldAppAttrVo = appMapper.getAttrById(id);
+            if (oldAppAttrVo == null) {
+                throw new AppAttrNotFoundException(id);
             }
-            objectMapper.updateObjectAttr(objectAttrVo);
+            appMapper.updateAppAttr(appAttrVo);
         }
-        return objectAttrVo.getId();
+        return appAttrVo.getId();
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/object/attr/save";
+        return "/rdm/project/app/attr/save";
     }
 }

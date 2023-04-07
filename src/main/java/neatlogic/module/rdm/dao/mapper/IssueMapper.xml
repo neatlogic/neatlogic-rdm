@@ -29,7 +29,7 @@
             </when>
         </choose>
         from rdm_issue a
-        join rdm_object b on a.object_id = b.id
+        join rdm_app b on a.app_id = b.id
         join rdm_project c on b.project_id = c.id
         where c.id = #{projectId}
         <choose>
@@ -48,6 +48,6 @@
         delete a,b
         from rdm_issue a
                  left join rdm_issue_user b on a.id = b.issue_id
-        where a.object_id = #{value}
+        where a.app_id = #{value}
     </select>
 </mapper>

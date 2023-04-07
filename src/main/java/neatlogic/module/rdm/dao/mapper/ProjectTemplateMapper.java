@@ -21,5 +21,7 @@ import neatlogic.framework.rdm.dto.ProjectTemplateVo;
 import java.util.List;
 
 public interface ProjectTemplateMapper {
+    ProjectTemplateVo getProjectTemplateById(Long templateId);
+
     List<ProjectTemplateVo> searchProjectTemplate(ProjectTemplateVo projectTemplateVo);
 }

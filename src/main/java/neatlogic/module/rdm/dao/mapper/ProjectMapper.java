@@ -22,9 +22,7 @@ import java.util.List;
 
 public interface ProjectMapper {
 
-    int checkAttrNameIsExists(ObjectAttrVo objectAttrVo);
-
-    ObjectAttrVo getAttrById(Long attrId);
+    int checkAttrNameIsExists(AppAttrVo objectAttrVo);
 
 
     ProjectVo getProjectById(Long id);
@@ -33,18 +31,13 @@ public interface ProjectMapper {
 
     List<ProjectVo> searchProject(ProjectVo projectVo);
 
-    ProjectTemplateVo getProjectTemplateById(Long templateId);
 
     List<ProjectStatusVo> getStatusByProjectId(Long projectId);
 
     List<ProjectStatusRelVo> getStatusRelByProjectId(Long projectId);
 
 
-    List<ObjectStatusRelVo> getStatusRelByObjectId(Long objectId);
-
     ProjectStatusVo getStatusById(Long id);
-
-    void insertObject(ObjectVo objectVo);
 
 
     void insertProjectUser(ProjectUserVo projectUserVo);
@@ -65,7 +58,6 @@ public interface ProjectMapper {
 
     int checkProjectNameIsExists(ProjectVo projectVo);
 
-    void deleteObjectAttrById(Long id);
 
     void deleteProjectUserByProjectId(Long projectId);
 
@@ -73,6 +65,5 @@ public interface ProjectMapper {
 
     void deleteProjectStatusRel(ProjectStatusRelVo projectStatusRelVo);
 
-    void deleteObjectById(Long id);
 
 }

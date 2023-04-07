@@ -36,42 +36,42 @@
         WHERE schema_name = #{value}
     </select>
 
-    <insert id="insertObjectTableAttr">
+    <insert id="insertAppTableAttr">
         ALTER TABLE ${tableName}
-        ADD COLUMN `${objectAttrVo.id}`
+        ADD COLUMN `${appAttrVo.id}`
         <choose>
-            <when test="objectAttrVo.type == 'number'">
+            <when test="appAttrVo.type == 'number'">
                 decimal(50,4)
             </when>
-            <when test="objectAttrVo.type == 'date'">
+            <when test="appAttrVo.type == 'date'">
                 date
             </when>
-            <when test="objectAttrVo.type == 'time'">
+            <when test="appAttrVo.type == 'time'">
                 time
             </when>
-            <when test="objectAttrVo.type == 'datetime'">
+            <when test="appAttrVo.type == 'datetime'">
                 timestamp
             </when>
-            <when test="objectAttrVo.type == 'enum'">
+            <when test="appAttrVo.type == 'enum'">
                 char(30)
             </when>
-            <when test="objectAttrVo.type == 'select'">
+            <when test="appAttrVo.type == 'select'">
                 TEXT
             </when>
             <otherwise>TEXT</otherwise>
         </choose>
-        NULL COMMENT '${objectAttrVo.label}',
+        NULL COMMENT '${appAttrVo.label}',
         <choose>
-            <when test="objectAttrVo.type == 'number' or objectAttrVo.type == 'date' or objectAttrVo.type == 'time' or objectAttrVo.type == 'datetime' or objectAttrVo.type == 'enum'">
-                ADD KEY `index_${objectAttrVo.id}` (`${objectAttrVo.id}`),
+            <when test="appAttrVo.type == 'number' or appAttrVo.type == 'date' or appAttrVo.type == 'time' or appAttrVo.type == 'datetime' or appAttrVo.type == 'enum'">
+                ADD KEY `index_${appAttrVo.id}` (`${appAttrVo.id}`),
             </when>
-            <when test="objectAttrVo.type == 'select'">
-                ADD KEY `index_${objectAttrVo.id}` ((CAST(`${objectAttrVo.id}` AS CHAR(255) ARRAY)))
+            <when test="appAttrVo.type == 'select'">
+                ADD KEY `index_${appAttrVo.id}` ((CAST(`${appAttrVo.id}` AS CHAR(255) ARRAY)))
             </when>
         </choose>
     </insert>
 
-    <insert id="insertObjectTable">
+    <insert id="insertAppTable">
         CREATE TABLE IF NOT EXISTS ${tableName}
         (
             `issue_id` bigint(20) NOT NULL COMMENT 'rdm_issue表id',
@@ -80,13 +80,13 @@
           DEFAULT CHARSET = utf8mb4
     </insert>
 
-    <delete id="deleteObjectTable">
+    <delete id="deleteAppTable">
         DROP TABLE IF EXISTS ${tableName}
     </delete>
 
-    <delete id="deleteObjectTableAttr">
+    <delete id="deleteAppTableAttr">
         ALTER TABLE ${tableName}
-            DROP COLUMN `${objectAttrVo.id}`,
-            DROP COLUMN `${objectAttrVo.id}_hash`
+            DROP COLUMN `${appAttrVo.id}`,
+            DROP COLUMN `${appAttrVo.id}_hash`
     </delete>
 </mapper>

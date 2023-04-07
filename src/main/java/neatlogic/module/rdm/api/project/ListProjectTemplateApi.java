@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.objectattr;
+package neatlogic.module.rdm.api.project;
 
-import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
-import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ObjectAttrVo;
-import neatlogic.framework.rdm.dto.ObjectVo;
-import neatlogic.framework.restful.annotation.*;
+import neatlogic.framework.rdm.dto.ProjectTemplateVo;
+import neatlogic.framework.restful.annotation.Description;
+import neatlogic.framework.restful.annotation.OperationType;
+import neatlogic.framework.restful.annotation.Output;
+import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.ObjectMapper;
+import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,14 +34,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class SearchPrivateAttrApi extends PrivateApiComponentBase {
+public class ListProjectTemplateApi extends PrivateApiComponentBase {
 
     @Resource
-    private ObjectMapper objectMapper;
+    private ProjectTemplateMapper projectTemplateMapper;
 
     @Override
     public String getName() {
-        return "查询对象属性";
+        return "获取项目模板列表";
     }
 
     @Override
@@ -48,17 +49,16 @@ public class SearchPrivateAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "objectId", desc = "对象id", isRequired = true, type = ApiParamType.LONG)})
-    @Output({@Param(explode = ObjectVo[].class)})
-    @Description(desc = "查询对象属性接口")
+    @Output({@Param(explode = ProjectTemplateVo.class)})
+    @Description(desc = "获取项目模板列表接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        ObjectAttrVo objectAttrVo = JSONObject.toJavaObject(paramObj, ObjectAttrVo.class);
-        return objectMapper.searchObjectAttr(objectAttrVo);
+        ProjectTemplateVo projectTemplateVo = JSONObject.toJavaObject(paramObj, ProjectTemplateVo.class);
+        return projectTemplateMapper.searchProjectTemplate(projectTemplateVo);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/object/attr/search";
+        return "/rdm/projecttemplate/search";
     }
 }

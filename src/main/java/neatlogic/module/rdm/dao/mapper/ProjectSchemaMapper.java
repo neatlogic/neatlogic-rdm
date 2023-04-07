@@ -16,7 +16,7 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
-import neatlogic.framework.rdm.dto.ObjectAttrVo;
+import neatlogic.framework.rdm.dto.AppAttrVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface ProjectSchemaMapper {
@@ -26,11 +26,11 @@ public interface ProjectSchemaMapper {
 
     int checkSchemaIsExists(String databaseName);
 
-    void insertObjectTableAttr(@Param("tableName") String tableName, @Param("objectAttrVo") ObjectAttrVo objectAttrVo);
+    void insertAppTableAttr(@Param("tableName") String tableName, @Param("appAttrVo") AppAttrVo appAttrVo);
 
-    void insertObjectTable(@Param("tableName") String tableName);
+    void insertAppTable(@Param("tableName") String tableName);
 
-    void deleteObjectTable(@Param("tableName") String tableName);
+    void deleteAppTable(@Param("tableName") String tableName);
 
-    void deleteObjectTableAttr(@Param("tableName") String tableName, @Param("objectAttrVo") ObjectAttrVo objectAttrVo);
+    void deleteAppTableAttr(@Param("tableName") String tableName, @Param("appAttrVo") AppAttrVo appAttrVo);
 }

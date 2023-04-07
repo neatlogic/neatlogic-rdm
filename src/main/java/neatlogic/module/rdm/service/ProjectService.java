@@ -16,12 +16,12 @@
 
 package neatlogic.module.rdm.service;
 
-import neatlogic.framework.rdm.dto.ObjectVo;
+import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 
 public interface ProjectService {
-    EscapeTransactionJob.State dropObjectSchema(ObjectVo objectVo);
+    EscapeTransactionJob.State dropObjectSchema(AppVo objectVo);
 
-    EscapeTransactionJob.State buildObjectSchema(ObjectVo objectVo);
+    EscapeTransactionJob.State buildObjectSchema(AppVo objectVo);
 
 }

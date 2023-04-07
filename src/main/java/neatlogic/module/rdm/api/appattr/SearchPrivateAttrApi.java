@@ -14,37 +14,33 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.objectattr;
+package neatlogic.module.rdm.api.appattr;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
-import neatlogic.framework.common.dto.ValueTextVo;
+import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.enums.AttrType;
-import neatlogic.framework.restful.annotation.Description;
-import neatlogic.framework.restful.annotation.OperationType;
-import neatlogic.framework.restful.annotation.Output;
-import neatlogic.framework.restful.annotation.Param;
+import neatlogic.framework.rdm.dto.AppAttrVo;
+import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import com.alibaba.fastjson.JSONObject;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListCustomAttrTypeApi extends PrivateApiComponentBase {
+public class SearchPrivateAttrApi extends PrivateApiComponentBase {
 
     @Resource
-    private ProjectMapper projectMapper;
+    private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取对象属性类型列表";
+        return "查询对象属性";
     }
 
     @Override
@@ -52,21 +48,17 @@ public class ListCustomAttrTypeApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Output({@Param(explode = ValueTextVo[].class)})
-    @Description(desc = "获取对象属性类型列表接口")
+    @Input({@Param(name = "appId", desc = "应用id", isRequired = true, type = ApiParamType.LONG)})
+    @Output({@Param(explode = AppVo[].class)})
+    @Description(desc = "查询应用属性接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        List<ValueTextVo> dataList = new ArrayList<>();
-        for (AttrType attrType : AttrType.values()) {
-            if (attrType.getAllowCustom().equals(1)) {
-                dataList.add(new ValueTextVo(attrType.getName(), attrType.getLabel()));
-            }
-        }
-        return dataList;
+        AppAttrVo appAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
+        return appMapper.searchAppAttr(appAttrVo);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/object/customattrtype/list";
+        return "/rdm/project/app/attr/search";
     }
 }

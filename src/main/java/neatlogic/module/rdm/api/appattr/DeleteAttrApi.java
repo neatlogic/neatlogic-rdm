@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.objectattr;
+package neatlogic.module.rdm.api.appattr;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ObjectAttrVo;
+import neatlogic.framework.rdm.dto.AppAttrVo;
+import neatlogic.framework.rdm.exception.AppAttrDeleteException;
+import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.rdm.exception.DeleteAttrSchemaException;
-import neatlogic.framework.rdm.exception.ObjectAttrDeleteException;
-import neatlogic.framework.rdm.exception.ObjectAttrNotFoundException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -30,9 +31,8 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,7 +45,7 @@ import javax.annotation.Resource;
 public class DeleteAttrApi extends PrivateApiComponentBase {
 
     @Resource
-    private ProjectMapper projectMapper;
+    private AppMapper appMapper;
 
     @Resource
     private ProjectSchemaMapper projectSchemaMapper;
@@ -61,19 +61,19 @@ public class DeleteAttrApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "属性id", isRequired = true)})
-    @Description(desc = "删除对象属性接口")
+    @Description(desc = "删除应用属性接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
-        ObjectAttrVo objectAttrVo = projectMapper.getAttrById(id);
+        AppAttrVo objectAttrVo = appMapper.getAttrById(id);
         if (objectAttrVo == null) {
-            throw new ObjectAttrNotFoundException(id);
+            throw new AppAttrNotFoundException(id);
         }
         if (objectAttrVo.getIsPrivate().equals(1)) {
-            throw new ObjectAttrDeleteException(objectAttrVo);
+            throw new AppAttrDeleteException(objectAttrVo);
         }
-        projectMapper.deleteObjectAttrById(id);
-        EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.deleteObjectTableAttr(objectAttrVo.getProjectTableName(), objectAttrVo)).execute();
+        appMapper.deleteAppAttrById(id);
+        EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.deleteAppTableAttr(objectAttrVo.getProjectTableName(), objectAttrVo)).execute();
         if (!s.isSucceed()) {
             throw new DeleteAttrSchemaException(objectAttrVo.getName());
         }
@@ -82,6 +82,6 @@ public class DeleteAttrApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
-        return "/rdm/project/object/attr/delete";
+        return "/rdm/project/app/attr/delete";
     }
 }

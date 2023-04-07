@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ObjectVo;
+import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
@@ -30,7 +30,7 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
-import neatlogic.module.rdm.dao.mapper.ObjectMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.service.ProjectService;
 import org.springframework.stereotype.Service;
@@ -49,7 +49,7 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
     private ProjectMapper projectMapper;
 
     @Resource
-    private ObjectMapper objectMapper;
+    private AppMapper appMapper;
 
 
     @Resource
@@ -73,10 +73,10 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long projectId = paramObj.getLong("id");
-        List<ObjectVo> objectList = objectMapper.getObjectDetailByProjectId(projectId);
-        for (ObjectVo objectVo : objectList) {
+        List<AppVo> objectList = appMapper.getAppDetailByProjectId(projectId);
+        for (AppVo objectVo : objectList) {
             issueMapper.deleteIssueByObjectId(objectVo.getId());
-            projectMapper.deleteObjectById(objectVo.getId());
+            appMapper.deleteAppById(objectVo.getId());
             EscapeTransactionJob.State s = projectService.dropObjectSchema(objectVo);
             if (!s.isSucceed()) {
                 throw new CreateObjectSchemaException(objectVo.getName());

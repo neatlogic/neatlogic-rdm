@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
+
+    <select id="getAppCatalogById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        select id,
+               name,
+               app_id    as appId,
+               parent_id as parentId,
+               lft,
+               rht
+        from rdm_app_catalog
+        where id = #{value}
+    </select>
+
+    <select id="searchAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo"
+            resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        select id,
+        <if test="needChildrenCount == true">
+            (select count(1) from rdm_app_catalog x where x.parent_id = id) as childrenCount,
+        </if>
+        name,
+        app_id as appId,
+        parent_id as parentId,
+        lft,
+        rht
+        from rdm_app_catalog
+        where app_id = #{appId}
+        <choose>
+            <when test="hasParent == false">
+                and parent_id = 0 or parent_id is null
+            </when>
+            <when test="hasParent == true">
+                and parent_id != 0 and parent_id is not null
+            </when>
+        </choose>
+        order by lft
+    </select>
+
+    <select id="getAttrById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select id,
+               app_id      as appId,
+               type,
+               name,
+               label,
+               description,
+               is_required AS isRequired,
+               sort,
+               is_private  AS isPrivate,
+               config      AS configStr,
+               is_active   AS isActive
+        FROM rdm_app_attr
+        where id = #{value}
+    </select>
+
+    <select id="getMaxAppAttrSortByAppId" parameterType="java.lang.Long" resultType="int">
+        select max(sort)
+        FROM rdm_app_attr
+        WHERE app_id = #{value}
+    </select>
+
+    <select id="getStatusRelByAppId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
+        select id             as id,
+               from_status_id as fromStatusId,
+               to_status_id   as toStatusId,
+               app_id         as appId
+        from rdm_app_status_rel
+        where app_id = #{value}
+    </select>
+
+    <select id="getStatusById" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.AppStatusVo">
+        select id, app_id as appId, name, label, sort, color
+        FROM rdm_app_status
+        WHERE id = #{value}
+    </select>
+
+    <select id="getStatusByAppId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.AppStatusVo">
+        select id, app_id as objectId, name, label, sort, color
+        FROM rdm_app_status
+        WHERE app_id = #{value}
+        order by sort
+    </select>
+
+    <select id="searchAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo"
+            resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select id,
+        app_id as objectId,
+        type,
+        name,
+        label,
+        description,
+        is_required AS isRequired,
+        sort,
+        is_private AS isPrivate,
+        config AS configStr,
+        is_active AS isActive
+        FROM rdm_app_attr
+        where
+        app_id = #{appId}
+        <if test="isActive != null">
+            and is_active = #{isActive}
+        </if>
+        order by sort
+    </select>
+
+    <select id="getAppById" parameterType="java.lang.Long" resultMap="appResultMap">
+        select a.id,
+               a.app_type    as appType,
+               a.project_id  AS projectId,
+               a.sort,
+               b.id          as attrId,
+               b.type        as attrType,
+               b.name        as attrName,
+               b.label       as attrLabel,
+               b.description as attrDescription,
+               b.is_required as attrIsRequired,
+               b.sort        as attrSort,
+               b.is_private  as attrIsPrivate,
+               b.config      as attrConfigStr
+        from rdm_app a
+                 left join rdm_app_attr b
+                           on a.id = b.app_id
+        where a.id = #{value}
+        order by b.sort
+    </select>
+
+    <resultMap id="appResultMap" type="neatlogic.framework.rdm.dto.AppVo">
+        <id property="id" column="id"/>
+        <result property="type" column="appType"/>
+        <result property="projectId" column="projectId"/>
+        <result property="sort" column="sort"/>
+        <collection property="attrList" ofType="neatlogic.framework.rdm.dto.AppAttrVo">
+            <id property="id" column="attrId"/>
+            <result property="type" column="attrType"/>
+            <result property="name" column="attrName"/>
+            <result property="label" column="attrLabel"/>
+            <result property="description" column="attrDescription"/>
+            <result property="isRequired" column="attrIsRequired"/>
+            <result property="sort" column="attrSort"/>
+            <result property="isPrivate" column="attrIsPrivate"/>
+            <result property="configStr" column="attrConfigStr"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAppDetailByProjectId" parameterType="java.lang.Long" resultMap="appResultMap">
+        select a.id,
+               a.app_type    as appType,
+               a.project_id  AS projectId,
+               a.sort,
+               b.id          as attrId,
+               b.type        as attrType,
+               b.name        as attrName,
+               b.label       as attrLabel,
+               b.description as attrDescription,
+               b.is_required as attrIsRequired,
+               b.sort        as attrSort,
+               b.is_private  as attrIsPrivate,
+               b.config      as attrConfigStr
+        from rdm_app a
+                 left join rdm_app_attr b
+                           on a.id = b.app_id
+        where a.project_id = #{value}
+        order by a.sort, b.sort
+    </select>
+
+    <insert id="insertAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
+        insert into rdm_app_status
+        (id,
+         app_id,
+         name,
+         label,
+         sort,
+         color)
+        values (#{id},
+                #{appId},
+                #{name},
+                #{label},
+                #{sort},
+                #{color})
+    </insert>
+
+    <update id="updateAppCatalogParentId" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set parent_id = #{parentId}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppCatalogLft" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set lft = #{lft}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppAttr" parameterType="neatlogic.framework.rdm.dto.AppTypeVo">
+        update rdm_app_attr
+        set name        = #{name},
+            label       = #{label},
+            description =#{description},
+            is_required = #{isRequired},
+            sort        = #{sort},
+            config      = #{configStr},
+            is_active   = #{isActive}
+        where id = #{id}
+    </update>
+    <update id="updateAppAttrSort" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        update rdm_app_attr
+        set sort = #{sort}
+        where id = #{id}
+    </update>
+    <update id="updateAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
+        update rdm_app_status
+        set `name`        = #{name},
+            `label`       = #{label},
+            `color`       = #{color},
+            `description` = #{description}
+        where `id` = #{id}
+    </update>
+
+    <update id="insertappStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo">
+        insert ignore into rdm_app_status_rel (id, app_id, from_status_id, to_status_id)
+        values (#{id}, #{appId}, #{fromStatusId}, #{toStatusId})
+    </update>
+
+    <update id="updateAppAttrIsActive" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        update rdm_app_attr
+        set is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insertApp" parameterType="neatlogic.framework.rdm.dto.AppVo">
+        insert rdm_app (id, app_type, project_id, sort)
+        values (#{id}, #{type}, #{projectId}, #{sort})
+    </insert>
+
+    <insert id="insertAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        insert into rdm_app_attr
+        (id,
+         app_id,
+         type,
+         name,
+         label,
+         description,
+         is_required,
+         sort,
+         is_private,
+         config,
+         is_active)
+        values (#{id},
+                #{appId},
+                #{type},
+                #{name},
+                #{label},
+                #{description},
+                #{isRequired},
+                #{sort},
+                #{isPrivate},
+                #{configStr},
+                #{isActive})
+    </insert>
+
+    <delete id="deleteAppById" parameterType="java.lang.Long">
+        DELETE a,b,c,d,e
+        FROM rdm_app a
+                 left join rdm_app_attr b on a.id = b.app_id
+                 left join rdm_app_priority c on a.id = c.app_id
+                 left join rdm_app_status d on a.id = d.app_id
+                 left join rdm_app_status_rel e on a.id = e.app_id
+        where a.id = #{value}
+    </delete>
+
+    <delete id="deleteAppAttrById" parameterType="java.lang.Long">
+        delete
+        from rdm_app_attr
+        where id = #{value}
+    </delete>
+</mapper>

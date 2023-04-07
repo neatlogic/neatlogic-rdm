@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.objectattr;
+package neatlogic.module.rdm.api.app;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ObjectAttrVo;
+import neatlogic.framework.rdm.dto.AppStatusVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import com.alibaba.fastjson.JSONObject;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetAttrApi extends PrivateApiComponentBase {
+public class ListAppStatusApi extends PrivateApiComponentBase {
 
     @Resource
-    private ProjectMapper projectMapper;
+    private AppMapper objectMapper;
 
     @Override
     public String getName() {
-        return "获取对象属性信息";
+        return "获取对象状态列表";
     }
 
     @Override
@@ -47,16 +47,16 @@ public class GetAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", desc = "属性id", isRequired = true, type = ApiParamType.LONG)})
-    @Output({@Param(explode = ObjectAttrVo.class)})
-    @Description(desc = "获取对象属性信息接口")
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "对象id")})
+    @Output({@Param(explode = AppStatusVo[].class)})
+    @Description(desc = "获取对象状态列表接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return projectMapper.getAttrById(paramObj.getLong("id"));
+        return objectMapper.getStatusByAppId(paramObj.getLong("appId"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/object/attr/get";
+        return "/rdm/project/app/status/list";
     }
 }
