@@ -18,6 +18,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
 
+    <select id="checkAppCatalogNameIsExists" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo" resultType="int">
+        select count(1)
+        from rdm_app_catalog
+        where app_id = #{appId}
+          and name = #{name}
+          and id != #{id}
+    </select>
+
     <select id="getAppCatalogById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
         select id,
                name,
@@ -181,6 +189,24 @@
         where a.project_id = #{value}
         order by a.sort, b.sort
     </select>
+
+    <insert id="insertAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        insert into rdm_app_catalog
+        (id,
+         name,
+         app_id,
+         parent_id)
+        values (#{id},
+                #{name},
+                #{appId},
+                #{parentId})
+    </insert>
+
+    <update id="updateAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set name = #{name}
+        where id = #{id}
+    </update>
 
     <insert id="insertAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         insert into rdm_app_status
