@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListAppStatusApi extends PrivateApiComponentBase {
+public class GetAppCatalogApi extends PrivateApiComponentBase {
 
     @Resource
-    private AppMapper objectMapper;
+    private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取应用状态列表";
+        return "获取应用目录";
     }
 
     @Override
@@ -47,16 +47,16 @@ public class ListAppStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "对象id")})
-    @Output({@Param(explode = AppStatusVo[].class)})
-    @Description(desc = "获取应用状态列表接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "目录id")})
+    @Output({@Param(explode = AppStatusVo.class)})
+    @Description(desc = "获取应用目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return objectMapper.getStatusByAppId(paramObj.getLong("appId"));
+        return appMapper.getAppCatalogById(paramObj.getLong("id"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/status/list";
+        return "/rdm/project/app/catalog/get";
     }
 }

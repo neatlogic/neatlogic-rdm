@@ -17,6 +17,24 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IssueMapper">
+    <resultMap id="issueResultMap" type="neatlogic.framework.rdm.dto.IssueVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="appId" column="appId"/>
+    </resultMap>
+
+    <select id="getIssueById" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultMap="issueResultMap">
+        select a.id,
+               a.name,
+               a.app_id      as appId,
+               a.priority,
+               a.status,
+               a.create_date as createDate,
+               a.content_id  as contentId,
+               a.catalog
+        from rdm_issue a
+    </select>
+
     <select id="getIssueCountByProjectId" parameterType="neatlogic.framework.rdm.dto.IssueCountVo"
             resultType="neatlogic.framework.rdm.dto.IssueCountVo">
         select count(a.id) as `count`,
