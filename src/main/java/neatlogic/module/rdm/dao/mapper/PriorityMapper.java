@@ -16,18 +16,12 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
-import neatlogic.framework.rdm.dto.IssueCountVo;
-import neatlogic.framework.rdm.dto.IssueVo;
-import neatlogic.framework.rdm.dto.TagVo;
+import neatlogic.framework.rdm.dto.PriorityVo;
 
 import java.util.List;
 
-public interface IssueMapper {
-    IssueVo getIssueById(Long id);
+public interface PriorityMapper {
 
-    List<TagVo> getTagByIssueId(Long issueId);
+    List<PriorityVo> getPriorityList();
 
-    List<IssueCountVo> getIssueCountByProjectId(IssueCountVo issueCountVo);
-
-    void deleteIssueByObjectId(Long objectId);
 }

@@ -17,6 +17,13 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IssueMapper">
+    <select id="getTagByIssueId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.TagVo">
+        select a.id, a.name
+        from rdm_tag a
+                 join rdm_issue_tag b on a.id = b.tag_id
+        where b.issue_id = #{value}
+    </select>
+
     <resultMap id="issueResultMap" type="neatlogic.framework.rdm.dto.IssueVo">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
