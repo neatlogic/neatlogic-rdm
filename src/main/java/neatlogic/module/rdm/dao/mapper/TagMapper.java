@@ -21,7 +21,9 @@ import neatlogic.framework.rdm.dto.TagVo;
 import java.util.List;
 
 public interface TagMapper {
+    TagVo getTagByName(String name);
 
     List<TagVo> searchTag(TagVo tagVo);
 
+    void insertTag(TagVo tagVo);
 }

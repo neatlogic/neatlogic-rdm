@@ -17,6 +17,12 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.TagMapper">
+    <select id="getTagByName" parameterType="java.lang.String" resultType="neatlogic.framework.rdm.dto.TagVo">
+        select id, name
+        from rdm_tag
+        where name = #{value}
+    </select>
+
     <select id="searchTag" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.TagVo">
         select a.id, a.name
         from rdm_tag a
@@ -27,4 +33,9 @@
         </where>
         limit #{startNum}, #{pageSize}
     </select>
+
+    <insert id="insertTag" parameterType="neatlogic.framework.rdm.dto.TagVo">
+        insert into rdm_tag (id, name)
+        values (#{id}, #{name})
+    </insert>
 </mapper>

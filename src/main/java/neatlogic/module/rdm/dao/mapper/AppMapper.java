@@ -27,6 +27,8 @@ public interface AppMapper {
 
     List<AppCatalogVo> searchAppCatalog(AppCatalogVo appCatalogVo);
 
+    List<AppAttrVo> getAttrByAppId(Long appId);
+
     AppAttrVo getAttrById(Long attrId);
 
     int getMaxAppAttrSortByAppId(Long appId);

@@ -19,7 +19,9 @@ package neatlogic.module.rdm.dao.mapper;
 import neatlogic.framework.rdm.dto.IssueCountVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.dto.TagVo;
+import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface IssueMapper {
@@ -29,5 +31,31 @@ public interface IssueMapper {
 
     List<IssueCountVo> getIssueCountByProjectId(IssueCountVo issueCountVo);
 
+    List<IssueVo> searchIssue(IssueVo issueVo);
+
+    List<HashMap<String, ?>> getAttrByIssueIdList(IssueVo issueVo);
+
+    HashMap<String, ?> getAttrByIssueId(IssueVo issueVo);
+
+    int searchIssueCount(IssueVo issueVo);
+
+    void updateIssueAttr(IssueVo issueVo);
+
     void deleteIssueByObjectId(Long objectId);
+
+    void insertIssue(IssueVo issueVo);
+
+    void insertIssueUser(@Param("issueId") Long issueId, @Param("userId") String userId);
+
+    void insertIssueTag(@Param("issueId") Long issueId, @Param("tagId") Long tagId);
+
+    void insertIssueAttr(IssueVo issueVo);
+
+    void updateIssue(IssueVo issueVo);
+
+    void deleteIssueUserByIssueId(Long issueId);
+
+    void deleteIssueTagByIssueId(Long issueId);
+
+    void deleteIssueById(Long issueId);
 }

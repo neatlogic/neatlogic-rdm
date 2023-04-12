@@ -34,12 +34,14 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
+@Transactional
 public class SaveAttrApi extends PrivateApiComponentBase {
 
     @Resource
@@ -84,7 +86,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
             int maxSort = appMapper.getMaxAppAttrSortByAppId(appAttrVo.getAppId());
             appAttrVo.setSort(maxSort + 1);
             appMapper.insertAppAttr(appAttrVo);
-            EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.insertAppTableAttr(appAttrVo.getProjectTableName(), appAttrVo)).execute();
+            EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.insertAppTableAttr(appAttrVo.getTableName(), appAttrVo)).execute();
             if (!s.isSucceed()) {
                 throw new InsertAttrToSchemaException(appAttrVo.getName());
             }

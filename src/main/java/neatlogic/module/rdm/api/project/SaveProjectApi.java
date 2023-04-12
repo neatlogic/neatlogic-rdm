@@ -19,6 +19,7 @@ package neatlogic.module.rdm.api.project;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.common.constvalue.GroupSearch;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AppType;
@@ -146,7 +147,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
         if (CollectionUtils.isNotEmpty(projectVo.getMemberIdList())) {
             for (String userId : projectVo.getMemberIdList()) {
                 ProjectUserVo projectUserVo = new ProjectUserVo();
-                projectUserVo.setUserId(userId.replace("user#", ""));
+                projectUserVo.setUserId(userId.replace(GroupSearch.USER.getValuePlugin(), ""));
                 projectUserVo.setUserType(ProjectUserType.MEMBER.getValue());
                 projectUserVo.setProjectId(projectVo.getId());
                 projectMapper.insertProjectUser(projectUserVo);
@@ -155,7 +156,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
         if (CollectionUtils.isNotEmpty(projectVo.getLeaderIdList())) {
             for (String userId : projectVo.getLeaderIdList()) {
                 ProjectUserVo projectUserVo = new ProjectUserVo();
-                projectUserVo.setUserId(userId.replace("user#", ""));
+                projectUserVo.setUserId(userId.replace(GroupSearch.USER.getValuePlugin(), ""));
                 projectUserVo.setUserType(ProjectUserType.LEADER.getValue());
                 projectUserVo.setProjectId(projectVo.getId());
                 projectMapper.insertProjectUser(projectUserVo);

@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.appattr;
+package neatlogic.module.rdm.api.app;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
-import neatlogic.framework.common.dto.ValueTextVo;
+import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.enums.AttrType;
-import neatlogic.framework.restful.annotation.Description;
-import neatlogic.framework.restful.annotation.OperationType;
-import neatlogic.framework.restful.annotation.Output;
-import neatlogic.framework.restful.annotation.Param;
+import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListCustomAttrTypeApi extends PrivateApiComponentBase {
+public class GetAppApi extends PrivateApiComponentBase {
 
+    @Resource
+    private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取应用属性类型列表";
+        return "获取应用信息";
     }
 
     @Override
@@ -48,21 +47,16 @@ public class ListCustomAttrTypeApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Output({@Param(explode = ValueTextVo[].class)})
-    @Description(desc = "获取应用属性类型列表接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
+    @Output({@Param(explode = AppVo.class)})
+    @Description(desc = "获取应用信息接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        List<ValueTextVo> dataList = new ArrayList<>();
-        for (AttrType attrType : AttrType.values()) {
-            if (!attrType.isPrivate()) {
-                dataList.add(new ValueTextVo(attrType.getName(), attrType.getLabel()));
-            }
-        }
-        return dataList;
+        return appMapper.getAppById(paramObj.getLong("id"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/customattrtype/list";
+        return "/rdm/app/get";
     }
 }

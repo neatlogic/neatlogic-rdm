@@ -24,22 +24,29 @@
         where b.issue_id = #{value}
     </select>
 
-    <resultMap id="issueResultMap" type="neatlogic.framework.rdm.dto.IssueVo">
-        <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="appId" column="appId"/>
-    </resultMap>
-
     <select id="getIssueById" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultMap="issueResultMap">
-        select a.id,
-               a.name,
-               a.app_id      as appId,
-               a.priority,
-               a.status,
-               a.create_date as createDate,
-               a.content_id  as contentId,
-               a.catalog
-        from rdm_issue a
+        select ri.id,
+               ri.name,
+               ri.app_id      as appId,
+               ri.priority,
+               rp.name        as priorityName,
+               ri.status,
+               ras.name       as statusName,
+               ri.create_user as createUser,
+               ri.create_date as createDate,
+               ri.content     as content,
+               ri.catalog,
+               rac.name       as catalogName,
+               rt.name        as tagName,
+               riu.user_id    as userId
+        from rdm_issue ri
+                 left join rdm_priority as rp on ri.priority = rp.id
+                 left join rdm_app_status as ras on ri.status = ras.id
+                 left join rdm_app_catalog rac on ri.catalog = rac.id
+                 left join rdm_issue_tag rit on ri.id = rit.issue_id
+                 left join rdm_tag rt on rit.tag_id = rt.id
+                 left join rdm_issue_user riu on ri.id = riu.issue_id
+        where ri.id = #{value}
     </select>
 
     <select id="getIssueCountByProjectId" parameterType="neatlogic.framework.rdm.dto.IssueCountVo"
@@ -75,4 +82,215 @@
                  left join rdm_issue_user b on a.id = b.issue_id
         where a.app_id = #{value}
     </select>
+
+    <resultMap id="issueResultMap" type="neatlogic.framework.rdm.dto.IssueVo">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="appId" column="appId"/>
+        <result property="createUser" column="createUser"/>
+        <result property="createDate" column="createDate"/>
+        <result property="status" column="status"/>
+        <result property="statusColor" column="statusColor"/>
+        <result property="statusName" column="statusName"/>
+        <result property="priority" column="priority"/>
+        <result property="priorityName" column="priorityName"/>
+        <result property="catalog" column="catalog"/>
+        <result property="catalogName" column="catalogName"/>
+        <result property="content" column="content"/>
+        <include refid=""></include>
+        <collection property="tagList" ofType="java.lang.String">
+            <result column="tagName"/>
+        </collection>
+        <collection property="userIdList" ofType="java.lang.String">
+            <result column="userId"/>
+        </collection>
+    </resultMap>
+
+    <select id="searchIssueCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="int">
+        select
+        count(distinct ri.id)
+        from rdm_issue ri
+        left join rdm_priority as rp on ri.priority = rp.id
+        left join rdm_app_catalog rac on ri.catalog = rac.id
+        left join rdm_issue_tag rit on ri.id = rit.issue_id
+        left join rdm_tag rt on rit.tag_id = rt.id
+        left join rdm_issue_user riu on ri.id = riu.issue_id
+        left join ${tableName} x on ri.id = x.issue_id
+        <if test="wordList != null and wordList.size() > 0">
+            join fulltextindex_target_rdm ftr on ri.id = ftr.target_id and ftr.target_type = 'issue'
+            join fulltextindex_field_rdm ffr on ftr.target_id = ffr.target_id
+            join fulltextindex_word fw on ffr.word_id = fw.id
+        </if>
+        <include refid="searchIssueSql"></include>
+    </select>
+
+    <select id="getAttrByIssueIdList" parameterType="neatlogic.framework.rdm.dto.IssueVo"
+            resultType="java.util.HashMap">
+        select
+        <foreach collection="attrList" item="item">
+            x.`${item.attrId}` as `${item.attrId}`,
+        </foreach>
+        x.issue_id as issueId
+        from ${tableName} x where x.issue_id in
+        <foreach collection="idList" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="getAttrByIssueId" parameterType="neatlogic.framework.rdm.dto.IssueVo"
+            resultType="java.util.HashMap">
+        select
+        <foreach collection="attrList" item="item">
+            x.`${item.attrId}` as `${item.attrId}`,
+        </foreach>
+        x.issue_id as issueId
+        from ${tableName} x where x.issue_id = #{id}
+    </select>
+
+    <select id="searchIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultMap="issueResultMap">
+        select
+        ri.id,
+        ri.name,
+        ri.app_id as appId,
+        ri.priority,
+        rp.name as priorityName,
+        ri.status,
+        ras.color as statusColor,
+        ras.name as statusName,
+        ri.create_user as createUser,
+        ri.create_date as createDate,
+        ri.catalog,
+        rac.name as catalogName,
+        rt.name as tagName,
+        riu.user_id as userId
+        from rdm_issue ri
+        left join rdm_priority as rp on ri.priority = rp.id
+        left join rdm_app_status as ras on ri.status = ras.id
+        left join rdm_app_catalog rac on ri.catalog = rac.id
+        left join rdm_issue_tag rit on ri.id = rit.issue_id
+        left join rdm_tag rt on rit.tag_id = rt.id
+        left join rdm_issue_user riu on ri.id = riu.issue_id
+        <if test="wordList != null and wordList.size() > 0">
+            join fulltextindex_target_rdm ftr on ri.id = ftr.target_id and ftr.target_type = 'issue'
+            join fulltextindex_field_rdm ffr on ftr.target_id = ffr.target_id
+            join fulltextindex_word fw on ffr.word_id = fw.id
+        </if>
+        <include refid="searchIssueSql"></include>
+        limit #{startNum}, #{pageSize}
+    </select>
+
+    <sql id="searchIssueSql">
+        <where>
+            <if test="wordList != null and wordList.size() > 0">
+                and fw.word in
+                <foreach collection="wordList" open="(" close=")" separator="," item="item">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="createUser != null">
+                and ri.create_user = #{createUser}
+            </if>
+            <if test="catalogLft != null and catalogRht != null">
+                and rac.lft &gt;= #{catalogLft} and rac.rht &lt;= #{catalogRht}
+            </if>
+            <if test="priority != null">
+                and ri.priority = #{priority}
+            </if>
+            <if test="status != null">
+                and ri.status = #{status}
+            </if>
+            <if test="tagList != null and tagList.size() > 0">
+                and rt.name in
+                <foreach collection="tagList" item="tag" open="(" close=")" separator=",">#{tag}</foreach>
+            </if>
+        </where>
+    </sql>
+
+    <update id="updateIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo">
+        update rdm_issue
+        set name     = #{name},
+            priority = #{priority},
+            status   = #{status},
+            catalog  = #{catalog},
+            content  = #{content,typeHandler=CompressHandler}
+        where id = #{id}
+    </update>
+
+    <update id="updateIssueAttr" parameterType="neatlogic.framework.rdm.dto.IssueVo">
+        update ${tableName}
+        set
+        <foreach collection="attrList" item="attr">
+            `${attr.attrId}` = #{attr.value},
+        </foreach>
+        issue_id = #{id}
+        where issue_id = #{id}
+    </update>
+
+    <insert id="insertIssueUser">
+        insert into rdm_issue_user (issue_id, user_id)
+        values (#{issueId}, #{userId})
+    </insert>
+
+    <insert id="insertIssueTag">
+        insert into rdm_issue_tag (issue_id, tag_id)
+        values (#{issueId}, #{tagId})
+    </insert>
+
+    <insert id="insertIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo">
+        insert into rdm_issue
+        (id,
+         name,
+         app_id,
+         create_user,
+         priority,
+         status,
+         create_date,
+         content,
+         catalog)
+        values (#{id},
+                #{name},
+                #{appId},
+                #{createUser},
+                #{priority},
+                #{status},
+                now(3),
+                #{content,typeHandler=CompressHandler},
+                #{catalog})
+    </insert>
+
+    <insert id="insertIssueAttr" parameterType="neatlogic.framework.rdm.dto.IssueVo">
+        insert into ${tableName}
+        (
+        <foreach collection="attrList" item="attr">
+            `${attr.attrId}`,
+        </foreach>
+        issue_id)
+        values (
+        <foreach collection="attrList" item="attr">
+            #{attr.value},
+        </foreach>
+        #{id}
+        )
+    </insert>
+
+    <delete id="deleteIssueUserByIssueId" parameterType="java.lang.Long">
+        delete
+        from rdm_issue_user
+        where issue_id = #{value}
+    </delete>
+
+    <delete id="deleteIssueTagByIssueId" parameterType="java.lang.Long">
+        delete
+        from rdm_issue_tag
+        where issue_id = #{value}
+    </delete>
+
+    <delete id="deleteIssueById" parameterType="java.lang.Long">
+        delete ri,rit,riu,x
+        from rdm_issue ri
+                 left join rdm_issue_tag rit on ri.id = rit.issue_id
+                 left join rdm_issue_user riu on ri.id = riu.issue_id
+                 left join ${tableName} x on ri.id = x.issue_id
+        where ri.id = #{value}
+    </delete>
 </mapper>

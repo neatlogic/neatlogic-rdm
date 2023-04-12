@@ -61,6 +61,23 @@
         order by lft
     </select>
 
+    <select id="getAttrByAppId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select id,
+               app_id      as appId,
+               type,
+               name,
+               label,
+               description,
+               is_required AS isRequired,
+               sort,
+               is_private  AS isPrivate,
+               config      AS configStr,
+               is_active   AS isActive
+        FROM rdm_app_attr
+        where app_id = #{value}
+        order by sort
+    </select>
+
     <select id="getAttrById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
         select id,
                app_id      as appId,
