@@ -92,7 +92,9 @@ public class GetIssueApi extends PrivateApiComponentBase {
                         }
                     }
                 }
-                issueVo.addAttr(issueAttrVo);
+                issueVo.setAttrList(new ArrayList<IssueAttrVo>() {{
+                    this.add(issueAttrVo);
+                }});
             }
         }
         return issueVo;

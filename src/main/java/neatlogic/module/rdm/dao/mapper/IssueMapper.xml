@@ -97,12 +97,11 @@
         <result property="catalog" column="catalog"/>
         <result property="catalogName" column="catalogName"/>
         <result property="content" column="content"/>
-        <include refid=""></include>
         <collection property="tagList" ofType="java.lang.String">
             <result column="tagName"/>
         </collection>
-        <collection property="userIdList" ofType="java.lang.String">
-            <result column="userId"/>
+        <collection property="userList" ofType="neatlogic.framework.dto.UserVo">
+            <result column="userId" property="userId"/>
         </collection>
     </resultMap>
 

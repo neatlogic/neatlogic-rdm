@@ -17,7 +17,14 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
-
+    <select id="getAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo"
+            resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
+        select id, app_id as appId, from_status_id as fromStatusId, to_status_id as toStatusId
+        from rdm_app_status_rel
+        where app_id = #{appId}
+          and from_status_id = #{fromStatusId}
+          and to_status_id = #{toStatusId}
+    </select>
     <select id="checkAppCatalogNameIsExists" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo" resultType="int">
         select count(1)
         from rdm_app_catalog
@@ -102,12 +109,21 @@
 
     <select id="getStatusRelByAppId" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
-        select id             as id,
-               from_status_id as fromStatusId,
-               to_status_id   as toStatusId,
-               app_id         as appId
-        from rdm_app_status_rel
-        where app_id = #{value}
+        select rasr.id             as id,
+               rasr.from_status_id as fromStatusId,
+               rasr.to_status_id   as toStatusId,
+               rasr.app_id         as appId,
+               fras.name           as fromStatusName,
+               fras.label          as fromStatusLabel,
+               fras.color          as fromStatusColor,
+               tras.name           as toStatusName,
+               tras.label          as toStatusLabel,
+               tras.color          as toStatusColor,
+               rasr.config         as configStr
+        from rdm_app_status_rel rasr
+                 join rdm_app_status fras on rasr.from_status_id = fras.id
+                 join rdm_app_status tras on rasr.to_status_id = tras.id
+        where rasr.app_id = #{value}
     </select>
 
     <select id="getStatusById" parameterType="java.lang.Long"
@@ -206,6 +222,11 @@
         where a.project_id = #{value}
         order by a.sort, b.sort
     </select>
+
+    <insert id="insertAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo">
+        insert ignore into rdm_app_status_rel (id, app_id, from_status_id, to_status_id)
+        values (#{id}, #{appId}, #{fromStatusId}, #{toStatusId})
+    </insert>
 
     <insert id="insertAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
         insert into rdm_app_catalog
@@ -319,6 +340,14 @@
                 #{configStr},
                 #{isActive})
     </insert>
+
+    <delete id="deleteAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo">
+        delete
+        from rdm_app_status_rel
+        where app_id = #{appId}
+          and from_status_id = #{fromStatusId}
+          and to_status_id = #{toStatusId}
+    </delete>
 
     <delete id="deleteAppById" parameterType="java.lang.Long">
         DELETE a,b,c,d,e

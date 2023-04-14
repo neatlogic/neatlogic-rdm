@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.project;
+package neatlogic.module.rdm.api.app;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.ProjectStatusRelVo;
+import neatlogic.framework.rdm.dto.AppStatusRelVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import com.alibaba.fastjson.JSONObject;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
-public class SaveProjectStatusRelApi extends PrivateApiComponentBase {
+public class SaveAppStatusRelApi extends PrivateApiComponentBase {
 
     @Resource
-    private ProjectMapper projectMapper;
+    private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "修改项目状态流转关系";
+        return "修改应用状态流转关系";
     }
 
     @Override
@@ -49,24 +49,29 @@ public class SaveProjectStatusRelApi extends PrivateApiComponentBase {
 
     @Input({@Param(name = "fromStatusId", type = ApiParamType.LONG, isRequired = true, desc = "来源状态id"),
             @Param(name = "toStatusId", type = ApiParamType.LONG, isRequired = true, desc = "目标状态id"),
-            @Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "项目id"),
+            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
             @Param(name = "action", type = ApiParamType.ENUM, rule = "add,delete", desc = "动作")})
-    @Output({@Param(explode = ProjectStatusRelVo[].class)})
-    @Description(desc = "修改项目状态流转关系接口")
+    @Output({@Param(type = ApiParamType.LONG, desc = "关系id")})
+    @Description(desc = "修改应用状态流转关系接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
         String action = paramObj.getString("action");
-        ProjectStatusRelVo projectStatusRelVo = JSONObject.toJavaObject(paramObj, ProjectStatusRelVo.class);
+        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
         if (action.equals("add")) {
-            projectMapper.insertProjectStatusRel(projectStatusRelVo);
+            appMapper.insertAppStatusRel(appStatusRelVo);
+            return appStatusRelVo.getId();
         } else if (action.equals("delete")) {
-            projectMapper.deleteProjectStatusRel(projectStatusRelVo);
+            AppStatusRelVo oldVo = appMapper.getAppStatusRel(appStatusRelVo);
+            if (oldVo != null) {
+                appMapper.deleteAppStatusRel(appStatusRelVo);
+                return oldVo.getId();
+            }
         }
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/statusrel/save";
+        return "/rdm/app/statusrel/save";
     }
 }

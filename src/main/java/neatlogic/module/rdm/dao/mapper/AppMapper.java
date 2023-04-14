@@ -21,6 +21,8 @@ import neatlogic.framework.rdm.dto.*;
 import java.util.List;
 
 public interface AppMapper {
+    AppStatusRelVo getAppStatusRel(AppStatusRelVo appStatusRelVo);
+
     int checkAppCatalogNameIsExists(AppCatalogVo appCatalogVo);
 
     AppCatalogVo getAppCatalogById(Long id);
@@ -61,6 +63,8 @@ public interface AppMapper {
 
     void insertAppCatalog(AppCatalogVo appCatalogVo);
 
+    void insertAppStatusRel(AppStatusRelVo appStatusRelVo);
+
     void insertApp(AppVo appVo);
 
     void insertAppStatus(AppStatusVo appStatusVo);
@@ -68,6 +72,8 @@ public interface AppMapper {
     void insertAppAttr(AppAttrVo appAttrVo);
 
     void deleteAppById(Long id);
+
+    void deleteAppStatusRel(AppStatusRelVo appStatusRelVo);
 
     void deleteAppAttrById(Long id);
 
