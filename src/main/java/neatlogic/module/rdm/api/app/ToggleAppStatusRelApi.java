@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
-public class SaveAppStatusRelApi extends PrivateApiComponentBase {
+public class ToggleAppStatusRelApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "修改状态关系配置";
+        return "添加或删除应用状态流转关系";
     }
 
     @Override
@@ -47,19 +47,31 @@ public class SaveAppStatusRelApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "状态关系id"),
-            @Param(name = "config", type = ApiParamType.JSONOBJECT, desc = "关系配置")
-    })
-    @Description(desc = "修改状态关系配置接口")
+    @Input({@Param(name = "fromStatusId", type = ApiParamType.LONG, isRequired = true, desc = "来源状态id"),
+            @Param(name = "toStatusId", type = ApiParamType.LONG, isRequired = true, desc = "目标状态id"),
+            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
+            @Param(name = "action", type = ApiParamType.ENUM, rule = "add,delete", desc = "动作")})
+    @Output({@Param(type = ApiParamType.LONG, desc = "关系id")})
+    @Description(desc = "添加或删除应用状态流转关系接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
+        String action = paramObj.getString("action");
         AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
-        appMapper.updateAppStatusRelConfig(appStatusRelVo);
+        if (action.equals("add")) {
+            appMapper.insertAppStatusRel(appStatusRelVo);
+            return appStatusRelVo.getId();
+        } else if (action.equals("delete")) {
+            AppStatusRelVo oldVo = appMapper.getAppStatusRel(appStatusRelVo);
+            if (oldVo != null) {
+                appMapper.deleteAppStatusRel(appStatusRelVo);
+                return oldVo.getId();
+            }
+        }
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/statusrel/config/save";
+        return "/rdm/app/statusrel/toggle";
     }
 }

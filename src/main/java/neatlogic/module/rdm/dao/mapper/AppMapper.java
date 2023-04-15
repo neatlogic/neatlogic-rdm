@@ -61,6 +61,8 @@ public interface AppMapper {
 
     void updateAppCatalog(AppCatalogVo appCatalogVo);
 
+    void updateAppStatusRelConfig(AppStatusRelVo appStatusRelVo);
+
     void insertAppCatalog(AppCatalogVo appCatalogVo);
 
     void insertAppStatusRel(AppStatusRelVo appStatusRelVo);

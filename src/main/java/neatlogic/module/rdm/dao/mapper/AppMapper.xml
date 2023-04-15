@@ -240,12 +240,6 @@
                 #{parentId})
     </insert>
 
-    <update id="updateAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        update rdm_app_catalog
-        set name = #{name}
-        where id = #{id}
-    </update>
-
     <insert id="insertAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         insert into rdm_app_status
         (id,
@@ -290,6 +284,7 @@
         set sort = #{sort}
         where id = #{id}
     </update>
+
     <update id="updateAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         update rdm_app_status
         set `name`        = #{name},
@@ -299,15 +294,23 @@
         where `id` = #{id}
     </update>
 
-    <update id="insertappStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo">
-        insert ignore into rdm_app_status_rel (id, app_id, from_status_id, to_status_id)
-        values (#{id}, #{appId}, #{fromStatusId}, #{toStatusId})
-    </update>
 
     <update id="updateAppAttrIsActive" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
         update rdm_app_attr
         set is_active = #{isActive}
         WHERE id = #{id}
+    </update>
+
+    <update id="updateAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set name = #{name}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppStatusRelConfig" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
+        update rdm_app_status_rel
+        set config = #{configStr}
+        where id = #{id}
     </update>
 
     <insert id="insertApp" parameterType="neatlogic.framework.rdm.dto.AppVo">
