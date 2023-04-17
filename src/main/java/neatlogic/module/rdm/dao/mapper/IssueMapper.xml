@@ -92,6 +92,7 @@
         <result property="status" column="status"/>
         <result property="statusColor" column="statusColor"/>
         <result property="statusName" column="statusName"/>
+        <result property="statusLabel" column="statusLabel"/>
         <result property="priority" column="priority"/>
         <result property="priorityName" column="priorityName"/>
         <result property="catalog" column="catalog"/>
@@ -156,6 +157,7 @@
         ri.status,
         ras.color as statusColor,
         ras.name as statusName,
+        ras.label as statusLabel,
         ri.create_user as createUser,
         ri.create_date as createDate,
         ri.catalog,
@@ -169,6 +171,7 @@
         left join rdm_issue_tag rit on ri.id = rit.issue_id
         left join rdm_tag rt on rit.tag_id = rt.id
         left join rdm_issue_user riu on ri.id = riu.issue_id
+        left join ${tableName} x on ri.id = x.issue_id
         <if test="wordList != null and wordList.size() > 0">
             join fulltextindex_target_rdm ftr on ri.id = ftr.target_id and ftr.target_type = 'issue'
             join fulltextindex_field_rdm ffr on ftr.target_id = ffr.target_id
@@ -201,6 +204,20 @@
             <if test="tagList != null and tagList.size() > 0">
                 and rt.name in
                 <foreach collection="tagList" item="tag" open="(" close=")" separator=",">#{tag}</foreach>
+            </if>
+            <if test="attrFilterList != null and attrFilterList.size() > 0">
+                <foreach collection="attrFilterList" item="attrFilter">
+                    <choose>
+                        <when test="attrFilter.attrType == 'select'">
+                            and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
+                        </when>
+                        <when test="attrFilter.attrType == 'text'">
+                            and x.`${attrFilter.attrId}` like CONCAT('%',#{attrFilter.value},'%')
+                        </when>
+                    </choose>
+
+                </foreach>
+
             </if>
         </where>
     </sql>

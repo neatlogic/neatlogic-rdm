@@ -52,11 +52,11 @@ public class GetAppStatusApi extends PrivateApiComponentBase {
     @Description(desc = "获取应用状态接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return appMapper.getStatusByAppId(paramObj.getLong("id"));
+        return appMapper.getStatusById(paramObj.getLong("id"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/status/get";
+        return "/rdm/app/status/get";
     }
 }

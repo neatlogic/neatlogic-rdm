@@ -28,13 +28,11 @@ import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.TableResultUtil;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -64,7 +62,8 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
             @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
-            @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录")})
+            @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
+            @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),})
     @Output({@Param(explode = IssueCountVo[].class)})
     @Description(desc = "搜索任务接口")
     @Override
@@ -79,6 +78,19 @@ public class SearchIssueApi extends PrivateApiComponentBase {
         for (AppAttrVo attr : attrList) {
             if (attr.getIsPrivate().equals(0)) {
                 issueVo.addAttr(new IssueAttrVo(attr.getId(), attr.getType()));
+            }
+        }
+        //补充条件中的属性类型，sql语句中需要用到
+        if (CollectionUtils.isNotEmpty(issueVo.getAttrFilterList())) {
+            Iterator<IssueAttrVo> it = issueVo.getAttrFilterList().iterator();
+            while (it.hasNext()) {
+                IssueAttrVo issueAttrVo = it.next();
+                Optional<AppAttrVo> attr = attrList.stream().filter(d -> d.getId().equals(issueAttrVo.getAttrId())).findFirst();
+                if (attr.isPresent()) {
+                    issueAttrVo.setAttrType(attr.get().getType());
+                } else {
+                    it.remove();
+                }
             }
         }
         int rowNum = issueMapper.searchIssueCount(issueVo);
@@ -98,10 +110,10 @@ public class SearchIssueApi extends PrivateApiComponentBase {
                     Optional<IssueVo> op = issueList.stream().filter(d -> d.getId().equals(issueId)).findFirst();
                     if (op.isPresent()) {
                         IssueVo queryIssueVo = op.get();
-                        IssueAttrVo issueAttrVo = new IssueAttrVo();
-                        issueAttrVo.setIssueId(queryIssueVo.getId());
                         for (String key : attrMap.keySet()) {
                             if (!key.equals("issueId")) {
+                                IssueAttrVo issueAttrVo = new IssueAttrVo();
+                                issueAttrVo.setIssueId(queryIssueVo.getId());
                                 issueAttrVo.setAttrId(Long.parseLong(key));
                                 if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
                                     issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
@@ -110,9 +122,10 @@ public class SearchIssueApi extends PrivateApiComponentBase {
                                         this.add(attrMap.get(key));
                                     }});
                                 }
+                                queryIssueVo.addAttr(issueAttrVo);
                             }
                         }
-                        queryIssueVo.addAttr(issueAttrVo);
+
                     }
                 }
             }

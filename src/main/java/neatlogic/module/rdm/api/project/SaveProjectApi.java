@@ -107,17 +107,17 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (PrivateAttr attrType : attrTypeList) {
-                        AppAttrVo objectAttrVo = new AppAttrVo();
-                        objectAttrVo.setName(attrType.getName());
-                        objectAttrVo.setLabel(attrType.getLabel());
-                        objectAttrVo.setType(attrType.getType());
-                        objectAttrVo.setSort(sort);
-                        objectAttrVo.setIsRequired(0);
-                        objectAttrVo.setIsPrivate(1);
-                        objectAttrVo.setIsActive(1);
-                        objectAttrVo.setAppId(objectVo.getId());
-                        objectVo.addAppAttr(objectAttrVo);
-                        appMapper.insertAppAttr(objectAttrVo);
+                        AppAttrVo appAttrVo = new AppAttrVo();
+                        appAttrVo.setName(attrType.getName());
+                        appAttrVo.setLabel(attrType.getLabel());
+                        appAttrVo.setType(attrType.getType());
+                        appAttrVo.setSort(sort);
+                        appAttrVo.setIsRequired(0);
+                        appAttrVo.setIsPrivate(1);
+                        appAttrVo.setIsActive(1);
+                        appAttrVo.setAppId(objectVo.getId());
+                        objectVo.addAppAttr(appAttrVo);
+                        appMapper.insertAppAttr(appAttrVo);
                         sort += 1;
                     }
                 }

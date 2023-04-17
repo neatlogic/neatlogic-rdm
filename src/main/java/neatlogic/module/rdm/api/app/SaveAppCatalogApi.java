@@ -78,6 +78,6 @@ public class SaveAppCatalogApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/catalog/save";
+        return "/rdm/app/catalog/save";
     }
 }

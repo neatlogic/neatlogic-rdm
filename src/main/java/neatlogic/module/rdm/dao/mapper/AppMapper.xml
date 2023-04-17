@@ -128,14 +128,28 @@
 
     <select id="getStatusById" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppStatusVo">
-        select id, app_id as appId, name, label, sort, color
+        select id,
+               app_id   as appId,
+               name,
+               label,
+               sort,
+               color,
+               is_start as isStart,
+               is_end   as isEnd
         FROM rdm_app_status
         WHERE id = #{value}
     </select>
 
     <select id="getStatusByAppId" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppStatusVo">
-        select id, app_id as objectId, name, label, sort, color
+        select id,
+               app_id   as appId,
+               is_start as isStart,
+               is_end   as isEnd,
+               name,
+               label,
+               sort,
+               color
         FROM rdm_app_status
         WHERE app_id = #{value}
         order by sort
@@ -313,6 +327,24 @@
         where id = #{id}
     </update>
 
+    <update id="resetAppStatusIsStart" parameterType="java.lang.Long">
+        update rdm_app_status
+        set is_start = 0
+        where app_id = #{value}
+    </update>
+
+    <update id="updateAppStatusType" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
+        update rdm_app_status
+        set id = #{id}
+        <if test="isStart != null">
+            ,is_start = #{isStart}
+        </if>
+        <if test="isEnd != null">
+            ,is_end = #{isEnd}
+        </if>
+        where id = #{id}
+    </update>
+
     <insert id="insertApp" parameterType="neatlogic.framework.rdm.dto.AppVo">
         insert rdm_app (id, app_type, project_id, sort)
         values (#{id}, #{type}, #{projectId}, #{sort})
@@ -352,6 +384,7 @@
           and to_status_id = #{toStatusId}
     </delete>
 
+
     <delete id="deleteAppById" parameterType="java.lang.Long">
         DELETE a,b,c,d,e
         FROM rdm_app a
@@ -360,6 +393,14 @@
                  left join rdm_app_status d on a.id = d.app_id
                  left join rdm_app_status_rel e on a.id = e.app_id
         where a.id = #{value}
+    </delete>
+
+    <delete id="deleteAppStatusById" parameterType="java.lang.Long">
+        DELETE a,b,c
+        FROM rdm_app_status a
+                 LEFT JOIN rdm_app_status_rel b ON a.id = b.from_status_id
+                 LEFT JOIN rdm_app_status_rel c ON a.id = c.to_status_id
+        WHERE a.id = #{value}
     </delete>
 
     <delete id="deleteAppAttrById" parameterType="java.lang.Long">

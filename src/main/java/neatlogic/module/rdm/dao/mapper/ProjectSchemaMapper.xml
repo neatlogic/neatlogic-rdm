@@ -60,13 +60,13 @@
             </when>
             <otherwise>TEXT</otherwise>
         </choose>
-        NULL COMMENT '${appAttrVo.label}',
+        NULL COMMENT '${appAttrVo.label}'
         <choose>
             <when test="appAttrVo.type == 'number' or appAttrVo.type == 'date' or appAttrVo.type == 'time' or appAttrVo.type == 'datetime' or appAttrVo.type == 'enum'">
-                ADD KEY `index_${appAttrVo.id}` (`${appAttrVo.id}`),
+                ,ADD KEY `index_${appAttrVo.id}` (`${appAttrVo.id}`)
             </when>
             <when test="appAttrVo.type == 'select'">
-                ADD KEY `index_${appAttrVo.id}` ((CAST(`${appAttrVo.id}` AS CHAR(255) ARRAY)))
+                ,ADD KEY `index_${appAttrVo.id}` ((CAST(`${appAttrVo.id}` AS CHAR(255) ARRAY)))
             </when>
         </choose>
     </insert>

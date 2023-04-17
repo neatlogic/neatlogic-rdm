@@ -63,6 +63,10 @@ public interface AppMapper {
 
     void updateAppStatusRelConfig(AppStatusRelVo appStatusRelVo);
 
+    void resetAppStatusIsStart(Long appId);
+
+    void updateAppStatusType(AppStatusVo appStatusVo);
+
     void insertAppCatalog(AppCatalogVo appCatalogVo);
 
     void insertAppStatusRel(AppStatusRelVo appStatusRelVo);
@@ -77,6 +81,9 @@ public interface AppMapper {
 
     void deleteAppStatusRel(AppStatusRelVo appStatusRelVo);
 
+
     void deleteAppAttrById(Long id);
+
+    void deleteAppStatusById(Long id);
 
 }

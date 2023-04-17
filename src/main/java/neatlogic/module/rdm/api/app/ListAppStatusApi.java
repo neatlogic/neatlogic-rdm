@@ -57,6 +57,6 @@ public class ListAppStatusApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/status/list";
+        return "/rdm/app/status/list";
     }
 }

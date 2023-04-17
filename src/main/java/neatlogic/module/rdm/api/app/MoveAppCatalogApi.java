@@ -109,6 +109,6 @@ public class MoveAppCatalogApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/catalog/move";
+        return "/rdm/app/catalog/move";
     }
 }

@@ -24,24 +24,24 @@ import neatlogic.framework.rdm.dto.AppStatusVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.util.RegexUtils;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
-public class SaveAppStatusApi extends PrivateApiComponentBase {
+@Transactional
+public class UpdateAppStatusTypeApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "保存应用状态";
+        return "修改应用状态类型";
     }
 
     @Override
@@ -49,30 +49,40 @@ public class SaveAppStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "对象状态id，不提供代表添加"),
-            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, isRequired = true, desc = "唯一标识"),
-            @Param(name = "label", type = ApiParamType.STRING, isRequired = true, desc = "名称"),
-            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
-            @Param(name = "description", type = ApiParamType.STRING, desc = "说明"),
-            @Param(name = "color", type = ApiParamType.STRING, desc = "颜色")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "对象状态id"),
+            @Param(name = "type", type = ApiParamType.ENUM, rule = "start,end", isRequired = true, desc = "状态类型，start或end"),
+            @Param(name = "flag", type = ApiParamType.BOOLEAN, isRequired = true, desc = "类型状态")
+    })
     @Output({@Param(explode = AppStatusVo.class)})
-    @Description(desc = "保存应用状态接口")
+    @Description(desc = "修改应用状态类型接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        AppStatusVo appStatusVo = JSONObject.toJavaObject(paramObj, AppStatusVo.class);
-
-        if (paramObj.getLong("id") == null) {
-            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appStatusVo.getAppId());
-            appStatusVo.setSort(statusList.size() + 1);
-            appMapper.insertAppStatus(appStatusVo);
-        } else {
-            appMapper.updateAppStatus(appStatusVo);
+        Long id = paramObj.getLong("id");
+        String type = paramObj.getString("type");
+        Boolean flag = paramObj.getBoolean("flag");
+        AppStatusVo appStatusVo = appMapper.getStatusById(id);
+        if (appStatusVo != null) {
+            if (type.equalsIgnoreCase("start")) {
+                if (flag) {
+                    appStatusVo.setIsStart(1);
+                    appMapper.resetAppStatusIsStart(appStatusVo.getAppId());
+                } else {
+                    appStatusVo.setIsStart(0);
+                }
+            } else {
+                if (flag) {
+                    appStatusVo.setIsEnd(1);
+                } else {
+                    appStatusVo.setIsEnd(0);
+                }
+            }
+            appMapper.updateAppStatusType(appStatusVo);
         }
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/status/save";
+        return "/rdm/app/statustype/update";
     }
 }

@@ -58,8 +58,7 @@ public class GetIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({
-            @Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
     @Output({@Param(explode = IssueVo.class)})
     @Description(desc = "获取任务信息接口")
     @Override
@@ -78,10 +77,11 @@ public class GetIssueApi extends PrivateApiComponentBase {
             issueVo.setIdList(idList);
             HashMap<String, ?> attrMap = issueMapper.getAttrByIssueId(issueVo);
             if (MapUtils.isNotEmpty(attrMap)) {
-                IssueAttrVo issueAttrVo = new IssueAttrVo();
-                issueAttrVo.setIssueId(issueVo.getId());
+                List<IssueAttrVo> issueAttrList = new ArrayList<>();
                 for (String key : attrMap.keySet()) {
                     if (!key.equals("issueId")) {
+                        IssueAttrVo issueAttrVo = new IssueAttrVo();
+                        issueAttrVo.setIssueId(issueVo.getId());
                         issueAttrVo.setAttrId(Long.parseLong(key));
                         if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
                             issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
@@ -90,11 +90,10 @@ public class GetIssueApi extends PrivateApiComponentBase {
                                 this.add(attrMap.get(key));
                             }});
                         }
+                        issueAttrList.add(issueAttrVo);
                     }
                 }
-                issueVo.setAttrList(new ArrayList<IssueAttrVo>() {{
-                    this.add(issueAttrVo);
-                }});
+                issueVo.setAttrList(issueAttrList);
             }
         }
         return issueVo;
