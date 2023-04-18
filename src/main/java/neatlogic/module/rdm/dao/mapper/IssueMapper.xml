@@ -17,6 +17,18 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IssueMapper">
+
+    <select id="getNotIndexIssueIdList"
+            parameterType="neatlogic.framework.fulltextindex.dto.fulltextindex.FullTextIndexTypeVo"
+            resultType="java.lang.Long" useCache="false">
+        select a.id
+        from rdm_issue a
+                 left join fulltextindex_target_rdm b
+                           on a.id = b.target_id and b.target_type = #{type}
+        where b.target_id is null
+        limit #{pageSize}
+    </select>
+
     <select id="getTagByIssueId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.TagVo">
         select a.id, a.name
         from rdm_tag a
@@ -32,13 +44,18 @@
                rp.name        as priorityName,
                ri.status,
                ras.name       as statusName,
+               ras.label      as statusLabel,
+               ras.color      as statusColor,
                ri.create_user as createUser,
                ri.create_date as createDate,
                ri.content     as content,
                ri.catalog,
                rac.name       as catalogName,
                rt.name        as tagName,
-               riu.user_id    as userId
+               riu.user_id    as userId,
+               f.id           as fileId,
+               f.name         as fileName,
+               f.size         as fileSize
         from rdm_issue ri
                  left join rdm_priority as rp on ri.priority = rp.id
                  left join rdm_app_status as ras on ri.status = ras.id
@@ -46,6 +63,8 @@
                  left join rdm_issue_tag rit on ri.id = rit.issue_id
                  left join rdm_tag rt on rit.tag_id = rt.id
                  left join rdm_issue_user riu on ri.id = riu.issue_id
+                 left join rdm_issue_file rif on ri.id = rif.issue_id
+                 left join file f on rif.file_id = f.id
         where ri.id = #{value}
     </select>
 
@@ -103,6 +122,11 @@
         </collection>
         <collection property="userList" ofType="neatlogic.framework.dto.UserVo">
             <result column="userId" property="userId"/>
+        </collection>
+        <collection property="fileList" ofType="neatlogic.framework.file.dto.FileVo">
+            <result column="fileId" property="id"/>
+            <result column="fileName" property="name"/>
+            <result column="fileSize" property="size"/>
         </collection>
     </resultMap>
 
@@ -242,6 +266,11 @@
         where issue_id = #{id}
     </update>
 
+    <insert id="insertIssueFile">
+        insert into rdm_issue_file (issue_id, file_id)
+        values (#{issueId}, #{fileId})
+    </insert>
+
     <insert id="insertIssueUser">
         insert into rdm_issue_user (issue_id, user_id)
         values (#{issueId}, #{userId})
@@ -288,6 +317,12 @@
         #{id}
         )
     </insert>
+
+    <delete id="deleteIssueFileByFileId" parameterType="java.lang.Long">
+        delete
+        from rdm_issue_file
+        where file_id = #{value}
+    </delete>
 
     <delete id="deleteIssueUserByIssueId" parameterType="java.lang.Long">
         delete

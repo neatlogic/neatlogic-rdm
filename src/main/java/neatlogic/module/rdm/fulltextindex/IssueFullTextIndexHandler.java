@@ -24,9 +24,11 @@ import neatlogic.framework.fulltextindex.dto.globalsearch.DocumentVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class IssueFullTextIndexHandler extends FullTextIndexHandlerBase {
@@ -61,6 +63,13 @@ public class IssueFullTextIndexHandler extends FullTextIndexHandlerBase {
 
     @Override
     public void myRebuildIndex(FullTextIndexTypeVo fullTextIndexTypeVo) {
-
+        fullTextIndexTypeVo.setPageSize(100);
+        List<Long> issueIdList = issueMapper.getNotIndexIssueIdList(fullTextIndexTypeVo);
+        while (CollectionUtils.isNotEmpty(issueIdList)) {
+            for (Long issueId : issueIdList) {
+                this.createIndex(issueId, true);
+            }
+            issueIdList = issueMapper.getNotIndexIssueIdList(fullTextIndexTypeVo);
+        }
     }
 }

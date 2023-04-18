@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
+import neatlogic.framework.fulltextindex.dto.fulltextindex.FullTextIndexTypeVo;
 import neatlogic.framework.rdm.dto.IssueCountVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.dto.TagVo;
@@ -26,6 +27,8 @@ import java.util.List;
 
 public interface IssueMapper {
     IssueVo getIssueById(Long id);
+
+    List<Long> getNotIndexIssueIdList(FullTextIndexTypeVo typeVo);
 
     List<TagVo> getTagByIssueId(Long issueId);
 
@@ -47,6 +50,8 @@ public interface IssueMapper {
 
     void insertIssueUser(@Param("issueId") Long issueId, @Param("userId") String userId);
 
+    void insertIssueFile(@Param("issueId") Long issueId, @Param("fileId") Long fileId);
+
     void insertIssueTag(@Param("issueId") Long issueId, @Param("tagId") Long tagId);
 
     void insertIssueAttr(IssueVo issueVo);
@@ -58,4 +63,6 @@ public interface IssueMapper {
     void deleteIssueTagByIssueId(Long issueId);
 
     void deleteIssueById(Long issueId);
+
+    void deleteIssueFileByFileId(Long fileId);
 }
