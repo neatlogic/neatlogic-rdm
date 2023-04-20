@@ -24,6 +24,19 @@
         <include refid="searchCommentSql"></include>
     </select>
 
+    <select id="getCommentById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.CommentVo">
+        select ric.id,
+               ric.issue_id  as issueId,
+               ric.status,
+               ric.content,
+               ric.fcu,
+               ric.fcd,
+               ric.lcd,
+               ric.parent_id as parentId
+        from rdm_issue_comment ric
+        where ric.id = #{value}
+    </select>
+
     <select id="searchComment" parameterType="neatlogic.framework.rdm.dto.CommentVo"
             resultType="neatlogic.framework.rdm.dto.CommentVo">
         select ric.id,
@@ -31,7 +44,6 @@
         ric.status,
         ric.content,
         ric.fcu,
-        (select user_name from user x where x.uuid = ric.fcu) as fcuName,
         ric.fcd,
         ric.lcd,
         ric.parent_id as parentId,

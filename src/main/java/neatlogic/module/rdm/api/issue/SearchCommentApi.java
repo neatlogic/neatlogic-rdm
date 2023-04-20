@@ -53,6 +53,7 @@ public class SearchCommentApi extends PrivateApiComponentBase {
 
     @Input({
             @Param(name = "issueId", type = ApiParamType.LONG, isRequired = true, desc = "任务id"),
+            @Param(name = "parentId", type = ApiParamType.LONG, desc = "父评论id"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页"),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页大小")})
     @Output({@Param(explode = BasePageVo.class), @Param(name = "tbodyList", explode = CommentVo[].class)})

@@ -23,6 +23,8 @@ import java.util.List;
 public interface CommentMapper {
     int searchCommentCount(CommentVo commentVo);
 
+    CommentVo getCommentById(Long commentId);
+
     List<CommentVo> searchComment(CommentVo commentVo);
 
     void insertComment(CommentVo commentVo);

@@ -24,10 +24,7 @@ import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.CommentVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
-import neatlogic.framework.restful.annotation.Description;
-import neatlogic.framework.restful.annotation.Input;
-import neatlogic.framework.restful.annotation.OperationType;
-import neatlogic.framework.restful.annotation.Param;
+import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.CommentMapper;
@@ -64,10 +61,17 @@ public class SaveCommentApi extends PrivateApiComponentBase {
             @Param(name = "content", type = ApiParamType.STRING, desc = "内容", isRequired = true),
             @Param(name = "parentId", type = ApiParamType.LONG, desc = "回复评论id")
     })
+    @Output({@Param(type = ApiParamType.LONG, desc = "真正的父评论id")})
     @Description(desc = "保存评论接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
         CommentVo commentVo = JSONObject.toJavaObject(paramObj, CommentVo.class);
+        if (commentVo.getParentId() != null) {
+            CommentVo parentCommentVo = commentMapper.getCommentById(commentVo.getParentId());
+            if (parentCommentVo != null && parentCommentVo.getParentId() != null) {
+                commentVo.setParentId(parentCommentVo.getParentId());
+            }
+        }
         IssueVo issueVo = issueMapper.getIssueById(commentVo.getIssueId());
         if (issueVo == null) {
             throw new IssueNotFoundException(commentVo.getIssueId());
@@ -75,7 +79,7 @@ public class SaveCommentApi extends PrivateApiComponentBase {
         commentVo.setStatus(issueVo.getStatus());
         commentVo.setFcu(UserContext.get().getUserUuid(true));
         commentMapper.insertComment(commentVo);
-        return null;
+        return commentVo.getParentId();
     }
 
     @Override
