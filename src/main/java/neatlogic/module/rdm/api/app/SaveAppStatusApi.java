@@ -62,7 +62,7 @@ public class SaveAppStatusApi extends PrivateApiComponentBase {
         AppStatusVo appStatusVo = JSONObject.toJavaObject(paramObj, AppStatusVo.class);
 
         if (paramObj.getLong("id") == null) {
-            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appStatusVo.getAppId());
+            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appStatusVo.getAppId(), null);
             appStatusVo.setSort(statusList.size() + 1);
             appMapper.insertAppStatus(appStatusVo);
         } else {

@@ -96,6 +96,8 @@ public class GetIssueApi extends PrivateApiComponentBase {
                 issueVo.setAttrList(issueAttrList);
             }
         }
+
+
         return issueVo;
     }
 

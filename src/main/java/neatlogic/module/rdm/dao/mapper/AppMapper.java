@@ -17,6 +17,7 @@
 package neatlogic.module.rdm.dao.mapper;
 
 import neatlogic.framework.rdm.dto.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public interface AppMapper {
 
     AppStatusVo getStatusById(Long id);
 
-    List<AppStatusVo> getStatusByAppId(Long objectId);
+    List<AppStatusVo> getStatusByAppId(@Param("appId") Long appId, @Param("status") Long status);
 
     void updateAppCatalogParentId(AppCatalogVo appCatalogVo);
 

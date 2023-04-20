@@ -140,19 +140,23 @@
         WHERE id = #{value}
     </select>
 
-    <select id="getStatusByAppId" parameterType="java.lang.Long"
+    <select id="getStatusByAppId"
             resultType="neatlogic.framework.rdm.dto.AppStatusVo">
-        select id,
-               app_id   as appId,
-               is_start as isStart,
-               is_end   as isEnd,
-               name,
-               label,
-               sort,
-               color
-        FROM rdm_app_status
-        WHERE app_id = #{value}
-        order by sort
+        select
+        a.id,
+        a.app_id as appId,
+        a.is_start as isStart,
+        a.is_end as isEnd,
+        a.name,
+        a.label,
+        a.sort,
+        a.color
+        FROM rdm_app_status a
+        <if test="status != null">
+            join rdm_app_status_rel b on a.id = b.to_status_id and b.from_status_id = #{status} and b.app_id = #{appId}
+        </if>
+        WHERE a.app_id = #{appId}
+        order by a.sort
     </select>
 
     <select id="searchAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo"

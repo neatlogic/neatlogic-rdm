@@ -17,24 +17,24 @@
 package neatlogic.module.rdm.api.issue;
 
 import com.alibaba.fastjson.JSONObject;
+import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.constvalue.GroupSearch;
 import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
 import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.rdm.dto.IssueAttrVo;
-import neatlogic.framework.rdm.dto.IssueVo;
-import neatlogic.framework.rdm.dto.TagVo;
+import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.CommentMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.dao.mapper.TagMapper;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +50,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
     private AppMapper appMapper;
     @Resource
     private IssueMapper issueMapper;
+
+    @Resource
+    private CommentMapper commentMapper;
 
     @Resource
     private TagMapper tagMapper;
@@ -73,7 +76,8 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
             @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
             @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),
-            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表")})
+            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表"),
+            @Param(name = "comment", type = ApiParamType.STRING, desc = "评论")})
     @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
     @Description(desc = "保存任务接口")
     @Override
@@ -119,6 +123,15 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             for (String userId : issueVo.getUserIdList()) {
                 issueMapper.insertIssueUser(issueVo.getId(), userId.replace(GroupSearch.USER.getValuePlugin(), ""));
             }
+        }
+
+        if (StringUtils.isNotBlank(issueVo.getComment())) {
+            CommentVo commentVo = new CommentVo();
+            commentVo.setIssueId(issueVo.getId());
+            commentVo.setContent(issueVo.getComment());
+            commentVo.setFcu(UserContext.get().getUserUuid(true));
+            commentVo.setStatus(issueVo.getStatus());
+            commentMapper.insertComment(commentVo);
         }
         //创建全文检索索引
         IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
