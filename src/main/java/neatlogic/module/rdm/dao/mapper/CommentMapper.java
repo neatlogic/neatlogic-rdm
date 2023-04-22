@@ -28,4 +28,6 @@ public interface CommentMapper {
     List<CommentVo> searchComment(CommentVo commentVo);
 
     void insertComment(CommentVo commentVo);
+
+    void deleteCommentById(Long commentId);
 }

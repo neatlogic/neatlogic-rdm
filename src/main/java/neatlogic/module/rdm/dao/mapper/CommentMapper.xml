@@ -26,20 +26,26 @@
 
     <select id="getCommentById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.CommentVo">
         select ric.id,
-               ric.issue_id  as issueId,
+               ric.issue_id        as issueId,
                ric.status,
                ric.content,
                ric.fcu,
                ric.fcd,
                ric.lcd,
-               ric.parent_id as parentId
+               ric.parent_id       as parentId,
+               (select count(*)
+                from (select x.id
+                      from rdm_issue_comment x
+                      where x.parent_id = ric.id
+                      limit 1) xx) as childCount
         from rdm_issue_comment ric
         where ric.id = #{value}
     </select>
 
     <select id="searchComment" parameterType="neatlogic.framework.rdm.dto.CommentVo"
             resultType="neatlogic.framework.rdm.dto.CommentVo">
-        select ric.id,
+        select
+        ric.id,
         ric.issue_id as issueId,
         ric.status,
         ric.content,
@@ -47,7 +53,11 @@
         ric.fcd,
         ric.lcd,
         ric.parent_id as parentId,
-        (select count(1) from rdm_issue_comment x where x.parent_id = ric.id limit 1) as childCount
+        (select count(*)
+        from (select x.id
+        from rdm_issue_comment x
+        where x.parent_id = ric.id
+        limit 1) xx) as childCount
         from rdm_issue_comment ric
         <include refid="searchCommentSql"></include>
         order by ric.id desc
@@ -83,4 +93,11 @@
                 now(3),
                 #{parentId})
     </insert>
+
+    <delete id="deleteCommentById" parameterType="java.lang.Long">
+        delete a,b
+        from rdm_issue_comment a
+                 left join rdm_issue_comment b on a.id = b.parent_id
+        where a.id = #{value}
+    </delete>
 </mapper>
