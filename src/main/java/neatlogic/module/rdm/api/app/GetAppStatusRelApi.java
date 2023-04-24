@@ -19,8 +19,9 @@ package neatlogic.module.rdm.api.app;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.common.dto.ValueTextVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppStatusVo;
+import neatlogic.framework.rdm.dto.AppStatusRelVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -28,20 +29,17 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListAppStatusApi extends PrivateApiComponentBase {
-
+public class GetAppStatusRelApi extends PrivateApiComponentBase {
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取应用状态列表";
+        return "获取状态关系";
     }
 
     @Override
@@ -49,34 +47,19 @@ public class ListAppStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "对象id"),
-            @Param(name = "status", type = ApiParamType.LONG, desc = "当前状态，如果提供则只会列出可到达状态列表，如果是0，代表获取开始状态以及开始状态能到达的状态列表")})
-    @Output({@Param(explode = AppStatusVo[].class)})
-    @Description(desc = "获取应用状态列表接口")
+    @Input({@Param(name = "appId", desc = "应用id", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "fromStatusId", desc = "来源状态", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "toStatusId", desc = "目标状态", isRequired = true, type = ApiParamType.LONG)})
+    @Output({@Param(explode = ValueTextVo[].class)})
+    @Description(desc = "获取状态关系接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long appId = paramObj.getLong("appId");
-        Long status = paramObj.getLong("status");
-        AppStatusVo startStatus = null;
-        if (status != null && status.equals(0L)) {
-            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appId, null);
-            Optional<AppStatusVo> op = statusList.stream().filter(d -> d.getIsStart() != null && d.getIsStart().equals(1)).findFirst();
-            if (op.isPresent()) {
-                startStatus = op.get();
-                status = startStatus.getId();
-            } else {
-                status = null;
-            }
-        }
-        List<AppStatusVo> statusList = appMapper.getStatusByAppId(paramObj.getLong("appId"), status);
-        if (startStatus != null && !statusList.contains(startStatus)) {
-            statusList.add(0, startStatus);
-        }
-        return statusList;
+        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
+        return appMapper.getAppStatusRel(appStatusRelVo);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/status/list";
+        return "/rdm/app/statusrel/get";
     }
 }

@@ -76,6 +76,14 @@
         </choose>
     </sql>
 
+    <update id="updateComment" parameterType="neatlogic.framework.rdm.dto.CommentVo">
+        update rdm_issue_comment
+        set content = #{content},
+            status  = #{status},
+            lcd     = now(3)
+        where id = #{id}
+    </update>
+
     <insert id="insertComment" parameterType="neatlogic.framework.rdm.dto.CommentVo">
         insert into rdm_issue_comment
         (id,

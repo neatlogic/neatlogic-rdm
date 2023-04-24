@@ -57,7 +57,8 @@ public class SaveCommentApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "issueId", type = ApiParamType.LONG, isRequired = true, desc = "任务id"),
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "评论id，不提供代表添加"),
+            @Param(name = "issueId", type = ApiParamType.LONG, isRequired = true, desc = "任务id"),
             @Param(name = "content", type = ApiParamType.STRING, desc = "内容", isRequired = true),
             @Param(name = "parentId", type = ApiParamType.LONG, desc = "回复评论id")
     })
@@ -65,20 +66,25 @@ public class SaveCommentApi extends PrivateApiComponentBase {
     @Description(desc = "保存评论接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
+        Long id = paramObj.getLong("id");
         CommentVo commentVo = JSONObject.toJavaObject(paramObj, CommentVo.class);
-        if (commentVo.getParentId() != null) {
-            CommentVo parentCommentVo = commentMapper.getCommentById(commentVo.getParentId());
-            if (parentCommentVo != null && parentCommentVo.getParentId() != null) {
-                commentVo.setParentId(parentCommentVo.getParentId());
-            }
-        }
         IssueVo issueVo = issueMapper.getIssueById(commentVo.getIssueId());
         if (issueVo == null) {
             throw new IssueNotFoundException(commentVo.getIssueId());
         }
         commentVo.setStatus(issueVo.getStatus());
-        commentVo.setFcu(UserContext.get().getUserUuid(true));
-        commentMapper.insertComment(commentVo);
+        if (id == null) {
+            if (commentVo.getParentId() != null) {
+                CommentVo parentCommentVo = commentMapper.getCommentById(commentVo.getParentId());
+                if (parentCommentVo != null && parentCommentVo.getParentId() != null) {
+                    commentVo.setParentId(parentCommentVo.getParentId());
+                }
+            }
+            commentVo.setFcu(UserContext.get().getUserUuid(true));
+            commentMapper.insertComment(commentVo);
+        } else {
+            commentMapper.updateComment(commentVo);
+        }
         return commentVo.getParentId();
     }
 

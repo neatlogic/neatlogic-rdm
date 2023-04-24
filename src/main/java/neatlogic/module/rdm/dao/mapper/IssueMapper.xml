@@ -153,9 +153,11 @@
     <select id="getAttrByIssueIdList" parameterType="neatlogic.framework.rdm.dto.IssueVo"
             resultType="java.util.HashMap">
         select
-        <foreach collection="attrList" item="item">
-            x.`${item.attrId}` as `${item.attrId}`,
-        </foreach>
+        <if test="attrList != null and attrList.size() > 0">
+            <foreach collection="attrList" item="item">
+                x.`${item.attrId}` as `${item.attrId}`,
+            </foreach>
+        </if>
         x.issue_id as issueId
         from ${tableName} x where x.issue_id in
         <foreach collection="idList" open="(" close=")" separator="," item="item">
@@ -209,6 +211,9 @@
 
     <sql id="searchIssueSql">
         <where>
+            <if test="appId != null">
+                and ri.app_id = #{appId}
+            </if>
             <if test="wordList != null and wordList.size() > 0">
                 and fw.word in
                 <foreach collection="wordList" open="(" close=")" separator="," item="item">
@@ -305,8 +310,8 @@
                 #{catalog})
     </insert>
 
-    <insert id="insertIssueAttr" parameterType="neatlogic.framework.rdm.dto.IssueVo">
-        insert into ${tableName}
+    <insert id="replaceIssueAttr" parameterType="neatlogic.framework.rdm.dto.IssueVo">
+        replace into ${tableName}
         (
         <foreach collection="attrList" item="attr">
             `${attr.attrId}`,

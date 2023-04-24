@@ -97,16 +97,13 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         }
         if (id == null) {
             issueMapper.insertIssue(issueVo);
-            if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
-                issueMapper.insertIssueAttr(issueVo);
-            }
         } else {
             issueMapper.updateIssue(issueVo);
-            if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
-                issueMapper.updateIssueAttr(issueVo);
-            }
             issueMapper.deleteIssueTagByIssueId(issueVo.getId());
             issueMapper.deleteIssueUserByIssueId(issueVo.getId());
+        }
+        if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
+            issueMapper.replaceIssueAttr(issueVo);
         }
         if (CollectionUtils.isNotEmpty(issueVo.getTagList())) {
             for (String tag : issueVo.getTagList()) {

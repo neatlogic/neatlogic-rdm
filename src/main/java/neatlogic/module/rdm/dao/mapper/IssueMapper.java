@@ -54,7 +54,7 @@ public interface IssueMapper {
 
     void insertIssueTag(@Param("issueId") Long issueId, @Param("tagId") Long tagId);
 
-    void insertIssueAttr(IssueVo issueVo);
+    void replaceIssueAttr(IssueVo issueVo);
 
     void updateIssue(IssueVo issueVo);
 

@@ -19,12 +19,17 @@
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
     <select id="getAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo"
             resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
-        select id, app_id as appId, from_status_id as fromStatusId, to_status_id as toStatusId
+        select id,
+               app_id         as appId,
+               from_status_id as fromStatusId,
+               to_status_id   as toStatusId,
+               config         as configStr
         from rdm_app_status_rel
         where app_id = #{appId}
           and from_status_id = #{fromStatusId}
           and to_status_id = #{toStatusId}
     </select>
+
     <select id="checkAppCatalogNameIsExists" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo" resultType="int">
         select count(1)
         from rdm_app_catalog
@@ -162,7 +167,7 @@
     <select id="searchAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo"
             resultType="neatlogic.framework.rdm.dto.AppAttrVo">
         select id,
-        app_id as objectId,
+        app_id as appId,
         type,
         name,
         label,
@@ -186,6 +191,7 @@
                a.app_type    as appType,
                a.project_id  AS projectId,
                a.sort,
+               b.app_id      AS attrAppId,
                b.id          as attrId,
                b.type        as attrType,
                b.name        as attrName,
@@ -209,6 +215,7 @@
         <result property="sort" column="sort"/>
         <collection property="attrList" ofType="neatlogic.framework.rdm.dto.AppAttrVo">
             <id property="id" column="attrId"/>
+            <result property="appId" column="attrAppId"/>
             <result property="type" column="attrType"/>
             <result property="name" column="attrName"/>
             <result property="label" column="attrLabel"/>
@@ -226,6 +233,7 @@
                a.project_id  AS projectId,
                a.sort,
                b.id          as attrId,
+               b.app_id      as attrAppId,
                b.type        as attrType,
                b.name        as attrName,
                b.label       as attrLabel,
@@ -316,6 +324,12 @@
     <update id="updateAppAttrIsActive" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
         update rdm_app_attr
         set is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAppAttrIsRequired" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        update rdm_app_attr
+        set is_required = #{isRequired}
         WHERE id = #{id}
     </update>
 

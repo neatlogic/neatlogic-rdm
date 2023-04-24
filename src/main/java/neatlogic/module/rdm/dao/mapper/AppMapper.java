@@ -56,6 +56,8 @@ public interface AppMapper {
 
     void updateAppAttrIsActive(AppAttrVo appAttrVo);
 
+    void updateAppAttrIsRequired(AppAttrVo appAttrVo);
+
     void updateAppStatus(AppStatusVo appStatusVo);
 
     void updateAppAttrSort(AppAttrVo appAttrVo);
