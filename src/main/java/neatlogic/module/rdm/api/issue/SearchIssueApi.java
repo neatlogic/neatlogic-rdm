@@ -77,7 +77,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
         List<AppAttrVo> attrList = appMapper.getAttrByAppId(issueVo.getAppId());
         for (AppAttrVo attr : attrList) {
             if (attr.getIsPrivate().equals(0)) {
-                issueVo.addAttr(new IssueAttrVo(attr.getId(), attr.getType()));
+                issueVo.addAppAttr(attr);
             }
         }
         //补充条件中的属性类型，sql语句中需要用到

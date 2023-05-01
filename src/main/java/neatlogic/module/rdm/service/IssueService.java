@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.dao.mapper;
+package neatlogic.module.rdm.service;
 
-import neatlogic.framework.rdm.dto.PriorityVo;
+import neatlogic.framework.rdm.dto.IssueVo;
 
-import java.util.List;
-
-public interface PriorityMapper {
-    PriorityVo getPriorityById(Long id);
-
-    List<PriorityVo> getPriorityList();
+public interface IssueService {
+    IssueVo getIssueById(Long issueId);
 
 }

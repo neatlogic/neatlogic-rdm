@@ -14,33 +14,36 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.issue;
+package neatlogic.module.rdm.api.issueaudit;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.IssueVo;
+import neatlogic.framework.rdm.dto.IssueAuditVo;
+import neatlogic.framework.rdm.dto.IssueCountVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.service.IssueService;
+import neatlogic.framework.util.TableResultUtil;
+import neatlogic.module.rdm.dao.mapper.IssueAuditMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetIssueApi extends PrivateApiComponentBase {
-
+public class SearchIssueAuditApi extends PrivateApiComponentBase {
 
     @Resource
-    private IssueService issueService;
+    private IssueAuditMapper issueAuditMapper;
+
 
     @Override
     public String getName() {
-        return "获取任务信息";
+        return "搜索变更历史";
     }
 
     @Override
@@ -48,17 +51,24 @@ public class GetIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
-    @Output({@Param(explode = IssueVo.class)})
-    @Description(desc = "获取任务信息接口")
+    @Input({@Param(name = "issueId", type = ApiParamType.LONG, isRequired = true, desc = "任务id")
+    })
+    @Output({@Param(explode = IssueCountVo[].class)})
+    @Description(desc = "搜索变更历史接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long id = paramObj.getLong("id");
-        return issueService.getIssueById(id);
+        IssueAuditVo issueAuditVo = JSONObject.toJavaObject(paramObj, IssueAuditVo.class);
+        int rowNum = issueAuditMapper.searchIssueAuditCount(issueAuditVo);
+        issueAuditVo.setRowNum(rowNum);
+        List<IssueAuditVo> issueAuditList = null;
+        if (rowNum > 0) {
+            issueAuditList = issueAuditMapper.searchIssueAudit(issueAuditVo);
+        }
+        return TableResultUtil.getResult(issueAuditList, issueAuditVo);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/issue/get";
+        return "/rdm/issueaudit/search";
     }
 }

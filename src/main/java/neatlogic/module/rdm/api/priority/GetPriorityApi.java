@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.issue;
+package neatlogic.module.rdm.api.priority;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.IssueVo;
+import neatlogic.framework.rdm.dto.TagVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.service.IssueService;
+import neatlogic.module.rdm.dao.mapper.PriorityMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,15 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetIssueApi extends PrivateApiComponentBase {
-
+public class GetPriorityApi extends PrivateApiComponentBase {
 
     @Resource
-    private IssueService issueService;
+    private PriorityMapper priorityMapper;
 
     @Override
     public String getName() {
-        return "获取任务信息";
+        return "获取优先级";
     }
 
     @Override
@@ -48,17 +47,16 @@ public class GetIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
-    @Output({@Param(explode = IssueVo.class)})
-    @Description(desc = "获取任务信息接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "优先级id", isRequired = true)})
+    @Output({@Param(explode = TagVo[].class)})
+    @Description(desc = "获取优先级接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long id = paramObj.getLong("id");
-        return issueService.getIssueById(id);
+        return priorityMapper.getPriorityById(paramObj.getLong("id"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/issue/get";
+        return "/rdm/priority/get";
     }
 }

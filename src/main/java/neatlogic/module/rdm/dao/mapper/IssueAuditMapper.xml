@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.rdm.dao.mapper.IssueAuditMapper">
+    <sql id="searchIssueSql">
+        <where>
+            <if test="issueId != null">
+                and issue_id = #{issueId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="searchIssueAuditCount" parameterType="neatlogic.framework.rdm.dto.IssueAuditVo"
+            resultType="int">
+        select count(1)
+        from rdm_issue_audit
+        <include refid="searchIssueSql"></include>
+    </select>
+
+    <resultMap id="issueAuditMap" type="neatlogic.framework.rdm.dto.IssueAuditVo">
+        <id column="id" property="id"/>
+        <result column="issueId" property="issueId"/>
+        <result column="attrName" property="attrName"/>
+        <result column="attrId" property="attrId"/>
+        <result column="oldValueStr" property="oldValueStr"/>
+        <result column="newValueStr" property="newValueStr"/>
+        <result column="inputFrom" property="inputFrom"/>
+        <result column="inputUser" property="inputUser"/>
+        <result column="inputTime" property="inputTime"/>
+        <association property="appAttr" javaType="neatlogic.framework.rdm.dto.AppAttrVo">
+            <id column="appAttrId" property="id"/>
+            <result column="appAttrAppId" property="appId"/>
+            <result column="appAttrType" property="type"/>
+            <result column="appAttrName" property="name"/>
+            <result column="appAttrLabel" property="label"/>
+            <result column="appAttrDescription" property="description"/>
+            <result column="appAttrIsRequired" property="isRequired"/>
+            <result column="appAttrSort" property="sort"/>
+            <result column="appAttrIsPrivate" property="isPrivate"/>
+            <result column="appAttrConfigStr" property="configStr"/>
+            <result column="appAttrIsActive" property="isActive"/>
+        </association>
+    </resultMap>
+
+    <select id="searchIssueAudit" parameterType="neatlogic.framework.rdm.dto.IssueAuditVo"
+            resultMap="issueAuditMap">
+        select
+        ria.id AS id,
+        ria.issue_id AS issueId,
+        ria.attr_name AS attrName,
+        ria.attr_id AS attrId,
+        ria.old_value AS oldValueStr,
+        ria.new_value AS newValueStr,
+        ria.input_from AS inputFrom,
+        ria.input_user AS inputUser,
+        ria.input_time AS inputTime,
+        raa.id as appAttrId,
+        raa.app_id as appAttrAppId,
+        raa.type as appAttrType,
+        raa.name as appAttrName,
+        raa.label as appAttrLabel,
+        raa.description as appAttrDescription,
+        raa.is_required AS appAttrIsRequired,
+        raa.sort as appAttrSort,
+        raa.is_private AS appAttrIsPrivate,
+        raa.config AS appAttrConfigStr,
+        raa.is_active AS appAttrIsActive
+        from rdm_issue_audit ria
+        left join rdm_app_attr raa on ria.attr_id = raa.id
+        <include refid="searchIssueSql"></include>
+        order by ria.id desc
+        limit #{startNum}, #{pageSize}
+    </select>
+
+    <insert id="insertIssueAudit" parameterType="neatlogic.framework.rdm.dto.IssueAuditVo">
+        insert into rdm_issue_audit
+        (id,
+         issue_id,
+         attr_name,
+         attr_id,
+         old_value,
+         new_value,
+         input_from,
+         input_time,
+         input_user)
+        values (#{id},
+                #{issueId},
+                #{attrName},
+                #{attrId},
+                #{oldValueStr},
+                #{newValueStr},
+                #{inputFrom},
+                now(3),
+                #{inputUser})
+    </insert>
+</mapper>

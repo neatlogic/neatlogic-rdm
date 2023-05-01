@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.issue;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
@@ -29,10 +30,12 @@ import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
-import neatlogic.module.rdm.dao.mapper.CommentMapper;
-import neatlogic.module.rdm.dao.mapper.IssueMapper;
-import neatlogic.module.rdm.dao.mapper.TagMapper;
+import neatlogic.framework.util.jsondiff.common.model.JsonCompareResult;
+import neatlogic.framework.util.jsondiff.common.model.JsonComparedOption;
+import neatlogic.framework.util.jsondiff.core.DefaultJsonDifference;
+import neatlogic.module.rdm.dao.mapper.*;
+import neatlogic.module.rdm.service.IssueService;
+import neatlogic.module.rdm.utils.DiffIssue;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,9 @@ import java.util.List;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueApi extends PrivateApiComponentBase {
+
+    @Resource
+    private IssueAuditMapper issueAuditMapper;
     @Resource
     private AppMapper appMapper;
     @Resource
@@ -56,6 +62,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Resource
     private TagMapper tagMapper;
+
+    @Resource
+    private IssueService issueService;
 
 
     @Override
@@ -68,16 +77,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增任务"),
-            @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
-            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"),
-            @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
-            @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
-            @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
-            @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
-            @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),
-            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表"),
-            @Param(name = "comment", type = ApiParamType.STRING, desc = "评论")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增任务"), @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true), @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"), @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"), @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"), @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"), @Param(name = "status", type = ApiParamType.LONG, desc = "状态"), @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"), @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表"), @Param(name = "comment", type = ApiParamType.STRING, desc = "评论")})
     @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
     @Description(desc = "保存任务接口")
     @Override
@@ -98,6 +98,14 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (id == null) {
             issueMapper.insertIssue(issueVo);
         } else {
+            IssueVo oldIssueVo = issueService.getIssueById(id);
+            List<IssueAuditVo> auditList = DiffIssue.getDiff(id, oldIssueVo, issueVo, appAttrList);
+            if (CollectionUtils.isNotEmpty(auditList)) {
+                for (IssueAuditVo issueAuditVo : auditList) {
+                    issueAuditMapper.insertIssueAudit(issueAuditVo);
+                }
+            }
+
             issueMapper.updateIssue(issueVo);
             issueMapper.deleteIssueTagByIssueId(issueVo.getId());
             issueMapper.deleteIssueUserByIssueId(issueVo.getId());
@@ -142,5 +150,14 @@ public class SaveIssueApi extends PrivateApiComponentBase {
     @Override
     public String getToken() {
         return "/rdm/issue/save";
+    }
+
+    public static void main(String[] args) {
+        String array1 = "[1, 2, 3, 4, 5]";
+        String array2 = "[1, 3, 9, 4, 5]";
+
+        JsonComparedOption jsonComparedOption = new JsonComparedOption().setIgnoreOrder(true);
+        JsonCompareResult jsonCompareResult = new DefaultJsonDifference().option(jsonComparedOption).detectDiff(JSON.parseArray(array1), JSON.parseArray(array2));
+        System.out.println(JSON.toJSONString(jsonCompareResult));
     }
 }

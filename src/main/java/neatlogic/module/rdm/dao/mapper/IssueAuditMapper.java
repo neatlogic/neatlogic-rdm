@@ -16,13 +16,15 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
-import neatlogic.framework.rdm.dto.PriorityVo;
+import neatlogic.framework.rdm.dto.IssueAuditVo;
 
 import java.util.List;
 
-public interface PriorityMapper {
-    PriorityVo getPriorityById(Long id);
+public interface IssueAuditMapper {
+    int searchIssueAuditCount(IssueAuditVo issueAuditVo);
 
-    List<PriorityVo> getPriorityList();
+    List<IssueAuditVo> searchIssueAudit(IssueAuditVo issueAuditVo);
+
+    void insertIssueAudit(IssueAuditVo issueAuditVo);
 
 }

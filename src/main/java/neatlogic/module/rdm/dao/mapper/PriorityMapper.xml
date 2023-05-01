@@ -22,4 +22,10 @@
         from rdm_priority a
         order by sort
     </select>
+
+    <select id="getPriorityById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.PriorityVo">
+        select a.id, a.name, a.color, a.sort
+        from rdm_priority a
+        where a.id = #{value}
+    </select>
 </mapper>
