@@ -56,6 +56,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
+            @Param(name = "parentId", type = ApiParamType.LONG, desc = "父任务id"),
             @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页"),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页大小"),

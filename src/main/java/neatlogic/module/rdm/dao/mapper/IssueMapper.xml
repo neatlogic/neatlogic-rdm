@@ -140,6 +140,10 @@
         select
         count(distinct ri.id)
         from rdm_issue ri
+        <if test="parentId != null">
+            join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
+            #{parentId}
+        </if>
         left join rdm_priority as rp on ri.priority = rp.id
         left join rdm_app_catalog rac on ri.catalog = rac.id
         left join rdm_issue_tag rit on ri.id = rit.issue_id
@@ -197,6 +201,10 @@
         rt.name as tagName,
         riu.user_id as userId
         from rdm_issue ri
+        <if test="parentId != null">
+            join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
+            #{parentId}
+        </if>
         left join rdm_priority as rp on ri.priority = rp.id
         left join rdm_app_status as ras on ri.status = ras.id
         left join rdm_app_catalog rac on ri.catalog = rac.id
