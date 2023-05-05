@@ -314,6 +314,11 @@
                 #{catalog})
     </insert>
 
+    <insert id="insertIssueRel" parameterType="neatlogic.framework.rdm.dto.IssueRelVo">
+        insert into rdm_issue_rel (from_app_id, from_issue_id, to_app_id, to_issue_id)
+        values (#{fromAppId}, #{fromIssueId}, #{toAppId}, #{toIssueId})
+    </insert>
+
     <insert id="replaceIssueAttr" parameterType="neatlogic.framework.rdm.dto.IssueVo">
         replace into ${tableName}
         (

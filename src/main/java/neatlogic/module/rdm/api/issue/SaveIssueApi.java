@@ -16,7 +16,6 @@
 
 package neatlogic.module.rdm.api.issue;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
@@ -30,9 +29,6 @@ import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.util.jsondiff.common.model.JsonCompareResult;
-import neatlogic.framework.util.jsondiff.common.model.JsonComparedOption;
-import neatlogic.framework.util.jsondiff.core.DefaultJsonDifference;
 import neatlogic.module.rdm.dao.mapper.*;
 import neatlogic.module.rdm.service.IssueService;
 import neatlogic.module.rdm.utils.DiffIssue;
@@ -77,11 +73,22 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增任务"), @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true), @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"), @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"), @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"), @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"), @Param(name = "status", type = ApiParamType.LONG, desc = "状态"), @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"), @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表"), @Param(name = "comment", type = ApiParamType.STRING, desc = "评论")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增任务"),
+            @Param(name = "fromId", type = ApiParamType.LONG, desc = "来源任务id"),
+            @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
+            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"),
+            @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
+            @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
+            @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
+            @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
+            @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),
+            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表"),
+            @Param(name = "comment", type = ApiParamType.STRING, desc = "评论")})
     @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
     @Description(desc = "保存任务接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
+        Long fromId = paramObj.getLong("fromId");
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         Long id = paramObj.getLong("id");
         List<AppAttrVo> appAttrList = appMapper.getAttrByAppId(issueVo.getAppId());
@@ -138,6 +145,14 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             commentVo.setStatus(issueVo.getStatus());
             commentMapper.insertComment(commentVo);
         }
+        //创建来源关系
+        if (fromId != null) {
+            IssueVo fromIssue = issueMapper.getIssueById(fromId);
+            if (fromIssue != null) {
+                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId());
+                issueMapper.insertIssueRel(issueRelVo);
+            }
+        }
         //创建全文检索索引
         IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
         if (indexHandler != null) {
@@ -152,12 +167,4 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         return "/rdm/issue/save";
     }
 
-    public static void main(String[] args) {
-        String array1 = "[1, 2, 3, 4, 5]";
-        String array2 = "[1, 3, 9, 4, 5]";
-
-        JsonComparedOption jsonComparedOption = new JsonComparedOption().setIgnoreOrder(true);
-        JsonCompareResult jsonCompareResult = new DefaultJsonDifference().option(jsonComparedOption).detectDiff(JSON.parseArray(array1), JSON.parseArray(array2));
-        System.out.println(JSON.toJSONString(jsonCompareResult));
-    }
 }
