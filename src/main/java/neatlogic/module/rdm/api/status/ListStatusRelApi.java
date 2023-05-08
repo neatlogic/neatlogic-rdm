@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
-import neatlogic.framework.common.dto.ValueTextVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppStatusRelVo;
 import neatlogic.framework.restful.annotation.*;
@@ -33,13 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetAppStatusRelApi extends PrivateApiComponentBase {
+public class ListStatusRelApi extends PrivateApiComponentBase {
+
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取状态关系";
+        return "获取对象状态关系列表";
     }
 
     @Override
@@ -47,19 +47,16 @@ public class GetAppStatusRelApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", desc = "应用id", isRequired = true, type = ApiParamType.LONG),
-            @Param(name = "fromStatusId", desc = "来源状态", isRequired = true, type = ApiParamType.LONG),
-            @Param(name = "toStatusId", desc = "目标状态", isRequired = true, type = ApiParamType.LONG)})
-    @Output({@Param(explode = ValueTextVo[].class)})
-    @Description(desc = "获取状态关系接口")
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
+    @Output({@Param(explode = AppStatusRelVo[].class)})
+    @Description(desc = "获取对象状态关系列表接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
-        return appMapper.getAppStatusRel(appStatusRelVo);
+        return appMapper.getStatusRelByAppId(paramObj.getLong("appId"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/statusrel/get";
+        return "/rdm/statusrel/list";
     }
 }

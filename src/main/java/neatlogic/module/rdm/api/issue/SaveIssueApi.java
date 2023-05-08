@@ -26,6 +26,7 @@ import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
+import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -149,7 +150,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (fromId != null) {
             IssueVo fromIssue = issueMapper.getIssueById(fromId);
             if (fromIssue != null) {
-                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId());
+                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId(), IssueRelType.EXTEND.getValue());
                 issueMapper.insertIssueRel(issueRelVo);
             }
         }
@@ -159,7 +160,6 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             indexHandler.createIndex(issueVo.getId());
         }
         return issueVo.getId();
-
     }
 
     @Override

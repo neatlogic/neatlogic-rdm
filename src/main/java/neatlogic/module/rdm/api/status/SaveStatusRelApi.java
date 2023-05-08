@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppStatusVo;
+import neatlogic.framework.rdm.dto.AppStatusRelVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
-@Transactional
-public class UpdateAppStatusTypeApi extends PrivateApiComponentBase {
+public class SaveStatusRelApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "修改应用状态类型";
+        return "修改状态关系配置";
     }
 
     @Override
@@ -49,40 +47,19 @@ public class UpdateAppStatusTypeApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "对象状态id"),
-            @Param(name = "type", type = ApiParamType.ENUM, rule = "start,end", isRequired = true, desc = "状态类型，start或end"),
-            @Param(name = "flag", type = ApiParamType.BOOLEAN, isRequired = true, desc = "类型状态")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "状态关系id"),
+            @Param(name = "config", type = ApiParamType.JSONOBJECT, desc = "关系配置")
     })
-    @Output({@Param(explode = AppStatusVo.class)})
-    @Description(desc = "修改应用状态类型接口")
+    @Description(desc = "修改状态关系配置接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long id = paramObj.getLong("id");
-        String type = paramObj.getString("type");
-        Boolean flag = paramObj.getBoolean("flag");
-        AppStatusVo appStatusVo = appMapper.getStatusById(id);
-        if (appStatusVo != null) {
-            if (type.equalsIgnoreCase("start")) {
-                if (flag) {
-                    appStatusVo.setIsStart(1);
-                    appMapper.resetAppStatusIsStart(appStatusVo.getAppId());
-                } else {
-                    appStatusVo.setIsStart(0);
-                }
-            } else {
-                if (flag) {
-                    appStatusVo.setIsEnd(1);
-                } else {
-                    appStatusVo.setIsEnd(0);
-                }
-            }
-            appMapper.updateAppStatusType(appStatusVo);
-        }
+        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
+        appMapper.updateAppStatusRelConfig(appStatusRelVo);
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/statustype/update";
+        return "/rdm/statusrel/config/save";
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
@@ -28,18 +28,20 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetAppCatalogApi extends PrivateApiComponentBase {
+public class ListStatusApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取应用目录";
+        return "获取应用状态列表";
     }
 
     @Override
@@ -47,16 +49,34 @@ public class GetAppCatalogApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "目录id")})
-    @Output({@Param(explode = AppStatusVo.class)})
-    @Description(desc = "获取应用目录接口")
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "对象id"),
+            @Param(name = "status", type = ApiParamType.LONG, desc = "当前状态，如果提供则只会列出可到达状态列表，如果是0，代表获取开始状态以及开始状态能到达的状态列表")})
+    @Output({@Param(explode = AppStatusVo[].class)})
+    @Description(desc = "获取应用状态列表接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return appMapper.getAppCatalogById(paramObj.getLong("id"));
+        Long appId = paramObj.getLong("appId");
+        Long status = paramObj.getLong("status");
+        AppStatusVo startStatus = null;
+        if (status != null && status.equals(0L)) {
+            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appId, null);
+            Optional<AppStatusVo> op = statusList.stream().filter(d -> d.getIsStart() != null && d.getIsStart().equals(1)).findFirst();
+            if (op.isPresent()) {
+                startStatus = op.get();
+                status = startStatus.getId();
+            } else {
+                status = null;
+            }
+        }
+        List<AppStatusVo> statusList = appMapper.getStatusByAppId(paramObj.getLong("appId"), status);
+        if (startStatus != null && !statusList.contains(startStatus)) {
+            statusList.add(0, startStatus);
+        }
+        return statusList;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/catalog/get";
+        return "/rdm/status/list";
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
@@ -32,7 +32,7 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.DELETE)
-public class DeleteAppStatusApi extends PrivateApiComponentBase {
+public class DeleteStatusApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
@@ -62,6 +62,6 @@ public class DeleteAppStatusApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
-        return "/rdm/app/status/delete";
+        return "/rdm/status/delete";
     }
 }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.common.dto.ValueTextVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppStatusVo;
+import neatlogic.framework.rdm.dto.AppStatusRelVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -32,14 +33,13 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetAppStatusApi extends PrivateApiComponentBase {
-
+public class GetStatusRelApi extends PrivateApiComponentBase {
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取应用状态";
+        return "获取状态关系";
     }
 
     @Override
@@ -47,16 +47,19 @@ public class GetAppStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "应用状态id")})
-    @Output({@Param(explode = AppStatusVo.class)})
-    @Description(desc = "获取应用状态接口")
+    @Input({@Param(name = "appId", desc = "应用id", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "fromStatusId", desc = "来源状态", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "toStatusId", desc = "目标状态", isRequired = true, type = ApiParamType.LONG)})
+    @Output({@Param(explode = ValueTextVo[].class)})
+    @Description(desc = "获取状态关系接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return appMapper.getStatusById(paramObj.getLong("id"));
+        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
+        return appMapper.getAppStatusRel(appStatusRelVo);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/status/get";
+        return "/rdm/statusrel/get";
     }
 }

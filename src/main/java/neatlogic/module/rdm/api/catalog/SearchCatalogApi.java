@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.catalog;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppStatusRelVo;
+import neatlogic.framework.rdm.dto.AppCatalogVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -28,18 +28,22 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListAppStatusRelApi extends PrivateApiComponentBase {
+public class SearchCatalogApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "获取对象状态关系列表";
+        return "查询应用目录列表";
     }
 
     @Override
@@ -48,15 +52,34 @@ public class ListAppStatusRelApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
-    @Output({@Param(explode = AppStatusRelVo[].class)})
-    @Description(desc = "获取对象状态关系列表接口")
+    @Output({@Param(explode = AppCatalogVo[].class)})
+    @Description(desc = "查询应用目录列表接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return appMapper.getStatusRelByAppId(paramObj.getLong("appId"));
+        AppCatalogVo appCatalogVo = JSONObject.toJavaObject(paramObj, AppCatalogVo.class);
+
+        List<AppCatalogVo> catalogList = appMapper.searchAppCatalog(appCatalogVo);
+        List<AppCatalogVo> newCatalogList = new ArrayList<>();
+        Map<Long, AppCatalogVo> catalogMap = new HashMap<>();
+        for (AppCatalogVo catalogVo : catalogList) {
+            catalogMap.put(catalogVo.getId(), catalogVo);
+        }
+        for (AppCatalogVo catalogVo : catalogList) {
+            if (catalogVo.getParentId() == null) {
+                newCatalogList.add(catalogVo);
+            } else {
+                AppCatalogVo parentCatalog = catalogMap.get(catalogVo.getParentId());
+                if (parentCatalog != null) {
+                    parentCatalog.setExpand(true);
+                    parentCatalog.addChild(catalogVo);
+                }
+            }
+        }
+        return newCatalogList;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/statusrel/list";
+        return "/rdm/catalog/search";
     }
 }

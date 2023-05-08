@@ -39,28 +39,37 @@
     <select id="getIssueById" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultMap="issueResultMap">
         select ri.id,
                ri.name,
-               ri.app_id           as appId,
+               ri.app_id                                                             as appId,
                ri.priority,
-               rp.name             as priorityName,
+               rp.name                                                               as priorityName,
                ri.status,
-               ras.name            as statusName,
-               ras.label           as statusLabel,
-               ras.color           as statusColor,
-               ri.create_user      as createUser,
-               ri.create_date      as createDate,
-               ri.content          as content,
+               ras.name                                                              as statusName,
+               ras.label                                                             as statusLabel,
+               ras.color                                                             as statusColor,
+               ri.create_user                                                        as createUser,
+               ri.create_date                                                        as createDate,
+               ri.content                                                            as content,
                ri.catalog,
-               rac.name            as catalogName,
-               rt.name             as tagName,
-               riu.user_id         as userId,
-               f.id                as fileId,
-               f.name              as fileName,
-               f.size              as fileSize,
+               rac.name                                                              as catalogName,
+               rt.name                                                               as tagName,
+               riu.user_id                                                           as userId,
+               f.id                                                                  as fileId,
+               f.name                                                                as fileName,
+               f.size                                                                as fileSize,
+               rir.to_issue_id                                                       as toIssueId,
+               rir.to_app_id                                                         as toAppId,
+               rir.from_issue_id                                                     as fromIssueId,
+               rir.from_app_id                                                       as fromAppId,
+               rir.rel_type                                                          as relType,
+               fra.app_type                                                          as fromAppType,
+               tra.app_type                                                          as toAppType,
+               IF(ri.id = rir.from_issue_id, 'from', 'to')                           as direction,
+               (select count(1) from rdm_issue_audit ria where ria.issue_id = ri.id) as auditCount,
                (select count(1)
                 from (select x.id
                       from rdm_issue_comment x
                       where x.issue_id = ri.id
-                      limit 1) x2) as commentCount
+                      limit 1) x2)                                                   as commentCount
         from rdm_issue ri
                  left join rdm_priority as rp on ri.priority = rp.id
                  left join rdm_app_status as ras on ri.status = ras.id
@@ -70,6 +79,9 @@
                  left join rdm_issue_user riu on ri.id = riu.issue_id
                  left join rdm_issue_file rif on ri.id = rif.issue_id
                  left join file f on rif.file_id = f.id
+                 left join rdm_issue_rel rir on ri.id = rir.from_issue_id or ri.id = rir.to_issue_id
+                 left join rdm_app fra on rir.from_app_id = fra.id
+                 left join rdm_app tra on rir.to_app_id = tra.id
         where ri.id = #{value}
     </select>
 
@@ -123,6 +135,7 @@
         <result property="catalogName" column="catalogName"/>
         <result property="content" column="content"/>
         <result property="commentCount" column="commentCount"/>
+        <result property="auditCount" column="auditCount"/>
         <collection property="tagList" ofType="java.lang.String">
             <result column="tagName"/>
         </collection>
@@ -134,16 +147,32 @@
             <result column="fileName" property="name"/>
             <result column="fileSize" property="size"/>
         </collection>
+        <collection property="issueRelList" ofType="neatlogic.framework.rdm.dto.IssueRelVo">
+            <id column="fromIssueId" property="fromIssueId"/>
+            <id column="toIssueId" property="toIssueId"/>
+            <result column="fromAppId" property="fromAppId"/>
+            <result column="toAppId" property="toAppId"/>
+            <result column="fromAppType" property="fromAppType"/>
+            <result column="toAppType" property="toAppType"/>
+            <result column="relType" property="relType"/>
+            <result column="direction" property="direction"/>
+        </collection>
     </resultMap>
 
     <select id="searchIssueCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="int">
         select
         count(distinct ri.id)
         from rdm_issue ri
-        <if test="parentId != null">
-            join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
-            #{parentId}
-        </if>
+        <choose>
+            <when test="fromId != null">
+                join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
+                #{fromId}
+            </when>
+            <when test="toId != null">
+                join rdm_issue_rel rir on rir.from_app_id = #{appId} and rir.from_issue_id = ri.id and rir.to_issue_id =
+                #{toId}
+            </when>
+        </choose>
         left join rdm_priority as rp on ri.priority = rp.id
         left join rdm_app_catalog rac on ri.catalog = rac.id
         left join rdm_issue_tag rit on ri.id = rit.issue_id
@@ -176,9 +205,11 @@
     <select id="getAttrByIssueId" parameterType="neatlogic.framework.rdm.dto.IssueVo"
             resultType="java.util.HashMap">
         select
-        <foreach collection="appAttrList" item="item">
-            x.`${item.id}` as `${item.id}`,
-        </foreach>
+        <if test="appAttrList != null and appAttrList.size() > 0">
+            <foreach collection="appAttrList" item="item">
+                x.`${item.id}` as `${item.id}`,
+            </foreach>
+        </if>
         x.issue_id as issueId
         from ${tableName} x where x.issue_id = #{id}
     </select>
@@ -201,10 +232,16 @@
         rt.name as tagName,
         riu.user_id as userId
         from rdm_issue ri
-        <if test="parentId != null">
-            join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
-            #{parentId}
-        </if>
+        <choose>
+            <when test="fromId != null">
+                join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
+                #{fromId}
+            </when>
+            <when test="toId != null">
+                join rdm_issue_rel rir on rir.from_app_id = #{appId} and rir.from_issue_id = ri.id and rir.to_issue_id =
+                #{toId}
+            </when>
+        </choose>
         left join rdm_priority as rp on ri.priority = rp.id
         left join rdm_app_status as ras on ri.status = ras.id
         left join rdm_app_catalog rac on ri.catalog = rac.id
@@ -323,8 +360,8 @@
     </insert>
 
     <insert id="insertIssueRel" parameterType="neatlogic.framework.rdm.dto.IssueRelVo">
-        insert into rdm_issue_rel (from_app_id, from_issue_id, to_app_id, to_issue_id)
-        values (#{fromAppId}, #{fromIssueId}, #{toAppId}, #{toIssueId})
+        insert into rdm_issue_rel (from_app_id, from_issue_id, to_app_id, to_issue_id, rel_type)
+        values (#{fromAppId}, #{fromIssueId}, #{toAppId}, #{toIssueId}, #{relType})
     </insert>
 
     <insert id="replaceIssueAttr" parameterType="neatlogic.framework.rdm.dto.IssueVo">

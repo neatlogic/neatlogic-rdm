@@ -14,34 +14,32 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.catalog;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppStatusVo;
+import neatlogic.framework.rdm.dto.AppCatalogVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.util.RegexUtils;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.UPDATE)
-public class SaveAppStatusApi extends PrivateApiComponentBase {
+@OperationType(type = OperationTypeEnum.SEARCH)
+public class GetCatalogApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "保存应用状态";
+        return "获取应用目录";
     }
 
     @Override
@@ -49,30 +47,16 @@ public class SaveAppStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "对象状态id，不提供代表添加"),
-            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, isRequired = true, desc = "唯一标识"),
-            @Param(name = "label", type = ApiParamType.STRING, isRequired = true, desc = "名称"),
-            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
-            @Param(name = "description", type = ApiParamType.STRING, desc = "说明"),
-            @Param(name = "color", type = ApiParamType.STRING, desc = "颜色")})
-    @Output({@Param(explode = AppStatusVo.class)})
-    @Description(desc = "保存应用状态接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "目录id")})
+    @Output({@Param(explode = AppCatalogVo.class)})
+    @Description(desc = "获取应用目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        AppStatusVo appStatusVo = JSONObject.toJavaObject(paramObj, AppStatusVo.class);
-
-        if (paramObj.getLong("id") == null) {
-            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appStatusVo.getAppId(), null);
-            appStatusVo.setSort(statusList.size() + 1);
-            appMapper.insertAppStatus(appStatusVo);
-        } else {
-            appMapper.updateAppStatus(appStatusVo);
-        }
-        return null;
+        return appMapper.getAppCatalogById(paramObj.getLong("id"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/status/save";
+        return "/rdm/catalog/get";
     }
 }

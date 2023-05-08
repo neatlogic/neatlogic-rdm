@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppCatalogVo;
+import neatlogic.framework.rdm.dto.AppStatusRelVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -28,22 +28,18 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.SEARCH)
-public class SearchAppCatalogApi extends PrivateApiComponentBase {
+@OperationType(type = OperationTypeEnum.UPDATE)
+public class ToggleStatusRelApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "查询应用目录列表";
+        return "添加或删除应用状态流转关系";
     }
 
     @Override
@@ -51,35 +47,31 @@ public class SearchAppCatalogApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
-    @Output({@Param(explode = AppCatalogVo[].class)})
-    @Description(desc = "查询应用目录列表接口")
+    @Input({@Param(name = "fromStatusId", type = ApiParamType.LONG, isRequired = true, desc = "来源状态id"),
+            @Param(name = "toStatusId", type = ApiParamType.LONG, isRequired = true, desc = "目标状态id"),
+            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
+            @Param(name = "action", type = ApiParamType.ENUM, rule = "add,delete", desc = "动作")})
+    @Output({@Param(type = ApiParamType.LONG, desc = "关系id")})
+    @Description(desc = "添加或删除应用状态流转关系接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        AppCatalogVo appCatalogVo = JSONObject.toJavaObject(paramObj, AppCatalogVo.class);
-
-        List<AppCatalogVo> catalogList = appMapper.searchAppCatalog(appCatalogVo);
-        List<AppCatalogVo> newCatalogList = new ArrayList<>();
-        Map<Long, AppCatalogVo> catalogMap = new HashMap<>();
-        for (AppCatalogVo catalogVo : catalogList) {
-            catalogMap.put(catalogVo.getId(), catalogVo);
-        }
-        for (AppCatalogVo catalogVo : catalogList) {
-            if (catalogVo.getParentId() == null) {
-                newCatalogList.add(catalogVo);
-            } else {
-                AppCatalogVo parentCatalog = catalogMap.get(catalogVo.getParentId());
-                if (parentCatalog != null) {
-                    parentCatalog.setExpand(true);
-                    parentCatalog.addChild(catalogVo);
-                }
+        String action = paramObj.getString("action");
+        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
+        if (action.equals("add")) {
+            appMapper.insertAppStatusRel(appStatusRelVo);
+            return appStatusRelVo.getId();
+        } else if (action.equals("delete")) {
+            AppStatusRelVo oldVo = appMapper.getAppStatusRel(appStatusRelVo);
+            if (oldVo != null) {
+                appMapper.deleteAppStatusRel(appStatusRelVo);
+                return oldVo.getId();
             }
         }
-        return newCatalogList;
+        return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/catalog/search";
+        return "/rdm/statusrel/toggle";
     }
 }

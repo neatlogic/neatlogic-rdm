@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.status;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppStatusRelVo;
+import neatlogic.framework.rdm.dto.AppStatusVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.framework.util.RegexUtils;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
-public class ToggleAppStatusRelApi extends PrivateApiComponentBase {
+public class SaveStatusApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
 
     @Override
     public String getName() {
-        return "添加或删除应用状态流转关系";
+        return "保存应用状态";
     }
 
     @Override
@@ -47,31 +49,30 @@ public class ToggleAppStatusRelApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "fromStatusId", type = ApiParamType.LONG, isRequired = true, desc = "来源状态id"),
-            @Param(name = "toStatusId", type = ApiParamType.LONG, isRequired = true, desc = "目标状态id"),
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "对象状态id，不提供代表添加"),
+            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, isRequired = true, desc = "唯一标识"),
+            @Param(name = "label", type = ApiParamType.STRING, isRequired = true, desc = "名称"),
             @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
-            @Param(name = "action", type = ApiParamType.ENUM, rule = "add,delete", desc = "动作")})
-    @Output({@Param(type = ApiParamType.LONG, desc = "关系id")})
-    @Description(desc = "添加或删除应用状态流转关系接口")
+            @Param(name = "description", type = ApiParamType.STRING, desc = "说明"),
+            @Param(name = "color", type = ApiParamType.STRING, desc = "颜色")})
+    @Output({@Param(explode = AppStatusVo.class)})
+    @Description(desc = "保存应用状态接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        String action = paramObj.getString("action");
-        AppStatusRelVo appStatusRelVo = JSONObject.toJavaObject(paramObj, AppStatusRelVo.class);
-        if (action.equals("add")) {
-            appMapper.insertAppStatusRel(appStatusRelVo);
-            return appStatusRelVo.getId();
-        } else if (action.equals("delete")) {
-            AppStatusRelVo oldVo = appMapper.getAppStatusRel(appStatusRelVo);
-            if (oldVo != null) {
-                appMapper.deleteAppStatusRel(appStatusRelVo);
-                return oldVo.getId();
-            }
+        AppStatusVo appStatusVo = JSONObject.toJavaObject(paramObj, AppStatusVo.class);
+
+        if (paramObj.getLong("id") == null) {
+            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appStatusVo.getAppId(), null);
+            appStatusVo.setSort(statusList.size() + 1);
+            appMapper.insertAppStatus(appStatusVo);
+        } else {
+            appMapper.updateAppStatus(appStatusVo);
         }
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/app/statusrel/toggle";
+        return "/rdm/status/save";
     }
 }

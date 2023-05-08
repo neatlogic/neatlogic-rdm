@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.app;
+package neatlogic.module.rdm.api.catalog;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
@@ -38,7 +38,7 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
-public class SaveAppCatalogApi extends PrivateApiComponentBase {
+public class SaveCatalogApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
@@ -78,6 +78,6 @@ public class SaveAppCatalogApi extends PrivateApiComponentBase {
 
     @Override
     public String getToken() {
-        return "/rdm/app/catalog/save";
+        return "/rdm/catalog/save";
     }
 }
