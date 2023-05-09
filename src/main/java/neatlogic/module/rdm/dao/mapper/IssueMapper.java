@@ -59,6 +59,8 @@ public interface IssueMapper {
 
     void replaceIssueAttr(IssueVo issueVo);
 
+    void clearIssueParentId(Long id);
+
     void updateIssue(IssueVo issueVo);
 
     void deleteIssueUserByIssueId(Long issueId);
@@ -68,4 +70,6 @@ public interface IssueMapper {
     void deleteIssueById(Long issueId);
 
     void deleteIssueFileByFileId(Long fileId);
+
+    void deleteIssueRel(@Param("fromIssueId") Long fromIssueId, @Param("toIssueId") Long toIssueId);
 }

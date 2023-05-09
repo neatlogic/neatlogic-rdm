@@ -63,6 +63,7 @@
                rir.rel_type                                                          as relType,
                fra.app_type                                                          as fromAppType,
                tra.app_type                                                          as toAppType,
+               (select count(1) from rdm_issue cri where cri.parent_id = ri.id)      as childrenCount,
                IF(ri.id = rir.from_issue_id, 'from', 'to')                           as direction,
                (select count(1) from rdm_issue_audit ria where ria.issue_id = ri.id) as auditCount,
                (select count(1)
@@ -136,6 +137,7 @@
         <result property="content" column="content"/>
         <result property="commentCount" column="commentCount"/>
         <result property="auditCount" column="auditCount"/>
+        <result property="childrenCount" column="childrenCount"/>
         <collection property="tagList" ofType="java.lang.String">
             <result column="tagName"/>
         </collection>
@@ -230,6 +232,7 @@
         ri.catalog,
         rac.name as catalogName,
         rt.name as tagName,
+        (select count(1) from rdm_issue cri where cri.parent_id = ri.id) as childrenCount,
         riu.user_id as userId
         from rdm_issue ri
         <choose>
@@ -263,6 +266,14 @@
             <if test="appId != null">
                 and ri.app_id = #{appId}
             </if>
+            <choose>
+                <when test="parentId == null">
+                    and ri.parent_id is null
+                </when>
+                <otherwise>
+                    and ri.parent_id = #{parentId}
+                </otherwise>
+            </choose>
             <if test="wordList != null and wordList.size() > 0">
                 and fw.word in
                 <foreach collection="wordList" open="(" close=")" separator="," item="item">
@@ -297,10 +308,15 @@
                     </choose>
 
                 </foreach>
-
             </if>
         </where>
     </sql>
+
+    <update id="clearIssueParentId" parameterType="java.lang.Long">
+        update rdm_issue
+        set parent_id = null
+        where id = #{id}
+    </update>
 
     <update id="updateIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo">
         update rdm_issue
@@ -340,6 +356,7 @@
     <insert id="insertIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo">
         insert into rdm_issue
         (id,
+         parent_id,
          name,
          app_id,
          create_user,
@@ -349,6 +366,7 @@
          content,
          catalog)
         values (#{id},
+                #{parentId},
                 #{name},
                 #{appId},
                 #{createUser},
@@ -360,7 +378,7 @@
     </insert>
 
     <insert id="insertIssueRel" parameterType="neatlogic.framework.rdm.dto.IssueRelVo">
-        insert into rdm_issue_rel (from_app_id, from_issue_id, to_app_id, to_issue_id, rel_type)
+        insert ignore into rdm_issue_rel (from_app_id, from_issue_id, to_app_id, to_issue_id, rel_type)
         values (#{fromAppId}, #{fromIssueId}, #{toAppId}, #{toIssueId}, #{relType})
     </insert>
 
@@ -378,6 +396,13 @@
         #{id}
         )
     </insert>
+
+    <delete id="deleteIssueRel">
+        delete
+        from rdm_issue_rel
+        where from_issue_id = #{fromIssueId}
+          and to_issue_id = #{toIssueId}
+    </delete>
 
     <delete id="deleteIssueFileByFileId" parameterType="java.lang.Long">
         delete
@@ -398,10 +423,14 @@
     </delete>
 
     <delete id="deleteIssueById" parameterType="java.lang.Long">
-        delete ri,rit,riu,x
+        delete ri,rit,riu,rir,ria,ric,rif,x
         from rdm_issue ri
                  left join rdm_issue_tag rit on ri.id = rit.issue_id
                  left join rdm_issue_user riu on ri.id = riu.issue_id
+                 left join rdm_issue_rel rir on ri.id = rir.from_issue_id or ri.id = rir.to_issue_id
+                 left join rdm_issue_audit ria on ri.id = ria.issue_id
+                 left join rdm_issue_comment ric on ri.id = ric.issue_id
+                 left join rdm_issue_file rif on ri.id = rif.issue_id
                  left join ${tableName} x on ri.id = x.issue_id
         where ri.id = #{value}
     </delete>

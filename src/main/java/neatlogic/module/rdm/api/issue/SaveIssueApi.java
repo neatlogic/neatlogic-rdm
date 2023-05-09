@@ -76,6 +76,8 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增任务"),
             @Param(name = "fromId", type = ApiParamType.LONG, desc = "来源任务id"),
+            @Param(name = "toId", type = ApiParamType.LONG, desc = "目标任务id"),
+            @Param(name = "parentId", type = ApiParamType.LONG, desc = "父任务id"),
             @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
             @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
@@ -90,6 +92,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long fromId = paramObj.getLong("fromId");
+        Long toId = paramObj.getLong("toId");
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         Long id = paramObj.getLong("id");
         List<AppAttrVo> appAttrList = appMapper.getAttrByAppId(issueVo.getAppId());
@@ -151,6 +154,12 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             IssueVo fromIssue = issueMapper.getIssueById(fromId);
             if (fromIssue != null) {
                 IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId(), IssueRelType.EXTEND.getValue());
+                issueMapper.insertIssueRel(issueRelVo);
+            }
+        } else if (toId != null) {
+            IssueVo toIssue = issueMapper.getIssueById(toId);
+            if (toIssue != null) {
+                IssueRelVo issueRelVo = new IssueRelVo(issueVo.getAppId(), issueVo.getId(), toIssue.getAppId(), toIssue.getId(), IssueRelType.EXTEND.getValue());
                 issueMapper.insertIssueRel(issueRelVo);
             }
         }
