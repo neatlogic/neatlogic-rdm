@@ -30,48 +30,6 @@
           and to_status_id = #{toStatusId}
     </select>
 
-    <select id="checkAppCatalogNameIsExists" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo" resultType="int">
-        select count(1)
-        from rdm_app_catalog
-        where app_id = #{appId}
-          and name = #{name}
-          and id != #{id}
-    </select>
-
-    <select id="getAppCatalogById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        select id,
-               name,
-               app_id    as appId,
-               parent_id as parentId,
-               lft,
-               rht
-        from rdm_app_catalog
-        where id = #{value}
-    </select>
-
-    <select id="searchAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo"
-            resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        select id,
-        <if test="needChildrenCount == true">
-            (select count(1) from rdm_app_catalog x where x.parent_id = id) as childrenCount,
-        </if>
-        name,
-        app_id as appId,
-        parent_id as parentId,
-        lft,
-        rht
-        from rdm_app_catalog
-        where app_id = #{appId}
-        <choose>
-            <when test="hasParent == false">
-                and parent_id = 0 or parent_id is null
-            </when>
-            <when test="hasParent == true">
-                and parent_id != 0 and parent_id is not null
-            </when>
-        </choose>
-        order by lft
-    </select>
 
     <select id="getAttrByAppId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
         select id,
@@ -254,17 +212,6 @@
         values (#{id}, #{appId}, #{fromStatusId}, #{toStatusId})
     </insert>
 
-    <insert id="insertAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        insert into rdm_app_catalog
-        (id,
-         name,
-         app_id,
-         parent_id)
-        values (#{id},
-                #{name},
-                #{appId},
-                #{parentId})
-    </insert>
 
     <insert id="insertAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         insert into rdm_app_status
@@ -282,17 +229,6 @@
                 #{color})
     </insert>
 
-    <update id="updateAppCatalogParentId" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        update rdm_app_catalog
-        set parent_id = #{parentId}
-        where id = #{id}
-    </update>
-
-    <update id="updateAppCatalogLft" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        update rdm_app_catalog
-        set lft = #{lft}
-        where id = #{id}
-    </update>
 
     <update id="updateAppAttr" parameterType="neatlogic.framework.rdm.dto.AppTypeVo">
         update rdm_app_attr
@@ -333,11 +269,6 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
-        update rdm_app_catalog
-        set name = #{name}
-        where id = #{id}
-    </update>
 
     <update id="updateAppStatusRelConfig" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         update rdm_app_status_rel
@@ -424,6 +355,12 @@
     <delete id="deleteAppAttrById" parameterType="java.lang.Long">
         delete
         from rdm_app_attr
+        where id = #{value}
+    </delete>
+
+    <delete id="deleteCatalogById" parameterType="java.lang.Long">
+        delete
+        from rdm_app_catalog
         where id = #{value}
     </delete>
 </mapper>

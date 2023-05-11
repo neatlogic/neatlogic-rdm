@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.rdm.dao.mapper.CatalogMapper">
+    <select id="checkAppCatalogNameIsExists" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo" resultType="int">
+        select count(1)
+        from rdm_app_catalog
+        where app_id = #{appId}
+          and name = #{name}
+          and id != #{id}
+    </select>
+
+    <select id="getAppCatalogById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        select id,
+               name,
+               app_id    as appId,
+               parent_id as parentId,
+               lft,
+               rht
+        from rdm_app_catalog
+        where id = #{value}
+    </select>
+
+    <select id="checkCatalogIsInUsed" parameterType="java.lang.Long" resultType="int">
+        select count(1)
+        from (select id from rdm_issue where catalog = #{value} limit 1) t
+    </select>
+
+    <select id="checkCatalogHasChildren" parameterType="java.lang.Long" resultType="int">
+        select count(1)
+        from (select id from rdm_app_catalog where parent_id = #{value} limit 1) t
+    </select>
+
+    <select id="searchAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo"
+            resultType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        select id,
+        <if test="needCheckIsInUsed == true">
+            (select count(1)
+            from (select x.id from rdm_issue x where x.catalog = id limit 1) t) as isInUsed,
+        </if>
+        name,
+        app_id as appId,
+        parent_id as parentId,
+        lft,
+        rht
+        from rdm_app_catalog
+        where app_id = #{appId}
+        <choose>
+            <when test="hasParent == false">
+                and parent_id = 0 or parent_id is null
+            </when>
+            <when test="hasParent == true">
+                and parent_id != 0 and parent_id is not null
+            </when>
+        </choose>
+        order by lft
+    </select>
+
+    <insert id="insertAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        insert into rdm_app_catalog
+        (id,
+         name,
+         app_id,
+         parent_id)
+        values (#{id},
+                #{name},
+                #{appId},
+                #{parentId})
+    </insert>
+
+    <update id="updateAppCatalog" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set name = #{name}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppCatalogParentId" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set parent_id = #{parentId}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppCatalogLft" parameterType="neatlogic.framework.rdm.dto.AppCatalogVo">
+        update rdm_app_catalog
+        set lft = #{lft}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCatalogById" parameterType="java.lang.Long">
+        delete
+        from rdm_app_catalog
+        where id = #{value}
+    </delete>
+</mapper>

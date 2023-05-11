@@ -27,6 +27,7 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.TableResultUtil;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,9 @@ public class SearchIssueApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
+
+    @Resource
+    private CatalogMapper catalogMapper;
 
     @Override
     public String getName() {
@@ -72,7 +76,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         if (issueVo.getCatalog() != null) {
-            AppCatalogVo catalogVo = appMapper.getAppCatalogById(issueVo.getCatalog());
+            AppCatalogVo catalogVo = catalogMapper.getAppCatalogById(issueVo.getCatalog());
             issueVo.setCatalogLft(catalogVo.getLft());
             issueVo.setCatalogRht(catalogVo.getRht());
         }
@@ -99,35 +103,34 @@ public class SearchIssueApi extends PrivateApiComponentBase {
         issueVo.setRowNum(rowNum);
         List<IssueVo> issueList = new ArrayList<>();
         if (rowNum > 0) {
-            issueList = issueMapper.searchIssue(issueVo);
-            List<Long> idList = new ArrayList<>();
-            for (IssueVo issue : issueList) {
-                idList.add(issue.getId());
-            }
-            issueVo.setIdList(idList);
-            List<HashMap<String, ?>> attrMapList = issueMapper.getAttrByIssueIdList(issueVo);
-            for (HashMap<String, ?> attrMap : attrMapList) {
-                if (attrMap.containsKey("issueId")) {
-                    Long issueId = (Long) attrMap.get("issueId");
-                    Optional<IssueVo> op = issueList.stream().filter(d -> d.getId().equals(issueId)).findFirst();
-                    if (op.isPresent()) {
-                        IssueVo queryIssueVo = op.get();
-                        for (String key : attrMap.keySet()) {
-                            if (!key.equals("issueId")) {
-                                IssueAttrVo issueAttrVo = new IssueAttrVo();
-                                issueAttrVo.setIssueId(queryIssueVo.getId());
-                                issueAttrVo.setAttrId(Long.parseLong(key));
-                                if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
-                                    issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
-                                } else {
-                                    issueAttrVo.setValueList(new JSONArray() {{
-                                        this.add(attrMap.get(key));
-                                    }});
+            List<Long> idList = issueMapper.searchIssueId(issueVo);
+            if (CollectionUtils.isNotEmpty(idList)) {
+                issueVo.setIdList(idList);
+                issueList = issueMapper.searchIssue(issueVo);
+                List<HashMap<String, ?>> attrMapList = issueMapper.getAttrByIssueIdList(issueVo);
+                for (HashMap<String, ?> attrMap : attrMapList) {
+                    if (attrMap.containsKey("issueId")) {
+                        Long issueId = (Long) attrMap.get("issueId");
+                        Optional<IssueVo> op = issueList.stream().filter(d -> d.getId().equals(issueId)).findFirst();
+                        if (op.isPresent()) {
+                            IssueVo queryIssueVo = op.get();
+                            for (String key : attrMap.keySet()) {
+                                if (!key.equals("issueId")) {
+                                    IssueAttrVo issueAttrVo = new IssueAttrVo();
+                                    issueAttrVo.setIssueId(queryIssueVo.getId());
+                                    issueAttrVo.setAttrId(Long.parseLong(key));
+                                    if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
+                                        issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
+                                    } else {
+                                        issueAttrVo.setValueList(new JSONArray() {{
+                                            this.add(attrMap.get(key));
+                                        }});
+                                    }
+                                    queryIssueVo.addAttr(issueAttrVo);
                                 }
-                                queryIssueVo.addAttr(issueAttrVo);
                             }
-                        }
 
+                        }
                     }
                 }
             }

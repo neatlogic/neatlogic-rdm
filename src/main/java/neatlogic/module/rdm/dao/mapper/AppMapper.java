@@ -24,11 +24,6 @@ import java.util.List;
 public interface AppMapper {
     AppStatusRelVo getAppStatusRel(AppStatusRelVo appStatusRelVo);
 
-    int checkAppCatalogNameIsExists(AppCatalogVo appCatalogVo);
-
-    AppCatalogVo getAppCatalogById(Long id);
-
-    List<AppCatalogVo> searchAppCatalog(AppCatalogVo appCatalogVo);
 
     List<AppAttrVo> getAttrByAppId(Long appId);
 
@@ -48,9 +43,6 @@ public interface AppMapper {
 
     List<AppStatusVo> getStatusByAppId(@Param("appId") Long appId, @Param("status") Long status);
 
-    void updateAppCatalogParentId(AppCatalogVo appCatalogVo);
-
-    void updateAppCatalogLft(AppCatalogVo appCatalogVo);
 
     void updateAppAttr(AppAttrVo appAttrVo);
 
@@ -62,7 +54,6 @@ public interface AppMapper {
 
     void updateAppAttrSort(AppAttrVo appAttrVo);
 
-    void updateAppCatalog(AppCatalogVo appCatalogVo);
 
     void updateAppStatusRelConfig(AppStatusRelVo appStatusRelVo);
 
@@ -70,7 +61,6 @@ public interface AppMapper {
 
     void updateAppStatusType(AppStatusVo appStatusVo);
 
-    void insertAppCatalog(AppCatalogVo appCatalogVo);
 
     void insertAppStatusRel(AppStatusRelVo appStatusRelVo);
 

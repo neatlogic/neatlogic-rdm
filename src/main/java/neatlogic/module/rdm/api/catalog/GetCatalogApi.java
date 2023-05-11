@@ -24,7 +24,7 @@ import neatlogic.framework.rdm.dto.AppCatalogVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,11 +35,11 @@ import javax.annotation.Resource;
 public class GetCatalogApi extends PrivateApiComponentBase {
 
     @Resource
-    private AppMapper appMapper;
+    private CatalogMapper catalogMapper;
 
     @Override
     public String getName() {
-        return "获取应用目录";
+        return "获取目录";
     }
 
     @Override
@@ -49,10 +49,10 @@ public class GetCatalogApi extends PrivateApiComponentBase {
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "目录id")})
     @Output({@Param(explode = AppCatalogVo.class)})
-    @Description(desc = "获取应用目录接口")
+    @Description(desc = "获取目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return appMapper.getAppCatalogById(paramObj.getLong("id"));
+        return catalogMapper.getAppCatalogById(paramObj.getLong("id"));
     }
 
     @Override

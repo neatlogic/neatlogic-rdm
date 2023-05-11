@@ -17,6 +17,7 @@
 package neatlogic.module.rdm.utils;
 
 import com.alibaba.fastjson.JSONArray;
+import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.IssueAttrVo;
 import neatlogic.framework.rdm.dto.IssueAuditVo;
@@ -28,21 +29,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DiffIssue {
     public static List<IssueAuditVo> getDiff(Long issueId, IssueVo oldIssueVo, IssueVo newIssueVo, List<AppAttrVo> attrList) {
         List<IssueAuditVo> auditList = new ArrayList<>();
+        //比较名称
         if (!Objects.equals(oldIssueVo.getName(), newIssueVo.getName())) {
             auditList.add(new IssueAuditVo(issueId, "name", oldIssueVo.getName(), newIssueVo.getName()));
         }
+        //比较优先级
         if (!Objects.equals(oldIssueVo.getPriority(), newIssueVo.getPriority())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.PRIORITY.getType())).findFirst();
             op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), oldIssueVo.getPriority(), newIssueVo.getPriority())));
         }
+        //比较目录
         if (!Objects.equals(oldIssueVo.getCatalog(), newIssueVo.getCatalog())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.CATALOG.getType())).findFirst();
             op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), oldIssueVo.getCatalog(), newIssueVo.getCatalog())));
         }
+        //比较处理人
         if (!CollectionUtils.isEqualCollection(oldIssueVo.getUserIdList(), newIssueVo.getUserIdList())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.WORKER.getType())).findFirst();
             op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), new JSONArray() {{
@@ -51,6 +57,7 @@ public class DiffIssue {
                 this.addAll(newIssueVo.getUserIdList());
             }})));
         }
+        //比较标签
         if (!CollectionUtils.isEqualCollection(oldIssueVo.getTagList(), newIssueVo.getTagList())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.TAG.getType())).findFirst();
             op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), new JSONArray() {{
@@ -59,21 +66,37 @@ public class DiffIssue {
                 this.addAll(newIssueVo.getTagList());
             }})));
         }
+        //比较状态
         if (!Objects.equals(oldIssueVo.getStatus(), newIssueVo.getStatus())) {
             auditList.add(new IssueAuditVo(issueId, "status", oldIssueVo.getStatus(), newIssueVo.getStatus()));
         }
+        //比较附件
+        if (!Objects.equals(oldIssueVo.getFileIdList(), newIssueVo.getFileIdList())) {
+            List<String> oldFileNameList = oldIssueVo.getFileList().stream().map(FileVo::getName).collect(Collectors.toList());
+            List<String> newFileNameList = newIssueVo.getFileList().stream().map(FileVo::getName).collect(Collectors.toList());
+            auditList.add(new IssueAuditVo(issueId, "file", oldFileNameList, newFileNameList));
+        }
+
         if (CollectionUtils.isNotEmpty(attrList)) {
             for (AppAttrVo attrVo : attrList) {
                 if (attrVo.getIsPrivate().equals(0)) {
                     IssueAttrVo oldAttrVo = oldIssueVo.getAttr(attrVo.getId());
+                    boolean hasOldValue = false;
+                    boolean hasNewValue = false;
                     if (oldAttrVo != null) {
                         oldAttrVo.setAttrType(attrVo.getType());
+                        if (CollectionUtils.isNotEmpty(oldAttrVo.getValueList())) {
+                            hasOldValue = true;
+                        }
                     }
                     IssueAttrVo newAttrVo = newIssueVo.getAttr(attrVo.getId());
                     if (newAttrVo != null) {
                         newAttrVo.setAttrType(attrVo.getType());
+                        if (CollectionUtils.isNotEmpty(newAttrVo.getValueList())) {
+                            hasNewValue = true;
+                        }
                     }
-                    if (!Objects.equals(oldAttrVo, newAttrVo)) {
+                    if ((hasOldValue || hasNewValue) && !Objects.equals(oldAttrVo, newAttrVo)) {
                         auditList.add(new IssueAuditVo(issueId, attrVo.getId(), oldAttrVo != null ? oldAttrVo.getValueList() : null, newAttrVo != null ? newAttrVo.getValueList() : null));
                     }
                 }

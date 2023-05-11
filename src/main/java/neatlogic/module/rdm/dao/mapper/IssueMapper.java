@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
+import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.fulltextindex.dto.fulltextindex.FullTextIndexTypeVo;
 import neatlogic.framework.rdm.dto.IssueCountVo;
 import neatlogic.framework.rdm.dto.IssueRelVo;
@@ -29,6 +30,10 @@ import java.util.List;
 public interface IssueMapper {
     IssueVo getIssueById(Long id);
 
+    Long getIssueIdByFileId(Long fileId);
+
+    List<FileVo> getIssueFileByIssueId(Long issueId);
+
     List<Long> getNotIndexIssueIdList(FullTextIndexTypeVo typeVo);
 
     List<TagVo> getTagByIssueId(Long issueId);
@@ -36,6 +41,8 @@ public interface IssueMapper {
     List<IssueCountVo> getIssueCountByProjectId(IssueCountVo issueCountVo);
 
     List<IssueVo> searchIssue(IssueVo issueVo);
+
+    List<Long> searchIssueId(IssueVo issueVo);
 
     List<HashMap<String, ?>> getAttrByIssueIdList(IssueVo issueVo);
 

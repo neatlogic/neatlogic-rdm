@@ -97,11 +97,11 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             projectMapper.insertProject(projectVo);
             List<AppVo> objectList = new ArrayList<>();
             for (ProjectTemplateAppTypeVo objectType : projectTemplateVo.getAppTypeList()) {
-                AppVo objectVo = new AppVo();
-                objectVo.setProjectId(projectVo.getId());
-                objectVo.setType(objectType.getName());
-                objectVo.setSort(objectType.getSort());
-                appMapper.insertApp(objectVo);
+                AppVo appVo = new AppVo();
+                appVo.setProjectId(projectVo.getId());
+                appVo.setType(objectType.getName());
+                appVo.setSort(objectType.getSort());
+                appMapper.insertApp(appVo);
 
                 PrivateAttr[] attrTypeList = AppType.getAttrList(objectType.getName());
                 if (attrTypeList != null) {
@@ -115,13 +115,13 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         appAttrVo.setIsRequired(0);
                         appAttrVo.setIsPrivate(1);
                         appAttrVo.setIsActive(1);
-                        appAttrVo.setAppId(objectVo.getId());
-                        objectVo.addAppAttr(appAttrVo);
+                        appAttrVo.setAppId(appVo.getId());
+                        appVo.addAppAttr(appAttrVo);
                         appMapper.insertAppAttr(appAttrVo);
                         sort += 1;
                     }
                 }
-                objectList.add(objectVo);
+                objectList.add(appVo);
             }
             for (AppVo objectVo : objectList) {
                 EscapeTransactionJob.State s = projectService.buildObjectSchema(objectVo);

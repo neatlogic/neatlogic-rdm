@@ -22,15 +22,15 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.lrcode.LRCodeManager;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppCatalogVo;
-import neatlogic.framework.rdm.exception.AppCatalogNameIsExistsException;
-import neatlogic.framework.rdm.exception.AppCatalogNotFoundException;
+import neatlogic.framework.rdm.exception.CatalogNameIsExistsException;
+import neatlogic.framework.rdm.exception.CatalogNotFoundException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,11 +41,11 @@ import javax.annotation.Resource;
 public class SaveCatalogApi extends PrivateApiComponentBase {
 
     @Resource
-    private AppMapper appMapper;
+    private CatalogMapper catalogMapper;
 
     @Override
     public String getName() {
-        return "保存应用目录";
+        return "保存目录";
     }
 
     @Override
@@ -54,23 +54,23 @@ public class SaveCatalogApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "目录id，不提供代表添加"), @Param(name = "name", type = ApiParamType.STRING, isRequired = true, desc = "目录名称"), @Param(name = "parentId", type = ApiParamType.LONG, desc = "父目录id"), @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
-    @Description(desc = "保存应用目录接口")
+    @Description(desc = "保存目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
         AppCatalogVo appCatalogVo = JSONObject.toJavaObject(paramObj, AppCatalogVo.class);
         if (appCatalogVo.getParentId() != null) {
-            if (appMapper.getAppCatalogById(appCatalogVo.getParentId()) == null) {
-                throw new AppCatalogNotFoundException(appCatalogVo.getParentId());
+            if (catalogMapper.getAppCatalogById(appCatalogVo.getParentId()) == null) {
+                throw new CatalogNotFoundException(appCatalogVo.getParentId());
             }
         }
-        if (appMapper.checkAppCatalogNameIsExists(appCatalogVo) > 0) {
-            throw new AppCatalogNameIsExistsException(appCatalogVo.getName());
+        if (catalogMapper.checkAppCatalogNameIsExists(appCatalogVo) > 0) {
+            throw new CatalogNameIsExistsException(appCatalogVo.getName());
         }
         if (id == null) {
-            appMapper.insertAppCatalog(appCatalogVo);
+            catalogMapper.insertAppCatalog(appCatalogVo);
         } else {
-            appMapper.updateAppCatalog(appCatalogVo);
+            catalogMapper.updateAppCatalog(appCatalogVo);
         }
         LRCodeManager.rebuildLeftRightCode("rdm_app_catalog", "id", "parent_id", "app_id = " + appCatalogVo.getAppId());
         return null;

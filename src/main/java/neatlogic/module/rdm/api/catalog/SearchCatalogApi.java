@@ -24,7 +24,7 @@ import neatlogic.framework.rdm.dto.AppCatalogVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,11 +39,11 @@ import java.util.Map;
 public class SearchCatalogApi extends PrivateApiComponentBase {
 
     @Resource
-    private AppMapper appMapper;
+    private CatalogMapper catalogMapper;
 
     @Override
     public String getName() {
-        return "查询应用目录列表";
+        return "查询目录";
     }
 
     @Override
@@ -51,14 +51,16 @@ public class SearchCatalogApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
+            @Param(name = "needCheckIsInUsed", type = ApiParamType.BOOLEAN, desc = "是否需要计算是否被关联")
+    })
     @Output({@Param(explode = AppCatalogVo[].class)})
-    @Description(desc = "查询应用目录列表接口")
+    @Description(desc = "查询目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppCatalogVo appCatalogVo = JSONObject.toJavaObject(paramObj, AppCatalogVo.class);
 
-        List<AppCatalogVo> catalogList = appMapper.searchAppCatalog(appCatalogVo);
+        List<AppCatalogVo> catalogList = catalogMapper.searchAppCatalog(appCatalogVo);
         List<AppCatalogVo> newCatalogList = new ArrayList<>();
         Map<Long, AppCatalogVo> catalogMap = new HashMap<>();
         for (AppCatalogVo catalogVo : catalogList) {

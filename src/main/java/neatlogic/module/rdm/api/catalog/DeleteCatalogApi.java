@@ -20,11 +20,11 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.lrcode.LRCodeManager;
-import neatlogic.framework.lrcode.constvalue.MoveType;
-import neatlogic.framework.lrcode.exception.MoveTargetNodeIllegalException;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppCatalogVo;
 import neatlogic.framework.rdm.exception.CatalogNotFoundException;
+import neatlogic.framework.rdm.exception.CatalogHasChildrenException;
+import neatlogic.framework.rdm.exception.CatalogIsInUsedException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -38,15 +38,15 @@ import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.UPDATE)
-public class MoveCatalogApi extends PrivateApiComponentBase {
+@OperationType(type = OperationTypeEnum.DELETE)
+public class DeleteCatalogApi extends PrivateApiComponentBase {
 
     @Resource
     private CatalogMapper catalogMapper;
 
     @Override
     public String getName() {
-        return "移动目录";
+        return "删除目录";
     }
 
     @Override
@@ -54,43 +54,29 @@ public class MoveCatalogApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"), @Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "被移动的目录id"), @Param(name = "targetId", type = ApiParamType.LONG, isRequired = true, desc = "目标目录id"), @Param(name = "moveType", type = ApiParamType.ENUM, rule = "inner,prev,next", isRequired = true, desc = "移动类型")})
-    @Description(desc = "移动目录接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "目录id")})
+    @Description(desc = "删除目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
-        Long appId = paramObj.getLong("appId");
-        //目标节点uuid
-        Long targetId = paramObj.getLong("targetId");
-        if (id.equals(targetId)) {
-            throw new MoveTargetNodeIllegalException();
-        }
-        AppCatalogVo source = catalogMapper.getAppCatalogById(id);
-        //判断被移动的服务通道是否存在
-        if (source == null) {
+        AppCatalogVo catalogVo = catalogMapper.getAppCatalogById(id);
+        if (catalogVo == null) {
             throw new CatalogNotFoundException(id);
         }
-        AppCatalogVo target = catalogMapper.getAppCatalogById(targetId);
-        if (target == null) {
-            throw new CatalogNotFoundException(targetId);
+        if (catalogMapper.checkCatalogIsInUsed(paramObj.getLong("id")) > 0) {
+            throw new CatalogIsInUsedException();
         }
-        MoveType moveType = MoveType.getMoveType(paramObj.getString("moveType"));
-        if (MoveType.INNER == moveType) {
-            source.setParentId(target.getId());
-        } else if (MoveType.PREV == moveType) {
-            source.setParentId(target.getParentId());
-        } else if (MoveType.NEXT == moveType) {
-            source.setParentId(target.getParentId());
+        if (catalogMapper.checkCatalogHasChildren(paramObj.getLong("id")) > 0) {
+            throw new CatalogHasChildrenException();
         }
-        catalogMapper.updateAppCatalogParentId(source);
 
-        LRCodeManager.rebuildLeftRightCode("rdm_app_catalog", "id", "parent_id", "app_id = " + appId);
+        catalogMapper.deleteCatalogById(paramObj.getLong("id"));
+        LRCodeManager.rebuildLeftRightCode("rdm_app_catalog", "id", "parent_id", "app_id = " + catalogVo.getAppId());
         return null;
-
     }
 
     @Override
     public String getToken() {
-        return "/rdm/catalog/move";
+        return "/rdm/catalog/delete";
     }
 }
