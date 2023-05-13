@@ -50,7 +50,7 @@
                 time
             </when>
             <when test="appAttrVo.type == 'datetime'">
-                timestamp
+                datetime
             </when>
             <when test="appAttrVo.type == 'enum'">
                 char(30)

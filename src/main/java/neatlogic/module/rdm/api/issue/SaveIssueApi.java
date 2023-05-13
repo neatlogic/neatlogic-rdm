@@ -100,9 +100,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         for (AppAttrVo appAttrVo : appAttrList) {
             if (appAttrVo.getIsPrivate().equals(0)) {
                 if (issueVo.getAttr(appAttrVo.getId()) == null) {
-                    issueVo.addAttr(new IssueAttrVo(appAttrVo.getId(), issueVo.getId(), appAttrVo.getType()));
+                    issueVo.addAttr(new IssueAttrVo(appAttrVo.getId(), issueVo.getId(), appAttrVo.getType(), appAttrVo.getConfig()));
                 } else {
-                    issueVo.getAttr(appAttrVo.getId()).setAttrType(appAttrVo.getType());
+                    issueVo.getAttr(appAttrVo.getId()).setAttrType(appAttrVo.getType()).setConfig(appAttrVo.getConfig());
                 }
             }
         }

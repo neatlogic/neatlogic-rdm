@@ -17,6 +17,7 @@
 package neatlogic.module.rdm.utils;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.IssueAttrVo;
@@ -29,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DiffIssue {
     public static List<IssueAuditVo> getDiff(Long issueId, IssueVo oldIssueVo, IssueVo newIssueVo, List<AppAttrVo> attrList) {
@@ -51,11 +51,8 @@ public class DiffIssue {
         //比较处理人
         if (!CollectionUtils.isEqualCollection(oldIssueVo.getUserIdList(), newIssueVo.getUserIdList())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.WORKER.getType())).findFirst();
-            op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), new JSONArray() {{
-                this.addAll(oldIssueVo.getUserIdList());
-            }}, new JSONArray() {{
-                this.addAll(newIssueVo.getUserIdList());
-            }})));
+            op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), CollectionUtils.isNotEmpty(oldIssueVo.getUserIdList()) ? oldIssueVo.getUserIdList() : null,
+                    CollectionUtils.isNotEmpty(newIssueVo.getUserIdList()) ? newIssueVo.getUserIdList() : null)));
         }
         //比较标签
         if (!CollectionUtils.isEqualCollection(oldIssueVo.getTagList(), newIssueVo.getTagList())) {
@@ -72,9 +69,21 @@ public class DiffIssue {
         }
         //比较附件
         if (!Objects.equals(oldIssueVo.getFileIdList(), newIssueVo.getFileIdList())) {
-            List<String> oldFileNameList = oldIssueVo.getFileList().stream().map(FileVo::getName).collect(Collectors.toList());
-            List<String> newFileNameList = newIssueVo.getFileList().stream().map(FileVo::getName).collect(Collectors.toList());
-            auditList.add(new IssueAuditVo(issueId, "file", oldFileNameList, newFileNameList));
+            JSONArray oldFileObjList = new JSONArray();
+            for (FileVo f : oldIssueVo.getFileList()) {
+                oldFileObjList.add(new JSONObject() {{
+                    this.put("id", f.getId());
+                    this.put("name", f.getName());
+                }});
+            }
+            JSONArray newFileObjList = new JSONArray();
+            for (FileVo f : newIssueVo.getFileList()) {
+                newFileObjList.add(new JSONObject() {{
+                    this.put("id", f.getId());
+                    this.put("name", f.getName());
+                }});
+            }
+            auditList.add(new IssueAuditVo(issueId, "file", CollectionUtils.isNotEmpty(oldFileObjList) ? oldFileObjList : null, CollectionUtils.isNotEmpty(newFileObjList) ? newFileObjList : null));
         }
 
         if (CollectionUtils.isNotEmpty(attrList)) {

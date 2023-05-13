@@ -16,12 +16,14 @@
 
 package neatlogic.module.rdm.file;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.file.core.FileTypeHandlerBase;
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.rdm.dto.IssueAuditVo;
 import neatlogic.module.rdm.dao.mapper.IssueAuditMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -57,9 +59,21 @@ public class IssueFileHandler extends FileTypeHandlerBase {
         if (issueId != null) {
             List<FileVo> oldFileList = issueMapper.getIssueFileByIssueId(issueId);
             List<FileVo> newFileList = oldFileList.stream().filter(d -> !d.getId().equals(fileVo.getId())).collect(Collectors.toList());
-            List<String> oldFileNameList = oldFileList.stream().map(FileVo::getName).collect(Collectors.toList());
-            List<String> newFileNameList = newFileList.stream().map(FileVo::getName).collect(Collectors.toList());
-            issueAuditMapper.insertIssueAudit(new IssueAuditVo(issueId, "file", oldFileNameList, newFileNameList));
+            JSONArray oldFileObjList = new JSONArray();
+            for (FileVo f : oldFileList) {
+                oldFileObjList.add(new JSONObject() {{
+                    this.put("id", f.getId());
+                    this.put("name", f.getName());
+                }});
+            }
+            JSONArray newFileObjList = new JSONArray();
+            for (FileVo f : newFileList) {
+                newFileObjList.add(new JSONObject() {{
+                    this.put("id", f.getId());
+                    this.put("name", f.getName());
+                }});
+            }
+            issueAuditMapper.insertIssueAudit(new IssueAuditVo(issueId, "file", CollectionUtils.isNotEmpty(oldFileObjList) ? oldFileObjList : null, CollectionUtils.isNotEmpty(newFileObjList) ? newFileObjList : null));
         }
         issueMapper.deleteIssueFileByFileId(fileVo.getId());
         return true;
@@ -69,11 +83,23 @@ public class IssueFileHandler extends FileTypeHandlerBase {
     public void afterUpload(FileVo fileVo, JSONObject jsonObj) {
         Long issueId = jsonObj.getLong("issueId");
         List<FileVo> oldFileList = issueMapper.getIssueFileByIssueId(issueId);
-        List<String> oldFileNameList = oldFileList.stream().map(FileVo::getName).collect(Collectors.toList());
+        JSONArray oldFileObjList = new JSONArray();
+        for (FileVo f : oldFileList) {
+            oldFileObjList.add(new JSONObject() {{
+                this.put("id", f.getId());
+                this.put("name", f.getName());
+            }});
+        }
         issueMapper.insertIssueFile(issueId, fileVo.getId());
         List<FileVo> newFileList = issueMapper.getIssueFileByIssueId(issueId);
-        List<String> newFileNameList = newFileList.stream().map(FileVo::getName).collect(Collectors.toList());
-        issueAuditMapper.insertIssueAudit(new IssueAuditVo(issueId, "file", oldFileNameList, newFileNameList));
+        JSONArray newFileObjList = new JSONArray();
+        for (FileVo f : newFileList) {
+            newFileObjList.add(new JSONObject() {{
+                this.put("id", f.getId());
+                this.put("name", f.getName());
+            }});
+        }
+        issueAuditMapper.insertIssueAudit(new IssueAuditVo(issueId, "file", CollectionUtils.isNotEmpty(oldFileObjList) ? oldFileObjList : null, CollectionUtils.isNotEmpty(newFileObjList) ? newFileObjList : null));
     }
 
     @Override
