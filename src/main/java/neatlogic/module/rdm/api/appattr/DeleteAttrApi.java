@@ -31,7 +31,7 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,9 +44,9 @@ import javax.annotation.Resource;
 @Transactional
 public class DeleteAttrApi extends PrivateApiComponentBase {
 
-    @Resource
-    private AppMapper appMapper;
 
+    @Resource
+    private AttrMapper attrMapper;
     @Resource
     private ProjectSchemaMapper projectSchemaMapper;
 
@@ -65,14 +65,14 @@ public class DeleteAttrApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
-        AppAttrVo objectAttrVo = appMapper.getAttrById(id);
+        AppAttrVo objectAttrVo = attrMapper.getAttrById(id);
         if (objectAttrVo == null) {
             throw new AppAttrNotFoundException(id);
         }
         if (objectAttrVo.getIsPrivate().equals(1)) {
             throw new AppAttrDeleteException(objectAttrVo);
         }
-        appMapper.deleteAppAttrById(id);
+        attrMapper.deleteAppAttrById(id);
         EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.deleteAppTableAttr(objectAttrVo.getTableName(), objectAttrVo)).execute();
         if (!s.isSucceed()) {
             throw new DeleteAttrSchemaException(objectAttrVo.getName());

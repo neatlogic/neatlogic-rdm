@@ -30,6 +30,7 @@ import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
+import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
 import neatlogic.module.rdm.service.ProjectService;
@@ -48,7 +49,8 @@ import java.util.List;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveProjectApi extends PrivateApiComponentBase {
-
+    @Resource
+    private AttrMapper attrMapper;
     @Resource
     private ProjectMapper projectMapper;
 
@@ -117,7 +119,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         appAttrVo.setIsActive(1);
                         appAttrVo.setAppId(appVo.getId());
                         appVo.addAppAttr(appAttrVo);
-                        appMapper.insertAppAttr(appAttrVo);
+                        attrMapper.insertAppAttr(appAttrVo);
                         sort += 1;
                     }
                 }

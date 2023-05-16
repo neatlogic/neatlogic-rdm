@@ -17,14 +17,17 @@
 package neatlogic.module.rdm.api.appattr;
 
 import com.alibaba.fastjson.JSONObject;
+import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.restful.annotation.*;
+import neatlogic.framework.restful.annotation.Description;
+import neatlogic.framework.restful.annotation.Input;
+import neatlogic.framework.restful.annotation.OperationType;
+import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AttrMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,13 +35,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetAttrApi extends PrivateApiComponentBase {
+public class GetAttrUserSettingApi extends PrivateApiComponentBase {
     @Resource
-    private AttrMapper attrMapper;
+    private AppMapper appMapper;
+
 
     @Override
     public String getName() {
-        return "获取应用属性信息";
+        return "获取属性用户设置";
     }
 
     @Override
@@ -46,16 +50,16 @@ public class GetAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", desc = "属性id", isRequired = true, type = ApiParamType.LONG)})
-    @Output({@Param(explode = AppAttrVo.class)})
-    @Description(desc = "获取应用属性信息接口")
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true)
+    })
+    @Description(desc = "获取属性用户设置接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return attrMapper.getAttrById(paramObj.getLong("id"));
+        return appMapper.getAppUserSetting(UserContext.get().getUserUuid(true), paramObj.getLong("appId"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/attr/get";
+        return "/rdm/attr/usersetting/get";
     }
 }

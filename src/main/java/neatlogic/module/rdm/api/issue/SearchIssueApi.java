@@ -26,7 +26,7 @@ import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.TableResultUtil;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.apache.commons.collections4.CollectionUtils;
@@ -39,12 +39,11 @@ import java.util.*;
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class SearchIssueApi extends PrivateApiComponentBase {
-
+    @Resource
+    private AttrMapper attrMapper;
     @Resource
     private IssueMapper issueMapper;
 
-    @Resource
-    private AppMapper appMapper;
 
     @Resource
     private CatalogMapper catalogMapper;
@@ -63,13 +62,14 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "fromId", type = ApiParamType.LONG, desc = "来源任务id"),
             @Param(name = "toId", type = ApiParamType.LONG, desc = "目标任务id"),
             @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
-            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页"),
-            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页大小"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
             @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
-            @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),})
+            @Param(name = "mode", type = ApiParamType.ENUM, desc = "显示模式", rule = "level,list"),
+            @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),
+            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页"),
+            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页大小")})
     @Output({@Param(explode = IssueCountVo[].class)})
     @Description(desc = "搜索任务接口")
     @Override
@@ -80,7 +80,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             issueVo.setCatalogLft(catalogVo.getLft());
             issueVo.setCatalogRht(catalogVo.getRht());
         }
-        List<AppAttrVo> attrList = appMapper.getAttrByAppId(issueVo.getAppId());
+        List<AppAttrVo> attrList = attrMapper.getAttrByAppId(issueVo.getAppId());
         for (AppAttrVo attr : attrList) {
             if (attr.getIsPrivate().equals(0)) {
                 issueVo.addAppAttr(attr);

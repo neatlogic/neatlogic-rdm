@@ -257,6 +257,7 @@
             join fulltextindex_word fw on ffr.word_id = fw.id
         </if>
         <include refid="searchIssueSql"></include>
+        order by ri.id desc
         limit #{startNum}, #{pageSize}
     </select>
 
@@ -298,6 +299,7 @@
         left join rdm_issue_user riu on ri.id = riu.issue_id
         where ri.id in
         <foreach collection="idList" open="(" close=")" separator="," item="item">#{item}</foreach>
+        order by ri.id desc
     </select>
 
     <sql id="searchIssueSql">
@@ -306,12 +308,12 @@
                 and ri.app_id = #{appId}
             </if>
             <choose>
-                <when test="parentId == null">
+                <when test="parentId == null and mode == 'level'">
                     and ri.parent_id is null
                 </when>
-                <otherwise>
+                <when test="parentId != null">
                     and ri.parent_id = #{parentId}
-                </otherwise>
+                </when>
             </choose>
             <if test="wordList != null and wordList.size() > 0">
                 and fw.word in

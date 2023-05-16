@@ -46,11 +46,10 @@ import java.util.List;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueApi extends PrivateApiComponentBase {
-
+    @Resource
+    private AttrMapper attrMapper;
     @Resource
     private IssueAuditMapper issueAuditMapper;
-    @Resource
-    private AppMapper appMapper;
     @Resource
     private IssueMapper issueMapper;
 
@@ -95,7 +94,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long toId = paramObj.getLong("toId");
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         Long id = paramObj.getLong("id");
-        List<AppAttrVo> appAttrList = appMapper.getAttrByAppId(issueVo.getAppId());
+        List<AppAttrVo> appAttrList = attrMapper.getAttrByAppId(issueVo.getAppId());
         //补充页面没有提供的自定义属性
         for (AppAttrVo appAttrVo : appAttrList) {
             if (appAttrVo.getIsPrivate().equals(0)) {

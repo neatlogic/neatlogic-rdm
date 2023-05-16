@@ -27,7 +27,7 @@ import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,9 +36,8 @@ import javax.annotation.Resource;
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
 public class UpdateAttrIsRequiredApi extends PrivateApiComponentBase {
-
     @Resource
-    private AppMapper appMapper;
+    private AttrMapper attrMapper;
 
     @Override
     public String getName() {
@@ -57,7 +56,7 @@ public class UpdateAttrIsRequiredApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppAttrVo objectAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
-        appMapper.updateAppAttrIsRequired(objectAttrVo);
+        attrMapper.updateAppAttrIsRequired(objectAttrVo);
         return null;
     }
 

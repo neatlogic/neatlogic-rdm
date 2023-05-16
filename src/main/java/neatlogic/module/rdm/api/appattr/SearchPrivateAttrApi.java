@@ -25,7 +25,7 @@ import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,9 +34,8 @@ import javax.annotation.Resource;
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class SearchPrivateAttrApi extends PrivateApiComponentBase {
-
     @Resource
-    private AppMapper appMapper;
+    private AttrMapper attrMapper;
 
     @Override
     public String getName() {
@@ -54,7 +53,7 @@ public class SearchPrivateAttrApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppAttrVo appAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
-        return appMapper.searchAppAttr(appAttrVo);
+        return attrMapper.searchAppAttr(appAttrVo);
     }
 
     @Override

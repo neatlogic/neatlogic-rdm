@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="neatlogic.module.rdm.dao.mapper.AttrMapper">
+    <select id="getAttrByAppId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select id,
+               app_id      as appId,
+               type,
+               name,
+               label,
+               description,
+               is_required AS isRequired,
+               sort,
+               is_private  AS isPrivate,
+               config      AS configStr,
+               is_active   AS isActive
+        FROM rdm_app_attr
+        where app_id = #{value}
+        order by sort
+    </select>
+
+    <select id="getAttrById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select id,
+               app_id      as appId,
+               type,
+               name,
+               label,
+               description,
+               is_required AS isRequired,
+               sort,
+               is_private  AS isPrivate,
+               config      AS configStr,
+               is_active   AS isActive
+        FROM rdm_app_attr
+        where id = #{value}
+    </select>
+
+    <select id="getMaxAppAttrSortByAppId" parameterType="java.lang.Long" resultType="int">
+        select max(sort)
+        FROM rdm_app_attr
+        WHERE app_id = #{value}
+    </select>
+
+    <select id="searchAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo"
+            resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select id,
+        app_id as appId,
+        type,
+        name,
+        label,
+        description,
+        is_required AS isRequired,
+        sort,
+        is_private AS isPrivate,
+        config AS configStr,
+        is_active AS isActive
+        FROM rdm_app_attr
+        where
+        app_id = #{appId}
+        <if test="isActive != null">
+            and is_active = #{isActive}
+        </if>
+        order by sort
+    </select>
+
+    <insert id="insertAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        insert into rdm_app_attr
+        (id,
+         app_id,
+         type,
+         name,
+         label,
+         description,
+         is_required,
+         sort,
+         is_private,
+         config,
+         is_active)
+        values (#{id},
+                #{appId},
+                #{type},
+                #{name},
+                #{label},
+                #{description},
+                #{isRequired},
+                #{sort},
+                #{isPrivate},
+                #{configStr},
+                #{isActive})
+    </insert>
+
+
+    <update id="updateAppAttr" parameterType="neatlogic.framework.rdm.dto.AppTypeVo">
+        update rdm_app_attr
+        set name        = #{name},
+            label       = #{label},
+            description =#{description},
+            is_required = #{isRequired},
+            sort        = #{sort},
+            config      = #{configStr},
+            is_active   = #{isActive}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppAttrSort" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        update rdm_app_attr
+        set sort = #{sort}
+        where id = #{id}
+    </update>
+
+    <update id="updateAppAttrIsActive" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        update rdm_app_attr
+        set is_active = #{isActive}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateAppAttrIsRequired" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
+        update rdm_app_attr
+        set is_required = #{isRequired}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteAppAttrById" parameterType="java.lang.Long">
+        delete
+        from rdm_app_attr
+        where id = #{value}
+    </delete>
+</mapper>

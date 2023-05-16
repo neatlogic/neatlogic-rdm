@@ -25,17 +25,12 @@ public interface AppMapper {
     AppStatusRelVo getAppStatusRel(AppStatusRelVo appStatusRelVo);
 
 
-    List<AppAttrVo> getAttrByAppId(Long appId);
-
-    AppAttrVo getAttrById(Long attrId);
-
-    int getMaxAppAttrSortByAppId(Long appId);
-
     List<AppStatusRelVo> getStatusRelByAppId(Long appId);
 
-    List<AppAttrVo> searchAppAttr(AppAttrVo appAttrVo);
 
     AppVo getAppById(Long id);
+
+    AppUserSettingVo getAppUserSetting(@Param("userId") String userId, @Param("appId") Long appId);
 
     List<AppVo> getAppDetailByProjectId(Long projectId);
 
@@ -44,15 +39,7 @@ public interface AppMapper {
     List<AppStatusVo> getStatusByAppId(@Param("appId") Long appId, @Param("status") Long status);
 
 
-    void updateAppAttr(AppAttrVo appAttrVo);
-
-    void updateAppAttrIsActive(AppAttrVo appAttrVo);
-
-    void updateAppAttrIsRequired(AppAttrVo appAttrVo);
-
     void updateAppStatus(AppStatusVo appStatusVo);
-
-    void updateAppAttrSort(AppAttrVo appAttrVo);
 
 
     void updateAppStatusRelConfig(AppStatusRelVo appStatusRelVo);
@@ -68,14 +55,13 @@ public interface AppMapper {
 
     void insertAppStatus(AppStatusVo appStatusVo);
 
-    void insertAppAttr(AppAttrVo appAttrVo);
+    void insertAttrUserSetting(AppUserSettingVo appUserSettingVo);
+
 
     void deleteAppById(Long id);
 
     void deleteAppStatusRel(AppStatusRelVo appStatusRelVo);
 
-
-    void deleteAppAttrById(Long id);
 
     void deleteAppStatusById(Long id);
 

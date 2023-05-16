@@ -21,6 +21,7 @@ import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.IssueAttrVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,15 @@ public class IssueServiceImpl implements IssueService {
     @Resource
     private AppMapper appMapper;
 
+    @Resource
+    private AttrMapper attrMapper;
+
 
     @Override
     public IssueVo getIssueById(Long id) {
         IssueVo issueVo = issueMapper.getIssueById(id);
         if (issueVo != null) {
-            List<AppAttrVo> attrList = appMapper.getAttrByAppId(issueVo.getAppId());
+            List<AppAttrVo> attrList = attrMapper.getAttrByAppId(issueVo.getAppId());
             for (AppAttrVo attr : attrList) {
                 if (attr.getIsPrivate().equals(0)) {
                     issueVo.addAppAttr(attr);

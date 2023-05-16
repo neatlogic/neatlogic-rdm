@@ -30,46 +30,6 @@
           and to_status_id = #{toStatusId}
     </select>
 
-
-    <select id="getAttrByAppId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
-        select id,
-               app_id      as appId,
-               type,
-               name,
-               label,
-               description,
-               is_required AS isRequired,
-               sort,
-               is_private  AS isPrivate,
-               config      AS configStr,
-               is_active   AS isActive
-        FROM rdm_app_attr
-        where app_id = #{value}
-        order by sort
-    </select>
-
-    <select id="getAttrById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
-        select id,
-               app_id      as appId,
-               type,
-               name,
-               label,
-               description,
-               is_required AS isRequired,
-               sort,
-               is_private  AS isPrivate,
-               config      AS configStr,
-               is_active   AS isActive
-        FROM rdm_app_attr
-        where id = #{value}
-    </select>
-
-    <select id="getMaxAppAttrSortByAppId" parameterType="java.lang.Long" resultType="int">
-        select max(sort)
-        FROM rdm_app_attr
-        WHERE app_id = #{value}
-    </select>
-
     <select id="getStatusRelByAppId" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
         select rasr.id             as id,
@@ -120,28 +80,6 @@
         </if>
         WHERE a.app_id = #{appId}
         order by a.sort
-    </select>
-
-    <select id="searchAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo"
-            resultType="neatlogic.framework.rdm.dto.AppAttrVo">
-        select id,
-        app_id as appId,
-        type,
-        name,
-        label,
-        description,
-        is_required AS isRequired,
-        sort,
-        is_private AS isPrivate,
-        config AS configStr,
-        is_active AS isActive
-        FROM rdm_app_attr
-        where
-        app_id = #{appId}
-        <if test="isActive != null">
-            and is_active = #{isActive}
-        </if>
-        order by sort
     </select>
 
     <select id="getAppById" parameterType="java.lang.Long" resultMap="appResultMap">
@@ -207,6 +145,16 @@
         order by a.sort, b.sort
     </select>
 
+    <select id="getAppUserSetting" parameterType="neatlogic.framework.rdm.dto.AppUserSettingVo"
+            resultType="neatlogic.framework.rdm.dto.AppUserSettingVo">
+        select user_id as userId,
+               app_id  as appId,
+               config  as configStr
+        from rdm_app_usersetting
+        where user_id = #{userId}
+          and app_id = #{appId}
+    </select>
+
     <insert id="insertAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo">
         insert ignore into rdm_app_status_rel (id, app_id, from_status_id, to_status_id)
         values (#{id}, #{appId}, #{fromStatusId}, #{toStatusId})
@@ -230,23 +178,6 @@
     </insert>
 
 
-    <update id="updateAppAttr" parameterType="neatlogic.framework.rdm.dto.AppTypeVo">
-        update rdm_app_attr
-        set name        = #{name},
-            label       = #{label},
-            description =#{description},
-            is_required = #{isRequired},
-            sort        = #{sort},
-            config      = #{configStr},
-            is_active   = #{isActive}
-        where id = #{id}
-    </update>
-    <update id="updateAppAttrSort" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
-        update rdm_app_attr
-        set sort = #{sort}
-        where id = #{id}
-    </update>
-
     <update id="updateAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         update rdm_app_status
         set `name`        = #{name},
@@ -254,19 +185,6 @@
             `color`       = #{color},
             `description` = #{description}
         where `id` = #{id}
-    </update>
-
-
-    <update id="updateAppAttrIsActive" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
-        update rdm_app_attr
-        set is_active = #{isActive}
-        WHERE id = #{id}
-    </update>
-
-    <update id="updateAppAttrIsRequired" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
-        update rdm_app_attr
-        set is_required = #{isRequired}
-        WHERE id = #{id}
     </update>
 
 
@@ -299,30 +217,11 @@
         values (#{id}, #{type}, #{projectId}, #{sort})
     </insert>
 
-    <insert id="insertAppAttr" parameterType="neatlogic.framework.rdm.dto.AppAttrVo">
-        insert into rdm_app_attr
-        (id,
-         app_id,
-         type,
-         name,
-         label,
-         description,
-         is_required,
-         sort,
-         is_private,
-         config,
-         is_active)
-        values (#{id},
-                #{appId},
-                #{type},
-                #{name},
-                #{label},
-                #{description},
-                #{isRequired},
-                #{sort},
-                #{isPrivate},
-                #{configStr},
-                #{isActive})
+    <insert id="insertAttrUserSetting" parameterType="neatlogic.framework.rdm.dto.AppUserSettingVo">
+        insert into rdm_app_usersetting (user_id, app_id, config)
+        values (#{userId}, #{appId}, #{configStr})
+        ON DUPLICATE KEY
+            UPDATE config = #{configStr}
     </insert>
 
     <delete id="deleteAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo">
@@ -352,11 +251,6 @@
         WHERE a.id = #{value}
     </delete>
 
-    <delete id="deleteAppAttrById" parameterType="java.lang.Long">
-        delete
-        from rdm_app_attr
-        where id = #{value}
-    </delete>
 
     <delete id="deleteCatalogById" parameterType="java.lang.Long">
         delete
