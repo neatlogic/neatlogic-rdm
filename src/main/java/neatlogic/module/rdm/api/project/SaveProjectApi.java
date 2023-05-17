@@ -98,29 +98,31 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             projectVo.setType(projectTemplateVo.getName());
             projectMapper.insertProject(projectVo);
             List<AppVo> objectList = new ArrayList<>();
-            for (ProjectTemplateAppTypeVo objectType : projectTemplateVo.getAppTypeList()) {
+            for (ProjectTemplateAppTypeVo appType : projectTemplateVo.getAppTypeList()) {
                 AppVo appVo = new AppVo();
                 appVo.setProjectId(projectVo.getId());
-                appVo.setType(objectType.getName());
-                appVo.setSort(objectType.getSort());
+                appVo.setType(appType.getName());
+                appVo.setSort(appType.getSort());
                 appMapper.insertApp(appVo);
 
-                PrivateAttr[] attrTypeList = AppType.getAttrList(objectType.getName());
+                PrivateAttr[] attrTypeList = AppType.getAttrList(appType.getName());
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (PrivateAttr attrType : attrTypeList) {
-                        AppAttrVo appAttrVo = new AppAttrVo();
-                        appAttrVo.setName(attrType.getName());
-                        appAttrVo.setLabel(attrType.getLabel());
-                        appAttrVo.setType(attrType.getType());
-                        appAttrVo.setSort(sort);
-                        appAttrVo.setIsRequired(0);
-                        appAttrVo.setIsPrivate(1);
-                        appAttrVo.setIsActive(1);
-                        appAttrVo.setAppId(appVo.getId());
-                        appVo.addAppAttr(appAttrVo);
-                        attrMapper.insertAppAttr(appAttrVo);
-                        sort += 1;
+                        if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getName().equalsIgnoreCase(attrType.getBelong()))) {
+                            AppAttrVo appAttrVo = new AppAttrVo();
+                            appAttrVo.setName(attrType.getName());
+                            appAttrVo.setLabel(attrType.getLabel());
+                            appAttrVo.setType(attrType.getType());
+                            appAttrVo.setSort(sort);
+                            appAttrVo.setIsRequired(0);
+                            appAttrVo.setIsPrivate(1);
+                            appAttrVo.setIsActive(1);
+                            appAttrVo.setAppId(appVo.getId());
+                            appVo.addAppAttr(appAttrVo);
+                            attrMapper.insertAppAttr(appAttrVo);
+                            sort += 1;
+                        }
                     }
                 }
                 objectList.add(appVo);
