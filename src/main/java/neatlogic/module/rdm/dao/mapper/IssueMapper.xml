@@ -54,8 +54,11 @@
         select ri.id,
                ri.name,
                ri.app_id                                                             as appId,
+               ra.app_type                                                           as appType,
                ri.priority,
                rp.name                                                               as priorityName,
+               ri.iteration,
+               ria.name                                                              as iterationName,
                ri.status,
                ras.name                                                              as statusName,
                ras.label                                                             as statusLabel,
@@ -86,7 +89,9 @@
                       where x.issue_id = ri.id
                       limit 1) x2)                                                   as commentCount
         from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
                  left join rdm_priority as rp on ri.priority = rp.id
+                 left join rdm_iteration as ria on ri.iteration = ria.id
                  left join rdm_app_status as ras on ri.status = ras.id
                  left join rdm_app_catalog rac on ri.catalog = rac.id
                  left join rdm_issue_tag rit on ri.id = rit.issue_id
@@ -127,17 +132,24 @@
     </select>
 
 
-    <select id="deleteIssueByObjectId" parameterType="java.lang.Long">
-        delete a,b
+    <select id="deleteIssueByAppId" parameterType="neatlogic.framework.rdm.dto.AppVo">
+        delete a,b,ria,ric,rif,rirf,rirt,rit
         from rdm_issue a
                  left join rdm_issue_user b on a.id = b.issue_id
-        where a.app_id = #{value}
+                 left join rdm_issue_audit ria on a.id = ria.issue_id
+                 left join rdm_issue_comment ric on a.id = ric.issue_id
+                 left join rdm_issue_file rif on a.id = rif.issue_id
+                 left join rdm_issue_rel rirf on a.id = rirf.from_issue_id
+                 left join rdm_issue_rel rirt on a.id = rirt.to_issue_id
+                 left join rdm_issue_tag rit on a.id = rit.issue_id
+        where a.app_id = #{id}
     </select>
 
     <resultMap id="issueResultMap" type="neatlogic.framework.rdm.dto.IssueVo">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="appId" column="appId"/>
+        <result property="appType" column="appType"/>
         <result property="parentId" column="parentId"/>
         <result property="createUser" column="createUser"/>
         <result property="createDate" column="createDate"/>
@@ -147,6 +159,8 @@
         <result property="statusLabel" column="statusLabel"/>
         <result property="priority" column="priority"/>
         <result property="priorityName" column="priorityName"/>
+        <result property="iteration" column="iteration"/>
+        <result property="iterationName" column="iterationName"/>
         <result property="catalog" column="catalog"/>
         <result property="catalogName" column="catalogName"/>
         <result property="content" column="content"/>
@@ -266,9 +280,12 @@
         ri.id,
         ri.name,
         ri.app_id as appId,
+        ra.app_type as appType,
         ri.parent_id as parentId,
         ri.priority,
         rp.name as priorityName,
+        ri.iteration,
+        ria.name as iterationName,
         ri.status,
         ras.color as statusColor,
         ras.name as statusName,
@@ -291,7 +308,9 @@
                 #{toId}
             </when>
         </choose>
+        join rdm_app ra on ri.app_id = ra.id
         left join rdm_priority as rp on ri.priority = rp.id
+        left join rdm_iteration as ria on ri.iteration = ria.id
         left join rdm_app_status as ras on ri.status = ras.id
         left join rdm_app_catalog rac on ri.catalog = rac.id
         left join rdm_issue_tag rit on ri.id = rit.issue_id
@@ -327,6 +346,9 @@
             <if test="catalogLft != null and catalogRht != null">
                 and rac.lft &gt;= #{catalogLft} and rac.rht &lt;= #{catalogRht}
             </if>
+            <if test="iteration != null">
+                and ri.iteration = #{iteration}
+            </if>
             <if test="priority != null">
                 and ri.priority = #{priority}
             </if>
@@ -361,11 +383,12 @@
 
     <update id="updateIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo">
         update rdm_issue
-        set name     = #{name},
-            priority = #{priority},
-            status   = #{status},
-            catalog  = #{catalog},
-            content  = #{content,typeHandler=CompressHandler}
+        set name      = #{name},
+            priority  = #{priority},
+            iteration = #{iteration},
+            status    = #{status},
+            catalog   = #{catalog},
+            content   = #{content,typeHandler=CompressHandler}
         where id = #{id}
     </update>
 
@@ -402,6 +425,7 @@
          app_id,
          create_user,
          priority,
+         iteration,
          status,
          create_date,
          content,
@@ -412,6 +436,7 @@
                 #{appId},
                 #{createUser},
                 #{priority},
+                #{iteration},
                 #{status},
                 now(3),
                 #{content,typeHandler=CompressHandler},

@@ -32,6 +32,8 @@ public interface AppMapper {
 
     AppUserSettingVo getAppUserSetting(@Param("userId") String userId, @Param("appId") Long appId);
 
+    List<AppVo> getIterationAppType(Long iterationId);
+
     List<AppVo> getAppDetailByProjectId(Long projectId);
 
     AppStatusVo getStatusById(Long id);

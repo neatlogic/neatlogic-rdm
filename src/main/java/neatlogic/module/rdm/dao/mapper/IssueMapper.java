@@ -18,10 +18,7 @@ package neatlogic.module.rdm.dao.mapper;
 
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.fulltextindex.dto.fulltextindex.FullTextIndexTypeVo;
-import neatlogic.framework.rdm.dto.IssueCountVo;
-import neatlogic.framework.rdm.dto.IssueRelVo;
-import neatlogic.framework.rdm.dto.IssueVo;
-import neatlogic.framework.rdm.dto.TagVo;
+import neatlogic.framework.rdm.dto.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
@@ -52,7 +49,7 @@ public interface IssueMapper {
 
     void updateIssueAttr(IssueVo issueVo);
 
-    void deleteIssueByObjectId(Long objectId);
+    void deleteIssueByAppId(AppVo appVo);
 
     void insertIssue(IssueVo issueVo);
 

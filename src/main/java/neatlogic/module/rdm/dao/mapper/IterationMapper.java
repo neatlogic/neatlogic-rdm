@@ -18,7 +18,14 @@ package neatlogic.module.rdm.dao.mapper;
 
 import neatlogic.framework.rdm.dto.IterationVo;
 
+import java.util.List;
+
 public interface IterationMapper {
+    List<IterationVo> searchIteration(IterationVo iterationVo);
+
+
+    int searchIterationCount(IterationVo iterationVo);
+
     void updateIteration(IterationVo iterationVo);
 
     void insertIteration(IterationVo iterationVo);

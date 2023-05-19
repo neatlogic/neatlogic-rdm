@@ -80,6 +80,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
             @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
+            @Param(name = "iteration", type = ApiParamType.LONG, desc = "迭代"),
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
             @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),

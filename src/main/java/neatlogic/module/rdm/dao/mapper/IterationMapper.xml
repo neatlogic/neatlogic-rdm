@@ -18,6 +18,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IterationMapper">
 
+
+    <select id="searchIteration" parameterType="neatlogic.framework.rdm.dto.IterationVo"
+            resultType="neatlogic.framework.rdm.dto.IterationVo">
+        select
+        a.id,
+        a.name,
+        a.project_id as projectId,
+        a.start_date as startDate,
+        a.end_date as endDate,
+        a.description,
+        (select count(1) from rdm_issue x where x.iteration = a.id) as issueCount,
+        (select count(1) from rdm_issue x join rdm_app_status y on
+        x.status = y.id and y.is_end = 1 where
+        x.iteration = a.id) as doneIssueCount
+        from rdm_iteration a
+        <include refid="searchIterationSql"></include>
+        order by a.id desc
+        limit #{startNum}, #{pageSize}
+    </select>
+
+    <select id="searchIterationCount" parameterType="neatlogic.framework.rdm.dto.IterationVo" resultType="int">
+        select
+        count(1)
+        from rdm_iteration
+        <include refid="searchIterationSql"></include>
+    </select>
+
+    <sql id="searchIterationSql">
+        <where>
+            project_id = #{projectId}
+            <if test="keyword != null and keyword != ''">
+                and name like concat('%',#{keyword}, '%')
+            </if>
+            <if test="startDateRange != null">
+                <if test="startDateRange.size() > 0">
+                    AND start_date &gt;= STR_TO_DATE(#{startDateRange[0]},'%Y-%m-%d')
+                </if>
+                <if test="startDateRange.size() > 1">
+                    AND start_date &lt;= STR_TO_DATE(#{startDateRange[1]},'%Y-%m-%d')
+                </if>
+            </if>
+            <if test="endDateRange != null">
+                <if test="endDateRange.size() > 0">
+                    AND a.end_date &gt;= STR_TO_DATE(#{endDateRange[0]},'%Y-%m-%d')
+                </if>
+                <if test="endDateRange.size() > 1">
+                    AND a.end_date &lt;= STR_TO_DATE(#{endDateRange[1]},'%Y-%m-%d')
+                </if>
+            </if>
+        </where>
+    </sql>
+
     <update id="updateIteration" parameterType="neatlogic.framework.rdm.dto.IterationVo">
         update rdm_iteration
         set name        = #{name},
@@ -30,11 +82,13 @@
     <insert id="insertIteration" parameterType="neatlogic.framework.rdm.dto.IterationVo">
         insert into rdm_iteration (id,
                                    name,
+                                   project_id,
                                    start_date,
                                    end_date,
                                    description)
         values (#{id},
                 #{name},
+                #{projectId},
                 #{startDate},
                 #{endDate},
                 #{description})

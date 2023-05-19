@@ -73,13 +73,13 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long projectId = paramObj.getLong("id");
-        List<AppVo> objectList = appMapper.getAppDetailByProjectId(projectId);
-        for (AppVo objectVo : objectList) {
-            issueMapper.deleteIssueByObjectId(objectVo.getId());
-            appMapper.deleteAppById(objectVo.getId());
-            EscapeTransactionJob.State s = projectService.dropObjectSchema(objectVo);
+        List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId);
+        for (AppVo appVo : appList) {
+            issueMapper.deleteIssueByAppId(appVo);
+            appMapper.deleteAppById(appVo.getId());
+            EscapeTransactionJob.State s = projectService.dropObjectSchema(appVo);
             if (!s.isSucceed()) {
-                throw new CreateObjectSchemaException(objectVo.getName());
+                throw new CreateObjectSchemaException(appVo.getName());
             }
         }
         projectMapper.deleteProjectById(projectId);

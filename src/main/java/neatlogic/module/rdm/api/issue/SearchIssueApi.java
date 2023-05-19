@@ -65,6 +65,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
             @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
+            @Param(name = "iteration", type = ApiParamType.LONG, desc = "迭代"),
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
             @Param(name = "mode", type = ApiParamType.ENUM, desc = "显示模式", rule = "level,list"),
             @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),

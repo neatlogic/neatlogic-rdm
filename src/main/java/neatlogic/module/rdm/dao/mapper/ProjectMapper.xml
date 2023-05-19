@@ -247,9 +247,12 @@
 
 
     <delete id="deleteProjectById" parameterType="java.lang.Long">
-        DELETE a,b
+        DELETE a,b,rps
         FROM rdm_project a
                  left join rdm_project_user b on a.id = b.project_id
+                 left join rdm_project_status rps on a.id = rps.project_id
+                 left join rdm_project_status_rel rpsr on a.id = rpsr.project_id
+                 left join rdm_iteration ri on a.id = ri.project_id
         WHERE a.id = #{value}
     </delete>
 
