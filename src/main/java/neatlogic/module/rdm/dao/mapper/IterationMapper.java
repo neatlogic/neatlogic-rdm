@@ -23,6 +23,7 @@ import java.util.List;
 public interface IterationMapper {
     List<IterationVo> searchIteration(IterationVo iterationVo);
 
+    void updateIterationIsOpen(IterationVo iterationVo);
 
     int searchIterationCount(IterationVo iterationVo);
 

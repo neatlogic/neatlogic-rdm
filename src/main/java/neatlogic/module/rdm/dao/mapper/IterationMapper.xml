@@ -27,6 +27,7 @@
         a.project_id as projectId,
         a.start_date as startDate,
         a.end_date as endDate,
+        a.is_open as isOpen,
         a.description,
         (select count(1) from rdm_issue x where x.iteration = a.id) as issueCount,
         (select count(1) from rdm_issue x join rdm_app_status y on
@@ -79,18 +80,26 @@
         where id = #{id}
     </update>
 
+    <update id="updateIterationIsOpen" parameterType="neatlogic.framework.rdm.dto.IterationVo">
+        update rdm_iteration
+        set is_open = #{isOpen}
+        where id = #{id}
+    </update>
+
     <insert id="insertIteration" parameterType="neatlogic.framework.rdm.dto.IterationVo">
         insert into rdm_iteration (id,
                                    name,
                                    project_id,
                                    start_date,
                                    end_date,
+                                   is_open,
                                    description)
         values (#{id},
                 #{name},
                 #{projectId},
                 #{startDate},
                 #{endDate},
+                1,
                 #{description})
     </insert>
 </mapper>
