@@ -27,6 +27,8 @@ import java.util.List;
 public interface IssueMapper {
     IssueVo getIssueById(Long id);
 
+    List<AppIssueCountVo> getIssueCountByIterationId(@Param("iterationId") Long iterationId);
+
     Long getIssueIdByFileId(Long fileId);
 
     List<FileVo> getIssueFileByIssueId(Long issueId);

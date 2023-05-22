@@ -20,11 +20,11 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.IterationVo;
+import neatlogic.framework.rdm.dto.AppIssueCountVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.IterationMapper;
+import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -32,14 +32,14 @@ import javax.annotation.Resource;
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class GetIterationAppApi extends PrivateApiComponentBase {
+public class GetIterationAppIssueCountApi extends PrivateApiComponentBase {
 
     @Resource
-    private IterationMapper iterationMapper;
+    private IssueMapper issueMapper;
 
     @Override
     public String getName() {
-        return "获取迭代信息";
+        return "获取迭代任务分类数量";
     }
 
     @Override
@@ -48,15 +48,15 @@ public class GetIterationAppApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "迭代id", isRequired = true)})
-    @Output({@Param(explode = IterationVo.class)})
-    @Description(desc = "获取迭代信息接口")
+    @Output({@Param(explode = AppIssueCountVo[].class)})
+    @Description(desc = "获取迭代任务分类数量接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        return iterationMapper.getIterationById(paramObj.getLong("id"));
+        return issueMapper.getIssueCountByIterationId(paramObj.getLong("id"));
     }
 
     @Override
     public String getToken() {
-        return "/rdm/iteration/get";
+        return "/rdm/iteration/issue/count";
     }
 }

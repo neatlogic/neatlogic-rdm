@@ -21,6 +21,8 @@ import neatlogic.framework.rdm.dto.IterationVo;
 import java.util.List;
 
 public interface IterationMapper {
+    IterationVo getIterationById(Long id);
+
     List<IterationVo> searchIteration(IterationVo iterationVo);
 
     void updateIterationIsOpen(IterationVo iterationVo);

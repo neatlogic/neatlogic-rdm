@@ -18,6 +18,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IterationMapper">
 
+    <select id="getIterationById" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.IterationVo">
+        select a.id,
+               a.name,
+               a.project_id                                                as projectId,
+               a.start_date                                                as startDate,
+               a.end_date                                                  as endDate,
+               a.is_open                                                   as isOpen,
+               a.description,
+               (select count(1) from rdm_issue x where x.iteration = a.id) as issueCount,
+               (select count(1)
+                from rdm_issue x
+                         join rdm_app_status y on
+                    x.status = y.id and y.is_end = 1
+                where x.iteration = a.id)                                  as doneIssueCount
+        from rdm_iteration a
+        where a.id = #{value}
+    </select>
 
     <select id="searchIteration" parameterType="neatlogic.framework.rdm.dto.IterationVo"
             resultType="neatlogic.framework.rdm.dto.IterationVo">
