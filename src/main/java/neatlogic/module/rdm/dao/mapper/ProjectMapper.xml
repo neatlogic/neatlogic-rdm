@@ -104,6 +104,13 @@
         LIMIT #{startNum}, #{pageSize}
     </select>
 
+    <select id="getProjectTemplateAppTypeByProjectId" parameterType="java.lang.Long" resultType="java.lang.String">
+        select app_type
+        from rdm_project_template_apptype a
+                 join rdm_project_template b on a.template_id = b.id
+                 join rdm_project c on b.id = c.template_id
+        where c.id = #{value}
+    </select>
 
     <select id="getProjectById" parameterType="java.lang.Long" resultMap="projectResultMap">
         select a.id,

@@ -24,6 +24,7 @@ public interface ProjectMapper {
 
     int checkAttrNameIsExists(AppAttrVo objectAttrVo);
 
+    List<String> getProjectTemplateAppTypeByProjectId(Long projectId);
 
     ProjectVo getProjectById(Long id);
 
@@ -49,7 +50,6 @@ public interface ProjectMapper {
     void updateProject(ProjectVo projectVo);
 
     void updateProjectStatus(ProjectStatusVo projectStatusVo);
-
 
 
     void insertProject(ProjectVo projectVo);

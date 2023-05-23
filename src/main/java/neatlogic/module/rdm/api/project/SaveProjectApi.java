@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.project;
 
+import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
@@ -23,22 +24,21 @@ import neatlogic.framework.common.constvalue.GroupSearch;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AppType;
-import neatlogic.framework.rdm.enums.PrivateAttr;
+import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
 import neatlogic.framework.rdm.exception.*;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
 import neatlogic.module.rdm.service.ProjectService;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -105,10 +105,10 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 appVo.setSort(appType.getSort());
                 appMapper.insertApp(appVo);
 
-                PrivateAttr[] attrTypeList = AppType.getAttrList(appType.getName());
+                AttrType[] attrTypeList = AppType.getAttrList(appType.getName());
                 if (attrTypeList != null) {
                     int sort = 1;
-                    for (PrivateAttr attrType : attrTypeList) {
+                    for (AttrType attrType : attrTypeList) {
                         if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getName().equalsIgnoreCase(attrType.getBelong()))) {
                             AppAttrVo appAttrVo = new AppAttrVo();
                             appAttrVo.setName(attrType.getName());

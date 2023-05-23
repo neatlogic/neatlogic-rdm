@@ -17,6 +17,8 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
+
+
     <select id="getAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo"
             resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
         select id,
@@ -102,6 +104,27 @@
                            on a.id = b.app_id
         where a.id = #{value}
         order by b.sort
+    </select>
+
+    <select id="listAllAppAttr" resultMap="appResultMap">
+        select a.id,
+               a.app_type    as appType,
+               a.project_id  AS projectId,
+               a.sort,
+               b.id          as attrId,
+               b.app_id      as attrAppId,
+               b.type        as attrType,
+               b.name        as attrName,
+               b.label       as attrLabel,
+               b.description as attrDescription,
+               b.is_required as attrIsRequired,
+               b.sort        as attrSort,
+               b.is_private  as attrIsPrivate,
+               b.config      as attrConfigStr
+        from rdm_app a
+                 left join rdm_app_attr b
+                           on a.id = b.app_id
+        order by a.id, b.sort
     </select>
 
     <resultMap id="appResultMap" type="neatlogic.framework.rdm.dto.AppVo">

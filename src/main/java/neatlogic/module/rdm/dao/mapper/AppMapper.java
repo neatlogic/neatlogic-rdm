@@ -27,6 +27,7 @@ public interface AppMapper {
 
     List<AppStatusRelVo> getStatusRelByAppId(Long appId);
 
+    List<AppVo> listAllAppAttr();
 
     AppVo getAppById(Long id);
 
