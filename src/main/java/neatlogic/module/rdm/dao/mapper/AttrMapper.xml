@@ -17,6 +17,15 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AttrMapper">
+    <select id="checkAttrNameIsExists" parameterType="neatlogic.framework.rdm.dto.AppAttrVo" resultType="int">
+        select count(1)
+        from rdm_app_attr
+        where app_id = #{appId}
+          and id != #{id}
+          and is_private = #{isPrivate}
+          and name = #{name}
+    </select>
+
     <select id="getAttrByAppId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
         select id,
                app_id      as appId,
@@ -104,12 +113,18 @@
                 #{isActive})
     </insert>
 
+    <update id="updateAppAttrName" parameterType="neatlogic.framework.rdm.dto.AppTypeVo">
+        update rdm_app_attr
+        set name  = #{name},
+            label = #{label}
+        where id = #{id}
+    </update>
 
     <update id="updateAppAttr" parameterType="neatlogic.framework.rdm.dto.AppTypeVo">
         update rdm_app_attr
         set name        = #{name},
             label       = #{label},
-            description =#{description},
+            description = #{description},
             is_required = #{isRequired},
             sort        = #{sort},
             config      = #{configStr},

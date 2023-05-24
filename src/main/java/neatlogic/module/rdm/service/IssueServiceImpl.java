@@ -30,6 +30,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class IssueServiceImpl implements IssueService {
@@ -61,17 +62,25 @@ public class IssueServiceImpl implements IssueService {
                 List<IssueAttrVo> issueAttrList = new ArrayList<>();
                 for (String key : attrMap.keySet()) {
                     if (!key.equals("issueId")) {
-                        IssueAttrVo issueAttrVo = new IssueAttrVo();
-                        issueAttrVo.setIssueId(issueVo.getId());
-                        issueAttrVo.setAttrId(Long.parseLong(key));
-                        if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
-                            issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
-                        } else {
-                            issueAttrVo.setValueList(new JSONArray() {{
-                                this.add(attrMap.get(key));
-                            }});
+                        Long attrId = Long.parseLong(key);
+                        Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getId().equals(attrId)).findFirst();
+                        if (op.isPresent()) {
+                            AppAttrVo appAttrVo = op.get();
+                            IssueAttrVo issueAttrVo = new IssueAttrVo();
+                            issueAttrVo.setIssueId(issueVo.getId());
+                            issueAttrVo.setAttrId(attrId);
+                            issueAttrVo.setAttrType(appAttrVo.getType());
+                            issueAttrVo.setConfig(appAttrVo.getConfig());
+                            if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
+                                JSONArray valueList = JSONArray.parseArray(attrMap.get(key).toString());
+                                issueAttrVo.setValueList(valueList);
+                            } else {
+                                issueAttrVo.setValueList(new JSONArray() {{
+                                    this.add(attrMap.get(key));
+                                }});
+                            }
+                            issueAttrList.add(issueAttrVo);
                         }
-                        issueAttrList.add(issueAttrVo);
                     }
                 }
                 issueVo.setAttrList(issueAttrList);

@@ -59,6 +59,16 @@ public class DiffIssue {
             op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), CollectionUtils.isNotEmpty(oldIssueVo.getUserIdList()) ? oldIssueVo.getUserIdList() : null,
                     CollectionUtils.isNotEmpty(newIssueVo.getUserIdList()) ? newIssueVo.getUserIdList() : null)));
         }
+        //比较预计开始
+        if (!Objects.equals(oldIssueVo.getStartDate(), newIssueVo.getStartDate())) {
+            Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.STARTDATE.getType())).findFirst();
+            op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), oldIssueVo.getStartDate(), newIssueVo.getStartDate())));
+        }
+        //比较预计结束
+        if (!Objects.equals(oldIssueVo.getEndDate(), newIssueVo.getEndDate())) {
+            Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.ENDDATE.getType())).findFirst();
+            op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), oldIssueVo.getEndDate(), newIssueVo.getEndDate())));
+        }
         //比较标签
         if (!CollectionUtils.isEqualCollection(oldIssueVo.getTagList(), newIssueVo.getTagList())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.TAG.getType())).findFirst();
@@ -111,7 +121,7 @@ public class DiffIssue {
                         }
                     }
                     if ((hasOldValue || hasNewValue) && !Objects.equals(oldAttrVo, newAttrVo)) {
-                        auditList.add(new IssueAuditVo(issueId, attrVo.getId(), oldAttrVo != null ? oldAttrVo.getValueList() : null, newAttrVo != null ? newAttrVo.getValueList() : null));
+                        auditList.add(new IssueAuditVo(issueId, attrVo.getId(), (oldAttrVo != null ? oldAttrVo.getValueList() : null), (newAttrVo != null ? newAttrVo.getValueList() : null)));
                     }
                 }
             }

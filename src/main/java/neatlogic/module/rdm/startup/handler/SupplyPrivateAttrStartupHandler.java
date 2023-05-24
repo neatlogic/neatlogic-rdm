@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,9 +64,10 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
                 if (CollectionUtils.isNotEmpty(appVo.getAttrList())) {
                     privateAttrList = appVo.getAttrList().stream().filter(d -> d.getIsPrivate().equals(1)).collect(Collectors.toList());
                 }
+                List<String> projectAttrTypeList = projectMapper.getProjectAppTypeByProjectId(appVo.getProjectId());
+                //补充缺少的内部属性
                 for (AttrType attrType : attrTypeList) {
-                    List<String> templateAttrTypeList = projectMapper.getProjectTemplateAppTypeByProjectId(appVo.getProjectId());
-                    if (attrType.getBelong() == null || templateAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(attrType.getBelong()))) {
+                    if (attrType.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(attrType.getBelong()))) {
                         if (privateAttrList.stream().noneMatch(d -> d.getType().equalsIgnoreCase(attrType.getType()))) {
                             AppAttrVo appAttrVo = new AppAttrVo();
                             appAttrVo.setName(attrType.getName());
@@ -79,6 +81,27 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
                             appVo.addAppAttr(appAttrVo);
                             attrMapper.insertAppAttr(appAttrVo);
                         }
+                    }
+                }
+                //删除已经不用的内部属性
+                Iterator<AppAttrVo> itAttr = privateAttrList.iterator();
+                while (itAttr.hasNext()) {
+                    AppAttrVo attrVo = itAttr.next();
+                    boolean isFound = false;
+                    for (AttrType attrType : attrTypeList) {
+                        if (attrType.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(attrType.getBelong()))) {
+                            if (attrType.getType().equalsIgnoreCase(attrVo.getType())) {
+                                isFound = true;
+                                attrVo.setName(attrType.getName());
+                                attrVo.setLabel(attrType.getLabel());
+                            }
+                        }
+                    }
+                    if (!isFound) {
+                        attrMapper.deleteAppAttrById(attrVo.getId());
+                        itAttr.remove();
+                    } else {
+                        attrMapper.updateAppAttrName(attrVo);
                     }
                 }
             }

@@ -265,7 +265,7 @@
         values (#{id}, #{type}, #{projectId}, #{sort})
     </insert>
 
-    <insert id="insertAttrUserSetting" parameterType="neatlogic.framework.rdm.dto.AppUserSettingVo">
+    <insert id="insertAppUserSetting" parameterType="neatlogic.framework.rdm.dto.AppUserSettingVo">
         insert into rdm_app_usersetting (user_id, app_id, config)
         values (#{userId}, #{appId}, #{configStr})
         ON DUPLICATE KEY

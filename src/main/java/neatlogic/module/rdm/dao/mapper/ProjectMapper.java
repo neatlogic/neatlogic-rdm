@@ -22,9 +22,8 @@ import java.util.List;
 
 public interface ProjectMapper {
 
-    int checkAttrNameIsExists(AppAttrVo objectAttrVo);
 
-    List<String> getProjectTemplateAppTypeByProjectId(Long projectId);
+    List<String> getProjectAppTypeByProjectId(Long projectId);
 
     ProjectVo getProjectById(Long id);
 

@@ -22,10 +22,7 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.BasePageVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.rdm.dto.AppCatalogVo;
-import neatlogic.framework.rdm.dto.IssueAttrVo;
-import neatlogic.framework.rdm.dto.IssueVo;
+import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -81,7 +78,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Description(desc = "搜索任务接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
+        IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
         if (issueVo.getCatalog() != null) {
             AppCatalogVo catalogVo = catalogMapper.getAppCatalogById(issueVo.getCatalog());
             issueVo.setCatalogLft(catalogVo.getLft());

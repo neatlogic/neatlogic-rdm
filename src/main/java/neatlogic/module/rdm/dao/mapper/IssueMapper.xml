@@ -70,6 +70,8 @@
                ri.priority,
                rp.name                                                               as priorityName,
                ri.iteration,
+               DATE_FORMAT(ri.start_date, '%Y-%m-%d')                                as startDate,
+               DATE_FORMAT(ri.end_date, '%Y-%m-%d')                                  as endDate,
                ria.name                                                              as iterationName,
                ri.status,
                ras.name                                                              as statusName,
@@ -165,6 +167,8 @@
         <result property="parentId" column="parentId"/>
         <result property="createUser" column="createUser"/>
         <result property="createDate" column="createDate"/>
+        <result property="startDate" column="startDate"/>
+        <result property="endDate" column="endDate"/>
         <result property="status" column="status"/>
         <result property="statusColor" column="statusColor"/>
         <result property="statusName" column="statusName"/>
@@ -230,7 +234,7 @@
         from ${tableName} x where x.issue_id = #{id}
     </select>
 
-    <select id="searchIssueCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="int">
+    <select id="searchIssueCount" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo" resultType="int">
         select
         count(distinct ri.id)
         from rdm_issue ri
@@ -258,7 +262,7 @@
         <include refid="searchIssueSql"></include>
     </select>
 
-    <select id="searchIssueId" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.lang.Long">
+    <select id="searchIssueId" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo" resultType="java.lang.Long">
         select
         distinct ri.id
         from rdm_issue ri
@@ -287,7 +291,7 @@
         limit #{startNum}, #{pageSize}
     </select>
 
-    <select id="searchIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultMap="issueResultMap">
+    <select id="searchIssue" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo" resultMap="issueResultMap">
         select
         ri.id,
         ri.name,
@@ -295,6 +299,8 @@
         ra.app_type as appType,
         ri.parent_id as parentId,
         ri.priority,
+        DATE_FORMAT(ri.start_date, '%Y-%m-%d') as startDate,
+        DATE_FORMAT(ri.end_date, '%Y-%m-%d') as endDate,
         rp.name as priorityName,
         ri.iteration,
         ria.name as iterationName,
@@ -371,6 +377,22 @@
                 and rt.name in
                 <foreach collection="tagList" item="tag" open="(" close=")" separator=",">#{tag}</foreach>
             </if>
+            <if test="startDateRange != null">
+                <if test="startDateRange.size() > 0">
+                    AND ri.start_date &gt;= STR_TO_DATE(#{startDateRange[0]},'%Y-%m-%d')
+                </if>
+                <if test="startDateRange.size() > 1">
+                    AND ri.start_date &lt;= STR_TO_DATE(#{startDateRange[1]},'%Y-%m-%d')
+                </if>
+            </if>
+            <if test="endDateRange != null">
+                <if test="endDateRange.size() > 0">
+                    AND ri.end_date &gt;= STR_TO_DATE(#{endDateRange[0]},'%Y-%m-%d')
+                </if>
+                <if test="endDateRange.size() > 1">
+                    AND ri.end_date &lt;= STR_TO_DATE(#{endDateRange[1]},'%Y-%m-%d')
+                </if>
+            </if>
             <if test="attrFilterList != null and attrFilterList.size() > 0">
                 <foreach collection="attrFilterList" item="attrFilter">
                     <choose>
@@ -380,8 +402,28 @@
                         <when test="attrFilter.attrType == 'text'">
                             and x.`${attrFilter.attrId}` like CONCAT('%',#{attrFilter.value},'%')
                         </when>
+                        <when test="attrFilter.attrType == 'user'">
+                            and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
+                        </when>
+                        <when test="attrFilter.attrType == 'date' and attrFilter.valueList != null and attrFilter.valueList.size() > 0">
+                            <if test="attrFilter.valueList.size() > 0">
+                                AND x.`${attrFilter.attrId}` &gt;= STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d')
+                            </if>
+                            <if test="attrFilter.valueList.size() > 1">
+                                AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d')
+                            </if>
+                        </when>
+                        <when test="attrFilter.attrType == 'datetime' and attrFilter.valueList != null and attrFilter.valueList.size() > 0">
+                            <if test="attrFilter.valueList.size() > 0">
+                                AND x.`${attrFilter.attrId}` &gt;= STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d
+                                %H:%i:%s')
+                            </if>
+                            <if test="attrFilter.valueList.size() > 1">
+                                AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d
+                                %H:%i:%s')
+                            </if>
+                        </when>
                     </choose>
-
                 </foreach>
             </if>
         </where>
@@ -395,12 +437,14 @@
 
     <update id="updateIssue" parameterType="neatlogic.framework.rdm.dto.IssueVo">
         update rdm_issue
-        set name      = #{name},
-            priority  = #{priority},
-            iteration = #{iteration},
-            status    = #{status},
-            catalog   = #{catalog},
-            content   = #{content,typeHandler=CompressHandler}
+        set name       = #{name},
+            priority   = #{priority},
+            iteration  = #{iteration},
+            status     = #{status},
+            catalog    = #{catalog},
+            start_date = #{startDate},
+            end_date   = #{endDate},
+            content    = #{content,typeHandler=CompressHandler}
         where id = #{id}
     </update>
 
@@ -440,6 +484,8 @@
          iteration,
          status,
          create_date,
+         start_date,
+         end_date,
          content,
          catalog)
         values (#{id},
@@ -451,6 +497,8 @@
                 #{iteration},
                 #{status},
                 now(3),
+                #{startDate},
+                #{endDate},
                 #{content,typeHandler=CompressHandler},
                 #{catalog})
     </insert>

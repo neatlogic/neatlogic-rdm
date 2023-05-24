@@ -22,6 +22,7 @@ import neatlogic.framework.rdm.enums.AttrType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 @Component
@@ -34,6 +35,14 @@ public class DatetimeAttrHandler implements IAttrValueHandler {
     @Override
     public Object format(Object value, JSONObject config) {
         if (value instanceof Long) {
+            SimpleDateFormat sdf = new SimpleDateFormat();
+            if (config != null && StringUtils.isNotBlank(config.getString("format"))) {
+                sdf.applyPattern(config.getString("format"));
+            } else {
+                sdf.applyPattern("yyyy-MM-dd HH:mm:ss");
+            }
+            return sdf.format(value);
+        } else if (value instanceof Timestamp) {
             SimpleDateFormat sdf = new SimpleDateFormat();
             if (config != null && StringUtils.isNotBlank(config.getString("format"))) {
                 sdf.applyPattern(config.getString("format"));

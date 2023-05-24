@@ -16,12 +16,13 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
-import neatlogic.framework.rdm.dto.AppUserSettingVo;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 
 import java.util.List;
 
 public interface AttrMapper {
+    int checkAttrNameIsExists(AppAttrVo objectAttrVo);
+
     List<AppAttrVo> getAttrByAppId(Long appId);
 
     AppAttrVo getAttrById(Long attrId);
@@ -30,9 +31,10 @@ public interface AttrMapper {
 
     List<AppAttrVo> searchAppAttr(AppAttrVo appAttrVo);
 
-    void insertAttrUserSetting(AppUserSettingVo appAttrUserSettingVo);
 
     void insertAppAttr(AppAttrVo appAttrVo);
+
+    void updateAppAttrName(AppAttrVo appAttrVo);
 
     void updateAppAttr(AppAttrVo appAttrVo);
 

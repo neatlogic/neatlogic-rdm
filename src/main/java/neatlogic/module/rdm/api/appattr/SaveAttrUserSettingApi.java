@@ -63,7 +63,7 @@ public class SaveAttrUserSettingApi extends PrivateApiComponentBase {
         settingVo.setAppId(paramObj.getLong("appId"));
         settingVo.setUserId(UserContext.get().getUserUuid(true));
         settingVo.setConfig(paramObj.getJSONObject("config"));
-        appMapper.insertAttrUserSetting(settingVo);
+        appMapper.insertAppUserSetting(settingVo);
         return null;
     }
 

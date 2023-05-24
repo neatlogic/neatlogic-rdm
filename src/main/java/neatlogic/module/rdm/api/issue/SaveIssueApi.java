@@ -94,6 +94,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long fromId = paramObj.getLong("fromId");
         Long toId = paramObj.getLong("toId");
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
+        issueVo.formatAttr();
         Long id = paramObj.getLong("id");
         List<AppAttrVo> appAttrList = attrMapper.getAttrByAppId(issueVo.getAppId());
         //补充页面没有提供的自定义属性

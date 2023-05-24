@@ -77,7 +77,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         AppAttrVo appAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
         appAttrVo.setIsPrivate(0);
-        if (projectMapper.checkAttrNameIsExists(appAttrVo) > 0) {
+        if (attrMapper.checkAttrNameIsExists(appAttrVo) > 0) {
             throw new AppAttrNameIsExistsException(appAttrVo.getName());
         }
         Long id = paramObj.getLong("id");

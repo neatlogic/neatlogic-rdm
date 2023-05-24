@@ -60,22 +60,22 @@
     <select id="searchIterationCount" parameterType="neatlogic.framework.rdm.dto.IterationVo" resultType="int">
         select
         count(1)
-        from rdm_iteration
+        from rdm_iteration a
         <include refid="searchIterationSql"></include>
     </select>
 
     <sql id="searchIterationSql">
         <where>
-            project_id = #{projectId}
+            a.project_id = #{projectId}
             <if test="keyword != null and keyword != ''">
-                and name like concat('%',#{keyword}, '%')
+                and a.name like concat('%',#{keyword}, '%')
             </if>
             <if test="startDateRange != null">
                 <if test="startDateRange.size() > 0">
-                    AND start_date &gt;= STR_TO_DATE(#{startDateRange[0]},'%Y-%m-%d')
+                    AND a.start_date &gt;= STR_TO_DATE(#{startDateRange[0]},'%Y-%m-%d')
                 </if>
                 <if test="startDateRange.size() > 1">
-                    AND start_date &lt;= STR_TO_DATE(#{startDateRange[1]},'%Y-%m-%d')
+                    AND a.start_date &lt;= STR_TO_DATE(#{startDateRange[1]},'%Y-%m-%d')
                 </if>
             </if>
             <if test="endDateRange != null">

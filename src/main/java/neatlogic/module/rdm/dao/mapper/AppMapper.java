@@ -58,7 +58,7 @@ public interface AppMapper {
 
     void insertAppStatus(AppStatusVo appStatusVo);
 
-    void insertAttrUserSetting(AppUserSettingVo appUserSettingVo);
+    void insertAppUserSetting(AppUserSettingVo appUserSettingVo);
 
 
     void deleteAppById(Long id);
