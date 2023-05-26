@@ -395,35 +395,48 @@
             </if>
             <if test="attrFilterList != null and attrFilterList.size() > 0">
                 <foreach collection="attrFilterList" item="attrFilter">
-                    <choose>
-                        <when test="attrFilter.attrType == 'select'">
-                            and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
-                        </when>
-                        <when test="attrFilter.attrType == 'text'">
-                            and x.`${attrFilter.attrId}` like CONCAT('%',#{attrFilter.value},'%')
-                        </when>
-                        <when test="attrFilter.attrType == 'user'">
-                            and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
-                        </when>
-                        <when test="attrFilter.attrType == 'date' and attrFilter.valueList != null and attrFilter.valueList.size() > 0">
-                            <if test="attrFilter.valueList.size() > 0">
-                                AND x.`${attrFilter.attrId}` &gt;= STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d')
-                            </if>
-                            <if test="attrFilter.valueList.size() > 1">
-                                AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d')
-                            </if>
-                        </when>
-                        <when test="attrFilter.attrType == 'datetime' and attrFilter.valueList != null and attrFilter.valueList.size() > 0">
-                            <if test="attrFilter.valueList.size() > 0">
+                    <if test="attrFilter.valueList != null and attrFilter.valueList.size()>0">
+                        <choose>
+                            <when test="attrFilter.attrType == 'select'">
+                                and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
+                            </when>
+                            <when test="attrFilter.attrType == 'text' or attrFilter.attrType == 'textarea'">
+                                and x.`${attrFilter.attrId}` like CONCAT('%',#{attrFilter.valueList[0]},'%')
+                            </when>
+                            <when test="attrFilter.attrType == 'number'">
+                                and x.`${attrFilter.attrId}` = #{attrFilter.valueList[0]}
+                            </when>
+                            <when test="attrFilter.attrType == 'file'">
+                                <choose>
+                                    <when test="attrFilter.valueList[0] == 1">
+                                        and x.`${attrFilter.attrId}` is not null
+                                    </when>
+                                    <otherwise>
+                                        and x.`${attrFilter.attrId}` is null
+                                    </otherwise>
+                                </choose>
+                            </when>
+                            <when test="attrFilter.attrType == 'user'">
+                                and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
+                            </when>
+                            <when test="attrFilter.attrType == 'date' and attrFilter.valueList.size() > 0">
+                                AND x.`${attrFilter.attrId}` &gt;=
+                                STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d')
+                                <if test="attrFilter.valueList.size() > 1">
+                                    AND x.`${attrFilter.attrId}` &lt;=
+                                    STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d')
+                                </if>
+                            </when>
+                            <when test="attrFilter.attrType == 'datetime' and  attrFilter.valueList.size() > 0">
                                 AND x.`${attrFilter.attrId}` &gt;= STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d
                                 %H:%i:%s')
-                            </if>
-                            <if test="attrFilter.valueList.size() > 1">
-                                AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d
-                                %H:%i:%s')
-                            </if>
-                        </when>
-                    </choose>
+                                <if test="attrFilter.valueList.size() > 1">
+                                    AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d
+                                    %H:%i:%s')
+                                </if>
+                            </when>
+                        </choose>
+                    </if>
                 </foreach>
             </if>
         </where>
