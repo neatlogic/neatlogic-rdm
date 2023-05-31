@@ -34,7 +34,7 @@
 		http://neatlogic.com/schema/neatlogic
 		https://neatlogic.com/schema/neatlogic.xsd">
 
-    <neatlogic:module id="rdm" name="研发管理模块" groupName="modulegroup.rdm" group="rdm" groupSort="6"
+    <neatlogic:module id="rdm" name="研发管理模块" groupName="modulegroup.rdm.a" group="rdm" groupSort="6"
                        groupDescription="modulegroup.rdm.desc"/>
 
     <context:component-scan base-package="neatlogic.module.rdm" use-default-filters="false">
