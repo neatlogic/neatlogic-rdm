@@ -60,6 +60,7 @@ public class ClearParentIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
+
     @Override
     public String getToken() {
         return "/rdm/issue/parent/delete";
