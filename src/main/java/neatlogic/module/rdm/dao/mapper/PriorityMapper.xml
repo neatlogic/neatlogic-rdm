@@ -30,6 +30,10 @@
     </select>
 
     <update id="updatePriority" parameterType="neatlogic.framework.rdm.dto.PriorityVo">
-
+        update rdm_priority
+        set name  = #{name},
+            color = #{color},
+            sort  = #{sort}
+        where id = #{id}
     </update>
 </mapper>

@@ -42,7 +42,7 @@ public class ClearParentIssueApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "清除父任务关系";
+        return "nmrai.clearparentissueapi.getname";
     }
 
     @Override

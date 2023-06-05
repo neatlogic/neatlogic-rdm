@@ -25,4 +25,5 @@ public interface PriorityMapper {
 
     List<PriorityVo> getPriorityList();
 
+    void updatePriority(PriorityVo priorityVo);
 }
