@@ -14,35 +14,33 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.issue;
+package neatlogic.module.rdm.api.priority;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.restful.annotation.Description;
-import neatlogic.framework.restful.annotation.Input;
-import neatlogic.framework.restful.annotation.OperationType;
-import neatlogic.framework.restful.annotation.Param;
+import neatlogic.framework.rdm.dto.TagVo;
+import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.framework.util.$;
+import neatlogic.module.rdm.dao.mapper.PriorityMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.DELETE)
-@Transactional
-public class ClearParentIssueApi extends PrivateApiComponentBase {
+@OperationType(type = OperationTypeEnum.UPDATE)
+public class SavePriorityApi extends PrivateApiComponentBase {
+
     @Resource
-    private IssueMapper issueMapper;
+    private PriorityMapper priorityMapper;
 
     @Override
     public String getName() {
-        return "清除父任务关系";
+        return $.t("nmrap.savepriorityapi.description.desc");
     }
 
     @Override
@@ -50,20 +48,18 @@ public class ClearParentIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({
-            @Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "任务id")
-    })
-    @Description(desc = "name.page")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmrap.savepriorityapi.input.param.desc.id")})
+    @Output({@Param(explode = TagVo[].class)})
+    @Description(desc = "nmrap.savepriorityapi.description.desc")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        issueMapper.clearIssueParentId(paramObj.getLong("id"));
-        return null;
-    }
 
+
+        return priorityMapper.getPriorityById(paramObj.getLong("id"));
+    }
 
     @Override
     public String getToken() {
-        return "/rdm/issue/parent/delete";
+        return "/rdm/priority/save";
     }
-
 }

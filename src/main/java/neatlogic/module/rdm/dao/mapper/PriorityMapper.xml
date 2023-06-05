@@ -28,4 +28,8 @@
         from rdm_priority a
         where a.id = #{value}
     </select>
+
+    <update id="updatePriority" parameterType="neatlogic.framework.rdm.dto.PriorityVo">
+
+    </update>
 </mapper>
