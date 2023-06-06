@@ -21,9 +21,19 @@ import neatlogic.framework.rdm.dto.PriorityVo;
 import java.util.List;
 
 public interface PriorityMapper {
+    int checkPriorityNameIsExists(PriorityVo priorityVo);
+
+    int checkPriorityIsInUsed(Long id);
+
     PriorityVo getPriorityById(Long id);
 
     List<PriorityVo> getPriorityList();
 
     void updatePriority(PriorityVo priorityVo);
+
+    void updatePrioritySort(PriorityVo priorityVo);
+
+    void insertPriority(PriorityVo priorityVo);
+
+    void deletePriority(Long priorityId);
 }

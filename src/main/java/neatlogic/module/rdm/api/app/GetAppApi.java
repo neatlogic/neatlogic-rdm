@@ -48,9 +48,9 @@ public class GetAppApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "应用id")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "nmraa.getappapi.input.param.desc")})
     @Output({@Param(explode = AppVo.class)})
-    @Description(desc = "获取应用信息接口")
+    @Description(desc = "nmraa.getappapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         return appMapper.getAppById(paramObj.getLong("id"));

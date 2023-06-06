@@ -17,6 +17,20 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.PriorityMapper">
+    <select id="checkPriorityIsInUsed" parameterType="java.lang.Long" resultType="int">
+        select count(id)
+        from rdm_issue
+        where priority = #{value}
+        limit 1
+    </select>
+
+    <select id="checkPriorityNameIsExists" parameterType="neatlogic.framework.rdm.dto.PriorityVo" resultType="int">
+        select count(1)
+        from rdm_priority
+        where name = #{name}
+          and id != #{id}
+    </select>
+
     <select id="getPriorityList" resultType="neatlogic.framework.rdm.dto.PriorityVo">
         select a.id, a.name, a.color, a.sort
         from rdm_priority a
@@ -36,4 +50,22 @@
             sort  = #{sort}
         where id = #{id}
     </update>
+
+    <update id="updatePrioritySort" parameterType="neatlogic.framework.rdm.dto.PriorityVo">
+        update rdm_priority
+        set sort = #{sort}
+        where id = #{id}
+    </update>
+
+    <insert id="insertPriority" parameterType="neatlogic.framework.rdm.dto.PriorityVo">
+        insert into rdm_priority
+            (id, name, color, sort)
+        values (#{id}, #{name}, #{color}, #{sort})
+    </insert>
+
+    <delete id="deletePriority" parameterType="java.lang.Long">
+        delete
+        from rdm_priority
+        where id = #{value}
+    </delete>
 </mapper>

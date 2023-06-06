@@ -51,7 +51,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "搜索任务";
+        return "nmrai.searchissueapi.getname";
     }
 
     @Override
@@ -59,23 +59,25 @@ public class SearchIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
-            @Param(name = "fromId", type = ApiParamType.LONG, desc = "来源任务id"),
-            @Param(name = "toId", type = ApiParamType.LONG, desc = "目标任务id"),
-            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
-            @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
-            @Param(name = "status", type = ApiParamType.JSONARRAY, desc = "状态列表"),
-            @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
-            @Param(name = "iteration", type = ApiParamType.LONG, desc = "迭代"),
-            @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
-            @Param(name = "mode", type = ApiParamType.ENUM, desc = "显示模式", rule = "level,list"),
-            @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),
-            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页"),
-            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "每页大小")})
+    @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
+            @Param(name = "fromId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
+            @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid"),
+            @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc"),
+            @Param(name = "priority", type = ApiParamType.LONG, desc = "common.priority"),
+            @Param(name = "status", type = ApiParamType.JSONARRAY, desc = "common.status"),
+            @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "common.tag"),
+            @Param(name = "iteration", type = ApiParamType.LONG, desc = "common.iteration"),
+            @Param(name = "catalog", type = ApiParamType.LONG, desc = "common.catalog"),
+            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.worker"),
+            @Param(name = "isEnd", type = ApiParamType.INTEGER, desc = "common.isend"),
+            @Param(name = "mode", type = ApiParamType.ENUM, desc = "common.displaymode", rule = "level,list"),
+            @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "common.customattribute"),
+            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
+            @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "common.pagesize")})
     @Output({
             @Param(explode = BasePageVo.class),
             @Param(name = "tbodyList", explode = IssueVo[].class)})
-    @Description(desc = "搜索任务接口")
+    @Description(desc = "nmrai.searchissueapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
@@ -111,29 +113,32 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             if (CollectionUtils.isNotEmpty(idList)) {
                 issueVo.setIdList(idList);
                 issueList = issueMapper.searchIssue(issueVo);
-                List<HashMap<String, ?>> attrMapList = issueMapper.getAttrByIssueIdList(issueVo);
-                for (HashMap<String, ?> attrMap : attrMapList) {
-                    if (attrMap.containsKey("issueId")) {
-                        Long issueId = (Long) attrMap.get("issueId");
-                        Optional<IssueVo> op = issueList.stream().filter(d -> d.getId().equals(issueId)).findFirst();
-                        if (op.isPresent()) {
-                            IssueVo queryIssueVo = op.get();
-                            for (String key : attrMap.keySet()) {
-                                if (!key.equals("issueId")) {
-                                    IssueAttrVo issueAttrVo = new IssueAttrVo();
-                                    issueAttrVo.setIssueId(queryIssueVo.getId());
-                                    issueAttrVo.setAttrId(Long.parseLong(key));
-                                    if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
-                                        issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
-                                    } else {
-                                        issueAttrVo.setValueList(new JSONArray() {{
-                                            this.add(attrMap.get(key));
-                                        }});
+                if (issueVo.getAppId() != null) {
+                    //提供具体的appid才需要补充自动属性
+                    List<HashMap<String, ?>> attrMapList = issueMapper.getAttrByIssueIdList(issueVo);
+                    for (HashMap<String, ?> attrMap : attrMapList) {
+                        if (attrMap.containsKey("issueId")) {
+                            Long issueId = (Long) attrMap.get("issueId");
+                            Optional<IssueVo> op = issueList.stream().filter(d -> d.getId().equals(issueId)).findFirst();
+                            if (op.isPresent()) {
+                                IssueVo queryIssueVo = op.get();
+                                for (String key : attrMap.keySet()) {
+                                    if (!key.equals("issueId")) {
+                                        IssueAttrVo issueAttrVo = new IssueAttrVo();
+                                        issueAttrVo.setIssueId(queryIssueVo.getId());
+                                        issueAttrVo.setAttrId(Long.parseLong(key));
+                                        if (attrMap.get(key).toString().startsWith("[") && attrMap.get(key).toString().endsWith("]")) {
+                                            issueAttrVo.setValueList(JSONArray.parseArray(attrMap.get(key).toString()));
+                                        } else {
+                                            issueAttrVo.setValueList(new JSONArray() {{
+                                                this.add(attrMap.get(key));
+                                            }});
+                                        }
+                                        queryIssueVo.addAttr(issueAttrVo);
                                     }
-                                    queryIssueVo.addAttr(issueAttrVo);
                                 }
-                            }
 
+                            }
                         }
                     }
                 }
