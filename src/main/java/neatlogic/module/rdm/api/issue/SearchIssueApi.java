@@ -18,6 +18,7 @@ package neatlogic.module.rdm.api.issue;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.BasePageVo;
@@ -70,6 +71,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "common.catalog"),
             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.worker"),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, desc = "common.isend"),
+            @Param(name = "isMine", type = ApiParamType.INTEGER, desc = "term.rdm.ismytask"),
             @Param(name = "mode", type = ApiParamType.ENUM, desc = "common.displaymode", rule = "level,list"),
             @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "common.customattribute"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
@@ -81,6 +83,11 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
+        if (issueVo.getIsMine() != null && issueVo.getIsMine().equals(1)) {
+            issueVo.setUserIdList(new ArrayList<String>() {{
+                this.add(UserContext.get().getUserUuid(true));
+            }});
+        }
         if (issueVo.getCatalog() != null) {
             AppCatalogVo catalogVo = catalogMapper.getAppCatalogById(issueVo.getCatalog());
             issueVo.setCatalogLft(catalogVo.getLft());
@@ -137,7 +144,6 @@ public class SearchIssueApi extends PrivateApiComponentBase {
                                         queryIssueVo.addAttr(issueAttrVo);
                                     }
                                 }
-
                             }
                         }
                     }
