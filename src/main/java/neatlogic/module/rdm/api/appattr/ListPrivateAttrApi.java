@@ -14,36 +14,34 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.issue;
+package neatlogic.module.rdm.api.appattr;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
-import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.common.dto.ValueTextVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
+import neatlogic.framework.rdm.dto.AppAttrVo;
+import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.restful.annotation.Description;
-import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
+import neatlogic.framework.restful.annotation.Output;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.module.rdm.dao.mapper.CommentMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.DELETE)
-@Transactional
-public class DeleteCommentApi extends PrivateApiComponentBase {
+@OperationType(type = OperationTypeEnum.SEARCH)
+public class ListPrivateAttrApi extends PrivateApiComponentBase {
 
-    @Resource
-    private CommentMapper commentMapper;
 
     @Override
     public String getName() {
-        return "nmrai.deletecommentapi.getname";
+        return "nmraa.listprivateattrapi.getname";
     }
 
     @Override
@@ -51,16 +49,28 @@ public class DeleteCommentApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", desc = "term.rdm.commonid", isRequired = true, type = ApiParamType.LONG)})
-    @Description(desc = "删除评论接口")
+    @Output({@Param(explode = ValueTextVo[].class)})
+    @Description(desc = "nmraa.listprivateattrapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        commentMapper.deleteCommentById(paramObj.getLong("id"));
-        return null;
+        List<AppAttrVo> attrList = new ArrayList<>();
+        for (AttrType attrType : AttrType.values()) {
+            if (attrType.isPrivate()) {
+                AppAttrVo appAttrVo = new AppAttrVo();
+                appAttrVo.setName(attrType.getName());
+                appAttrVo.setLabel(attrType.getLabel());
+                appAttrVo.setType(attrType.getType());
+                appAttrVo.setIsRequired(0);
+                appAttrVo.setIsPrivate(1);
+                appAttrVo.setIsActive(1);
+                attrList.add(appAttrVo);
+            }
+        }
+        return attrList;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/issue/comment/delete";
+        return "/rdm/project/app/privateattr/list";
     }
 }

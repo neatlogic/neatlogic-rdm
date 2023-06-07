@@ -70,6 +70,7 @@
                ra.project_id                                                         as projectId,
                ri.priority,
                rp.name                                                               as priorityName,
+               rp.color                                                              as priorityColor,
                ri.iteration,
                DATE_FORMAT(ri.start_date, '%Y-%m-%d')                                as startDate,
                DATE_FORMAT(ri.end_date, '%Y-%m-%d')                                  as endDate,
@@ -78,6 +79,7 @@
                ras.name                                                              as statusName,
                ras.label                                                             as statusLabel,
                ras.color                                                             as statusColor,
+               ras.is_end                                                            as isEnd,
                ri.create_user                                                        as createUser,
                ri.create_date                                                        as createDate,
                ri.content                                                            as content,
@@ -175,8 +177,10 @@
         <result property="statusColor" column="statusColor"/>
         <result property="statusName" column="statusName"/>
         <result property="statusLabel" column="statusLabel"/>
+        <result property="isEnd" column="isEnd"/>
         <result property="priority" column="priority"/>
         <result property="priorityName" column="priorityName"/>
+        <result property="priorityColor" column="priorityColor"/>
         <result property="iteration" column="iteration"/>
         <result property="iterationName" column="iterationName"/>
         <result property="catalog" column="catalog"/>
@@ -315,12 +319,14 @@
         DATE_FORMAT(ri.start_date, '%Y-%m-%d') as startDate,
         DATE_FORMAT(ri.end_date, '%Y-%m-%d') as endDate,
         rp.name as priorityName,
+        rp.color as priorityColor,
         ri.iteration,
         ria.name as iterationName,
         ri.status,
         ras.color as statusColor,
         ras.name as statusName,
         ras.label as statusLabel,
+        ras.is_end as isEnd,
         ri.create_user as createUser,
         ri.create_date as createDate,
         ri.catalog,
