@@ -28,7 +28,6 @@ import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.util.$;
 import neatlogic.module.rdm.dao.mapper.PriorityMapper;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,7 @@ public class SavePriorityApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return $.t("nmrap.savepriorityapi.description.desc");
+        return "nmrap.savepriorityapi.description.desc";
     }
 
     @Override

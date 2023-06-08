@@ -24,7 +24,6 @@ import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.util.$;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,7 @@ public class GetAppApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return $.t("nmraa.getappapi.getname");
+        return "nmraa.getappapi.getname";
     }
 
     @Override
