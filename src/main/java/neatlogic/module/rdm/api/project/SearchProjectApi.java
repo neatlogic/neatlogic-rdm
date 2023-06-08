@@ -16,10 +16,12 @@
 
 package neatlogic.module.rdm.api.project;
 
+import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.BasePageVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
+import neatlogic.framework.rdm.dto.ProjectConditionVo;
 import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
@@ -31,6 +33,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,7 +46,7 @@ public class SearchProjectApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "查询项目";
+        return "nmrap.searchprojectapi.getname";
     }
 
     @Override
@@ -51,16 +54,26 @@ public class SearchProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "关键字"),
-            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "当前页"),
-            @Param(name = "pageSize", type = ApiParamType.STRING, desc = "页数")})
+    @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
+            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
+            @Param(name = "pageSize", type = ApiParamType.STRING, desc = "common.pagesize"),
+            @Param(name = "isMine", type = ApiParamType.INTEGER, desc = "page.ismine"),
+            @Param(name = "isClose", type = ApiParamType.INTEGER, desc = "page.isclose")})
     @Output({@Param(explode = BasePageVo.class)})
-    @Description(desc = "查询项目接口")
+    @Description(desc = "nmrap.searchprojectapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        ProjectVo projectVo = JSONObject.toJavaObject(paramObj, ProjectVo.class);
-        List<ProjectVo> projectList = projectMapper.searchProject(projectVo);
-        if (CollectionUtils.isNotEmpty(projectList)) {
+        ProjectConditionVo projectVo = JSONObject.toJavaObject(paramObj, ProjectConditionVo.class);
+        if (projectVo.getIsMine() != null && projectVo.getIsMine().equals(1)) {
+            projectVo.setUserIdList(new ArrayList<String>() {{
+                this.add(UserContext.get().getUserUuid(true));
+            }});
+        }
+        List<Long> idList = projectMapper.searchProjectId(projectVo);
+        List<ProjectVo> projectList = null;
+        if (CollectionUtils.isNotEmpty(idList)) {
+            projectVo.setIdList(idList);
+            projectList = projectMapper.searchProject(projectVo);
             int rowNum = projectMapper.searchProjectCount(projectVo);
             projectVo.setRowNum(rowNum);
         }

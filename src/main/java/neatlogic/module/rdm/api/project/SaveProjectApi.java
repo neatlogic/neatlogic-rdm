@@ -65,7 +65,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "保存项目";
+        return "nmrap.saveprojectapi.getname";
     }
 
     @Override
@@ -73,20 +73,21 @@ public class SaveProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增项目"),
-            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "项目名称"),
-            @Param(name = "templateId", type = ApiParamType.LONG, isRequired = true, desc = "项目类型"),
-            @Param(name = "description", type = ApiParamType.STRING, desc = "说明", maxLength = 500, xss = true),
-            @Param(name = "dateRange", type = ApiParamType.JSONARRAY, desc = "起止日期"),
-            @Param(name = "memberIdList", type = ApiParamType.JSONARRAY, desc = "项目成员id列表"),
-            @Param(name = "leaderIdList", type = ApiParamType.JSONARRAY, desc = "项目负责人id列表"),
-            @Param(name = "color", type = ApiParamType.STRING, desc = "颜色标识")})
-    @Output({@Param(name = "id", type = ApiParamType.STRING, desc = "模型id")})
-    @Description(desc = "保存项目接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmrap.saveprojectapi.input.param.desc.id"),
+            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "term.rdm.projectname"),
+            @Param(name = "templateId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.projecttype"),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "common.description", maxLength = 500, xss = true),
+            @Param(name = "dateRange", type = ApiParamType.JSONARRAY, desc = "term.rdm.startenddate"),
+            @Param(name = "memberIdList", type = ApiParamType.JSONARRAY, desc = "nmrap.saveprojectapi.input.param.desc.memberidlist"),
+            @Param(name = "leaderIdList", type = ApiParamType.JSONARRAY, desc = "term.rdm.project.manageridlist"),
+            @Param(name = "color", type = ApiParamType.STRING, desc = "common.color")})
+    @Output({@Param(name = "id", type = ApiParamType.STRING, desc = "term.cmdb.ciid")})
+    @Description(desc = "nmrap.saveprojectapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
         ProjectVo projectVo = JSONObject.toJavaObject(paramObj, ProjectVo.class);
+        projectVo.setIsClose(0);
         if (projectMapper.checkProjectNameIsExists(projectVo) > 0) {
             throw new ProjectNameIsExistsException(projectVo.getName());
         }
@@ -133,6 +134,12 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     throw new CreateObjectSchemaException(objectVo.getName());
                 }
             }
+
+            ProjectUserVo projectUserVo = new ProjectUserVo();
+            projectUserVo.setUserId(UserContext.get().getUserUuid(true));
+            projectUserVo.setUserType(ProjectUserType.OWNER.getValue());
+            projectUserVo.setProjectId(projectVo.getId());
+            projectMapper.insertProjectUser(projectUserVo);
         } else {
             ProjectVo checkProjectVo = projectMapper.getProjectById(id);
             if (checkProjectVo == null) {
@@ -146,10 +153,14 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             }
             projectMapper.updateProject(projectVo);
             //清除用户数据
-            projectMapper.deleteProjectUserByProjectId(projectVo.getId());
+            projectMapper.deleteProjectUserByProjectId(projectVo.getId(), new ArrayList<String>() {{
+                this.add(ProjectUserType.MEMBER.getValue());
+                this.add(ProjectUserType.LEADER.getValue());
+            }});
         }
-        if (CollectionUtils.isNotEmpty(projectVo.getMemberIdList())) {
-            for (String userId : projectVo.getMemberIdList()) {
+
+        if (CollectionUtils.isNotEmpty(projectVo.getUserIdList())) {
+            for (String userId : projectVo.getUserIdList()) {
                 ProjectUserVo projectUserVo = new ProjectUserVo();
                 projectUserVo.setUserId(userId.replace(GroupSearch.USER.getValuePlugin(), ""));
                 projectUserVo.setUserType(ProjectUserType.MEMBER.getValue());

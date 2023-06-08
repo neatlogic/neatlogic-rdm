@@ -33,6 +33,13 @@
                 or description LIKE concat('%',#{keyword},'%')
                 )
             </if>
+            <if test="isClose != null">
+                AND is_close = #{isClose}
+            </if>
+            <if test="userIdList != null and userIdList.size() > 0">
+                AND b.user_id in
+                <foreach collection="userIdList" item="item" open="(" close=")" separator=",">#{item}</foreach>
+            </if>
         </where>
     </sql>
 
@@ -60,14 +67,26 @@
         </collection>
     </resultMap>
 
-    <select id="searchProjectCount" parameterType="neatlogic.framework.rdm.dto.ProjectVo" resultType="int">
+    <select id="searchProjectCount" parameterType="neatlogic.framework.rdm.dto.ProjectConditionVo" resultType="int">
         SELECT COUNT(distinct a.id)
         FROM rdm_project a
         LEFT JOIN rdm_project_user b ON a.id = b.project_id
         <include refid="searchProjectCondition"></include>
     </select>
 
-    <select id="searchProject" parameterType="neatlogic.framework.rdm.dto.ProjectVo"
+    <select id="searchProjectId" parameterType="neatlogic.framework.rdm.dto.ProjectConditionVo"
+            resultType="java.lang.Long">
+        select
+        distinct a.id
+        from rdm_project a
+        LEFT JOIN rdm_project_user b ON a.id = b.project_id
+        LEFT JOIN rdm_app c ON a.id = c.project_id
+        <include refid="searchProjectCondition"></include>
+        ORDER by a.id desc
+        LIMIT #{startNum}, #{pageSize}
+    </select>
+
+    <select id="searchProject" parameterType="neatlogic.framework.rdm.dto.ProjectConditionVo"
             resultMap="projectResultMap">
         select
         a.id,
@@ -90,9 +109,15 @@
         from rdm_project a
         LEFT JOIN rdm_project_user b ON a.id = b.project_id
         LEFT JOIN rdm_app c ON a.id = c.project_id
-        <include refid="searchProjectCondition"></include>
+        <where>
+            <if test="idList != null and idList.size > 0">
+                a.id in
+                <foreach collection="idList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
         ORDER by a.id desc, c.sort
-        LIMIT #{startNum}, #{pageSize}
     </select>
 
     <select id="getProjectAppTypeByProjectId" parameterType="java.lang.Long" resultType="java.lang.String">
@@ -165,6 +190,7 @@
             `start_date`  = #{startDate},
             `end_date`    = #{endDate},
             `color`       = #{color},
+            `is_close`    = #{isClose},
             `lcd`         = now(3),
             `lcu`         = #{lcu}
         WHERE `id` = #{id}
@@ -196,6 +222,7 @@
                                  color,
                                  type,
                                  template_id,
+                                 is_close,
                                  fcd,
                                  fcu)
         values (#{id},
@@ -206,6 +233,7 @@
                 #{color},
                 #{type},
                 #{templateId},
+                #{isClose},
                 NOW(3),
                 #{fcu})
     </insert>
@@ -235,10 +263,14 @@
           and to_status_id = #{toStatusId}
     </delete>
 
-    <delete id="deleteProjectUserByProjectId" parameterType="java.lang.Long">
+    <delete id="deleteProjectUserByProjectId">
         delete
         from rdm_project_user
-        where project_id = #{value}
+        where project_id = #{projectId}
+        <if test="userTypeList != null and userTypeList.size() > 0">
+            and user_type in
+            <foreach collection="userTypeList" item="item" open="(" close=")" separator=",">#{item}</foreach>
+        </if>
     </delete>
 
 

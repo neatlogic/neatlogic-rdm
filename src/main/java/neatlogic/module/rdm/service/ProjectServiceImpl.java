@@ -21,7 +21,6 @@ import neatlogic.framework.exception.database.DataBaseNotFoundException;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +32,6 @@ public class ProjectServiceImpl implements ProjectService {
     @Resource
     private ProjectSchemaMapper projectSchemaMapper;
 
-    @Resource
-    private ProjectMapper projectMapper;
 
     public EscapeTransactionJob.State dropObjectSchema(AppVo objectVo) {
         return new EscapeTransactionJob(() -> {

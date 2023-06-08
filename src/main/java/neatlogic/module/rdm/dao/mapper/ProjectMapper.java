@@ -17,6 +17,7 @@
 package neatlogic.module.rdm.dao.mapper;
 
 import neatlogic.framework.rdm.dto.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,10 +28,11 @@ public interface ProjectMapper {
 
     ProjectVo getProjectById(Long id);
 
-    int searchProjectCount(ProjectVo projectVo);
+    int searchProjectCount(ProjectConditionVo projectVo);
 
-    List<ProjectVo> searchProject(ProjectVo projectVo);
+    List<ProjectVo> searchProject(ProjectConditionVo projectVo);
 
+    List<Long> searchProjectId(ProjectConditionVo projectVo);
 
     List<ProjectStatusVo> getStatusByProjectId(Long projectId);
 
@@ -58,7 +60,7 @@ public interface ProjectMapper {
     int checkProjectNameIsExists(ProjectVo projectVo);
 
 
-    void deleteProjectUserByProjectId(Long projectId);
+    void deleteProjectUserByProjectId(@Param("projectId") Long projectId, @Param("userTypeList") List<String> userTypeList);
 
     void deleteProjectById(Long id);
 

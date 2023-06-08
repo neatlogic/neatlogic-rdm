@@ -244,6 +244,7 @@
         select
         count(distinct ri.id)
         from rdm_issue ri
+        join rdm_app ra on ri.app_id = ra.id
         <choose>
             <when test="fromId != null">
                 join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
@@ -277,6 +278,7 @@
         select
         distinct ri.id
         from rdm_issue ri
+        join rdm_app ra on ri.app_id = ra.id
         <choose>
             <when test="fromId != null">
                 join rdm_issue_rel rir on rir.to_app_id = #{appId} and rir.to_issue_id = ri.id and rir.from_issue_id =
@@ -360,6 +362,9 @@
 
     <sql id="searchIssueSql">
         <where>
+            <if test="projectId != null">
+                and ra.project_id = #{projectId}
+            </if>
             <if test="appId != null">
                 and ri.app_id = #{appId}
             </if>
@@ -389,6 +394,14 @@
             <if test="priority != null">
                 and ri.priority = #{priority}
             </if>
+            <choose>
+                <when test="isExpired != null and isExpired == 1">
+                    and ri.end_date &lt; NOW()
+                </when>
+                <otherwise>
+                    and (ri.end_date &gt;= NOW() or ri.end_date is null)
+                </otherwise>
+            </choose>
             <if test="statusList != null and statusList.size() > 0">
                 and ri.status in
                 <foreach collection="statusList" item="status" open="(" close=")" separator=",">#{status}</foreach>
