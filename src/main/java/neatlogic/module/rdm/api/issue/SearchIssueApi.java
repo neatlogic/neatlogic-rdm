@@ -60,9 +60,10 @@ public class SearchIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
+    @Input({@Param(name = "keyword", type = ApiParamType.STRING, maxLength = 50, desc = "common.keyword"),
             @Param(name = "fromId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
             @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid"),
+            @Param(name = "projectId", type = ApiParamType.LONG, desc = "term.rdm.projectid"),
             @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "common.priority"),
             @Param(name = "status", type = ApiParamType.JSONARRAY, desc = "common.status"),
@@ -70,8 +71,9 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "iteration", type = ApiParamType.LONG, desc = "common.iteration"),
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "common.catalog"),
             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.worker"),
-            @Param(name = "isEnd", type = ApiParamType.INTEGER, desc = "common.isend"),
-            @Param(name = "isMine", type = ApiParamType.INTEGER, desc = "term.rdm.ismytask"),
+            @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
+            @Param(name = "isMine", type = ApiParamType.INTEGER, rule = "0,1", desc = "term.rdm.ismytask"),
+            @Param(name = "isExpired", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isexpired"),
             @Param(name = "mode", type = ApiParamType.ENUM, desc = "common.displaymode", rule = "level,list"),
             @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "common.customattribute"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
