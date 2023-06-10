@@ -94,6 +94,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long fromId = paramObj.getLong("fromId");
         Long toId = paramObj.getLong("toId");
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
+        issueVo.setCreateUser(UserContext.get().getUserUuid(true));
         issueVo.formatAttr();
         Long id = paramObj.getLong("id");
         List<AppAttrVo> appAttrList = attrMapper.getAttrByAppId(issueVo.getAppId());

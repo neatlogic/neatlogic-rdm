@@ -17,24 +17,6 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
-    <select id="getAppIssueCountByProjectIdAndUserId" resultType="neatlogic.framework.rdm.dto.AppVo">
-        select count(distinct ri.id) as issueCount,
-        ra.id as id,
-        ra.app_type as type,
-        ra.sort as sort
-        from rdm_issue ri
-        join rdm_app ra on ri.app_id = ra.id
-        left join rdm_issue_user riu
-        on ri.id = riu.issue_id
-        <where>
-            ra.project_id = #{projectId}
-            <if test="userId != null">
-                and riu.user_id = #{userId}
-            </if>
-        </where>
-        group by ra.id
-        order by ra.sort
-    </select>
 
     <select id="getAppStatusRel" parameterType="neatlogic.framework.rdm.dto.AppStatusRelVo"
             resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">

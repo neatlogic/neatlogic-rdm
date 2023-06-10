@@ -73,6 +73,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.worker"),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
             @Param(name = "isMine", type = ApiParamType.INTEGER, rule = "0,1", desc = "term.rdm.ismytask"),
+            @Param(name = "isMyCreated", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.ismycreated"),
             @Param(name = "isExpired", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isexpired"),
             @Param(name = "mode", type = ApiParamType.ENUM, desc = "common.displaymode", rule = "level,list"),
             @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "common.customattribute"),
@@ -85,6 +86,9 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
+        if (issueVo.getIsMyCreated() != null && issueVo.getIsMyCreated().equals(1)) {
+            issueVo.setCreateUser(UserContext.get().getUserUuid(true));
+        }
         if (issueVo.getIsMine() != null && issueVo.getIsMine().equals(1)) {
             issueVo.setUserIdList(new ArrayList<String>() {{
                 this.add(UserContext.get().getUserUuid(true));

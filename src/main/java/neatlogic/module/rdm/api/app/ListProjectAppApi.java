@@ -22,13 +22,16 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.rdm.dto.IssueConditionVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -41,9 +44,12 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
     @Resource
     private AppMapper appMapper;
 
+    @Resource
+    private IssueMapper issueMapper;
+
     @Override
     public String getName() {
-        return "获取项目应用列表";
+        return "nmraa.listprojectappapi.getname";
     }
 
     @Override
@@ -51,21 +57,36 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "projectId", desc = "项目id", isRequired = true, type = ApiParamType.LONG),
-            @Param(name = "needIssueCount", desc = "是否需要返回任务数量", type = ApiParamType.INTEGER),
-            @Param(name = "isMine", desc = "是否只查询包含当前用户任务的应用列表", type = ApiParamType.INTEGER)
+    @Input({@Param(name = "projectId", desc = "term.rdm.projectid", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "needIssueCount", desc = "nmraa.listprojectappapi.input.param.desc.needissuecount", type = ApiParamType.INTEGER),
+            @Param(name = "isMine", desc = "nmraa.listprojectappapi.input.param.desc.ismine", type = ApiParamType.INTEGER),
+            @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
+            @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend")
     })
     @Output({@Param(explode = AppVo[].class)})
-    @Description(desc = "获取项目应用列表接口")
+    @Description(desc = "nmraa.listprojectappapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long projectId = paramObj.getLong("projectId");
         Integer needIssueCount = paramObj.getInteger("needIssueCount");
         Integer isMine = paramObj.getInteger("isMine");
+        Integer isMyCreated = paramObj.getInteger("isMyCreated");
+        Integer isEnd = paramObj.getInteger("isEnd");
         List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId);
 
         if (needIssueCount != null && needIssueCount.equals(1)) {
-            List<AppVo> userAppList = appMapper.getAppIssueCountByProjectIdAndUserId(projectId, (isMine != null && isMine.equals(1)) ? UserContext.get().getUserUuid(true) : null);
+            IssueConditionVo issueConditionVo = new IssueConditionVo();
+            issueConditionVo.setProjectId(projectId);
+            issueConditionVo.setIsEnd(isEnd);
+            if (isMine != null && isMine.equals(1)) {
+                List<String> userIdList = new ArrayList<>();
+                userIdList.add(UserContext.get().getUserUuid(true));
+                issueConditionVo.setUserIdList(userIdList);
+            }
+            if (isMyCreated != null && isMyCreated.equals(1)) {
+                issueConditionVo.setCreateUser(UserContext.get().getUserUuid(true));
+            }
+            List<AppVo> userAppList = issueMapper.getAppIssueCountByProjectIdAndUserId(issueConditionVo);
             Iterator<AppVo> itApp = appList.iterator();
             while (itApp.hasNext()) {
                 AppVo appVo = itApp.next();

@@ -25,6 +25,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IssueMapper {
+    List<ProjectVo> getProjectIssueCountByUserId(IssueConditionVo issueConditionVo);
+
+    List<AppVo> getAppIssueCountByProjectIdAndUserId(IssueConditionVo issueConditionVo);
+
     IssueVo getIssueById(Long id);
 
     List<AppIssueCountVo> getIssueCountByIterationId(@Param("iterationId") Long iterationId);

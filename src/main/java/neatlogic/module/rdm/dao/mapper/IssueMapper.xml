@@ -369,6 +369,9 @@
             <if test="appId != null">
                 and ri.app_id = #{appId}
             </if>
+            <if test="createUser != null and createUser != ''">
+                and ri.create_user = #{createUser}
+            </if>
             <choose>
                 <when test="parentId == null and mode == 'level'">
                     and ri.parent_id is null
@@ -382,9 +385,6 @@
                 <foreach collection="wordList" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
-            </if>
-            <if test="createUser != null">
-                and ri.create_user = #{createUser}
             </if>
             <if test="catalogLft != null and catalogRht != null">
                 and rac.lft &gt;= #{catalogLft} and rac.rht &lt;= #{catalogRht}
@@ -495,6 +495,65 @@
                         </choose>
                     </if>
                 </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <select id="getProjectIssueCountByUserId" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo"
+            resultType="neatlogic.framework.rdm.dto.ProjectVo">
+        select count(distinct ri.id) as issueCount,
+        rp.id as id,
+        rp.name as name
+        from rdm_issue ri
+        join rdm_app ra on ri.app_id = ra.id
+        join rdm_project rp on ra.project_id = rp.id and rp.is_close = 0
+        left join rdm_app_status as ras on ri.status = ras.id
+        left join rdm_issue_user riu
+        on ri.id = riu.issue_id
+        <include refid="searchIssueCountSql"/>
+        group by rp.id
+        order by rp.id desc
+    </select>
+
+    <select id="getAppIssueCountByProjectIdAndUserId" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo"
+            resultType="neatlogic.framework.rdm.dto.AppVo">
+        select count(distinct ri.id) as issueCount,
+        ra.id as id,
+        ra.app_type as type,
+        ra.sort as sort
+        from rdm_issue ri
+        join rdm_app ra on ri.app_id = ra.id
+        left join rdm_app_status as ras on ri.status = ras.id
+        left join rdm_issue_user riu
+        on ri.id = riu.issue_id
+        <include refid="searchIssueCountSql"/>
+        group by ra.id
+        order by ra.sort
+    </select>
+
+    <sql id="searchIssueCountSql">
+        <where>
+            <if test="projectId != null">
+                and ra.project_id = #{projectId}
+            </if>
+            <if test="createUser != null and createUser != ''">
+                and ri.create_user = #{createUser}
+            </if>
+            <if test="userIdList != null and userIdList.size() > 0">
+                AND riu.user_id in
+                <foreach collection="userIdList" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="isEnd != null">
+                <choose>
+                    <when test="isEnd == 0">
+                        AND (ras.is_end = 0 or ras.is_end is null)
+                    </when>
+                    <otherwise>
+                        AND ras.is_end = 1
+                    </otherwise>
+                </choose>
             </if>
         </where>
     </sql>

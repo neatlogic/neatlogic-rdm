@@ -22,7 +22,6 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface AppMapper {
-    List<AppVo> getAppIssueCountByProjectIdAndUserId(@Param("projectId") Long projectId, @Param("userId") String userId);
 
     AppStatusRelVo getAppStatusRel(AppStatusRelVo appStatusRelVo);
 
