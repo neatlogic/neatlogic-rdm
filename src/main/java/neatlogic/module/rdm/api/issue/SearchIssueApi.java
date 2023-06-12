@@ -75,6 +75,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "isMine", type = ApiParamType.INTEGER, rule = "0,1", desc = "term.rdm.ismytask"),
             @Param(name = "isMyCreated", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.ismycreated"),
             @Param(name = "isExpired", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isexpired"),
+            @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite"),
             @Param(name = "mode", type = ApiParamType.ENUM, desc = "common.displaymode", rule = "level,list"),
             @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "common.customattribute"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),

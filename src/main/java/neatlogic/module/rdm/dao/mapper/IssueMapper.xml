@@ -17,7 +17,12 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IssueMapper">
-
+    <select id="checkIssueIsFavorite" resultType="int">
+        select count(1)
+        from rdm_favoriteissue
+        where issue_id = #{issueId}
+          and user_id = #{userId}
+    </select>
 
     <select id="getIssueCountByIterationId" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppIssueCountVo">
@@ -63,7 +68,7 @@
         where b.issue_id = #{value}
     </select>
 
-    <select id="getIssueById" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultMap="issueResultMap">
+    <select id="getIssueById" parameterType="java.lang.Long" resultMap="issueResultMap">
         select ri.id,
                ri.name,
                ri.app_id                                                             as appId,
@@ -190,6 +195,7 @@
         <result property="commentCount" column="commentCount"/>
         <result property="auditCount" column="auditCount"/>
         <result property="childrenCount" column="childrenCount"/>
+        <result property="isFavorite" column="isFavorite"/>
         <collection property="tagList" ofType="java.lang.String">
             <result column="tagName"/>
         </collection>
@@ -212,7 +218,6 @@
             <result column="direction" property="direction"/>
         </collection>
     </resultMap>
-
 
     <select id="getAttrByIssueIdList" parameterType="neatlogic.framework.rdm.dto.IssueVo"
             resultType="java.util.HashMap">
@@ -335,6 +340,8 @@
         ri.catalog,
         rac.name as catalogName,
         rt.name as tagName,
+        (select count(1) from rdm_favoriteissue x where x.issue_id = ri.id and x.user_id = #{currentUser}) as
+        isFavorite,
         (select count(1) from rdm_issue cri where cri.parent_id = ri.id) as childrenCount,
         riu.user_id as userId
         from rdm_issue ri
@@ -442,6 +449,10 @@
                         AND ras.is_end = 1
                     </otherwise>
                 </choose>
+            </if>
+            <if test="isFavorite != null and isFavorite == 1">
+                and exists (select 1 from rdm_favoriteissue rf where rf.issue_id = ri.id and rf.user_id =
+                #{currentUser})
             </if>
             <if test="tableName != null and tableName != '' and attrFilterList != null and attrFilterList.size() > 0">
                 <foreach collection="attrFilterList" item="attrFilter">
@@ -555,8 +566,13 @@
                     </otherwise>
                 </choose>
             </if>
+            <if test="isFavorite != null and isFavorite == 1">
+                AND exists (select 1 from rdm_favoriteissue rf where rf.issue_id = ri.id and rf.user_id =
+                #{currentUser})
+            </if>
         </where>
     </sql>
+
 
     <update id="clearIssueParentId" parameterType="java.lang.Long">
         update rdm_issue
@@ -586,6 +602,11 @@
         issue_id = #{id}
         where issue_id = #{id}
     </update>
+
+    <insert id="insertIssueIsFavorite">
+        insert into rdm_favoriteissue (issue_id, user_id)
+        values (#{issueId}, #{userId})
+    </insert>
 
     <insert id="insertIssueFile">
         insert into rdm_issue_file (issue_id, file_id)
@@ -651,6 +672,13 @@
         #{id}
         )
     </insert>
+
+    <delete id="deleteFavoriteIssue">
+        delete
+        from rdm_favoriteissue
+        where issue_id = #{issueId}
+          and user_id = #{userId}
+    </delete>
 
     <delete id="deleteIssueRel">
         delete

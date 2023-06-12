@@ -54,7 +54,8 @@ public class GetProjectIssueCountApi extends PrivateApiComponentBase {
     @Input({
             @Param(name = "isMine", desc = "nmraa.listprojectappapi.input.param.desc.ismine", type = ApiParamType.INTEGER),
             @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
-            @Param(name = "isEnd", type = ApiParamType.INTEGER, desc = "common.isend")})
+            @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
+            @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")})
     @Output({@Param(explode = ProjectVo[].class)})
     @Description(desc = "获取项目任务数量")
     @Override
@@ -62,8 +63,10 @@ public class GetProjectIssueCountApi extends PrivateApiComponentBase {
         Integer isMine = paramObj.getInteger("isMine");
         Integer isMyCreated = paramObj.getInteger("isMyCreated");
         Integer isEnd = paramObj.getInteger("isEnd");
+        Integer isFavorite = paramObj.getInteger("isFavorite");
         IssueConditionVo issueConditionVo = new IssueConditionVo();
         issueConditionVo.setIsEnd(isEnd);
+        issueConditionVo.setIsFavorite(isFavorite);
         if (isMine != null && isMine.equals(1)) {
             List<String> userIdList = new ArrayList<>();
             userIdList.add(UserContext.get().getUserUuid(true));

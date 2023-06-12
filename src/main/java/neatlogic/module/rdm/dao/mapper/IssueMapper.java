@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IssueMapper {
+    int checkIssueIsFavorite(@Param("issueId") Long issueId, @Param("userId") String userId);
+
     List<ProjectVo> getProjectIssueCountByUserId(IssueConditionVo issueConditionVo);
 
     List<AppVo> getAppIssueCountByProjectIdAndUserId(IssueConditionVo issueConditionVo);
@@ -63,6 +65,8 @@ public interface IssueMapper {
 
     void insertIssueFile(@Param("issueId") Long issueId, @Param("fileId") Long fileId);
 
+    void insertIssueIsFavorite(@Param("issueId") Long issueId, @Param("userId") String userId);
+
     void insertIssueTag(@Param("issueId") Long issueId, @Param("tagId") Long tagId);
 
     void insertIssueRel(IssueRelVo issueRelVo);
@@ -82,4 +86,6 @@ public interface IssueMapper {
     void deleteIssueFileByFileId(Long fileId);
 
     void deleteIssueRel(@Param("fromIssueId") Long fromIssueId, @Param("toIssueId") Long toIssueId);
+
+    void deleteFavoriteIssue(@Param("issueId") Long issueId, @Param("userId") String userId);
 }
