@@ -27,7 +27,7 @@ public interface AttrMapper {
 
     AppAttrVo getAttrById(Long attrId);
 
-    int getMaxAppAttrSortByAppId(Long appId);
+    Integer getMaxAppAttrSortByAppId(Long appId);
 
     List<AppAttrVo> searchAppAttr(AppAttrVo appAttrVo);
 

@@ -59,7 +59,7 @@
         where id = #{value}
     </select>
 
-    <select id="getMaxAppAttrSortByAppId" parameterType="java.lang.Long" resultType="int">
+    <select id="getMaxAppAttrSortByAppId" parameterType="java.lang.Long" resultType="java.lang.Integer">
         select max(sort)
         FROM rdm_app_attr
         WHERE app_id = #{value}

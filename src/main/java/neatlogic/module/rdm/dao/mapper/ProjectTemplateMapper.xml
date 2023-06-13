@@ -50,5 +50,6 @@
                 AND is_active = #{isActive}
             </if>
         </where>
+        order by a.id,b.sort
     </select>
 </mapper>

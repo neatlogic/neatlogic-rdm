@@ -31,7 +31,6 @@ import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.framework.util.RegexUtils;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +44,6 @@ import javax.annotation.Resource;
 public class SaveAttrApi extends PrivateApiComponentBase {
     @Resource
     private AttrMapper attrMapper;
-    @Resource
-    private ProjectMapper projectMapper;
 
 
     @Resource
@@ -54,7 +51,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "保存应用属性";
+        return "nmraa.saveattrapi.getname";
     }
 
     @Override
@@ -62,17 +59,17 @@ public class SaveAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "属性id，不提供代表新增"),
-            @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
-            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, desc = "唯一标识", isRequired = true, maxLength = 50),
-            @Param(name = "label", type = ApiParamType.STRING, desc = "名称", isRequired = true, maxLength = 50),
-            @Param(name = "type", type = ApiParamType.ENUM, desc = "类型", isRequired = true, member = AttrType.class),
-            @Param(name = "isActive", type = ApiParamType.INTEGER, defaultValue = "0", desc = "是否激活", rule = "1,0"),
-            @Param(name = "isRequired", type = ApiParamType.INTEGER, defaultValue = "0", desc = "是否必填", rule = "1,0"),
-            @Param(name = "description", type = ApiParamType.STRING, desc = "说明", maxLength = 500)
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmraa.saveattrapi.input.param.desc.id"),
+            @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc", isRequired = true),
+            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, desc = "common.uniquename", isRequired = true, maxLength = 50),
+            @Param(name = "label", type = ApiParamType.STRING, desc = "common.name", isRequired = true, maxLength = 50),
+            @Param(name = "type", type = ApiParamType.ENUM, desc = "common.type", isRequired = true, member = AttrType.class),
+            @Param(name = "isActive", type = ApiParamType.INTEGER, defaultValue = "0", desc = "common.isactive", rule = "1,0"),
+            @Param(name = "isRequired", type = ApiParamType.INTEGER, defaultValue = "0", desc = "common.isrequired", rule = "1,0"),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "common.description", maxLength = 500)
     })
-    @Output({@Param(name = "id", desc = "属性id", type = ApiParamType.LONG)})
-    @Description(desc = "保存应用属性接口")
+    @Output({@Param(name = "id", desc = "nmcaa.getattrapi.input.param.desc.id", type = ApiParamType.LONG)})
+    @Description(desc = "nmraa.saveattrapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppAttrVo appAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
@@ -82,7 +79,8 @@ public class SaveAttrApi extends PrivateApiComponentBase {
         }
         Long id = paramObj.getLong("id");
         if (id == null) {
-            int maxSort = attrMapper.getMaxAppAttrSortByAppId(appAttrVo.getAppId());
+            Integer maxSort = attrMapper.getMaxAppAttrSortByAppId(appAttrVo.getAppId());
+            maxSort = maxSort == null ? 0 : maxSort;
             appAttrVo.setSort(maxSort + 1);
             attrMapper.insertAppAttr(appAttrVo);
             EscapeTransactionJob.State s = new EscapeTransactionJob(() -> projectSchemaMapper.insertAppTableAttr(appAttrVo.getTableName(), appAttrVo)).execute();
