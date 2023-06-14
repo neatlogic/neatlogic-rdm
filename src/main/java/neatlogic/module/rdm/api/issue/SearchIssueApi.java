@@ -65,6 +65,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid"),
             @Param(name = "projectId", type = ApiParamType.LONG, desc = "term.rdm.projectid"),
             @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc"),
+            @Param(name = "parentId", type = ApiParamType.LONG, desc = "term.rdm.parenttaskid"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "common.priority"),
             @Param(name = "status", type = ApiParamType.JSONARRAY, desc = "common.status"),
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "common.tag"),

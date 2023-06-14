@@ -556,6 +556,9 @@
                     #{item}
                 </foreach>
             </if>
+            <if test="appType != null and appType != ''">
+                AND ra.app_type = #{appType}
+            </if>
             <if test="isEnd != null">
                 <choose>
                     <when test="isEnd == 0">

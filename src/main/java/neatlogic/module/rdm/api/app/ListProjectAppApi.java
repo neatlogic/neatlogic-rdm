@@ -23,6 +23,7 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.dto.IssueConditionVo;
+import neatlogic.framework.rdm.enums.AppType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -62,6 +63,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             @Param(name = "isMine", desc = "nmraa.listprojectappapi.input.param.desc.ismine", type = ApiParamType.INTEGER),
             @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
+            @Param(name = "appType", type = ApiParamType.ENUM, member = AppType.class, desc = "term.rdm.apptype"),
             @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")
     })
     @Output({@Param(explode = AppVo[].class)})
@@ -74,6 +76,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         Integer isMyCreated = paramObj.getInteger("isMyCreated");
         Integer isEnd = paramObj.getInteger("isEnd");
         Integer isFavorite = paramObj.getInteger("isFavorite");
+        String appType = paramObj.getString("appType");
         List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId);
 
         if (needIssueCount != null && needIssueCount.equals(1)) {
@@ -81,6 +84,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             issueConditionVo.setProjectId(projectId);
             issueConditionVo.setIsEnd(isEnd);
             issueConditionVo.setIsFavorite(isFavorite);
+            issueConditionVo.setAppType(appType);
             if (isMine != null && isMine.equals(1)) {
                 List<String> userIdList = new ArrayList<>();
                 userIdList.add(UserContext.get().getUserUuid(true));

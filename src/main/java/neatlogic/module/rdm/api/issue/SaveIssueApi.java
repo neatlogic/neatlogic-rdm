@@ -65,7 +65,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "保存任务";
+        return "nmrai.saveissueapi.getname";
     }
 
     @Override
@@ -73,26 +73,28 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "id，不提供代表新增任务"),
-            @Param(name = "fromId", type = ApiParamType.LONG, desc = "来源任务id"),
-            @Param(name = "toId", type = ApiParamType.LONG, desc = "目标任务id"),
-            @Param(name = "parentId", type = ApiParamType.LONG, desc = "父任务id"),
-            @Param(name = "appId", type = ApiParamType.LONG, desc = "应用id", isRequired = true),
-            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "任务名称"),
-            @Param(name = "priority", type = ApiParamType.LONG, desc = "优先级"),
-            @Param(name = "iteration", type = ApiParamType.LONG, desc = "迭代"),
-            @Param(name = "catalog", type = ApiParamType.LONG, desc = "目录"),
-            @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "标签"),
-            @Param(name = "status", type = ApiParamType.LONG, desc = "状态"),
-            @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "自定义属性列表"),
-            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "用户列表"),
-            @Param(name = "comment", type = ApiParamType.STRING, desc = "评论")})
-    @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "任务id")})
-    @Description(desc = "保存任务接口")
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmrai.saveissueapi.input.param.desc.id"),
+            @Param(name = "fromId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
+            @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid"),
+            @Param(name = "relType", type = ApiParamType.ENUM, member = IssueRelType.class, desc = "common.reltype"),
+            @Param(name = "parentId", type = ApiParamType.LONG, desc = "term.rdm.parenttaskid"),
+            @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc", isRequired = true),
+            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "nmrai.saveissueapi.input.param.desc.name"),
+            @Param(name = "priority", type = ApiParamType.LONG, desc = "common.priority"),
+            @Param(name = "iteration", type = ApiParamType.LONG, desc = "common.iteration"),
+            @Param(name = "catalog", type = ApiParamType.LONG, desc = "common.catalog"),
+            @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "common.tag"),
+            @Param(name = "status", type = ApiParamType.LONG, desc = "common.status"),
+            @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "nmrai.saveissueapi.input.param.desc.attrlist"),
+            @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.userlist"),
+            @Param(name = "comment", type = ApiParamType.STRING, desc = "common.comment")})
+    @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "term.rdm.issueid")})
+    @Description(desc = "nmrai.saveissueapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long fromId = paramObj.getLong("fromId");
         Long toId = paramObj.getLong("toId");
+        String relType = paramObj.getString("relType");
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         issueVo.setCreateUser(UserContext.get().getUserUuid(true));
         issueVo.formatAttr();
@@ -155,13 +157,13 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (fromId != null) {
             IssueVo fromIssue = issueMapper.getIssueById(fromId);
             if (fromIssue != null) {
-                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId(), IssueRelType.EXTEND.getValue());
+                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId(), StringUtils.isNotBlank(relType) ? relType : IssueRelType.EXTEND.getValue());
                 issueMapper.insertIssueRel(issueRelVo);
             }
         } else if (toId != null) {
             IssueVo toIssue = issueMapper.getIssueById(toId);
             if (toIssue != null) {
-                IssueRelVo issueRelVo = new IssueRelVo(issueVo.getAppId(), issueVo.getId(), toIssue.getAppId(), toIssue.getId(), IssueRelType.EXTEND.getValue());
+                IssueRelVo issueRelVo = new IssueRelVo(issueVo.getAppId(), issueVo.getId(), toIssue.getAppId(), toIssue.getId(), StringUtils.isNotBlank(relType) ? relType : IssueRelType.EXTEND.getValue());
                 issueMapper.insertIssueRel(issueRelVo);
             }
         }
