@@ -21,7 +21,7 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.rdm.enums.SystemAttrType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -29,17 +29,19 @@ import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class SearchPrivateAttrApi extends PrivateApiComponentBase {
+public class SearchAttrApi extends PrivateApiComponentBase {
     @Resource
     private AttrMapper attrMapper;
 
     @Override
     public String getName() {
-        return "查询对象属性";
+        return "nmraa.searchprivateattrapi.getname";
     }
 
     @Override
@@ -47,13 +49,30 @@ public class SearchPrivateAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", desc = "应用id", isRequired = true, type = ApiParamType.LONG)})
-    @Output({@Param(explode = AppVo[].class)})
-    @Description(desc = "查询应用属性接口")
+    @Input({@Param(name = "appId", desc = "nmraa.getappapi.input.param.desc", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER)})
+    @Output({@Param(explode = AppAttrVo[].class)})
+    @Description(desc = "nmraa.searchprivateattrapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppAttrVo appAttrVo = JSONObject.toJavaObject(paramObj, AppAttrVo.class);
-        return attrMapper.searchAppAttr(appAttrVo);
+        List<AppAttrVo> attrList = attrMapper.searchAppAttr(appAttrVo);
+        Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
+        if (needSystemAttr != null && needSystemAttr.equals(1)) {
+            List<AppAttrVo> systemAttrList = new ArrayList<>();
+            for (SystemAttrType attrType : SystemAttrType.values()) {
+                AppAttrVo systemAttrVo = new AppAttrVo();
+                systemAttrVo.setAppId(appAttrVo.getAppId());
+                systemAttrVo.setId(0L);//避免自动分配id
+                systemAttrVo.setType(attrType.getType());
+                systemAttrVo.setName(attrType.getName());
+                systemAttrVo.setLabel(attrType.getLabel());
+                systemAttrVo.setTypeText(attrType.getTypeText());
+                systemAttrList.add(systemAttrVo);
+            }
+            attrList.addAll(0, systemAttrList);
+        }
+        return attrList;
     }
 
     @Override

@@ -379,6 +379,14 @@
             <if test="createUser != null and createUser != ''">
                 and ri.create_user = #{createUser}
             </if>
+            <if test="createDateRange != null">
+                <if test="createDateRange.size() > 0">
+                    AND ri.create_date &gt;= STR_TO_DATE(#{createDateRange[0]},'%Y-%m-%d')
+                </if>
+                <if test="createDateRange.size() > 1">
+                    AND ri.create_date &lt;= STR_TO_DATE(#{createDateRange[1]},'%Y-%m-%d')
+                </if>
+            </if>
             <choose>
                 <when test="parentId == null and mode == 'level'">
                     and ri.parent_id is null
