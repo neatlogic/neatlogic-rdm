@@ -127,6 +127,20 @@ CREATE TABLE `rdm_app_usersetting`
   COLLATE = utf8mb4_general_ci;
 
 -- ----------------------------
+-- Table structure for rdm_favoriteissue
+-- ----------------------------
+DROP TABLE IF EXISTS `rdm_favoriteissue`;
+CREATE TABLE `rdm_favoriteissue`
+(
+    `issue_id` bigint                              NOT NULL,
+    `user_id`  char(32) COLLATE utf8mb4_general_ci NOT NULL,
+    PRIMARY KEY (`issue_id`, `user_id`),
+    KEY `idx_userid` (`user_id`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
+
+-- ----------------------------
 -- Table structure for rdm_issue
 -- ----------------------------
 DROP TABLE IF EXISTS `rdm_issue`;
@@ -311,6 +325,7 @@ CREATE TABLE `rdm_project`
     `fcu`         char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci     DEFAULT NULL,
     `lcd`         timestamp(3) NULL                                             DEFAULT NULL,
     `lcu`         char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci     DEFAULT NULL,
+    `is_close`    tinyint                                                       DEFAULT NULL COMMENT '是否关闭',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
@@ -352,20 +367,6 @@ CREATE TABLE `rdm_project_status_rel`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
 
--- ----------------------------
--- Table structure for rdm_project_template
--- ----------------------------
-DROP TABLE IF EXISTS `rdm_project_template`;
-CREATE TABLE `rdm_project_template`
-(
-    `id`        bigint NOT NULL COMMENT 'id',
-    `name`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板名称',
-    `is_active` tinyint                                                      DEFAULT NULL COMMENT '是否激活',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_general_ci;
-
 /*
  * Copyright(c) 2023 NeatLogic Co., Ltd. All Rights Reserved.
  *
@@ -381,6 +382,20 @@ CREATE TABLE `rdm_project_template`
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+-- ----------------------------
+-- Table structure for rdm_project_template
+-- ----------------------------
+DROP TABLE IF EXISTS `rdm_project_template`;
+CREATE TABLE `rdm_project_template`
+(
+    `id`        bigint NOT NULL COMMENT 'id',
+    `name`      varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板名称',
+    `is_active` tinyint                                                      DEFAULT NULL COMMENT '是否激活',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci;
 
 -- ----------------------------
 -- Table structure for rdm_project_template_apptype
@@ -402,9 +417,9 @@ CREATE TABLE `rdm_project_template_apptype`
 DROP TABLE IF EXISTS `rdm_project_user`;
 CREATE TABLE `rdm_project_user`
 (
-    `project_id` bigint                                                                    DEFAULT NULL,
-    `user_id`    char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci                 DEFAULT NULL,
-    `user_type`  enum ('member','leader') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
+    `project_id` bigint                                                                            DEFAULT NULL,
+    `user_id`    char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci                         DEFAULT NULL,
+    `user_type`  enum ('member','leader','owner') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;

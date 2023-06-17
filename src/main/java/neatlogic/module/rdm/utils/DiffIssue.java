@@ -38,6 +38,10 @@ public class DiffIssue {
         if (!Objects.equals(oldIssueVo.getName(), newIssueVo.getName())) {
             auditList.add(new IssueAuditVo(issueId, "name", oldIssueVo.getName(), newIssueVo.getName()));
         }
+        //比较内容
+        if (!Objects.equals(oldIssueVo.getContent(), newIssueVo.getContent())) {
+            auditList.add(new IssueAuditVo(issueId, "content", oldIssueVo.getContent(), newIssueVo.getContent()));
+        }
         //比较优先级
         if (!Objects.equals(oldIssueVo.getPriority(), newIssueVo.getPriority())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.PRIORITY.getType())).findFirst();

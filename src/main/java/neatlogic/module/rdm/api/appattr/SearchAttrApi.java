@@ -29,7 +29,6 @@ import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,17 +58,7 @@ public class SearchAttrApi extends PrivateApiComponentBase {
         List<AppAttrVo> attrList = attrMapper.searchAppAttr(appAttrVo);
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         if (needSystemAttr != null && needSystemAttr.equals(1)) {
-            List<AppAttrVo> systemAttrList = new ArrayList<>();
-            for (SystemAttrType attrType : SystemAttrType.values()) {
-                AppAttrVo systemAttrVo = new AppAttrVo();
-                systemAttrVo.setAppId(appAttrVo.getAppId());
-                systemAttrVo.setId(0L);//避免自动分配id
-                systemAttrVo.setType(attrType.getType());
-                systemAttrVo.setName(attrType.getName());
-                systemAttrVo.setLabel(attrType.getLabel());
-                systemAttrVo.setTypeText(attrType.getTypeText());
-                systemAttrList.add(systemAttrVo);
-            }
+            List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(appAttrVo.getAppId());
             attrList.addAll(0, systemAttrList);
         }
         return attrList;

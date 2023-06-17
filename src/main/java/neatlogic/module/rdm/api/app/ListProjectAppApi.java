@@ -21,9 +21,11 @@ import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
+import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.dto.IssueConditionVo;
 import neatlogic.framework.rdm.enums.AppType;
+import neatlogic.framework.rdm.enums.SystemAttrType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -64,6 +66,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
             @Param(name = "appType", type = ApiParamType.ENUM, member = AppType.class, desc = "term.rdm.apptype"),
+            @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER),
             @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")
     })
     @Output({@Param(explode = AppVo[].class)})
@@ -76,9 +79,19 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         Integer isMyCreated = paramObj.getInteger("isMyCreated");
         Integer isEnd = paramObj.getInteger("isEnd");
         Integer isFavorite = paramObj.getInteger("isFavorite");
+        Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         String appType = paramObj.getString("appType");
         List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId);
-
+        if (needSystemAttr != null && needSystemAttr.equals(1)) {
+            for (AppVo appVo : appList) {
+                List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(appVo.getId());
+                if (appVo.getAttrList() != null) {
+                    appVo.getAttrList().addAll(0, systemAttrList);
+                } else {
+                    appVo.setAttrList(systemAttrList);
+                }
+            }
+        }
         if (needIssueCount != null && needIssueCount.equals(1)) {
             IssueConditionVo issueConditionVo = new IssueConditionVo();
             issueConditionVo.setProjectId(projectId);
