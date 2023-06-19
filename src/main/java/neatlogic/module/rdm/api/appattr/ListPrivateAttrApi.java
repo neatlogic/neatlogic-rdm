@@ -18,14 +18,13 @@ package neatlogic.module.rdm.api.appattr;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
+import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.ValueTextVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.enums.AttrType;
-import neatlogic.framework.restful.annotation.Description;
-import neatlogic.framework.restful.annotation.OperationType;
-import neatlogic.framework.restful.annotation.Output;
-import neatlogic.framework.restful.annotation.Param;
+import neatlogic.framework.rdm.enums.SystemAttrType;
+import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import org.springframework.stereotype.Service;
@@ -49,22 +48,26 @@ public class ListPrivateAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
+    @Input({
+            @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER)})
     @Output({@Param(explode = ValueTextVo[].class)})
     @Description(desc = "nmraa.listprivateattrapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         List<AppAttrVo> attrList = new ArrayList<>();
+        Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         for (AttrType attrType : AttrType.values()) {
             if (attrType.isPrivate()) {
                 AppAttrVo appAttrVo = new AppAttrVo();
                 appAttrVo.setName(attrType.getName());
                 appAttrVo.setLabel(attrType.getLabel());
                 appAttrVo.setType(attrType.getType());
-                appAttrVo.setIsRequired(0);
-                appAttrVo.setIsPrivate(1);
-                appAttrVo.setIsActive(1);
                 attrList.add(appAttrVo);
             }
+        }
+        if (needSystemAttr != null && needSystemAttr.equals(1)) {
+            List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(null);
+            attrList.addAll(0, systemAttrList);
         }
         return attrList;
     }

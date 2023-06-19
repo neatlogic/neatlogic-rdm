@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IssueMapper {
+
+    List<Long> getRelIssueIdList(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction);
+
     int checkIssueIsFavorite(@Param("issueId") Long issueId, @Param("userId") String userId);
 
     List<ProjectVo> getProjectIssueCountByUserId(IssueConditionVo issueConditionVo);

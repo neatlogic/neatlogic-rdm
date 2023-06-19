@@ -67,6 +67,9 @@
     <sql id="searchIterationSql">
         <where>
             a.project_id = #{projectId}
+            <if test="isOpen != null">
+                and a.is_open = #{isOpen}
+            </if>
             <if test="keyword != null and keyword != ''">
                 and a.name like concat('%',#{keyword}, '%')
             </if>

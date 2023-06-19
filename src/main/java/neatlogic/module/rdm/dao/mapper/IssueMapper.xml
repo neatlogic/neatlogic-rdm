@@ -17,6 +17,28 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IssueMapper">
+    <select id="getRelIssueIdList" resultType="java.lang.Long">
+        select
+        <choose>
+            <when test="direction == 'to'">
+                from_issue_id
+            </when>
+            <when test="direction == 'from'">
+                to_issue_id
+            </when>
+        </choose>
+        from rdm_issue_rel
+        where rel_type = #{relType}
+        <choose>
+            <when test="direction == 'to'">
+                and to_issue_id = #{issueId}
+            </when>
+            <when test="direction == 'from'">
+                and from_issue_id = #{issueId}
+            </when>
+        </choose>
+    </select>
+
     <select id="checkIssueIsFavorite" resultType="int">
         select count(1)
         from rdm_favoriteissue

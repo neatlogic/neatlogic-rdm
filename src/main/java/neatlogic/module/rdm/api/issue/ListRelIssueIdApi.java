@@ -14,35 +14,33 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.iteration;
+package neatlogic.module.rdm.api.issue;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
-import neatlogic.framework.common.dto.BasePageVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.IterationVo;
+import neatlogic.framework.rdm.enums.IssueRelDirection;
+import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.util.TableResultUtil;
-import neatlogic.module.rdm.dao.mapper.IterationMapper;
+import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class SearchIterationApi extends PrivateApiComponentBase {
+public class ListRelIssueIdApi extends PrivateApiComponentBase {
 
     @Resource
-    private IterationMapper iterationMapper;
+    private IssueMapper issueMapper;
 
     @Override
     public String getName() {
-        return "查询迭代";
+        return "nmrai.listrelissueidapi.getname";
     }
 
     @Override
@@ -50,26 +48,22 @@ public class SearchIterationApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
-            @Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.projectid"),
-            @Param(name = "isOpen", type = ApiParamType.INTEGER, rule = "0,1", desc = "term.rdm.isopen"),
-            @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
-            @Param(name = "pageSize", type = ApiParamType.STRING, desc = "common.rownum")})
-    @Output({@Param(explode = BasePageVo.class)})
-    @Description(desc = "查询迭代接口")
+    @Input({@Param(name = "issueId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.issueid"),
+            @Param(name = "relType", type = ApiParamType.ENUM, member = IssueRelType.class, isRequired = true, desc = "common.reltype"),
+            @Param(name = "direction", type = ApiParamType.ENUM, member = IssueRelDirection.class, isRequired = true, desc = "term.rdm.reldirection"),
+    })
+    @Output({@Param(explode = Long[].class)})
+    @Description(desc = "nmrai.listrelissueidapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        IterationVo iterationVo = JSONObject.toJavaObject(paramObj, IterationVo.class);
-        int rowNum = iterationMapper.searchIterationCount(iterationVo);
-        List<IterationVo> iterationList = null;
-        if (rowNum > 0) {
-            iterationList = iterationMapper.searchIteration(iterationVo);
-        }
-        return TableResultUtil.getResult(iterationList, iterationVo);
+        Long issueId = paramObj.getLong("issueId");
+        String relType = paramObj.getString("relType");
+        String direction = paramObj.getString("direction");
+        return issueMapper.getRelIssueIdList(issueId, relType, direction);
     }
 
     @Override
     public String getToken() {
-        return "/rdm/iteration/search";
+        return "/rdm/issue/rel/list";
     }
 }
