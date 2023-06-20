@@ -65,6 +65,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             @Param(name = "isMine", desc = "nmraa.listprojectappapi.input.param.desc.ismine", type = ApiParamType.INTEGER),
             @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
+            @Param(name = "isActive", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isactive"),
             @Param(name = "appType", type = ApiParamType.ENUM, member = AppType.class, desc = "term.rdm.apptype"),
             @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER),
             @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")
@@ -79,9 +80,10 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         Integer isMyCreated = paramObj.getInteger("isMyCreated");
         Integer isEnd = paramObj.getInteger("isEnd");
         Integer isFavorite = paramObj.getInteger("isFavorite");
+        Integer isActive = paramObj.getInteger("isActive");
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         String appType = paramObj.getString("appType");
-        List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId);
+        List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId, isActive);
         if (needSystemAttr != null && needSystemAttr.equals(1)) {
             for (AppVo appVo : appList) {
                 List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(appVo.getId());

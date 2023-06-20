@@ -22,6 +22,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface AppMapper {
+    AppVo getAppByProjectIdAndType(@Param("projectId") Long projectId, @Param("appType") String appType);
 
     AppStatusRelVo getAppStatusRel(AppStatusRelVo appStatusRelVo);
 
@@ -36,7 +37,7 @@ public interface AppMapper {
 
     List<AppVo> getIterationAppType(Long iterationId);
 
-    List<AppVo> getAppDetailByProjectId(Long projectId);
+    List<AppVo> getAppDetailByProjectId(@Param("projectId") Long projectId, @Param("isActive") Integer isActive);
 
     AppStatusVo getStatusById(Long id);
 
@@ -52,6 +53,7 @@ public interface AppMapper {
 
     void updateAppStatusType(AppStatusVo appStatusVo);
 
+    void updateAppIsActive(@Param("appId") Long appId, @Param("isActive") Integer isActive);
 
     void insertAppStatusRel(AppStatusRelVo appStatusRelVo);
 

@@ -98,12 +98,13 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             }
             projectVo.setType(projectTemplateVo.getName());
             projectMapper.insertProject(projectVo);
-            List<AppVo> objectList = new ArrayList<>();
+            List<AppVo> appList = new ArrayList<>();
             for (ProjectTemplateAppTypeVo appType : projectTemplateVo.getAppTypeList()) {
                 AppVo appVo = new AppVo();
                 appVo.setProjectId(projectVo.getId());
                 appVo.setType(appType.getName());
                 appVo.setSort(appType.getSort());
+                appVo.setIsActive(1);
                 appMapper.insertApp(appVo);
 
                 AttrType[] attrTypeList = AppType.getAttrList(appType.getName());
@@ -126,12 +127,14 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         }
                     }
                 }
-                objectList.add(appVo);
+                appList.add(appVo);
             }
-            for (AppVo objectVo : objectList) {
-                EscapeTransactionJob.State s = projectService.buildObjectSchema(objectVo);
-                if (!s.isSucceed()) {
-                    throw new CreateObjectSchemaException(objectVo.getName());
+            for (AppVo appVo : appList) {
+                if (appVo.getHasIssue()) {
+                    EscapeTransactionJob.State s = projectService.buildObjectSchema(appVo);
+                    if (!s.isSucceed()) {
+                        throw new CreateObjectSchemaException(appVo.getName());
+                    }
                 }
             }
 

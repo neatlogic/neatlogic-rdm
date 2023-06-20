@@ -14,53 +14,39 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.project;
+package neatlogic.module.rdm.api.app;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppVo;
-import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.transaction.core.EscapeTransactionJob;
-import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import neatlogic.module.rdm.service.ProjectService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.DELETE)
+@OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
-public class DeleteProjectApi extends PrivateApiComponentBase {
+public class UnactiveAppApi extends PrivateApiComponentBase {
 
-    @Resource
-    private ProjectMapper projectMapper;
 
     @Resource
     private AppMapper appMapper;
 
 
-    @Resource
-    private ProjectService projectService;
-
-    @Resource
-    private IssueMapper issueMapper;
-
     @Override
     public String getName() {
-        return "删除项目";
+        return "nmraa.unactiveappapi.getname";
     }
 
     @Override
@@ -68,26 +54,23 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", desc = "项目id", isRequired = true, type = ApiParamType.LONG)})
-    @Description(desc = "删除项目接口")
+    @Input({@Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.projectid"),
+            @Param(name = "appType", type = ApiParamType.STRING, isRequired = true, desc = "term.rdm.apptype")})
+    @Description(desc = "nmraa.unactiveappapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long projectId = paramObj.getLong("id");
-        List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId, null);
-        for (AppVo appVo : appList) {
-            issueMapper.deleteIssueByAppId(appVo);
-            appMapper.deleteAppById(appVo.getId());
-            EscapeTransactionJob.State s = projectService.dropObjectSchema(appVo);
-            if (!s.isSucceed()) {
-                throw new CreateObjectSchemaException(appVo.getName());
-            }
+        Long projectId = paramObj.getLong("projectId");
+        String appType = paramObj.getString("appType");
+        AppVo appVo = appMapper.getAppByProjectIdAndType(projectId, appType);
+        if (appVo != null) {
+            appMapper.updateAppIsActive(appVo.getId(), 0);
         }
-        projectMapper.deleteProjectById(projectId);
+
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/delete";
+        return "/rdm/app/unactive";
     }
 }
