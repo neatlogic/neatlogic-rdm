@@ -64,6 +64,7 @@
             <id property="id" column="appId"/>
             <result property="type" column="appType"/>
             <result property="sort" column="appSort"/>
+            <result property="configStr" column="configStr"/>
         </collection>
     </resultMap>
 
@@ -105,7 +106,8 @@
         b.user_type AS userType,
         c.id AS appId,
         c.app_type AS appType,
-        c.sort AS appSort
+        c.sort AS appSort,
+        c.config AS configStr
         from rdm_project a
         LEFT JOIN rdm_project_user b ON a.id = b.project_id
         LEFT JOIN rdm_app c ON a.id = c.project_id
@@ -143,7 +145,8 @@
                b.user_type   AS userType,
                c.id          AS appId,
                c.app_type    AS appType,
-               c.sort        AS appSort
+               c.sort        AS appSort,
+               c.config      AS configStr
         from rdm_project a
                  LEFT JOIN rdm_project_user b ON a.id = b.project_id
                  LEFT JOIN rdm_app c ON a.id = c.project_id

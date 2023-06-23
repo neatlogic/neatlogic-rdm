@@ -99,6 +99,7 @@
                a.app_type    as appType,
                a.project_id  AS projectId,
                a.sort,
+               a.config      as configStr,
                b.app_id      AS attrAppId,
                b.id          as attrId,
                b.type        as attrType,
@@ -121,6 +122,7 @@
                a.app_type    as appType,
                a.project_id  AS projectId,
                a.sort,
+               a.config      as configStr,
                b.id          as attrId,
                b.app_id      as attrAppId,
                b.type        as attrType,
@@ -142,6 +144,7 @@
         <result property="type" column="appType"/>
         <result property="projectId" column="projectId"/>
         <result property="sort" column="sort"/>
+        <result property="configStr" column="configStr"/>
         <collection property="attrList" ofType="neatlogic.framework.rdm.dto.AppAttrVo">
             <id property="id" column="attrId"/>
             <result property="appId" column="attrAppId"/>
@@ -161,6 +164,7 @@
                a.app_type    as appType,
                a.project_id  AS projectId,
                a.sort,
+               a.config      as configStr,
                b.id          as attrId,
                b.app_id      as attrAppId,
                b.type        as attrType,
@@ -186,6 +190,7 @@
         a.app_type as appType,
         a.project_id AS projectId,
         a.sort,
+        a.config as configStr,
         b.id as attrId,
         b.app_id as attrAppId,
         b.type as attrType,
@@ -238,6 +243,12 @@
                 #{color})
     </insert>
 
+    <update id="saveAppConfig" parameterType="neatlogic.framework.rdm.dto.AppVo">
+        update rdm_app
+        set config = #{configStr}
+        where id = #{id}
+    </update>
+
 
     <update id="updateAppStatus" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
         update rdm_app_status
@@ -280,8 +291,8 @@
     </update>
 
     <insert id="insertApp" parameterType="neatlogic.framework.rdm.dto.AppVo">
-        insert rdm_app (id, app_type, project_id, sort, is_active)
-        values (#{id}, #{type}, #{projectId}, #{sort}, #{isActive})
+        insert rdm_app (id, app_type, project_id, sort, is_active, config)
+        values (#{id}, #{type}, #{projectId}, #{sort}, #{isActive}, #{configStr})
     </insert>
 
     <insert id="insertAppUserSetting" parameterType="neatlogic.framework.rdm.dto.AppUserSettingVo">
