@@ -16,10 +16,15 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
-import neatlogic.framework.rdm.dto.WebhookVo;
+import neatlogic.framework.rdm.dto.WebhookConfigVo;
+import neatlogic.framework.rdm.dto.WebhookDataVo;
 
 public interface WebhookMapper {
-    WebhookVo getWebhookByAppId(Long appId);
+    WebhookConfigVo getWebhookByUrl(String webhookUrl);
 
-    void insertWebhookConfig(WebhookVo webhookVo);
+    WebhookConfigVo getWebhookByAppId(Long appId);
+
+    void insertWebhookData(WebhookDataVo webhookDataVo);
+
+    void insertWebhookConfig(WebhookConfigVo webhookVo);
 }

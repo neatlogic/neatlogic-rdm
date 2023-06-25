@@ -17,7 +17,18 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.WebhookMapper">
-    <select id="getWebhookByAppId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.WebhookVo">
+
+    <select id="getWebhookByUrl" parameterType="java.lang.String"
+            resultType="neatlogic.framework.rdm.dto.WebhookConfigVo">
+        select app_id       as appId,
+               webhook_url  as webhookUrl,
+               secret_token as secretToken
+        from rdm_webhook_config
+        where webhook_url = #{value}
+    </select>
+
+    <select id="getWebhookByAppId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.WebhookConfigVo">
         select app_id       as appId,
                webhook_url  as webhookUrl,
                secret_token as secretToken
@@ -25,7 +36,20 @@
         where app_id = #{value}
     </select>
 
-    <insert id="insertWebhookConfig" parameterType="neatlogic.framework.rdm.dto.WebhookVo">
+    <insert id="insertWebhookData" parameterType="neatlogic.framework.rdm.dto.WebhookDataVo">
+        insert into rdm_webhook_data (id, app_id, create_time, data, event, user_id, user_name, email)
+        values (#{id},
+                #{appId},
+                now(3),
+                #{dataStr,typeHandler=CompressHandler},
+                #{event},
+                #{userId},
+                #{userName},
+                #{email})
+    </insert>
+
+
+    <insert id="insertWebhookConfig" parameterType="neatlogic.framework.rdm.dto.WebhookConfigVo">
         insert into rdm_webhook_config (app_id, webhook_url, secret_token)
         values (#{appId}, #{webhookUrl}, #{secretToken})
         ON DUPLICATE KEY UPDATE webhook_url  = #{webhookUrl},

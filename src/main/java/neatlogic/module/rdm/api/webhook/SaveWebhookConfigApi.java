@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.WebhookVo;
+import neatlogic.framework.rdm.dto.WebhookConfigVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -58,7 +58,7 @@ public class SaveWebhookConfigApi extends PrivateApiComponentBase {
     @Description(desc = "nmraw.savewebhookconfigapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        WebhookVo webhookVo = JSONObject.toJavaObject(paramObj, WebhookVo.class);
+        WebhookConfigVo webhookVo = JSONObject.toJavaObject(paramObj, WebhookConfigVo.class);
         webhookMapper.insertWebhookConfig(webhookVo);
         return null;
     }
