@@ -48,7 +48,7 @@
     <mvc:annotation-driven/>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="neatlogic.module.rdm.dao.mapper"/>
+        <property name="basePackage" value="neatlogic.module.rdm.**.dao.mapper"/>
     </bean>
 
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -56,7 +56,7 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations">
             <list>
-                <value>classpath:neatlogic/module/rdm/dao/mapper/**/*.xml</value>
+                <value>classpath:neatlogic/module/rdm/**/dao/mapper/**/*.xml</value>
             </list>
         </property>
     </bean>

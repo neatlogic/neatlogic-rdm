@@ -109,6 +109,7 @@
                ras.color                                                             as statusColor,
                ras.is_end                                                            as isEnd,
                ri.create_user                                                        as createUser,
+               (select user_name from `user` x where x.uuid = ri.create_user)        as createUserName,
                ri.create_date                                                        as createDate,
                ri.content                                                            as content,
                ri.catalog,
@@ -132,7 +133,10 @@
                 from (select x.id
                       from rdm_issue_comment x
                       where x.issue_id = ri.id
-                      limit 1) x2)                                                   as commentCount
+                      limit 1) x2)                                                   as commentCount,
+               riw.issue_id                                                          as webhookIssueId,
+               riw.data_id                                                           as webhookDataId,
+               rwd.app_id                                                            as webhookAppId
         from rdm_issue ri
                  join rdm_app ra on ri.app_id = ra.id
                  left join rdm_priority as rp on ri.priority = rp.id
@@ -147,6 +151,8 @@
                  left join rdm_issue_rel rir on ri.id = rir.from_issue_id or ri.id = rir.to_issue_id
                  left join rdm_app fra on rir.from_app_id = fra.id
                  left join rdm_app tra on rir.to_app_id = tra.id
+                 left join rdm_issue_webhookdata riw on ri.id = riw.issue_id
+                 left join rdm_webhook_data rwd on riw.data_id = rwd.id
         where ri.id = #{value}
     </select>
 
@@ -198,6 +204,7 @@
         <result property="projectId" column="projectId"/>
         <result property="parentId" column="parentId"/>
         <result property="createUser" column="createUser"/>
+        <result property="createUserName" column="createUserName"/>
         <result property="createDate" column="createDate"/>
         <result property="startDate" column="startDate"/>
         <result property="endDate" column="endDate"/>
@@ -238,6 +245,11 @@
             <result column="toAppType" property="toAppType"/>
             <result column="relType" property="relType"/>
             <result column="direction" property="direction"/>
+        </collection>
+        <collection property="webhookList" ofType="neatlogic.framework.rdm.dto.IssueWebhookVo">
+            <result column="webhookIssueId" property="issueId"/>
+            <result column="webhookDataId" property="dataId"/>
+            <result column="webhookAppId" property="appId"/>
         </collection>
     </resultMap>
 
