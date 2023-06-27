@@ -18,8 +18,8 @@ package neatlogic.module.rdm.startup.handler;
 
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
-import neatlogic.framework.rdm.enums.AppType;
 import neatlogic.framework.rdm.enums.AttrType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.startup.StartupBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
@@ -58,7 +58,7 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
     public int executeForCurrentTenant() {
         List<AppVo> appList = appMapper.listAllAppAttr();
         for (AppVo appVo : appList) {
-            AttrType[] attrTypeList = AppType.getAttrList(appVo.getType());
+            AttrType[] attrTypeList = AppTypeManager.getAttrList(appVo.getType());
             if (attrTypeList != null && attrTypeList.length > 0) {
                 List<AppAttrVo> privateAttrList = new ArrayList<>();
                 if (CollectionUtils.isNotEmpty(appVo.getAttrList())) {

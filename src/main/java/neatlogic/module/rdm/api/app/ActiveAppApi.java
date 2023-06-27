@@ -22,8 +22,9 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
-import neatlogic.framework.rdm.enums.AppType;
 import neatlogic.framework.rdm.enums.AttrType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
+import neatlogic.framework.rdm.enums.core.IAppType;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
@@ -75,7 +76,7 @@ public class ActiveAppApi extends PrivateApiComponentBase {
         String appType = paramObj.getString("appType");
         AppVo appVo = appMapper.getAppByProjectIdAndType(projectId, appType);
         if (appVo == null) {
-            AppType aType = AppType.get(appType);
+            IAppType aType = AppTypeManager.get(appType);
             if (aType != null) {
                 appVo = new AppVo();
                 appVo.setProjectId(projectId);
@@ -84,7 +85,7 @@ public class ActiveAppApi extends PrivateApiComponentBase {
                 appVo.setIsActive(1);
                 appMapper.insertApp(appVo);
 
-                AttrType[] attrTypeList = AppType.getAttrList(aType.getName());
+                AttrType[] attrTypeList = AppTypeManager.getAttrList(aType.getName());
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (AttrType attrType : attrTypeList) {

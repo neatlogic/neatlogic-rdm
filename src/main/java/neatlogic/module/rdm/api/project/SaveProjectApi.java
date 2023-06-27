@@ -23,9 +23,9 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.constvalue.GroupSearch;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
-import neatlogic.framework.rdm.enums.AppType;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.rdm.exception.*;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
@@ -107,7 +107,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 appVo.setIsActive(1);
                 appMapper.insertApp(appVo);
 
-                AttrType[] attrTypeList = AppType.getAttrList(appType.getName());
+                AttrType[] attrTypeList = AppTypeManager.getAttrList(appType.getName());
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (AttrType attrType : attrTypeList) {

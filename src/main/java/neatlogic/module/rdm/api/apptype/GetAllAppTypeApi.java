@@ -20,7 +20,8 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppTypeVo;
-import neatlogic.framework.rdm.enums.AppType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
+import neatlogic.framework.rdm.enums.core.IAppType;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Output;
@@ -53,10 +54,10 @@ public class GetAllAppTypeApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         List<AppTypeVo> appTypeList = new ArrayList<>();
-        for (AppType apptype : AppType.values()) {
+        for (IAppType appType : AppTypeManager.getAppTypeList()) {
             AppTypeVo appTypeVo = new AppTypeVo();
-            appTypeVo.setLabel(apptype.getLabel());
-            appTypeVo.setName(apptype.getName());
+            appTypeVo.setLabel(appType.getLabel());
+            appTypeVo.setName(appType.getName());
             appTypeList.add(appTypeVo);
         }
         return appTypeList;

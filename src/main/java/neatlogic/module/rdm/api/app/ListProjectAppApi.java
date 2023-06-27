@@ -24,8 +24,8 @@ import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.dto.IssueConditionVo;
-import neatlogic.framework.rdm.enums.AppType;
 import neatlogic.framework.rdm.enums.SystemAttrType;
+import neatlogic.framework.rdm.enums.core.IAppType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -66,7 +66,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
             @Param(name = "isActive", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isactive"),
-            @Param(name = "appType", type = ApiParamType.ENUM, member = AppType.class, desc = "term.rdm.apptype"),
+            @Param(name = "appType", type = ApiParamType.ENUM, member = IAppType.class, desc = "term.rdm.apptype"),
             @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER),
             @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")
     })
