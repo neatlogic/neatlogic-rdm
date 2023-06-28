@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.dao.mapper;
+package neatlogic.module.rdm.annotation;
 
-import neatlogic.framework.rdm.dto.IssueAuditVo;
+import java.lang.annotation.*;
 
-import java.util.List;
-
-public interface IssueAuditMapper {
-    int searchIssueAuditCount(IssueAuditVo issueAuditVo);
-
-    List<IssueAuditVo> searchIssueAudit(IssueAuditVo issueAuditVo);
-
-
-    void insertIssueAudit(IssueAuditVo issueAuditVo);
-
+/**
+ * @author lvzk
+ * @since 2021/9/17 16:36
+ **/
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+public @interface SaveIssueAuditParam {
 }

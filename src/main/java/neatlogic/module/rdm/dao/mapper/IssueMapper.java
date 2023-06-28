@@ -19,12 +19,15 @@ package neatlogic.module.rdm.dao.mapper;
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.fulltextindex.dto.fulltextindex.FullTextIndexTypeVo;
 import neatlogic.framework.rdm.dto.*;
+import neatlogic.module.rdm.annotation.SaveIssueAudit;
+import neatlogic.module.rdm.annotation.SaveIssueAuditParam;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.HashMap;
 import java.util.List;
 
 public interface IssueMapper {
+    IssueRelVo getIssueRel(@Param("fromIssueId") Long fromIssueId, @Param("toIssueId") Long toIssueId);
 
     List<Long> getRelIssueIdList(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction);
 
@@ -35,6 +38,8 @@ public interface IssueMapper {
     List<AppVo> getAppIssueCountByProjectIdAndUserId(IssueConditionVo issueConditionVo);
 
     IssueVo getIssueById(Long id);
+
+    IssueVo getIssueByIdForAudit(Long id);
 
     List<AppIssueCountVo> getIssueCountByIterationId(@Param("iterationId") Long iterationId);
 
@@ -72,13 +77,15 @@ public interface IssueMapper {
 
     void insertIssueTag(@Param("issueId") Long issueId, @Param("tagId") Long tagId);
 
-    void insertIssueRel(IssueRelVo issueRelVo);
+    @SaveIssueAudit
+    void insertIssueRel(@SaveIssueAuditParam IssueRelVo issueRelVo);
 
     void replaceIssueAttr(IssueVo issueVo);
 
     void clearIssueParentId(Long id);
 
-    void updateIssue(IssueVo issueVo);
+    @SaveIssueAudit
+    void updateIssue(@SaveIssueAuditParam IssueVo issueVo);
 
     void deleteIssueUserByIssueId(Long issueId);
 
@@ -88,7 +95,8 @@ public interface IssueMapper {
 
     void deleteIssueFileByFileId(Long fileId);
 
-    void deleteIssueRel(@Param("fromIssueId") Long fromIssueId, @Param("toIssueId") Long toIssueId);
+    @SaveIssueAudit
+    void deleteIssueRel(@SaveIssueAuditParam IssueRelVo issueRelVo);
 
     void deleteFavoriteIssue(@Param("issueId") Long issueId, @Param("userId") String userId);
 }

@@ -19,17 +19,17 @@ package neatlogic.module.rdm.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.file.dto.FileVo;
-import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.rdm.dto.IssueAttrVo;
-import neatlogic.framework.rdm.dto.IssueAuditVo;
-import neatlogic.framework.rdm.dto.IssueVo;
+import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AttrType;
+import neatlogic.framework.rdm.enums.IssueRelDirection;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DiffIssue {
     public static List<IssueAuditVo> getDiff(Long issueId, IssueVo oldIssueVo, IssueVo newIssueVo, List<AppAttrVo> attrList) {
@@ -102,9 +102,9 @@ public class DiffIssue {
                     this.put("name", f.getName());
                 }});
             }
-            auditList.add(new IssueAuditVo(issueId, "file", CollectionUtils.isNotEmpty(oldFileObjList) ? oldFileObjList : null, CollectionUtils.isNotEmpty(newFileObjList) ? newFileObjList : null));
+            auditList.add(new IssueAuditVo(issueId, "file", oldFileObjList, newFileObjList));
         }
-
+        //比较自定义属性
         if (CollectionUtils.isNotEmpty(attrList)) {
             for (AppAttrVo attrVo : attrList) {
                 if (attrVo.getIsPrivate().equals(0)) {
@@ -128,6 +128,35 @@ public class DiffIssue {
                         auditList.add(new IssueAuditVo(issueId, attrVo.getId(), (oldAttrVo != null ? oldAttrVo.getValueList() : null), (newAttrVo != null ? newAttrVo.getValueList() : null)));
                     }
                 }
+            }
+        }
+        //比较关系
+        if (!Objects.equals(oldIssueVo.getIssueRelList(), newIssueVo.getIssueRelList())) {
+            List<String> oldAppTypeList = oldIssueVo.getIssueRelList().stream().map(d -> d.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? d.getToAppType() : d.getFromAppType()).distinct().collect(Collectors.toList());
+            List<String> newAppTypeList = newIssueVo.getIssueRelList().stream().map(d -> d.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? d.getToAppType() : d.getFromAppType()).distinct().collect(Collectors.toList());
+            List<String> appTypeList = Stream.concat(oldAppTypeList.stream(), newAppTypeList.stream())
+                    .distinct()
+                    .collect(Collectors.toList());
+            for (String appType : appTypeList) {
+                JSONArray oldRelList = new JSONArray();
+                for (IssueRelVo f : oldIssueVo.getIssueRelList().stream().filter(d -> d.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? d.getToAppType().equalsIgnoreCase(appType) : d.getFromAppType().equalsIgnoreCase(appType)).collect(Collectors.toList())) {
+                    oldRelList.add(new JSONObject() {{
+                        this.put("id", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToIssueId() : f.getFromIssueId());
+                        this.put("appId", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToAppId() : f.getFromAppId());
+                        this.put("appType", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToAppType() : f.getFromAppType());
+                        this.put("name", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToIssueName() : f.getFromIssueName());
+                    }});
+                }
+                JSONArray newRelList = new JSONArray();
+                for (IssueRelVo f : newIssueVo.getIssueRelList().stream().filter(d -> d.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? d.getToAppType().equalsIgnoreCase(appType) : d.getFromAppType().equalsIgnoreCase(appType)).collect(Collectors.toList())) {
+                    newRelList.add(new JSONObject() {{
+                        this.put("id", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToIssueId() : f.getFromIssueId());
+                        this.put("appId", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToAppId() : f.getFromAppId());
+                        this.put("appType", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToAppType() : f.getFromAppType());
+                        this.put("name", f.getDirection().equalsIgnoreCase(IssueRelDirection.FROM.getValue()) ? f.getToIssueName() : f.getFromIssueName());
+                    }});
+                }
+                auditList.add(new IssueAuditVo(issueId, "rel_" + appType, oldRelList, newRelList));
             }
         }
         return auditList;

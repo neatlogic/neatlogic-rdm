@@ -32,7 +32,6 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.*;
 import neatlogic.module.rdm.service.IssueService;
-import neatlogic.module.rdm.utils.DiffIssue;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -113,13 +112,13 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (id == null) {
             issueMapper.insertIssue(issueVo);
         } else {
-            IssueVo oldIssueVo = issueService.getIssueById(id);
+            /*IssueVo oldIssueVo = issueService.getIssueById(id);
             List<IssueAuditVo> auditList = DiffIssue.getDiff(id, oldIssueVo, issueVo, appAttrList);
             if (CollectionUtils.isNotEmpty(auditList)) {
                 for (IssueAuditVo issueAuditVo : auditList) {
                     issueAuditMapper.insertIssueAudit(issueAuditVo);
                 }
-            }
+            }*/
 
             issueMapper.updateIssue(issueVo);
             issueMapper.deleteIssueTagByIssueId(issueVo.getId());

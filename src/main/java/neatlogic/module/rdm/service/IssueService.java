@@ -21,4 +21,6 @@ import neatlogic.framework.rdm.dto.IssueVo;
 public interface IssueService {
     IssueVo getIssueById(Long issueId);
 
+    IssueVo getIssueByIdForAudit(Long issueId);
+
 }

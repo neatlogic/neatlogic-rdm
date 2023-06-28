@@ -20,7 +20,6 @@ import com.alibaba.fastjson.JSONArray;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.IssueAttrVo;
 import neatlogic.framework.rdm.dto.IssueVo;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.apache.commons.collections4.MapUtils;
@@ -37,16 +36,25 @@ public class IssueServiceImpl implements IssueService {
     @Resource
     private IssueMapper issueMapper;
 
-    @Resource
-    private AppMapper appMapper;
 
     @Resource
     private AttrMapper attrMapper;
 
+    @Override
+    public IssueVo getIssueByIdForAudit(Long id) {
+        IssueVo issueVo = issueMapper.getIssueByIdForAudit(id);
+        makeupIssue(issueVo);
+        return issueVo;
+    }
 
     @Override
     public IssueVo getIssueById(Long id) {
         IssueVo issueVo = issueMapper.getIssueById(id);
+        makeupIssue(issueVo);
+        return issueVo;
+    }
+
+    private void makeupIssue(IssueVo issueVo) {
         if (issueVo != null) {
             List<AppAttrVo> attrList = attrMapper.getAttrByAppId(issueVo.getAppId());
             for (AppAttrVo attr : attrList) {
@@ -86,6 +94,7 @@ public class IssueServiceImpl implements IssueService {
                 issueVo.setAttrList(issueAttrList);
             }
         }
-        return issueVo;
     }
+
+
 }

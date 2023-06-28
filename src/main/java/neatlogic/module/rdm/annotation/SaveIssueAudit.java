@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.dao.mapper;
+package neatlogic.module.rdm.annotation;
 
-import neatlogic.framework.rdm.dto.IssueAuditVo;
+import java.lang.annotation.*;
 
-import java.util.List;
-
-public interface IssueAuditMapper {
-    int searchIssueAuditCount(IssueAuditVo issueAuditVo);
-
-    List<IssueAuditVo> searchIssueAudit(IssueAuditVo issueAuditVo);
-
-
-    void insertIssueAudit(IssueAuditVo issueAuditVo);
-
+/**
+ * 用于标记保存任务操作记录的函数，入参必须是Audi
+ */
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface SaveIssueAudit {
 }

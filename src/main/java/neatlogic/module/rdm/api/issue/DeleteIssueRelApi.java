@@ -20,12 +20,14 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
+import neatlogic.framework.rdm.dto.IssueRelVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.module.rdm.dao.mapper.IssueAuditMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,9 +42,12 @@ public class DeleteIssueRelApi extends PrivateApiComponentBase {
     @Resource
     private IssueMapper issueMapper;
 
+    @Resource
+    private IssueAuditMapper issueAuditMapper;
+
     @Override
     public String getName() {
-        return "删除任务关联关系";
+        return "nmrai.deleteissuerelapi.getname";
     }
 
     @Override
@@ -51,13 +56,43 @@ public class DeleteIssueRelApi extends PrivateApiComponentBase {
     }
 
     @Input({
-            @Param(name = "fromId", type = ApiParamType.LONG, isRequired = true, desc = "来源任务id"),
-            @Param(name = "toId", type = ApiParamType.LONG, isRequired = true, desc = "目标任务id")
+            @Param(name = "fromId", type = ApiParamType.LONG, isRequired = true, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
+            @Param(name = "toId", type = ApiParamType.LONG, isRequired = true, desc = "nmrai.searchissueapi.input.param.desc.toid")
     })
-    @Description(desc = "删除任务关联关系接口")
+    @Description(desc = "nmrai.deleteissuerelapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        issueMapper.deleteIssueRel(paramObj.getLong("fromId"), paramObj.getLong("toId"));
+        Long fromId = paramObj.getLong("fromId");
+        Long toId = paramObj.getLong("toId");
+
+        IssueRelVo issueRelVo = issueMapper.getIssueRel(fromId, toId);
+        if (issueRelVo != null) {
+            issueMapper.deleteIssueRel(issueRelVo);
+/*
+            IssueAuditVo fromIssueAuditVo = new IssueAuditVo();
+            fromIssueAuditVo.setIssueId(fromId);
+            fromIssueAuditVo.setRelAppType(issueRelVo.getToAppType());
+            fromIssueAuditVo.setInputUser(UserContext.get().getUserUuid(true));
+            fromIssueAuditVo.setOldValue(new JSONArray() {{
+                this.add(new JSONObject() {{
+                    this.put("id", issueRelVo.getToIssueId());
+                    this.put("name", issueRelVo.getToIssueName());
+                }});
+            }});
+            issueAuditMapper.insertIssueAudit(fromIssueAuditVo);
+
+            IssueAuditVo toIssueAuditVo = new IssueAuditVo();
+            toIssueAuditVo.setIssueId(toId);
+            toIssueAuditVo.setRelAppType(issueRelVo.getFromAppType());
+            toIssueAuditVo.setInputUser(UserContext.get().getUserUuid(true));
+            toIssueAuditVo.setOldValue(new JSONArray() {{
+                this.add(new JSONObject() {{
+                    this.put("id", issueRelVo.getFromIssueId());
+                    this.put("name", issueRelVo.getFromIssueName());
+                }});
+            }});
+            issueAuditMapper.insertIssueAudit(toIssueAuditVo);*/
+        }
         return null;
     }
 
