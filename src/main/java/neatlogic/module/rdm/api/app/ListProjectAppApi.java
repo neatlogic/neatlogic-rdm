@@ -25,6 +25,7 @@ import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.dto.IssueConditionVo;
 import neatlogic.framework.rdm.enums.SystemAttrType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.rdm.enums.core.IAppType;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
@@ -84,6 +85,9 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         String appType = paramObj.getString("appType");
         List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId, isActive);
+        List<IAppType> allAppTypeList = AppTypeManager.getAppTypeList();
+        //去掉不存在的appType（商业版可能被禁用掉了）
+        appList.removeIf(d -> !AppTypeManager.isContain(d.getType()));
         if (needSystemAttr != null && needSystemAttr.equals(1)) {
             for (AppVo appVo : appList) {
                 List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(appVo.getId());
