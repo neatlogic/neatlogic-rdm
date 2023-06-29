@@ -526,9 +526,9 @@
                 <when test="isExpired != null and isExpired == 1">
                     and ri.end_date &lt; NOW()
                 </when>
-                <otherwise>
+                <when test="isExpired != null and isExpired == 0">
                     and (ri.end_date &gt;= NOW() or ri.end_date is null)
-                </otherwise>
+                </when>
             </choose>
             <if test="statusList != null and statusList.size() > 0">
                 and ri.status in
