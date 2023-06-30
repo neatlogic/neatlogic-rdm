@@ -58,7 +58,9 @@
         <result property="lcu" column="lcu"/>
         <collection property="userList" ofType="neatlogic.framework.rdm.dto.ProjectUserVo">
             <id property="userId" column="userId"/>
-            <result property="userType" column="userType"/>
+            <collection property="userTypeList" ofType="neatlogic.framework.rdm.dto.ProjectUserTypeVo">
+                <id property="userType" column="userType"/>
+            </collection>
         </collection>
         <collection property="appList" ofType="neatlogic.framework.rdm.dto.AppVo">
             <id property="id" column="appId"/>
@@ -180,11 +182,6 @@
         WHERE id = #{value}
     </select>
 
-    <insert id="insertProjectStatusRel" parameterType="neatlogic.framework.rdm.dto.ProjectStatusRelVo">
-        insert ignore into rdm_project_status_rel (id, project_id, from_status_id, to_status_id)
-        values (#{id}, #{projectId}, #{fromStatusId}, #{toStatusId})
-    </insert>
-
 
     <update id="updateProject" parameterType="neatlogic.framework.rdm.dto.ProjectVo">
         update rdm_project
@@ -207,6 +204,12 @@
             `description` = #{description}
         where `id` = #{id}
     </update>
+
+
+    <insert id="insertProjectStatusRel" parameterType="neatlogic.framework.rdm.dto.ProjectStatusRelVo">
+        insert ignore into rdm_project_status_rel (id, project_id, from_status_id, to_status_id)
+        values (#{id}, #{projectId}, #{fromStatusId}, #{toStatusId})
+    </insert>
 
     <insert id="insertProjectUser" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo">
         insert ignore into rdm_project_user (`user_id`, `user_type`, `project_id`)
