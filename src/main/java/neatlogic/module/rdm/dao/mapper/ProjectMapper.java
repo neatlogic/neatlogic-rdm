@@ -22,7 +22,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ProjectMapper {
-
+    List<ProjectUserVo> getProjectUserList(ProjectUserVo projectUserVo);
 
     List<String> getProjectAppTypeByProjectId(Long projectId);
 

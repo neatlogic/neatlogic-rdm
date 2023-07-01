@@ -57,8 +57,8 @@ public class SearchProjectApi extends PrivateApiComponentBase {
     @Input({@Param(name = "keyword", type = ApiParamType.STRING, desc = "common.keyword"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
             @Param(name = "pageSize", type = ApiParamType.STRING, desc = "common.pagesize"),
-            @Param(name = "isMine", type = ApiParamType.INTEGER, desc = "page.ismine"),
-            @Param(name = "isClose", type = ApiParamType.INTEGER, desc = "page.isclose")})
+            @Param(name = "isMine", type = ApiParamType.INTEGER, rule = "0,1", desc = "page.ismine"),
+            @Param(name = "isClose", type = ApiParamType.INTEGER, rule = "0,1", desc = "page.isclose")})
     @Output({@Param(explode = BasePageVo.class)})
     @Description(desc = "nmrap.searchprojectapi.getname")
     @Override

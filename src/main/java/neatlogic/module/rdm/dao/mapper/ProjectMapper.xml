@@ -17,6 +17,28 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.ProjectMapper">
+    <resultMap id="projectUserMap" type="neatlogic.framework.rdm.dto.ProjectUserVo">
+        <id property="userId" column="userId"/>
+        <result property="userName" column="userName"/>
+        <result property="projectId" column="projectId"/>
+        <collection property="userTypeList" ofType="neatlogic.framework.rdm.dto.ProjectUserTypeVo">
+            <id property="userType" column="userType"/>
+        </collection>
+    </resultMap>
+
+    <select id="getProjectUserList" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo"
+            resultMap="projectUserMap">
+        select
+        rpu.user_id as userId,
+        u.user_name as userName,
+        rpu.user_type as userType,
+        rpu.project_id as projectId
+        from rdm_project_user rpu join `user` u on rpu.user_id = u.uuid
+        where project_id = #{projectId}
+        <if test="userType != null and userType != ''">
+            and user_type = #{userType}
+        </if>
+    </select>
 
 
     <select id="checkProjectNameIsExists" parameterType="neatlogic.framework.rdm.dto.ProjectVo" resultType="int">

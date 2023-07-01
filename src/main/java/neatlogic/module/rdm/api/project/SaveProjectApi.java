@@ -157,29 +157,23 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             projectMapper.updateProject(projectVo);
             //清除用户数据
             projectMapper.deleteProjectUserByProjectId(projectVo.getId(), new ArrayList<String>() {{
+                this.add(ProjectUserType.OWNER.getValue());
                 this.add(ProjectUserType.MEMBER.getValue());
                 this.add(ProjectUserType.LEADER.getValue());
             }});
         }
+        if (CollectionUtils.isNotEmpty(projectVo.getUserList())) {
+            for (ProjectUserVo userVo : projectVo.getUserList()) {
+                for (ProjectUserTypeVo userTypeVo : userVo.getUserTypeList()) {
+                    ProjectUserVo projectUserVo = new ProjectUserVo();
+                    projectUserVo.setUserId(userVo.getUserId().replace(GroupSearch.USER.getValuePlugin(), ""));
+                    projectUserVo.setUserType(userTypeVo.getUserType());
+                    projectUserVo.setProjectId(projectVo.getId());
+                    projectMapper.insertProjectUser(projectUserVo);
+                }
+            }
+        }
 
-        if (CollectionUtils.isNotEmpty(projectVo.getUserIdList())) {
-            for (String userId : projectVo.getUserIdList()) {
-                ProjectUserVo projectUserVo = new ProjectUserVo();
-                projectUserVo.setUserId(userId.replace(GroupSearch.USER.getValuePlugin(), ""));
-                projectUserVo.setUserType(ProjectUserType.MEMBER.getValue());
-                projectUserVo.setProjectId(projectVo.getId());
-                projectMapper.insertProjectUser(projectUserVo);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(projectVo.getLeaderIdList())) {
-            for (String userId : projectVo.getLeaderIdList()) {
-                ProjectUserVo projectUserVo = new ProjectUserVo();
-                projectUserVo.setUserId(userId.replace(GroupSearch.USER.getValuePlugin(), ""));
-                projectUserVo.setUserType(ProjectUserType.LEADER.getValue());
-                projectUserVo.setProjectId(projectVo.getId());
-                projectMapper.insertProjectUser(projectUserVo);
-            }
-        }
         return projectVo.getId();
     }
 
