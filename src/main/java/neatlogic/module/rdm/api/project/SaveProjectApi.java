@@ -148,6 +148,10 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             if (checkProjectVo == null) {
                 throw new ProjectNotFoundException(id);
             }
+            //更新项目需要校验权限
+            if (!checkProjectVo.getIsOwner() && !checkProjectVo.getIsLeader()) {
+                throw new ProjectNotAuthException(checkProjectVo.getName());
+            }
             String currentUserId = UserContext.get().getUserUuid(true);
             if (!checkProjectVo.getFcu().equals(currentUserId)) {
                 if (CollectionUtils.isEmpty(checkProjectVo.getUserList()) || checkProjectVo.getUserList().stream().noneMatch(d -> d.getUserType().equals(ProjectUserType.LEADER.getValue()) && d.getUserId().equals(currentUserId))) {

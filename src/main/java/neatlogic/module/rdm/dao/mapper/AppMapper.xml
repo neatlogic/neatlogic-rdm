@@ -243,6 +243,12 @@
                 #{color})
     </insert>
 
+    <update id="updateAppSort" parameterType="neatlogic.framework.rdm.dto.AppVo">
+        update rdm_app
+        set sort = #{sort}
+        where id = #{id}
+    </update>
+
     <update id="saveAppConfig" parameterType="neatlogic.framework.rdm.dto.AppVo">
         update rdm_app
         set config = #{configStr}

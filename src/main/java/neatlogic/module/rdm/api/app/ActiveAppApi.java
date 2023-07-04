@@ -22,10 +22,13 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.rdm.enums.core.IAppType;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
+import neatlogic.framework.rdm.exception.ProjectNotAuthException;
+import neatlogic.framework.rdm.exception.ProjectNotFoundException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -35,6 +38,7 @@ import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
+import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.service.ProjectService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +53,8 @@ public class ActiveAppApi extends PrivateApiComponentBase {
     @Resource
     private AttrMapper attrMapper;
 
-
+    @Resource
+    private ProjectMapper projectMapper;
     @Resource
     private AppMapper appMapper;
 
@@ -59,7 +64,7 @@ public class ActiveAppApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "激活应用";
+        return "nmraa.activeappapi.getname";
     }
 
     @Override
@@ -69,11 +74,18 @@ public class ActiveAppApi extends PrivateApiComponentBase {
 
     @Input({@Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.projectid"),
             @Param(name = "appType", type = ApiParamType.STRING, isRequired = true, desc = "term.rdm.apptype")})
-    @Description(desc = "激活应用")
+    @Description(desc = "nmraa.activeappapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long projectId = paramObj.getLong("projectId");
         String appType = paramObj.getString("appType");
+        ProjectVo projectVo = projectMapper.getProjectById(projectId);
+        if (projectVo == null) {
+            throw new ProjectNotFoundException(projectId);
+        }
+        if (!projectVo.getIsLeader() && !projectVo.getIsOwner()) {
+            throw new ProjectNotAuthException(projectVo.getName());
+        }
         AppVo appVo = appMapper.getAppByProjectIdAndType(projectId, appType);
         if (appVo == null) {
             IAppType aType = AppTypeManager.get(appType);

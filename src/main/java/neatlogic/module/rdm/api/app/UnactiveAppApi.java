@@ -21,6 +21,9 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.rdm.dto.ProjectVo;
+import neatlogic.framework.rdm.exception.ProjectNotAuthException;
+import neatlogic.framework.rdm.exception.ProjectNotFoundException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -28,6 +31,7 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +43,8 @@ import javax.annotation.Resource;
 @Transactional
 public class UnactiveAppApi extends PrivateApiComponentBase {
 
-
+    @Resource
+    private ProjectMapper projectMapper;
     @Resource
     private AppMapper appMapper;
 
@@ -61,6 +66,13 @@ public class UnactiveAppApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         Long projectId = paramObj.getLong("projectId");
         String appType = paramObj.getString("appType");
+        ProjectVo projectVo = projectMapper.getProjectById(projectId);
+        if (projectVo == null) {
+            throw new ProjectNotFoundException(projectId);
+        }
+        if (!projectVo.getIsLeader() && !projectVo.getIsOwner()) {
+            throw new ProjectNotAuthException(projectVo.getName());
+        }
         AppVo appVo = appMapper.getAppByProjectIdAndType(projectId, appType);
         if (appVo != null) {
             appMapper.updateAppIsActive(appVo.getId(), 0);

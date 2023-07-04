@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.project;
+package neatlogic.module.rdm.api.app;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.dto.ProjectVo;
-import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
+import neatlogic.framework.rdm.exception.ProjectNotAuthException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
@@ -30,39 +31,28 @@ import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
-import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
-import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import neatlogic.module.rdm.service.ProjectService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
-@OperationType(type = OperationTypeEnum.DELETE)
+@OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
-public class DeleteProjectApi extends PrivateApiComponentBase {
+public class UpdateAppSortApi extends PrivateApiComponentBase {
+    @Resource
+    private AppMapper appMapper;
 
     @Resource
     private ProjectMapper projectMapper;
 
-    @Resource
-    private AppMapper appMapper;
-
-
-    @Resource
-    private ProjectService projectService;
-
-    @Resource
-    private IssueMapper issueMapper;
 
     @Override
     public String getName() {
-        return "nmrap.deleteprojectapi.getname";
+        return "nmraa.updateappsortapi.getname";
     }
 
     @Override
@@ -70,30 +60,32 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", desc = "term.rdm.projectid", isRequired = true, type = ApiParamType.LONG)})
-    @Description(desc = "nmrap.deleteprojectapi.getname")
+    @Input({@Param(name = "projectId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.projectid"),
+            @Param(name = "appList", type = ApiParamType.JSONARRAY, isRequired = true, desc = "term.rdm.applist")})
+    @Description(desc = "nmraa.updateappsortapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long projectId = paramObj.getLong("id");
+        Long projectId = paramObj.getLong("projectId");
+        JSONArray appList = paramObj.getJSONArray("appList");
         ProjectVo projectVo = projectMapper.getProjectById(projectId);
         if (projectVo == null) {
             throw new ProjectNotFoundException(projectId);
         }
-        List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId, null);
-        for (AppVo appVo : appList) {
-            issueMapper.deleteIssueByAppId(appVo);
-            appMapper.deleteAppById(appVo.getId());
-            EscapeTransactionJob.State s = projectService.dropObjectSchema(appVo);
-            if (!s.isSucceed()) {
-                throw new CreateObjectSchemaException(appVo.getName());
-            }
+        if (!projectVo.getIsLeader() && !projectVo.getIsOwner()) {
+            throw new ProjectNotAuthException(projectVo.getName());
         }
-        projectMapper.deleteProjectById(projectId);
+        for (int i = 0; i < appList.size(); i++) {
+            JSONObject appObj = appList.getJSONObject(i);
+            AppVo appVo = new AppVo();
+            appVo.setId(appObj.getLong("id"));
+            appVo.setSort(i + 1);
+            appMapper.updateAppSort(appVo);
+        }
         return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/delete";
+        return "/rdm/app/updatesort";
     }
 }
