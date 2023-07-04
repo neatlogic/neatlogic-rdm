@@ -20,8 +20,10 @@ import com.alibaba.fastjson.JSONArray;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.IssueAttrVo;
 import neatlogic.framework.rdm.dto.IssueVo;
+import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +42,9 @@ public class IssueServiceImpl implements IssueService {
     @Resource
     private AttrMapper attrMapper;
 
+    @Resource
+    private ProjectMapper projectMapper;
+
     @Override
     public IssueVo getIssueByIdForAudit(Long id) {
         IssueVo issueVo = issueMapper.getIssueByIdForAudit(id);
@@ -56,6 +61,10 @@ public class IssueServiceImpl implements IssueService {
 
     private void makeupIssue(IssueVo issueVo) {
         if (issueVo != null) {
+            ProjectVo projectVo = projectMapper.getProjectById(issueVo.getProjectId());
+            issueVo.setIsProjectLeader(projectVo.getIsLeader());
+            issueVo.setIsProjectMember(projectVo.getIsMember());
+            issueVo.setIsProjectOwner(projectVo.getIsOwner());
             List<AppAttrVo> attrList = attrMapper.getAttrByAppId(issueVo.getAppId());
             for (AppAttrVo attr : attrList) {
                 if (attr.getIsPrivate().equals(0)) {
