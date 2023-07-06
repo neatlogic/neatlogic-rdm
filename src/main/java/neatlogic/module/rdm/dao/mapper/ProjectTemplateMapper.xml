@@ -22,8 +22,9 @@
         <result property="name" column="name"/>
         <result property="isActive" column="isActive"/>
         <collection property="appTypeList" ofType="neatlogic.framework.rdm.dto.ProjectTemplateAppTypeVo">
-            <id property="name" column="appType"/>
+            <id property="appType" column="appType"/>
             <result property="sort" column="sort"/>
+            <result property="configStr" column="configStr"/>
         </collection>
     </resultMap>
 
@@ -32,7 +33,8 @@
                a.name,
                a.is_active AS isActive,
                b.app_type  AS appType,
-               b.sort
+               b.sort,
+               b.config    AS configStr
         FROM rdm_project_template a
                  JOIN rdm_project_template_apptype b ON a.id = b.template_id
         WHERE a.id = #{value}
@@ -41,9 +43,13 @@
 
     <select id="searchProjectTemplate" parameterType="neatlogic.framework.rdm.dto.ProjectTemplateVo"
             resultMap="projectTemplateResultMap">
-        select id, name ,is_active AS isActive,
+        select
+        id,
+        name,
+        is_active AS isActive,
         b.app_type AS appType,
-        b.sort FROM rdm_project_template a
+        b.sort
+        FROM rdm_project_template a
         LEFT JOIN rdm_project_template_apptype b ON a.id = b.template_id
         <where>
             <if test="isActive != null">

@@ -102,16 +102,16 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             for (ProjectTemplateAppTypeVo appType : projectTemplateVo.getAppTypeList()) {
                 AppVo appVo = new AppVo();
                 appVo.setProjectId(projectVo.getId());
-                appVo.setType(appType.getName());
+                appVo.setType(appType.getAppType());
                 appVo.setSort(appType.getSort());
                 appVo.setIsActive(1);
                 appMapper.insertApp(appVo);
 
-                AttrType[] attrTypeList = AppTypeManager.getAttrList(appType.getName());
+                AttrType[] attrTypeList = AppTypeManager.getAttrList(appType.getAppType());
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (AttrType attrType : attrTypeList) {
-                        if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getName().equalsIgnoreCase(attrType.getBelong()))) {
+                        if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getAppType().equalsIgnoreCase(attrType.getBelong()))) {
                             AppAttrVo appAttrVo = new AppAttrVo();
                             appAttrVo.setName(attrType.getName());
                             appAttrVo.setLabel(attrType.getLabel());
