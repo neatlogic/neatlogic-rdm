@@ -152,6 +152,32 @@
         where project_id = #{value}
     </select>
 
+    <select id="getProjectByAppId" parameterType="java.lang.Long" resultMap="projectResultMap">
+        select a.id,
+               a.name,
+               a.description,
+               a.start_date  AS startDate,
+               a.end_date    AS endDate,
+               a.color,
+               a.template_id AS templateId,
+               a.type        AS type,
+               a.fcd,
+               a.fcu,
+               a.lcd,
+               a.lcu,
+               b.user_id     AS userId,
+               b.user_type   AS userType,
+               c.id          AS appId,
+               c.app_type    AS appType,
+               c.sort        AS appSort,
+               c.config      AS configStr
+        from rdm_project a
+                 LEFT JOIN rdm_project_user b ON a.id = b.project_id
+                 LEFT JOIN rdm_app c ON a.id = c.project_id
+        WHERE c.id = #{value}
+        order by c.sort
+    </select>
+
     <select id="getProjectById" parameterType="java.lang.Long" resultMap="projectResultMap">
         select a.id,
                a.name,

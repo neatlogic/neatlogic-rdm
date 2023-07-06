@@ -27,11 +27,12 @@ import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.rdm.enums.IssueRelType;
+import neatlogic.framework.rdm.exception.ProjectNotAuthException;
+import neatlogic.framework.rdm.exception.ProjectNotFoundException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.*;
-import neatlogic.module.rdm.service.IssueService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -45,10 +46,11 @@ import java.util.List;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueApi extends PrivateApiComponentBase {
+
+    @Resource
+    private ProjectMapper projectMapper;
     @Resource
     private AttrMapper attrMapper;
-    @Resource
-    private IssueAuditMapper issueAuditMapper;
     @Resource
     private IssueMapper issueMapper;
 
@@ -57,9 +59,6 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Resource
     private TagMapper tagMapper;
-
-    @Resource
-    private IssueService issueService;
 
 
     @Override
@@ -72,7 +71,8 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmrai.saveissueapi.input.param.desc.id"),
+    @Input({
+            @Param(name = "id", type = ApiParamType.LONG, desc = "nmrai.saveissueapi.input.param.desc.id"),
             @Param(name = "fromId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
             @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid"),
             @Param(name = "relType", type = ApiParamType.ENUM, member = IssueRelType.class, desc = "common.reltype"),
@@ -94,6 +94,14 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long fromId = paramObj.getLong("fromId");
         Long toId = paramObj.getLong("toId");
         String relType = paramObj.getString("relType");
+        Long appId = paramObj.getLong("appId");
+        ProjectVo projectVo = projectMapper.getProjectByAppId(appId);
+        if (projectVo == null) {
+            throw new ProjectNotFoundException();
+        }
+        if (!projectVo.getIsOwner() && !projectVo.getIsLeader() && !projectVo.getIsMember()) {
+            throw new ProjectNotAuthException(projectVo.getName());
+        }
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         issueVo.setCreateUser(UserContext.get().getUserUuid(true));
         issueVo.formatAttr();
@@ -112,14 +120,6 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (id == null) {
             issueMapper.insertIssue(issueVo);
         } else {
-            /*IssueVo oldIssueVo = issueService.getIssueById(id);
-            List<IssueAuditVo> auditList = DiffIssue.getDiff(id, oldIssueVo, issueVo, appAttrList);
-            if (CollectionUtils.isNotEmpty(auditList)) {
-                for (IssueAuditVo issueAuditVo : auditList) {
-                    issueAuditMapper.insertIssueAudit(issueAuditVo);
-                }
-            }*/
-
             issueMapper.updateIssue(issueVo);
             issueMapper.deleteIssueTagByIssueId(issueVo.getId());
             issueMapper.deleteIssueUserByIssueId(issueVo.getId());
