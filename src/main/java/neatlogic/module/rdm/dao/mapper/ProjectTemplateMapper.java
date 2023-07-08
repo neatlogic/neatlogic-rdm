@@ -16,12 +16,17 @@
 
 package neatlogic.module.rdm.dao.mapper;
 
+import neatlogic.framework.rdm.dto.ProjectTemplateAppTypeVo;
 import neatlogic.framework.rdm.dto.ProjectTemplateVo;
 
 import java.util.List;
 
 public interface ProjectTemplateMapper {
     ProjectTemplateVo getProjectTemplateById(Long templateId);
+
+    void insertProjectTemplate(ProjectTemplateVo projectTemplateVo);
+
+    void insertProjectTemplateAppType(ProjectTemplateAppTypeVo projectTemplateAppTypeVo);
 
     List<ProjectTemplateVo> searchProjectTemplate(ProjectTemplateVo projectTemplateVo);
 }

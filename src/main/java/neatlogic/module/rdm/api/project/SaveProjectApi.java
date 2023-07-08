@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.project;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
@@ -43,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -108,25 +110,92 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 appMapper.insertApp(appVo);
 
                 AttrType[] attrTypeList = AppTypeManager.getAttrList(appType.getAppType());
-                if (attrTypeList != null) {
-                    int sort = 1;
-                    for (AttrType attrType : attrTypeList) {
-                        if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getAppType().equalsIgnoreCase(attrType.getBelong()))) {
-                            AppAttrVo appAttrVo = new AppAttrVo();
-                            appAttrVo.setName(attrType.getName());
-                            appAttrVo.setLabel(attrType.getLabel());
-                            appAttrVo.setType(attrType.getType());
-                            appAttrVo.setSort(sort);
-                            appAttrVo.setIsRequired(0);
-                            appAttrVo.setIsPrivate(1);
-                            appAttrVo.setIsActive(1);
-                            appAttrVo.setAppId(appVo.getId());
-                            appVo.addAppAttr(appAttrVo);
-                            attrMapper.insertAppAttr(appAttrVo);
-                            sort += 1;
+                boolean hasAttr = false;
+                if (appType.getConfig() != null) {
+                    JSONArray attrObjList = appType.getConfig().getJSONArray("attrList");
+                    if (CollectionUtils.isNotEmpty(attrObjList)) {
+                        hasAttr = true;
+                        for (int i = 0; i < attrObjList.size(); i++) {
+                            JSONObject attrObj = attrObjList.getJSONObject(i);
+                            AppAttrVo appAttrVo = JSONObject.toJavaObject(attrObj, AppAttrVo.class);
+                            //如果是内置属性检查是否还存在
+                            if (appAttrVo.getIsPrivate().equals(0) || (appAttrVo.getIsPrivate().equals(1) && AppTypeManager.isContain(appAttrVo.getAppType()))) {
+                                appAttrVo.setId(null);
+                                appAttrVo.setAppId(appVo.getId());
+                                appVo.addAppAttr(appAttrVo);
+                                attrMapper.insertAppAttr(appAttrVo);
+                            }
+                        }
+                    }
+                    JSONArray statusObjList = appType.getConfig().getJSONArray("statusList");
+                    JSONArray statusRelObjList = appType.getConfig().getJSONArray("statusRelList");
+                    List<AppStatusVo> statusList = new ArrayList<>();
+                    List<AppStatusRelVo> statusRelList = new ArrayList<>();
+
+                    if (CollectionUtils.isNotEmpty(statusObjList)) {
+                        for (int i = 0; i < statusObjList.size(); i++) {
+                            AppStatusVo statusVo = JSONObject.toJavaObject(statusObjList.getJSONObject(i), AppStatusVo.class);
+                            statusList.add(statusVo);
+                        }
+                    }
+                    if (CollectionUtils.isNotEmpty(statusRelObjList)) {
+                        for (int i = 0; i < statusRelObjList.size(); i++) {
+                            AppStatusRelVo statusRelVo = JSONObject.toJavaObject(statusRelObjList.getJSONObject(i), AppStatusRelVo.class);
+                            Optional<AppStatusVo> opFrom = statusList.stream().filter(d -> d.getId().equals(statusRelVo.getFromStatusId())).findFirst();
+                            if (opFrom.isPresent()) {
+                                AppStatusVo statusVo = opFrom.get();
+                                statusVo.setId(null);
+                                statusVo.setAppId(null);
+                                statusRelVo.setFromStatusId(statusVo.getId());
+                            } else {
+                                continue;
+                            }
+                            Optional<AppStatusVo> toOp = statusList.stream().filter(d -> d.getId().equals(statusRelVo.getToStatusId())).findFirst();
+                            if (toOp.isPresent()) {
+                                AppStatusVo statusVo = toOp.get();
+                                statusVo.setId(null);
+                                statusVo.setAppId(null);
+                                statusRelVo.setToStatusId(statusVo.getId());
+                            } else {
+                                continue;
+                            }
+                            statusRelVo.setId(null);
+                            statusRelVo.setAppId(appVo.getId());
+                            statusRelList.add(statusRelVo);
+                        }
+                    }
+                    for (AppStatusVo status : statusList) {
+                        if (status.getAppId() == null) {
+                            status.setAppId(appVo.getId());
+                            appMapper.insertAppStatus(status);
+                        }
+                    }
+                    for (AppStatusRelVo statusRel : statusRelList) {
+                        appMapper.insertAppStatusRel(statusRel);
+                    }
+                }
+                if (!hasAttr) {
+                    if (attrTypeList != null) {
+                        int sort = 1;
+                        for (AttrType attrType : attrTypeList) {
+                            if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getAppType().equalsIgnoreCase(attrType.getBelong()))) {
+                                AppAttrVo appAttrVo = new AppAttrVo();
+                                appAttrVo.setName(attrType.getName());
+                                appAttrVo.setLabel(attrType.getLabel());
+                                appAttrVo.setType(attrType.getType());
+                                appAttrVo.setSort(sort);
+                                appAttrVo.setIsRequired(0);
+                                appAttrVo.setIsPrivate(1);
+                                appAttrVo.setIsActive(1);
+                                appAttrVo.setAppId(appVo.getId());
+                                appVo.addAppAttr(appAttrVo);
+                                attrMapper.insertAppAttr(appAttrVo);
+                                sort += 1;
+                            }
                         }
                     }
                 }
+
                 appList.add(appVo);
             }
             for (AppVo appVo : appList) {

@@ -41,7 +41,7 @@ public class ListProjectTemplateApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "获取项目模板列表";
+        return "nmrap.listprojecttemplateapi.getname";
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ListProjectTemplateApi extends PrivateApiComponentBase {
     }
 
     @Output({@Param(explode = ProjectTemplateVo.class)})
-    @Description(desc = "获取项目模板列表接口")
+    @Description(desc = "nmrap.listprojecttemplateapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         ProjectTemplateVo projectTemplateVo = JSONObject.toJavaObject(paramObj, ProjectTemplateVo.class);

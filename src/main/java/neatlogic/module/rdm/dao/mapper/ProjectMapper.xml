@@ -17,6 +17,64 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.ProjectMapper">
+    <select id="getAppStatusRelByProjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
+        select rasr.from_status_id as fromStatusId,
+               rasr.to_status_id   as toStatusId,
+               rasr.app_id         as appId,
+               rasr.config         as configStr
+        from rdm_app_status_rel rasr
+                 join rdm_app ra on rasr.app_id = ra.id
+        where ra.project_id = #{value}
+    </select>
+
+
+    <select id="getAppByProjectId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppVo">
+        select id,
+               app_type   as appType,
+               project_id as projectId,
+               sort,
+               is_active  as isActive,
+               config     as configStr
+        from rdm_app
+        where project_id = #{value}
+    </select>
+
+    <select id="getAppStatusByProjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.AppStatusVo">
+        select ras.id,
+               ras.app_id   as appId,
+               ras.is_start as isStart,
+               ras.is_end   as isEnd,
+               ras.name,
+               ras.label    as label,
+               ras.sort     as sort,
+               ras.description,
+               ras.color
+        from rdm_app_status ras
+                 join rdm_app ra on ras.app_id = ra.id
+        where ra.project_id = #{value}
+    </select>
+
+    <select id="getAppAttrByProjectId" parameterType="java.lang.Long"
+            resultType="neatlogic.framework.rdm.dto.AppAttrVo">
+        select raa.id,
+               raa.app_id       as appId,
+               raa.type,
+               raa.name,
+               raa.is_active    as isActive,
+               raa.label        as label,
+               raa.validator_id as validatorId,
+               raa.description,
+               raa.is_required  as isRequired,
+               raa.sort,
+               raa.is_private   as isPrivate,
+               raa.config       as configStr
+        from rdm_app_attr raa
+                 join rdm_app ra on raa.app_id = ra.id
+        where ra.project_id = #{value}
+    </select>
+
     <resultMap id="projectUserMap" type="neatlogic.framework.rdm.dto.ProjectUserVo">
         <id property="userId" column="userId"/>
         <result property="userName" column="userName"/>

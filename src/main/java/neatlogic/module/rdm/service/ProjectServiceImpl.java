@@ -44,20 +44,25 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
 
-    public EscapeTransactionJob.State buildObjectSchema(AppVo objectVo) {
+    public EscapeTransactionJob.State buildObjectSchema(AppVo appVo) {
         return new EscapeTransactionJob(() -> {
             if (projectSchemaMapper.checkSchemaIsExists(TenantContext.get().getDataDbName()) > 0) {
-                if (projectSchemaMapper.checkTableIsExists(TenantContext.get().getDataDbName(), "rdm_object_" + objectVo.getId()) <= 0) {
+                if (projectSchemaMapper.checkTableIsExists(TenantContext.get().getDataDbName(), "rdm_object_" + appVo.getId()) <= 0) {
                     //创建配置项表
-                    projectSchemaMapper.insertAppTable(objectVo.getTableName());
+                    projectSchemaMapper.insertAppTable(appVo.getTableName());
+                    for (AppAttrVo attrVo : appVo.getAttrList()) {
+                        if (attrVo.getIsPrivate().equals(0)) {
+                            projectSchemaMapper.insertAppTableAttr(appVo.getTableName(), attrVo);
+                        }
+                    }
                 } else {
                     //如果已存在但没有数据，重建表
-                    if (projectSchemaMapper.checkTableHasData(objectVo.getTableName()) <= 0) {
-                        projectSchemaMapper.deleteAppTable(objectVo.getTableName());
-                        projectSchemaMapper.insertAppTable(objectVo.getTableName());
-                        for (AppAttrVo attrVo : objectVo.getAttrList()) {
+                    if (projectSchemaMapper.checkTableHasData(appVo.getTableName()) <= 0) {
+                        projectSchemaMapper.deleteAppTable(appVo.getTableName());
+                        projectSchemaMapper.insertAppTable(appVo.getTableName());
+                        for (AppAttrVo attrVo : appVo.getAttrList()) {
                             if (attrVo.getIsPrivate().equals(0)) {
-                                projectSchemaMapper.insertAppTableAttr(objectVo.getTableName(), attrVo);
+                                projectSchemaMapper.insertAppTableAttr(appVo.getTableName(), attrVo);
                             }
                         }
                     }

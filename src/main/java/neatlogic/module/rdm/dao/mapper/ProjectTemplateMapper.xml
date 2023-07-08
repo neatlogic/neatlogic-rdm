@@ -58,4 +58,22 @@
         </where>
         order by a.id,b.sort
     </select>
+
+    <insert id="insertProjectTemplateAppType" parameterType="neatlogic.framework.rdm.dto.ProjectTemplateAppTypeVo">
+        insert rdm_project_template_apptype
+        (template_id,
+         app_type,
+         sort,
+         config)
+        values (#{templateId},
+                #{appType},
+                #{sort},
+                #{configStr})
+    </insert>
+
+    <insert id="insertProjectTemplate" parameterType="neatlogic.framework.rdm.dto.ProjectTemplateVo">
+        insert into rdm_project_template
+            (id, name, is_active)
+        values (#{id}, #{name}, #{isActive})
+    </insert>
 </mapper>
