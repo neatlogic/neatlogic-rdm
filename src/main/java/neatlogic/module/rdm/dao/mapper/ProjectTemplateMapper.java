@@ -28,5 +28,11 @@ public interface ProjectTemplateMapper {
 
     void insertProjectTemplateAppType(ProjectTemplateAppTypeVo projectTemplateAppTypeVo);
 
+    void updateProjectTemplate(ProjectTemplateVo projectTemplateVo);
+
+    void deleteProjectTemplateAppTypeByTemplateId(Long projectTemplateId);
+
     List<ProjectTemplateVo> searchProjectTemplate(ProjectTemplateVo projectTemplateVo);
+
+    void deleteProjectTemplate(Long id);
 }

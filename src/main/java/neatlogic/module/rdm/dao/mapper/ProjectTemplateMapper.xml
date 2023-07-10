@@ -76,4 +76,24 @@
             (id, name, is_active)
         values (#{id}, #{name}, #{isActive})
     </insert>
+
+    <update id="updateProjectTemplate" parameterType="neatlogic.framework.rdm.dto.ProjectTemplateVo">
+        update rdm_project_template
+        set name      = #{name},
+            is_active = #{isActive}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProjectTemplateAppTypeByTemplateId" parameterType="java.lang.Long">
+        delete
+        from rdm_project_template_apptype
+        where template_id = #{value}
+    </delete>
+
+    <delete id="deleteProjectTemplate" parameterType="java.lang.Long">
+        delete a,b
+        from rdm_project_template a
+                 left join rdm_project_template_apptype b on a.id = b.template_id
+        where a.id = #{value}
+    </delete>
 </mapper>

@@ -22,8 +22,16 @@
         select rasr.from_status_id as fromStatusId,
                rasr.to_status_id   as toStatusId,
                rasr.app_id         as appId,
-               rasr.config         as configStr
+               rasr.config         as configStr,
+               fras.name           as fromStatusName,
+               fras.label          as fromStatusLabel,
+               fras.color          as fromStatusColor,
+               tras.name           as toStatusName,
+               tras.label          as toStatusLabel,
+               tras.color          as toStatusColor
         from rdm_app_status_rel rasr
+                 join rdm_app_status fras on rasr.from_status_id = fras.id
+                 join rdm_app_status tras on rasr.to_status_id = tras.id
                  join rdm_app ra on rasr.app_id = ra.id
         where ra.project_id = #{value}
     </select>
