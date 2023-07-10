@@ -1,8 +1,7 @@
 -- ----------------------------
 -- Table structure for rdm_app
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app`;
-CREATE TABLE `rdm_app` (
+CREATE TABLE IF NOT EXISTS `rdm_app` (
   `id` bigint NOT NULL COMMENT '对象id',
   `app_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '标题',
   `project_id` bigint DEFAULT NULL COMMENT '项目id',
@@ -15,8 +14,7 @@ CREATE TABLE `rdm_app` (
 -- ----------------------------
 -- Table structure for rdm_app_attr
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app_attr`;
-CREATE TABLE `rdm_app_attr` (
+CREATE TABLE IF NOT EXISTS `rdm_app_attr` (
   `id` bigint NOT NULL COMMENT 'id',
   `app_id` bigint NOT NULL COMMENT '引用rdm_object的id',
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '值类型',
@@ -38,8 +36,7 @@ CREATE TABLE `rdm_app_attr` (
 -- ----------------------------
 -- Table structure for rdm_app_catalog
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app_catalog`;
-CREATE TABLE `rdm_app_catalog` (
+CREATE TABLE IF NOT EXISTS `rdm_app_catalog` (
   `id` bigint NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `app_id` bigint DEFAULT NULL,
@@ -54,8 +51,7 @@ CREATE TABLE `rdm_app_catalog` (
 -- ----------------------------
 -- Table structure for rdm_app_priority
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app_priority`;
-CREATE TABLE `rdm_app_priority` (
+CREATE TABLE IF NOT EXISTS `rdm_app_priority` (
   `id` bigint NOT NULL COMMENT '主键',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '唯一标识',
   `label` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
@@ -66,8 +62,7 @@ CREATE TABLE `rdm_app_priority` (
 -- ----------------------------
 -- Table structure for rdm_app_status
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app_status`;
-CREATE TABLE `rdm_app_status` (
+CREATE TABLE IF NOT EXISTS `rdm_app_status` (
   `id` bigint NOT NULL COMMENT '主键',
   `app_id` bigint DEFAULT NULL COMMENT '对象id',
   `is_start` tinyint DEFAULT '0',
@@ -84,8 +79,7 @@ CREATE TABLE `rdm_app_status` (
 -- ----------------------------
 -- Table structure for rdm_app_status_rel
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app_status_rel`;
-CREATE TABLE `rdm_app_status_rel` (
+CREATE TABLE IF NOT EXISTS `rdm_app_status_rel` (
   `id` bigint DEFAULT NULL,
   `from_status_id` bigint NOT NULL,
   `to_status_id` bigint NOT NULL,
@@ -98,8 +92,7 @@ CREATE TABLE `rdm_app_status_rel` (
 -- ----------------------------
 -- Table structure for rdm_app_usersetting
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_app_usersetting`;
-CREATE TABLE `rdm_app_usersetting` (
+CREATE TABLE IF NOT EXISTS `rdm_app_usersetting` (
   `user_id` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `app_id` bigint NOT NULL,
   `config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
@@ -110,8 +103,7 @@ CREATE TABLE `rdm_app_usersetting` (
 -- ----------------------------
 -- Table structure for rdm_favoriteissue
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_favoriteissue`;
-CREATE TABLE `rdm_favoriteissue` (
+CREATE TABLE IF NOT EXISTS `rdm_favoriteissue` (
   `issue_id` bigint NOT NULL,
   `user_id` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`issue_id`,`user_id`) USING BTREE,
@@ -121,8 +113,7 @@ CREATE TABLE `rdm_favoriteissue` (
 -- ----------------------------
 -- Table structure for rdm_issue
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue`;
-CREATE TABLE `rdm_issue` (
+CREATE TABLE IF NOT EXISTS `rdm_issue` (
   `id` bigint NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
   `app_id` bigint DEFAULT NULL COMMENT '应用id',
@@ -149,8 +140,7 @@ CREATE TABLE `rdm_issue` (
 -- ----------------------------
 -- Table structure for rdm_issue_audit
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_audit`;
-CREATE TABLE `rdm_issue_audit` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_audit` (
   `id` bigint NOT NULL COMMENT 'Id',
   `issue_id` bigint DEFAULT NULL COMMENT '任务id',
   `attr_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '属性名称',
@@ -169,8 +159,7 @@ CREATE TABLE `rdm_issue_audit` (
 -- ----------------------------
 -- Table structure for rdm_issue_comment
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_comment`;
-CREATE TABLE `rdm_issue_comment` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_comment` (
   `id` bigint NOT NULL,
   `issue_id` bigint DEFAULT NULL COMMENT '任务id',
   `status` bigint DEFAULT NULL COMMENT '回复时所在状态',
@@ -186,8 +175,7 @@ CREATE TABLE `rdm_issue_comment` (
 -- ----------------------------
 -- Table structure for rdm_issue_file
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_file`;
-CREATE TABLE `rdm_issue_file` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_file` (
   `issue_id` bigint NOT NULL,
   `file_id` bigint NOT NULL,
   PRIMARY KEY (`issue_id`,`file_id`) USING BTREE,
@@ -197,8 +185,7 @@ CREATE TABLE `rdm_issue_file` (
 -- ----------------------------
 -- Table structure for rdm_issue_rel
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_rel`;
-CREATE TABLE `rdm_issue_rel` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_rel` (
   `from_issue_id` bigint NOT NULL,
   `to_issue_id` bigint NOT NULL,
   `from_app_id` bigint DEFAULT NULL,
@@ -213,8 +200,7 @@ CREATE TABLE `rdm_issue_rel` (
 -- ----------------------------
 -- Table structure for rdm_issue_tag
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_tag`;
-CREATE TABLE `rdm_issue_tag` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_tag` (
   `issue_id` bigint NOT NULL,
   `tag_id` bigint NOT NULL,
   PRIMARY KEY (`issue_id`,`tag_id`) USING BTREE,
@@ -224,8 +210,7 @@ CREATE TABLE `rdm_issue_tag` (
 -- ----------------------------
 -- Table structure for rdm_issue_user
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_user`;
-CREATE TABLE `rdm_issue_user` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_user` (
   `issue_id` bigint NOT NULL,
   `user_id` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`issue_id`,`user_id`) USING BTREE,
@@ -235,8 +220,7 @@ CREATE TABLE `rdm_issue_user` (
 -- ----------------------------
 -- Table structure for rdm_issue_webhookdata
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_issue_webhookdata`;
-CREATE TABLE `rdm_issue_webhookdata` (
+CREATE TABLE IF NOT EXISTS `rdm_issue_webhookdata` (
   `issue_id` bigint NOT NULL,
   `data_id` bigint NOT NULL,
   PRIMARY KEY (`issue_id`,`data_id`) USING BTREE
@@ -245,8 +229,7 @@ CREATE TABLE `rdm_issue_webhookdata` (
 -- ----------------------------
 -- Table structure for rdm_iteration
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_iteration`;
-CREATE TABLE `rdm_iteration` (
+CREATE TABLE IF NOT EXISTS `rdm_iteration` (
   `id` bigint NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `project_id` bigint DEFAULT NULL,
@@ -260,8 +243,7 @@ CREATE TABLE `rdm_iteration` (
 -- ----------------------------
 -- Table structure for rdm_priority
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_priority`;
-CREATE TABLE `rdm_priority` (
+CREATE TABLE IF NOT EXISTS `rdm_priority` (
   `id` bigint NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `color` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -272,8 +254,7 @@ CREATE TABLE `rdm_priority` (
 -- ----------------------------
 -- Table structure for rdm_project
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_project`;
-CREATE TABLE `rdm_project` (
+CREATE TABLE IF NOT EXISTS `rdm_project` (
   `id` bigint NOT NULL COMMENT 'id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '说明',
@@ -293,8 +274,7 @@ CREATE TABLE `rdm_project` (
 -- ----------------------------
 -- Table structure for rdm_project_status
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_project_status`;
-CREATE TABLE `rdm_project_status` (
+CREATE TABLE IF NOT EXISTS `rdm_project_status` (
   `id` bigint NOT NULL,
   `project_id` bigint DEFAULT NULL,
   `is_start` tinyint(1) DEFAULT '0',
@@ -310,8 +290,7 @@ CREATE TABLE `rdm_project_status` (
 -- ----------------------------
 -- Table structure for rdm_project_status_rel
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_project_status_rel`;
-CREATE TABLE `rdm_project_status_rel` (
+CREATE TABLE IF NOT EXISTS `rdm_project_status_rel` (
   `id` bigint NOT NULL,
   `from_status_id` bigint NOT NULL,
   `to_status_id` bigint NOT NULL,
@@ -323,8 +302,7 @@ CREATE TABLE `rdm_project_status_rel` (
 -- ----------------------------
 -- Table structure for rdm_project_template
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_project_template`;
-CREATE TABLE `rdm_project_template` (
+CREATE TABLE IF NOT EXISTS `rdm_project_template` (
   `id` bigint NOT NULL COMMENT 'id',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板名称',
   `is_active` tinyint DEFAULT NULL COMMENT '是否激活',
@@ -334,8 +312,7 @@ CREATE TABLE `rdm_project_template` (
 -- ----------------------------
 -- Table structure for rdm_project_template_apptype
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_project_template_apptype`;
-CREATE TABLE `rdm_project_template_apptype` (
+CREATE TABLE IF NOT EXISTS `rdm_project_template_apptype` (
   `template_id` bigint NOT NULL COMMENT '模板id',
   `app_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用类型',
   `sort` int DEFAULT NULL COMMENT '排序',
@@ -345,8 +322,7 @@ CREATE TABLE `rdm_project_template_apptype` (
 -- ----------------------------
 -- Table structure for rdm_project_user
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_project_user`;
-CREATE TABLE `rdm_project_user` (
+CREATE TABLE IF NOT EXISTS `rdm_project_user` (
   `project_id` bigint NOT NULL,
   `user_id` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_type` enum('member','leader','owner') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
@@ -356,8 +332,7 @@ CREATE TABLE `rdm_project_user` (
 -- ----------------------------
 -- Table structure for rdm_tag
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_tag`;
-CREATE TABLE `rdm_tag` (
+CREATE TABLE IF NOT EXISTS `rdm_tag` (
   `id` bigint NOT NULL,
   `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
@@ -367,8 +342,7 @@ CREATE TABLE `rdm_tag` (
 -- ----------------------------
 -- Table structure for rdm_webhook_config
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_webhook_config`;
-CREATE TABLE `rdm_webhook_config` (
+CREATE TABLE IF NOT EXISTS `rdm_webhook_config` (
   `app_id` bigint NOT NULL,
   `webhook_url` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `secret_token` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
@@ -379,8 +353,7 @@ CREATE TABLE `rdm_webhook_config` (
 -- ----------------------------
 -- Table structure for rdm_webhook_data
 -- ----------------------------
-DROP TABLE IF EXISTS `rdm_webhook_data`;
-CREATE TABLE `rdm_webhook_data` (
+CREATE TABLE IF NOT EXISTS `rdm_webhook_data` (
   `id` bigint NOT NULL,
   `app_id` bigint DEFAULT NULL,
   `create_time` datetime(3) DEFAULT NULL,
