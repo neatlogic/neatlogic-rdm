@@ -140,6 +140,7 @@
         <result property="color" column="color"/>
         <result property="templateId" column="templateId"/>
         <result property="type" column="type"/>
+        <result property="isClose" column="isClose"/>
         <result property="fcd" column="fcd"/>
         <result property="fcu" column="fcu"/>
         <result property="lcd" column="lcd"/>
@@ -186,6 +187,7 @@
         a.start_date AS startDate,
         a.end_date AS endDate,
         a.color,
+        a.is_close as isClose,
         a.template_id AS templateId,
         a.type AS type,
         a.fcd,
@@ -250,6 +252,7 @@
                a.description,
                a.start_date  AS startDate,
                a.end_date    AS endDate,
+               a.is_close    AS isClose,
                a.color,
                a.template_id AS templateId,
                a.type        AS type,

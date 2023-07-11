@@ -52,9 +52,9 @@ public class SaveProjectTemplateApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", desc = "common.templateid", isRequired = true, type = ApiParamType.LONG),
+    @Input({@Param(name = "id", desc = "common.templateid", type = ApiParamType.LONG),
             @Param(name = "name", desc = "common.name", isRequired = true, maxLength = 50, xss = true, type = ApiParamType.STRING),
-            @Param(name = "isActive", desc = "common.isactive", isRequired = true, rule = "0,1", type = ApiParamType.INTEGER),
+            @Param(name = "isActive", desc = "common.isactive", defaultValue = "0", rule = "0,1", type = ApiParamType.INTEGER),
             @Param(name = "appTypeList", desc = "nfrd.projecttemplatevo.entityfield.name.apptypelist", isRequired = true, type = ApiParamType.JSONARRAY)})
     @Output({@Param(name = "id", desc = "common.templateid", type = ApiParamType.LONG)})
     @Description(desc = "nmrat.saveprojecttemplateapi.getname")
@@ -69,9 +69,12 @@ public class SaveProjectTemplateApi extends PrivateApiComponentBase {
             projectTemplateMapper.deleteProjectTemplateAppTypeByTemplateId(projectTemplateVo.getId());
         }
         if (CollectionUtils.isNotEmpty(projectTemplateVo.getAppTypeList())) {
+            int sort = 1;
             for (ProjectTemplateAppTypeVo appTypeVo : projectTemplateVo.getAppTypeList()) {
                 appTypeVo.setTemplateId(projectTemplateVo.getId());
+                appTypeVo.setSort(sort);
                 projectTemplateMapper.insertProjectTemplateAppType(appTypeVo);
+                sort += 1;
             }
         }
         return projectTemplateVo.getId();

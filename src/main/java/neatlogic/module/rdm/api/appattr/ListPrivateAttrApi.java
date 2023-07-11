@@ -62,6 +62,9 @@ public class ListPrivateAttrApi extends PrivateApiComponentBase {
                 appAttrVo.setName(attrType.getName());
                 appAttrVo.setLabel(attrType.getLabel());
                 appAttrVo.setType(attrType.getType());
+                appAttrVo.setIsRequired(0);
+                appAttrVo.setIsPrivate(1);
+                appAttrVo.setIsActive(0);
                 attrList.add(appAttrVo);
             }
         }

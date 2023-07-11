@@ -108,7 +108,6 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 appVo.setSort(appType.getSort());
                 appVo.setIsActive(1);
                 appMapper.insertApp(appVo);
-
                 AttrType[] attrTypeList = AppTypeManager.getAttrList(appType.getAppType());
                 boolean hasAttr = false;
                 if (appType.getConfig() != null) {
@@ -119,7 +118,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                             JSONObject attrObj = attrObjList.getJSONObject(i);
                             AppAttrVo appAttrVo = JSONObject.toJavaObject(attrObj, AppAttrVo.class);
                             //如果是内置属性检查是否还存在
-                            if (appAttrVo.getIsPrivate().equals(0) || (appAttrVo.getIsPrivate().equals(1) && AppTypeManager.isContain(appAttrVo.getAppType()))) {
+                            if (appAttrVo.getIsPrivate().equals(0) || (appAttrVo.getIsPrivate().equals(1) && AttrType.get(appAttrVo.getType()) != null)) {
                                 appAttrVo.setId(null);
                                 appAttrVo.setAppId(appVo.getId());
                                 appVo.addAppAttr(appAttrVo);
