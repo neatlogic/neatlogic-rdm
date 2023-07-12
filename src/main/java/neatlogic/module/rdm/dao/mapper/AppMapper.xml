@@ -86,6 +86,9 @@
         a.label,
         a.sort,
         a.color
+        <if test="status != null">
+            ,b.config as configStr
+        </if>
         FROM rdm_app_status a
         <if test="status != null">
             join rdm_app_status_rel b on a.id = b.to_status_id and b.from_status_id = #{status} and b.app_id = #{appId}
