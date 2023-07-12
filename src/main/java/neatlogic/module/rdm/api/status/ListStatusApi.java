@@ -23,6 +23,7 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppStatusVo;
+import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -44,7 +45,7 @@ public class ListStatusApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "获取应用状态列表";
+        return "nmras.liststatusapi.getname";
     }
 
     @Override
@@ -52,17 +53,20 @@ public class ListStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "对象id"),
-            @Param(name = "status", type = ApiParamType.LONG, desc = "当前状态，如果提供则只会列出可到达状态列表，如果是0，代表获取开始状态以及开始状态能到达的状态列表")})
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "nmraa.getappapi.input.param.desc"),
+            @Param(name = "status", type = ApiParamType.LONG, desc = "nmras.liststatusapi.input.param.desc.status"),
+            @Param(name = "needIssueCount", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmras.liststatusapi.input.param.desc.needissuecount"),
+            @Param(name = "fromId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
+            @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid")})
     @Output({@Param(explode = AppStatusVo[].class)})
-    @Description(desc = "获取应用状态列表接口")
+    @Description(desc = "nmras.liststatusapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long appId = paramObj.getLong("appId");
+        IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         Long status = paramObj.getLong("status");
         AppStatusVo startStatus = null;
         if (status != null && status.equals(0L)) {
-            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appId, null);
+            List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueVo);
             Optional<AppStatusVo> op = statusList.stream().filter(d -> d.getIsStart() != null && d.getIsStart().equals(1)).findFirst();
             if (op.isPresent()) {
                 startStatus = op.get();
@@ -70,8 +74,9 @@ public class ListStatusApi extends PrivateApiComponentBase {
             } else {
                 status = null;
             }
+            issueVo.setStatus(status);
         }
-        List<AppStatusVo> statusList = appMapper.getStatusByAppId(appId, status);
+        List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueVo);
 
         for (int s = statusList.size() - 1; s >= 0; s--) {
             AppStatusVo appStatus = statusList.get(s);

@@ -17,6 +17,31 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.IssueMapper">
+    <select id="getIssueCountByAppId" parameterType="neatlogic.framework.rdm.dto.IssueVo"
+            resultType="neatlogic.framework.rdm.dto.IssueCountVo">
+        select count(ri.id) as count, 'end' as type
+        from rdm_issue ri
+        join rdm_app_status ras on ri.status = ras.id
+        <if test="fromId != null">
+            join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id = #{fromId}
+        </if>
+        <if test="toId != null">
+            join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id = #{toId}
+        </if>
+        where ri.app_id = #{appId}
+        and ras.is_end = 1
+        union
+        select count(ri.id) as count, 'all' as type
+        from rdm_issue ri
+        <if test="fromId != null">
+            join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id = #{fromId}
+        </if>
+        <if test="toId != null">
+            join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id = #{toId}
+        </if>
+        where ri.app_id = #{appId}
+    </select>
+
     <select id="getIssueRel" resultType="neatlogic.framework.rdm.dto.IssueRelVo">
         select from_app_id   as fromAppId,
                from_issue_id as fromIssueId,

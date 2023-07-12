@@ -22,6 +22,7 @@ import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -50,9 +51,11 @@ public class ProjectServiceImpl implements ProjectService {
                 if (projectSchemaMapper.checkTableIsExists(TenantContext.get().getDataDbName(), "rdm_object_" + appVo.getId()) <= 0) {
                     //创建配置项表
                     projectSchemaMapper.insertAppTable(appVo.getTableName());
-                    for (AppAttrVo attrVo : appVo.getAttrList()) {
-                        if (attrVo.getIsPrivate().equals(0)) {
-                            projectSchemaMapper.insertAppTableAttr(appVo.getTableName(), attrVo);
+                    if (CollectionUtils.isNotEmpty(appVo.getAttrList())) {
+                        for (AppAttrVo attrVo : appVo.getAttrList()) {
+                            if (attrVo.getIsPrivate().equals(0)) {
+                                projectSchemaMapper.insertAppTableAttr(appVo.getTableName(), attrVo);
+                            }
                         }
                     }
                 } else {
@@ -60,9 +63,11 @@ public class ProjectServiceImpl implements ProjectService {
                     if (projectSchemaMapper.checkTableHasData(appVo.getTableName()) <= 0) {
                         projectSchemaMapper.deleteAppTable(appVo.getTableName());
                         projectSchemaMapper.insertAppTable(appVo.getTableName());
-                        for (AppAttrVo attrVo : appVo.getAttrList()) {
-                            if (attrVo.getIsPrivate().equals(0)) {
-                                projectSchemaMapper.insertAppTableAttr(appVo.getTableName(), attrVo);
+                        if (CollectionUtils.isNotEmpty(appVo.getAttrList())) {
+                            for (AppAttrVo attrVo : appVo.getAttrList()) {
+                                if (attrVo.getIsPrivate().equals(0)) {
+                                    projectSchemaMapper.insertAppTableAttr(appVo.getTableName(), attrVo);
+                                }
                             }
                         }
                     }

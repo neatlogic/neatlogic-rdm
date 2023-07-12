@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface IssueMapper {
+    List<IssueCountVo> getIssueCountByAppId(IssueVo issueVo);
+
     IssueRelVo getIssueRel(@Param("fromIssueId") Long fromIssueId, @Param("toIssueId") Long toIssueId);
 
     List<Long> getRelIssueIdList(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction);

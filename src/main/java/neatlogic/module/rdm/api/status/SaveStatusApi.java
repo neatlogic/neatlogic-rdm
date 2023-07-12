@@ -21,6 +21,7 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppStatusVo;
+import neatlogic.framework.rdm.dto.IssueConditionVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -41,7 +42,7 @@ public class SaveStatusApi extends PrivateApiComponentBase {
 
     @Override
     public String getName() {
-        return "保存应用状态";
+        return "nmras.savestatusapi.getname";
     }
 
     @Override
@@ -49,20 +50,22 @@ public class SaveStatusApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "对象状态id，不提供代表添加"),
-            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, isRequired = true, desc = "唯一标识"),
-            @Param(name = "label", type = ApiParamType.STRING, isRequired = true, desc = "名称"),
-            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
-            @Param(name = "description", type = ApiParamType.STRING, desc = "说明"),
-            @Param(name = "color", type = ApiParamType.STRING, desc = "颜色")})
+    @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmras.savestatusapi.input.param.desc.id"),
+            @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, isRequired = true, desc = "common.uniquename"),
+            @Param(name = "label", type = ApiParamType.STRING, isRequired = true, desc = "common.name"),
+            @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "nmraa.getappapi.input.param.desc"),
+            @Param(name = "description", type = ApiParamType.STRING, desc = "common.description"),
+            @Param(name = "color", type = ApiParamType.STRING, desc = "common.color")})
     @Output({@Param(explode = AppStatusVo.class)})
-    @Description(desc = "保存应用状态接口")
+    @Description(desc = "nmras.savestatusapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppStatusVo appStatusVo = JSONObject.toJavaObject(paramObj, AppStatusVo.class);
 
         if (paramObj.getLong("id") == null) {
-            List<AppStatusVo> statusList = appMapper.getStatusByAppId(appStatusVo.getAppId(), null);
+            IssueConditionVo issueConditionVo = new IssueConditionVo();
+            issueConditionVo.setAppId(appStatusVo.getAppId());
+            List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueConditionVo);
             appStatusVo.setSort(statusList.size() + 1);
             appMapper.insertAppStatus(appStatusVo);
         } else {

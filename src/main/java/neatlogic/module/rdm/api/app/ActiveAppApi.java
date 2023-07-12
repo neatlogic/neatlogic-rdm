@@ -40,10 +40,12 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.service.ProjectService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -96,7 +98,6 @@ public class ActiveAppApi extends PrivateApiComponentBase {
                 appVo.setSort(999);
                 appVo.setIsActive(1);
                 appMapper.insertApp(appVo);
-
                 AttrType[] attrTypeList = AppTypeManager.getAttrList(aType.getName());
                 if (attrTypeList != null) {
                     int sort = 1;
@@ -115,19 +116,46 @@ public class ActiveAppApi extends PrivateApiComponentBase {
                         sort += 1;
                     }
                 }
-                if (appVo.getHasIssue()) {
-                    EscapeTransactionJob.State s = projectService.buildObjectSchema(appVo);
-                    if (!s.isSucceed()) {
-                        throw new CreateObjectSchemaException(appVo.getName());
-                    }
-                }
             }
         } else {
             if (appVo.getIsActive().equals(0)) {
                 appMapper.updateAppIsActive(appVo.getId(), 1);
+                AppVo oldAppVo = appMapper.getAppById(appVo.getId());
+                AttrType[] attrTypeList = AppTypeManager.getAttrList(appVo.getType());
+                if (CollectionUtils.isNotEmpty(oldAppVo.getAttrList())) {
+                    for (AppAttrVo attr : oldAppVo.getAttrList()) {
+                        if (attr.getIsPrivate().equals(1) && (attrTypeList == null || Arrays.stream(attrTypeList).noneMatch(d -> d.getType().equals(attr.getType())))) {
+                            attrMapper.deleteAppAttrById(attr.getId());
+                        }
+                    }
+                }
+                if (attrTypeList != null) {
+                    int sort = 1;
+                    for (AttrType attrType : attrTypeList) {
+                        if (CollectionUtils.isEmpty(oldAppVo.getAttrList()) || oldAppVo.getAttrList().stream().noneMatch(d -> d.getType().equals(attrType.getType()))) {
+                            AppAttrVo appAttrVo = new AppAttrVo();
+                            appAttrVo.setName(attrType.getName());
+                            appAttrVo.setLabel(attrType.getLabel());
+                            appAttrVo.setType(attrType.getType());
+                            appAttrVo.setSort(sort);
+                            appAttrVo.setIsRequired(0);
+                            appAttrVo.setIsPrivate(1);
+                            appAttrVo.setIsActive(1);
+                            appAttrVo.setAppId(appVo.getId());
+                            appVo.addAppAttr(appAttrVo);
+                            attrMapper.insertAppAttr(appAttrVo);
+                            sort += 1;
+                        }
+                    }
+                }
             }
         }
-
+        if (appVo != null && appVo.getHasIssue()) {
+            EscapeTransactionJob.State s = projectService.buildObjectSchema(appVo);
+            if (!s.isSucceed()) {
+                throw new CreateObjectSchemaException(appVo.getName());
+            }
+        }
         return appVo != null ? appVo.getId() : null;
     }
 

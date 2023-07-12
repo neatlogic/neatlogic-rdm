@@ -19,13 +19,13 @@
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
     <select id="getAppByProjectIdAndType" resultType="neatlogic.framework.rdm.dto.AppVo">
         select a.id,
-               a.app_type   as appType,
+               a.app_type   as type,
                a.project_id AS projectId,
                a.sort,
                a.is_active  as isActive
         from rdm_app a
         where a.project_id = #{projectId}
-          and a.app_type = #{appType}
+          and a.app_type = #{type}
         limit 1
     </select>
 
@@ -75,7 +75,7 @@
         WHERE id = #{value}
     </select>
 
-    <select id="getStatusByAppId"
+    <select id="getStatusByAppId" parameterType="neatlogic.framework.rdm.dto.IssueVo"
             resultType="neatlogic.framework.rdm.dto.AppStatusVo">
         select
         a.id,
@@ -86,6 +86,16 @@
         a.label,
         a.sort,
         a.color
+        <if test="needIssueCount == 1">
+            ,(select count(ri.id) from rdm_issue ri
+            <if test="fromId != null">
+                join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id = #{fromId}
+            </if>
+            <if test="toId != null">
+                join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id = #{toId}
+            </if>
+            where ri.status = a.id) as issueCount
+        </if>
         <if test="status != null">
             ,b.config as configStr
         </if>
@@ -94,6 +104,9 @@
             join rdm_app_status_rel b on a.id = b.to_status_id and b.from_status_id = #{status} and b.app_id = #{appId}
         </if>
         WHERE a.app_id = #{appId}
+        <if test="status != null">
+            and a.id != #{status}
+        </if>
         order by a.sort
     </select>
 
