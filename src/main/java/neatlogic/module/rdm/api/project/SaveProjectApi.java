@@ -117,8 +117,17 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         for (int i = 0; i < attrObjList.size(); i++) {
                             JSONObject attrObj = attrObjList.getJSONObject(i);
                             AppAttrVo appAttrVo = JSONObject.toJavaObject(attrObj, AppAttrVo.class);
+                            if (appAttrVo.getIsRequired() == null) {
+                                appAttrVo.setIsRequired(0);
+                            }
+                            if (appAttrVo.getIsActive() == null) {
+                                appAttrVo.setIsActive(0);
+                            }
+                            if (appAttrVo.getIsPrivate() == null) {
+                                appAttrVo.setIsPrivate(0);
+                            }
                             //如果是内置属性检查是否还存在
-                            if (appAttrVo.getIsPrivate() == null || appAttrVo.getIsPrivate().equals(0) || (appAttrVo.getIsPrivate().equals(1) && AttrType.get(appAttrVo.getType()) != null)) {
+                            if (appAttrVo.getIsPrivate().equals(0) || (appAttrVo.getIsPrivate().equals(1) && AttrType.get(appAttrVo.getType()) != null)) {
                                 appAttrVo.setId(null);
                                 appAttrVo.setAppId(appVo.getId());
                                 appVo.addAppAttr(appAttrVo);
