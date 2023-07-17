@@ -44,20 +44,21 @@
 
     <select id="getStatusRelByAppId" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppStatusRelVo">
-        select rasr.id             as id,
-               rasr.from_status_id as fromStatusId,
-               rasr.to_status_id   as toStatusId,
-               rasr.app_id         as appId,
-               fras.name           as fromStatusName,
-               fras.label          as fromStatusLabel,
-               fras.color          as fromStatusColor,
-               tras.name           as toStatusName,
-               tras.label          as toStatusLabel,
-               tras.color          as toStatusColor,
-               rasr.config         as configStr
+        select rasr.id as id,
+        rasr.from_status_id as fromStatusId,
+        rasr.to_status_id as toStatusId,
+        rasr.app_id as appId,
+        fras.name as fromStatusName,
+        fras.label as fromStatusLabel,
+        fras.color as fromStatusColor,
+        tras.name as toStatusName,
+        tras.label as toStatusLabel,
+        tras.color as toStatusColor,
+        rasr.config as configStr
         from rdm_app_status_rel rasr
-                 join rdm_app_status fras on rasr.from_status_id = fras.id
-                 join rdm_app_status tras on rasr.to_status_id = tras.id
+        <!--from_status_id有0的情况，所以要用Left join-->
+        left join rdm_app_status fras on rasr.from_status_id = fras.id
+        join rdm_app_status tras on rasr.to_status_id = tras.id
         where rasr.app_id = #{value}
     </select>
 

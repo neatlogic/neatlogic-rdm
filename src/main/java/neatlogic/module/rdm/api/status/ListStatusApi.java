@@ -33,7 +33,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -64,7 +63,10 @@ public class ListStatusApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         Long status = paramObj.getLong("status");
-        AppStatusVo startStatus = null;
+        if (status == null) {
+            issueVo.setStatus(0L);
+        }
+        /*AppStatusVo startStatus = null;
         if (status != null && status.equals(0L)) {
             List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueVo);
             Optional<AppStatusVo> op = statusList.stream().filter(d -> d.getIsStart() != null && d.getIsStart().equals(1)).findFirst();
@@ -75,7 +77,7 @@ public class ListStatusApi extends PrivateApiComponentBase {
                 status = null;
             }
             issueVo.setStatus(status);
-        }
+        }*/
         List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueVo);
 
         for (int s = statusList.size() - 1; s >= 0; s--) {
@@ -108,9 +110,9 @@ public class ListStatusApi extends PrivateApiComponentBase {
                 }
             }
         }
-        if (startStatus != null && !statusList.contains(startStatus)) {
+        /*if (startStatus != null && !statusList.contains(startStatus)) {
             statusList.add(0, startStatus);
-        }
+        }*/
         return statusList;
     }
 
