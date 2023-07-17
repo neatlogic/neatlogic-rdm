@@ -48,6 +48,8 @@ public interface AppMapper {
 
     void updateAppSort(AppVo appVo);
 
+    void updateAppStatusSort(AppStatusVo appStatusVo);
+
     void saveAppConfig(AppVo appVo);
 
     void updateAppStatusRelConfig(AppStatusRelVo appStatusRelVo);

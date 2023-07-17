@@ -86,7 +86,6 @@
 
     <delete id="deleteAppTableAttr">
         ALTER TABLE ${tableName}
-            DROP COLUMN `${appAttrVo.id}`,
-            DROP COLUMN `${appAttrVo.id}_hash`
+            DROP COLUMN `${appAttrVo.id}`
     </delete>
 </mapper>
