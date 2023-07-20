@@ -62,10 +62,6 @@ public class ListStatusApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
-        Long status = paramObj.getLong("status");
-        if (status == null) {
-            issueVo.setStatus(0L);
-        }
         /*AppStatusVo startStatus = null;
         if (status != null && status.equals(0L)) {
             List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueVo);
