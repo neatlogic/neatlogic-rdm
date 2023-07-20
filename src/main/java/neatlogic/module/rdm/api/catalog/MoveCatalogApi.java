@@ -54,7 +54,10 @@ public class MoveCatalogApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"), @Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "被移动的目录id"), @Param(name = "targetId", type = ApiParamType.LONG, isRequired = true, desc = "目标目录id"), @Param(name = "moveType", type = ApiParamType.ENUM, rule = "inner,prev,next", isRequired = true, desc = "移动类型")})
+    @Input({@Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "应用id"),
+            @Param(name = "id", type = ApiParamType.LONG, isRequired = true, desc = "被移动的目录id"),
+            @Param(name = "targetId", type = ApiParamType.LONG, isRequired = true, desc = "目标目录id"),
+            @Param(name = "moveType", type = ApiParamType.ENUM, rule = "inner,prev,next", isRequired = true, desc = "移动类型")})
     @Description(desc = "移动目录接口")
     @Override
     public Object myDoService(JSONObject paramObj) {
@@ -79,8 +82,10 @@ public class MoveCatalogApi extends PrivateApiComponentBase {
             source.setParentId(target.getId());
         } else if (MoveType.PREV == moveType) {
             source.setParentId(target.getParentId());
+            LRCodeManager.moveTreeNode("rdm_app_catalog", "id", "parent_id", source.getId(), moveType, target.getId(), "app_id = " + appId);
         } else if (MoveType.NEXT == moveType) {
             source.setParentId(target.getParentId());
+            LRCodeManager.moveTreeNode("rdm_app_catalog", "id", "parent_id", source.getId(), moveType, target.getId(), "app_id = " + appId);
         }
         catalogMapper.updateAppCatalogParentId(source);
 
