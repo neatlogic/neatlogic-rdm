@@ -24,6 +24,7 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.BasePageVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
+import neatlogic.framework.rdm.exception.ProjectNotFoundException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -31,6 +32,7 @@ import neatlogic.framework.util.TableResultUtil;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +48,8 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Resource
     private IssueMapper issueMapper;
 
-
+    @Resource
+    private ProjectMapper projectMapper;
     @Resource
     private CatalogMapper catalogMapper;
 
@@ -88,6 +91,10 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
+        ProjectVo projectVo = projectMapper.getProjectById(issueVo.getProjectId());
+        if (projectVo == null) {
+            throw new ProjectNotFoundException();
+        }
         if (issueVo.getIsMyCreated() != null && issueVo.getIsMyCreated().equals(1)) {
             issueVo.setCreateUser(UserContext.get().getUserUuid(true));
         }
@@ -124,10 +131,16 @@ public class SearchIssueApi extends PrivateApiComponentBase {
         issueVo.setRowNum(rowNum);
         List<IssueVo> issueList = new ArrayList<>();
         if (rowNum > 0) {
+
             List<Long> idList = issueMapper.searchIssueId(issueVo);
             if (CollectionUtils.isNotEmpty(idList)) {
                 issueVo.setIdList(idList);
                 issueList = issueMapper.searchIssue(issueVo);
+                issueList.forEach(issue -> {
+                    issue.setIsProjectLeader(projectVo.getIsLeader());
+                    issue.setIsProjectMember(projectVo.getIsMember());
+                    issue.setIsProjectOwner(projectVo.getIsOwner());
+                });
                 if (issueVo.getAppId() != null) {
                     //提供具体的appid才需要补充自动属性
                     List<HashMap<String, ?>> attrMapList = issueMapper.getAttrByIssueIdList(issueVo);
