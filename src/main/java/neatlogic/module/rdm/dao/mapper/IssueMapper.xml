@@ -770,7 +770,7 @@
     </insert>
 
     <insert id="insertIssueTag">
-        insert into rdm_issue_tag (issue_id, tag_id)
+        insert ignore into rdm_issue_tag (issue_id, tag_id)
         values (#{issueId}, #{tagId})
     </insert>
 
