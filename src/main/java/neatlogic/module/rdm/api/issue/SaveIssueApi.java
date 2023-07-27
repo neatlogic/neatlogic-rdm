@@ -88,6 +88,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.userlist"),
             @Param(name = "comment", type = ApiParamType.STRING, desc = "common.comment")})
     @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "term.rdm.issueid")})
+    @ResubmitInterval
     @Description(desc = "nmrai.saveissueapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
