@@ -93,7 +93,7 @@ public interface IssueMapper {
 
     void deleteIssueTagByIssueId(Long issueId);
 
-    void deleteIssueById(Long issueId);
+    void deleteIssueById(IssueVo issueVo);
 
     void deleteIssueFileByFileId(Long fileId);
 
