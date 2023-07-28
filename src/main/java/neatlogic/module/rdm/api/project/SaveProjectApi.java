@@ -143,40 +143,41 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     if (CollectionUtils.isNotEmpty(statusObjList)) {
                         for (int i = 0; i < statusObjList.size(); i++) {
                             AppStatusVo statusVo = JSONObject.toJavaObject(statusObjList.getJSONObject(i), AppStatusVo.class);
+                            statusVo.setAppId(appVo.getId());
                             statusList.add(statusVo);
                         }
                     }
                     if (CollectionUtils.isNotEmpty(statusRelObjList)) {
                         for (int i = 0; i < statusRelObjList.size(); i++) {
                             AppStatusRelVo statusRelVo = JSONObject.toJavaObject(statusRelObjList.getJSONObject(i), AppStatusRelVo.class);
-                            Optional<AppStatusVo> opFrom = statusList.stream().filter(d -> d.getId().equals(statusRelVo.getFromStatusId())).findFirst();
+                            Optional<AppStatusVo> opFrom = statusList.stream().filter(d -> d.getUuid().equals(statusRelVo.getFromStatusUuid())).findFirst();
                             if (opFrom.isPresent()) {
                                 AppStatusVo statusVo = opFrom.get();
-                                statusVo.setId(null);
-                                statusVo.setAppId(null);
                                 statusRelVo.setFromStatusId(statusVo.getId());
                             } else {
-                                continue;
+                                if (statusRelVo.getFromStatusUuid().equals("0")) {
+                                    statusRelVo.setFromStatusId(0L);
+                                } else {
+                                    continue;
+                                }
                             }
-                            Optional<AppStatusVo> toOp = statusList.stream().filter(d -> d.getId().equals(statusRelVo.getToStatusId())).findFirst();
+                            Optional<AppStatusVo> toOp = statusList.stream().filter(d -> d.getUuid().equals(statusRelVo.getToStatusUuid())).findFirst();
                             if (toOp.isPresent()) {
                                 AppStatusVo statusVo = toOp.get();
-                                statusVo.setId(null);
-                                statusVo.setAppId(null);
                                 statusRelVo.setToStatusId(statusVo.getId());
                             } else {
-                                continue;
+                                if (statusRelVo.getToStatusUuid().equals("0")) {
+                                    statusRelVo.setToStatusId(0L);
+                                } else {
+                                    continue;
+                                }
                             }
-                            statusRelVo.setId(null);
                             statusRelVo.setAppId(appVo.getId());
                             statusRelList.add(statusRelVo);
                         }
                     }
                     for (AppStatusVo status : statusList) {
-                        if (status.getAppId() == null) {
-                            status.setAppId(appVo.getId());
-                            appMapper.insertAppStatus(status);
-                        }
+                        appMapper.insertAppStatus(status);
                     }
                     for (AppStatusRelVo statusRel : statusRelList) {
                         appMapper.insertAppStatusRel(statusRel);
