@@ -73,6 +73,11 @@ public class DiffIssue {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.ENDDATE.getType())).findFirst();
             op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), oldIssueVo.getEndDate(), newIssueVo.getEndDate())));
         }
+        //比较预计耗时
+        if (!Objects.equals(oldIssueVo.getTimecost(), newIssueVo.getTimecost())) {
+            Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.TIMECOST.getType())).findFirst();
+            op.ifPresent(appAttrVo -> auditList.add(new IssueAuditVo(issueId, appAttrVo.getId(), oldIssueVo.getTimecost(), newIssueVo.getTimecost())));
+        }
         //比较标签
         if (!CollectionUtils.isEqualCollection(oldIssueVo.getTagList(), newIssueVo.getTagList())) {
             Optional<AppAttrVo> op = attrList.stream().filter(d -> d.getType().equalsIgnoreCase(AttrType.TAG.getType())).findFirst();

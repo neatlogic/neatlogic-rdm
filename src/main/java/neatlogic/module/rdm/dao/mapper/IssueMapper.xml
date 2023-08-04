@@ -23,10 +23,12 @@
         from rdm_issue ri
         join rdm_app_status ras on ri.status = ras.id
         <if test="fromId != null">
-            join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id = #{fromId}
+            join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id =
+            #{fromId}
         </if>
         <if test="toId != null">
-            join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id = #{toId}
+            join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id =
+            #{toId}
         </if>
         where ri.app_id = #{appId}
         and ras.is_end = 1
@@ -34,10 +36,12 @@
         select count(ri.id) as count, 'all' as type
         from rdm_issue ri
         <if test="fromId != null">
-            join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id = #{fromId}
+            join rdm_issue_rel rir on ri.id = rir.to_issue_id and rir.from_issue_id =
+            #{fromId}
         </if>
         <if test="toId != null">
-            join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id = #{toId}
+            join rdm_issue_rel rir on ri.id = rir.from_issue_id and rir.to_issue_id =
+            #{toId}
         </if>
         where ri.app_id = #{appId}
     </select>
@@ -142,18 +146,18 @@
                ra.project_id                                                   as projectId,
                ri.parent_id                                                    as parentId,
                ri.priority,
+               ri.timecost,
                rp.name                                                         as priorityName,
                ri.iteration,
-               ria.name                                                        as iterationName,
+               ri.content                             as content,
+               ri.catalog,
                ri.status,
+               DATE_FORMAT(ri.start_date, '%Y-%m-%d') as startDate,
+               DATE_FORMAT(ri.end_date, '%Y-%m-%d')   as endDate,
+               ria.name                               as iterationName,
                ras.name                                                        as statusName,
                ras.label                                                       as statusLabel,
                ras.color                                                       as statusColor,
-               ri.iteration,
-               DATE_FORMAT(ri.start_date, '%Y-%m-%d')                          as startDate,
-               DATE_FORMAT(ri.end_date, '%Y-%m-%d')                            as endDate,
-               ri.content                                                      as content,
-               ri.catalog,
                rac.name                                                        as catalogName,
                rt.name                                                         as tagName,
                riu.user_id                                                     as userId,
@@ -197,6 +201,7 @@
                ra.app_type                                                           as appType,
                ra.project_id                                                         as projectId,
                ri.priority,
+               ri.timecost,
                rp.name                                                               as priorityName,
                rp.color                                                              as priorityColor,
                ri.iteration,
@@ -240,7 +245,11 @@
                       limit 1) x2)                                                   as commentCount,
                riw.issue_id                                                          as webhookIssueId,
                riw.data_id                                                           as webhookDataId,
-               rwd.app_id                                                            as webhookAppId
+               rwd.app_id                             as webhookAppId,
+               ric.id                                 as issueCostId,
+               DATE_FORMAT(ric.cost_date, '%Y-%m-%d') as issueCostDate,
+               ric.timecost                           as issueCostTime,
+               ric.description                        as issueCostDescription
         from rdm_issue ri
                  join rdm_app ra on ri.app_id = ra.id
                  left join rdm_priority as rp on ri.priority = rp.id
@@ -257,6 +266,7 @@
                  left join rdm_app tra on rir.to_app_id = tra.id
                  left join rdm_issue_webhookdata riw on ri.id = riw.issue_id
                  left join rdm_webhook_data rwd on riw.data_id = rwd.id
+                 left join rdm_issue_cost ric on ri.id = ric.issue_id
         where ri.id = #{value}
     </select>
 
@@ -288,7 +298,7 @@
 
 
     <select id="deleteIssueByAppId" parameterType="neatlogic.framework.rdm.dto.AppVo">
-        delete a,b,ria,ric,rif,rirf,rirt,rit
+        delete a,b,ria,ric,rif,rirf,rirt,rit,ric
         from rdm_issue a
                  left join rdm_issue_user b on a.id = b.issue_id
                  left join rdm_issue_audit ria on a.id = ria.issue_id
@@ -297,6 +307,7 @@
                  left join rdm_issue_rel rirf on a.id = rirf.from_issue_id
                  left join rdm_issue_rel rirt on a.id = rirt.to_issue_id
                  left join rdm_issue_tag rit on a.id = rit.issue_id
+                 left join rdm_issue_cost ric on a.id = ric.issue_id
         where a.app_id = #{id}
     </select>
 
@@ -318,6 +329,7 @@
         <result property="statusLabel" column="statusLabel"/>
         <result property="isEnd" column="isEnd"/>
         <result property="priority" column="priority"/>
+        <result property="timecost" column="timecost"/>
         <result property="priorityName" column="priorityName"/>
         <result property="priorityColor" column="priorityColor"/>
         <result property="iteration" column="iteration"/>
@@ -356,6 +368,12 @@
             <result column="webhookIssueId" property="issueId"/>
             <result column="webhookDataId" property="dataId"/>
             <result column="webhookAppId" property="appId"/>
+        </collection>
+        <collection property="costList" ofType="neatlogic.framework.rdm.dto.IssueCostVo">
+            <id column="issueCostId" property="id"/>
+            <result column="issueCostDate" property="costDate"/>
+            <result column="issueCostTime" property="timecost"/>
+            <result column="issueCostDescription" property="description"/>
         </collection>
     </resultMap>
 
@@ -410,7 +428,17 @@
             left join rdm_app_status ras on ri.status = ras.id
         </if>
         <if test="tableName != null and tableName != ''">
-            left join ${tableName} x on ri.id = x.issue_id
+            left join
+            ${tableName}
+            x
+            on
+            ri
+            .
+            id
+            =
+            x
+            .
+            issue_id
         </if>
         <if test="wordList != null and wordList.size() > 0">
             join fulltextindex_target_rdm ftr on ri.id = ftr.target_id and ftr.target_type = 'issue'
@@ -443,7 +471,17 @@
             left join rdm_app_status ras on ri.status = ras.id
         </if>
         <if test="tableName != null and tableName != ''">
-            left join ${tableName} x on ri.id = x.issue_id
+            left join
+            ${tableName}
+            x
+            on
+            ri
+            .
+            id
+            =
+            x
+            .
+            issue_id
         </if>
         <if test="wordList != null and wordList.size() > 0">
             join fulltextindex_target_rdm ftr on ri.id = ftr.target_id and ftr.target_type = 'issue'
@@ -464,6 +502,7 @@
         ra.project_id as projectId,
         ri.parent_id as parentId,
         ri.priority,
+        ri.timecost,
         DATE_FORMAT(ri.start_date, '%Y-%m-%d') as startDate,
         DATE_FORMAT(ri.end_date, '%Y-%m-%d') as endDate,
         rp.name as priorityName,
@@ -483,7 +522,11 @@
         (select count(1) from rdm_favoriteissue x where x.issue_id = ri.id and x.user_id = #{currentUser}) as
         isFavorite,
         (select count(1) from rdm_issue cri where cri.parent_id = ri.id) as childrenCount,
-        riu.user_id as userId
+        riu.user_id as userId,
+        ric.id as issueCostId,
+        DATE_FORMAT(ric.cost_date, '%Y-%m-%d') as issueCostDate,
+        ric.timecost as issueCostTime,
+        ric.description as issueCostDescription
         from rdm_issue ri
         <choose>
             <when test="fromId != null">
@@ -503,6 +546,7 @@
         left join rdm_issue_tag rit on ri.id = rit.issue_id
         left join rdm_tag rt on rit.tag_id = rt.id
         left join rdm_issue_user riu on ri.id = riu.issue_id
+        left join rdm_issue_cost ric on ri.id = ric.issue_id
         where ri.id in
         <foreach collection="idList" open="(" close=")" separator="," item="item">#{item}</foreach>
         order by ri.id desc
@@ -511,20 +555,29 @@
     <sql id="searchIssueSql">
         <where>
             <if test="projectId != null">
-                and ra.project_id = #{projectId}
+                and ra.project_id =
+                #{projectId}
             </if>
             <if test="appId != null">
-                and ri.app_id = #{appId}
+                and ri.app_id =
+                #{appId}
             </if>
             <if test="createUser != null and createUser != ''">
-                and ri.create_user = #{createUser}
+                and ri.create_user =
+                #{createUser}
             </if>
             <if test="createDateRange != null">
                 <if test="createDateRange.size() > 0">
-                    AND ri.create_date &gt;= STR_TO_DATE(#{createDateRange[0]},'%Y-%m-%d')
+                    AND ri.create_date &gt;= STR_TO_DATE(
+                    #{createDateRange[0]},
+                    '%Y-%m-%d'
+                    )
                 </if>
                 <if test="createDateRange.size() > 1">
-                    AND ri.create_date &lt;= STR_TO_DATE(#{createDateRange[1]},'%Y-%m-%d')
+                    AND ri.create_date &lt;= STR_TO_DATE(
+                    #{createDateRange[1]},
+                    '%Y-%m-%d'
+                    )
                 </if>
             </if>
             <choose>
@@ -542,13 +595,22 @@
                 </foreach>
             </if>
             <if test="catalogLft != null and catalogRht != null">
-                and rac.lft &gt;= #{catalogLft} and rac.rht &lt;= #{catalogRht}
+                and rac.lft &gt;=
+                #{catalogLft}
+                and
+                rac
+                .
+                rht
+                &lt;=
+                #{catalogRht}
             </if>
             <if test="iteration != null">
-                and ri.iteration = #{iteration}
+                and ri.iteration =
+                #{iteration}
             </if>
             <if test="priority != null">
-                and ri.priority = #{priority}
+                and ri.priority =
+                #{priority}
             </if>
             <choose>
                 <when test="isExpired != null and isExpired == 1">
@@ -568,18 +630,30 @@
             </if>
             <if test="startDateRange != null">
                 <if test="startDateRange.size() > 0">
-                    AND ri.start_date &gt;= STR_TO_DATE(#{startDateRange[0]},'%Y-%m-%d')
+                    AND ri.start_date &gt;= STR_TO_DATE(
+                    #{startDateRange[0]},
+                    '%Y-%m-%d'
+                    )
                 </if>
                 <if test="startDateRange.size() > 1">
-                    AND ri.start_date &lt;= STR_TO_DATE(#{startDateRange[1]},'%Y-%m-%d')
+                    AND ri.start_date &lt;= STR_TO_DATE(
+                    #{startDateRange[1]},
+                    '%Y-%m-%d'
+                    )
                 </if>
             </if>
             <if test="endDateRange != null">
                 <if test="endDateRange.size() > 0">
-                    AND ri.end_date &gt;= STR_TO_DATE(#{endDateRange[0]},'%Y-%m-%d')
+                    AND ri.end_date &gt;= STR_TO_DATE(
+                    #{endDateRange[0]},
+                    '%Y-%m-%d'
+                    )
                 </if>
                 <if test="endDateRange.size() > 1">
-                    AND ri.end_date &lt;= STR_TO_DATE(#{endDateRange[1]},'%Y-%m-%d')
+                    AND ri.end_date &lt;= STR_TO_DATE(
+                    #{endDateRange[1]},
+                    '%Y-%m-%d'
+                    )
                 </if>
             </if>
             <if test="userIdList != null and userIdList.size() > 0">
@@ -600,7 +674,8 @@
             </if>
             <if test="isFavorite != null and isFavorite == 1">
                 and exists (select 1 from rdm_favoriteissue rf where rf.issue_id = ri.id and rf.user_id =
-                #{currentUser})
+                #{currentUser}
+                )
             </if>
             <if test="tableName != null and tableName != '' and attrFilterList != null and attrFilterList.size() > 0">
                 <foreach collection="attrFilterList" item="attrFilter">
@@ -633,22 +708,31 @@
                                 STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d')
                                 <if test="attrFilter.valueList.size() > 1">
                                     AND x.`${attrFilter.attrId}` &lt;=
-                                    STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d')
+                                    STR_TO_DATE(
+                                    #{attrFilter.valueList[1]},
+                                    '%Y-%m-%d'
+                                    )
                                 </if>
                             </when>
                             <when test="attrFilter.attrType == 'datetime' and  attrFilter.valueList.size() > 0">
                                 AND x.`${attrFilter.attrId}` &gt;= STR_TO_DATE(#{attrFilter.valueList[0]},'%Y-%m-%d
                                 %H:%i:%s')
                                 <if test="attrFilter.valueList.size() > 1">
-                                    AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(#{attrFilter.valueList[1]},'%Y-%m-%d
-                                    %H:%i:%s')
+                                    AND x.`${attrFilter.attrId}` &lt;= STR_TO_DATE(
+                                    #{attrFilter.valueList[1]},
+                                    '%Y-%m-%d
+                                    %H:%i:%s'
+                                    )
                                 </if>
                             </when>
                             <when test="attrFilter.attrType == 'time' and  attrFilter.valueList.size() > 0">
                                 AND x.`${attrFilter.attrId}` &gt;= STR_TO_DATE(#{attrFilter.valueList[0]},'%H:%i:%s')
                                 <if test="attrFilter.valueList.size() > 1">
                                     AND x.`${attrFilter.attrId}` &lt;=
-                                    STR_TO_DATE(#{attrFilter.valueList[1]},'%H:%i:%s')
+                                    STR_TO_DATE(
+                                    #{attrFilter.valueList[1]},
+                                    '%H:%i:%s'
+                                    )
                                 </if>
                             </when>
                         </choose>
@@ -693,10 +777,12 @@
     <sql id="searchIssueCountSql">
         <where>
             <if test="projectId != null">
-                and ra.project_id = #{projectId}
+                and ra.project_id =
+                #{projectId}
             </if>
             <if test="createUser != null and createUser != ''">
-                and ri.create_user = #{createUser}
+                and ri.create_user =
+                #{createUser}
             </if>
             <if test="userIdList != null and userIdList.size() > 0">
                 AND riu.user_id in
@@ -705,7 +791,8 @@
                 </foreach>
             </if>
             <if test="appType != null and appType != ''">
-                AND ra.app_type = #{appType}
+                AND ra.app_type =
+                #{appType}
             </if>
             <if test="isEnd != null">
                 <choose>
@@ -719,7 +806,8 @@
             </if>
             <if test="isFavorite != null and isFavorite == 1">
                 AND exists (select 1 from rdm_favoriteissue rf where rf.issue_id = ri.id and rf.user_id =
-                #{currentUser})
+                #{currentUser}
+                )
             </if>
         </where>
     </sql>
@@ -740,7 +828,8 @@
             catalog    = #{catalog},
             start_date = #{startDate},
             end_date   = #{endDate},
-            content    = #{content,typeHandler=CompressHandler}
+            content  = #{content,typeHandler=CompressHandler},
+            timecost = #{timecost}
         where id = #{id}
     </update>
 
@@ -788,7 +877,8 @@
          start_date,
          end_date,
          content,
-         catalog)
+         catalog,
+         timecost)
         values (#{id},
                 #{parentId},
                 #{name},
@@ -801,7 +891,8 @@
                 #{startDate},
                 #{endDate},
                 #{content,typeHandler=CompressHandler},
-                #{catalog})
+                #{catalog},
+                #{timecost})
     </insert>
 
     <insert id="insertIssueRel" parameterType="neatlogic.framework.rdm.dto.IssueRelVo">
@@ -857,7 +948,7 @@
     </delete>
 
     <delete id="deleteIssueById" parameterType="neatlogic.framework.rdm.dto.IssueVo">
-        delete ri,rit,riu,rir,ria,ric,rif,riw,x
+        delete ri,rit,riu,rir,ria,ric,rif,riw,ric,x
         from rdm_issue ri
                  left join rdm_issue_tag rit on ri.id = rit.issue_id
                  left join rdm_issue_user riu on ri.id = riu.issue_id
@@ -866,6 +957,7 @@
                  left join rdm_issue_comment ric on ri.id = ric.issue_id
                  left join rdm_issue_file rif on ri.id = rif.issue_id
                  left join rdm_issue_webhookdata riw on ri.id = riw.issue_id
+                 left join rdm_issue_cost ric on ri.id = ric.issue_id
                  left join ${tableName} x on ri.id = x.issue_id
         where ri.id = #{id}
     </delete>

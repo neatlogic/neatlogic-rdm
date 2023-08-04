@@ -24,11 +24,13 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.dto.BasePageVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
-import neatlogic.framework.rdm.exception.ProjectNotFoundException;
+import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.rdm.exception.IssueNotAuthSearchException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.util.TableResultUtil;
+import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.CatalogMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
@@ -91,9 +93,10 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
+
         ProjectVo projectVo = projectMapper.getProjectById(issueVo.getProjectId());
-        if (projectVo == null) {
-            throw new ProjectNotFoundException();
+        if (!ProjectAuthManager.checkProjectAuth(issueVo.getProjectId(), ProjectUserType.OWNER, ProjectUserType.LEADER, ProjectUserType.MEMBER)) {
+            throw new IssueNotAuthSearchException();
         }
         if (issueVo.getIsMyCreated() != null && issueVo.getIsMyCreated().equals(1)) {
             issueVo.setCreateUser(UserContext.get().getUserUuid(true));

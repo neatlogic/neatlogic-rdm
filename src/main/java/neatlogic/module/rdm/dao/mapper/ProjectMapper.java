@@ -36,6 +36,8 @@ public interface ProjectMapper {
 
     ProjectVo getProjectByAppId(Long appId);
 
+    ProjectVo getProjectByIssueId(Long issueId);
+
     ProjectVo getProjectById(Long id);
 
     int searchProjectCount(ProjectConditionVo projectVo);
