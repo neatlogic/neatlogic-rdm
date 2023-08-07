@@ -36,20 +36,20 @@ public class ProjectAuthManager {
         for (ProjectUserType userType : userTypes) {
             switch (userType) {
                 case LEADER:
-                    if (!projectVo.getIsLeader()) {
-                        return false;
+                    if (projectVo.getIsLeader()) {
+                        return true;
                     }
                 case MEMBER:
-                    if (!projectVo.getIsMember()) {
-                        return false;
+                    if (projectVo.getIsMember()) {
+                        return true;
                     }
                 case OWNER:
-                    if (!projectVo.getIsOwner()) {
-                        return false;
+                    if (projectVo.getIsOwner()) {
+                        return true;
                     }
             }
         }
-        return true;
+        return false;
     }
 
     public static boolean checkProjectAuth(Long projectId, ProjectUserType... userTypes) {

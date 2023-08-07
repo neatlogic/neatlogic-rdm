@@ -656,6 +656,9 @@
                     )
                 </if>
             </if>
+            <if test="timecost != null">
+                AND ri.timecost = #{timecost}
+            </if>
             <if test="userIdList != null and userIdList.size() > 0">
                 AND riu.user_id in
                 <foreach collection="userIdList" item="item" open="(" close=")" separator=",">
