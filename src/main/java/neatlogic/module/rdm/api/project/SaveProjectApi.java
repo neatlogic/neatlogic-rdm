@@ -144,6 +144,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     if (CollectionUtils.isNotEmpty(statusObjList)) {
                         for (int i = 0; i < statusObjList.size(); i++) {
                             AppStatusVo statusVo = JSONObject.toJavaObject(statusObjList.getJSONObject(i), AppStatusVo.class);
+                            statusVo.setId(null);
                             statusVo.setAppId(appVo.getId());
                             statusList.add(statusVo);
                         }
@@ -151,6 +152,9 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     if (CollectionUtils.isNotEmpty(statusRelObjList)) {
                         for (int i = 0; i < statusRelObjList.size(); i++) {
                             AppStatusRelVo statusRelVo = JSONObject.toJavaObject(statusRelObjList.getJSONObject(i), AppStatusRelVo.class);
+                            statusRelVo.setFromStatusId(null);
+                            statusRelVo.setToStatusId(null);
+                            statusRelVo.setId(null);
                             Optional<AppStatusVo> opFrom = statusList.stream().filter(d -> d.getUuid().equals(statusRelVo.getFromStatusUuid())).findFirst();
                             if (opFrom.isPresent()) {
                                 AppStatusVo statusVo = opFrom.get();

@@ -30,6 +30,7 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,8 +60,8 @@ public class SaveProjectTemplateFromProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({@Param(name = "projectId", desc = "项目id", isRequired = true, type = ApiParamType.LONG),
-            @Param(name = "templateName", desc = "模板名称", isRequired = true, type = ApiParamType.STRING)})
+    @Input({@Param(name = "projectId", desc = "term.rdm.projectid", isRequired = true, type = ApiParamType.LONG),
+            @Param(name = "templateName", desc = "common.templatename", isRequired = true, type = ApiParamType.STRING)})
     @Description(desc = "nmrap.saveprojecttemplatefromprojectapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
@@ -73,6 +74,13 @@ public class SaveProjectTemplateFromProjectApi extends PrivateApiComponentBase {
         List<AppAttrVo> appAttrList = projectMapper.getAppAttrByProjectId(projectId);
         List<AppStatusVo> statusList = projectMapper.getAppStatusByProjectId(projectId);
         List<AppStatusRelVo> statusRelList = projectMapper.getAppStatusRelByProjectId(projectId);
+        //模板需要去掉和用户相关的配置，因为用户来源依赖项目id
+        statusRelList.forEach(rel -> {
+            if (MapUtils.isNotEmpty(rel.getConfig())) {
+                rel.getConfig().remove("authList");
+                rel.getConfig().remove("userList");
+            }
+        });
         ProjectTemplateVo projectTemplateVo = new ProjectTemplateVo();
         projectTemplateVo.setName(templateName);
         projectTemplateVo.setIsActive(1);
