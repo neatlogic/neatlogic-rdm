@@ -36,6 +36,30 @@
         where ra.project_id = #{value}
     </select>
 
+    <select id="searchProjectUser" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo"
+            resultType="neatlogic.framework.rdm.dto.ProjectUserVo">
+        SELECT
+        distinct rpu.user_id AS userId,
+        u.user_name as userName
+        FROM rdm_project_user rpu
+        JOIN USER u ON rpu.user_id = u.uuid
+        <where>
+            <if test="keyword != null and keyword != ''">
+                u.user_name like concat('%', #{keyword},'%')
+            </if>
+            <if test="userType != null and userType != ''">
+                and rpu.user_type = #{userType}
+            </if>
+            <if test="userIdList != null and userIdList.size() > 0">
+                and rpu.user_id in
+                <foreach collection="userIdList" item="userId" open="(" close=")" separator=",">
+                    #{userId}
+                </foreach>
+            </if>
+        </where>
+        limit #{startNum}, #{pageSize}
+    </select>
+
 
     <select id="getAppByProjectId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppVo">
         select id,

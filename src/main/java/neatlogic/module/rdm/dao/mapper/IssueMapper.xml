@@ -194,6 +194,12 @@
         where ri.id = #{value}
     </select>
 
+    <select id="getIssueStatusById" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select status
+        from rdm_issue
+        where id = #{value}
+    </select>
+
     <select id="getIssueById" parameterType="java.lang.Long" resultMap="issueResultMap">
         select ri.id,
                ri.name,
@@ -405,6 +411,7 @@
     </select>
 
     <select id="searchIssueCount" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo" resultType="int">
+        <include refid="searchIssueAncestor"/>
         select
         count(distinct ri.id)
         from rdm_issue ri
@@ -445,10 +452,30 @@
             join fulltextindex_field_rdm ffr on ftr.target_id = ffr.target_id
             join fulltextindex_word fw on ffr.word_id = fw.id
         </if>
+        <if test="iteration != null">
+            join iterationAncestors ia on ri.id = ia.id
+        </if>
         <include refid="searchIssueSql"></include>
     </select>
 
+    <sql id="searchIssueAncestor">
+        <if test="iteration != null">
+            WITH RECURSIVE iterationAncestors AS (
+            SELECT id, parent_id, iteration
+            FROM rdm_issue
+            WHERE iteration = #{iteration}
+            <if test="mode == 'level'">
+                UNION ALL
+                SELECT i.id, i.parent_id, i.iteration
+                FROM rdm_issue i
+                INNER JOIN iterationAncestors a ON i.id = a.parent_id
+            </if>
+            )
+        </if>
+    </sql>
+
     <select id="searchIssueId" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo" resultType="java.lang.Long">
+        <include refid="searchIssueAncestor"/>
         select
         distinct ri.id
         from rdm_issue ri
@@ -487,6 +514,9 @@
             join fulltextindex_target_rdm ftr on ri.id = ftr.target_id and ftr.target_type = 'issue'
             join fulltextindex_field_rdm ffr on ftr.target_id = ffr.target_id
             join fulltextindex_word fw on ffr.word_id = fw.id
+        </if>
+        <if test="iteration != null">
+            join iterationAncestors ia on ri.id = ia.id
         </if>
         <include refid="searchIssueSql"></include>
         order by ri.id desc
@@ -604,10 +634,9 @@
                 &lt;=
                 #{catalogRht}
             </if>
-            <if test="iteration != null">
-                and ri.iteration =
-                #{iteration}
-            </if>
+            <!--<if test="iteration != null">
+                and ri.iteration = #{iteration}
+            </if>-->
             <if test="priority != null">
                 and ri.priority =
                 #{priority}

@@ -22,6 +22,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface ProjectMapper {
+    List<ProjectUserVo> searchProjectUser(ProjectUserVo projectUserVo);
+
     List<AppStatusRelVo> getAppStatusRelByProjectId(Long projectId);
 
     List<AppAttrVo> getAppAttrByProjectId(Long projectId);

@@ -32,6 +32,7 @@ import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
+import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
@@ -222,19 +223,8 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             projectUserVo.setProjectId(projectVo.getId());
             projectMapper.insertProjectUser(projectUserVo);
         } else {
-            ProjectVo checkProjectVo = projectMapper.getProjectById(id);
-            if (checkProjectVo == null) {
-                throw new ProjectNotFoundException(id);
-            }
-            //更新项目需要校验权限
-            if (!checkProjectVo.getIsOwner() && !checkProjectVo.getIsLeader()) {
-                throw new ProjectNotAuthException(checkProjectVo.getName());
-            }
-            String currentUserId = UserContext.get().getUserUuid(true);
-            if (!checkProjectVo.getFcu().equals(currentUserId)) {
-                if (CollectionUtils.isEmpty(checkProjectVo.getUserList()) || checkProjectVo.getUserList().stream().noneMatch(d -> d.getUserType().equals(ProjectUserType.LEADER.getValue()) && d.getUserId().equals(currentUserId))) {
-                    throw new ProjectNotAuthException(projectVo.getName());
-                }
+            if (!ProjectAuthManager.checkProjectAuth(id, ProjectUserType.LEADER, ProjectUserType.OWNER)) {
+                throw new ProjectNotAuthException(projectVo.getName());
             }
             projectMapper.updateProject(projectVo);
             //清除用户数据

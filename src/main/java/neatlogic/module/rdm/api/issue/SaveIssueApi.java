@@ -26,6 +26,7 @@ import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
+import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.exception.ProjectNotAuthException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
@@ -34,11 +35,13 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.*;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,6 +62,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Resource
     private TagMapper tagMapper;
+
+    @Resource
+    private AppMapper appMapper;
 
 
     @Override
@@ -121,6 +127,27 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (id == null) {
             issueMapper.insertIssue(issueVo);
         } else {
+            //自动替换关系配置中的处理人
+            if (issueVo.getStatus() != null) {
+                Long oldIssueId = issueMapper.getIssueStatusById(id);
+                oldIssueId = oldIssueId == null ? 0L : oldIssueId;
+                if (!issueVo.getStatus().equals(oldIssueId)) {
+                    AppStatusRelVo appStatusRelVo = new AppStatusRelVo();
+                    appStatusRelVo.setFromStatusId(oldIssueId);
+                    appStatusRelVo.setToStatusId(issueVo.getStatus());
+                    appStatusRelVo.setAppId(issueVo.getAppId());
+                    AppStatusRelVo rel = appMapper.getAppStatusRel(appStatusRelVo);
+                    if (rel != null && MapUtils.isNotEmpty(rel.getConfig()) && rel.getConfig().containsKey("userList")) {
+                        List<String> userIdList = new ArrayList<>();
+                        for (int i = 0; i < rel.getConfig().getJSONArray("userList").size(); i++) {
+                            JSONObject userObj = rel.getConfig().getJSONArray("userList").getJSONObject(i);
+                            userIdList.add(userObj.getString("value").replace(IssueGroupSearch.PROJECTUSERTYPE.getValue() + "#", ""));
+                        }
+                        issueVo.setUserIdList(userIdList);
+                    }
+                }
+            }
+
             issueMapper.updateIssue(issueVo);
             issueMapper.deleteIssueTagByIssueId(issueVo.getId());
             issueMapper.deleteIssueUserByIssueId(issueVo.getId());
