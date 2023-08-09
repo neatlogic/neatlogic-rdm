@@ -42,7 +42,7 @@
         distinct rpu.user_id AS userId,
         u.user_name as userName
         FROM rdm_project_user rpu
-        JOIN USER u ON rpu.user_id = u.uuid
+        JOIN user u ON rpu.user_id = u.uuid
         <where>
             <if test="keyword != null and keyword != ''">
                 u.user_name like concat('%', #{keyword},'%')
