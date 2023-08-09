@@ -19,7 +19,6 @@ package neatlogic.module.rdm.groupsearch;
 import neatlogic.framework.rdm.dto.ProjectUserVo;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.ProjectUserType;
-import neatlogic.framework.restful.groupsearch.core.GroupSearchGroupVo;
 import neatlogic.framework.restful.groupsearch.core.GroupSearchOptionVo;
 import neatlogic.framework.restful.groupsearch.core.GroupSearchVo;
 import neatlogic.framework.restful.groupsearch.core.IGroupSearchHandler;
