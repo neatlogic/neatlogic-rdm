@@ -980,7 +980,7 @@
     </delete>
 
     <delete id="deleteIssueById" parameterType="neatlogic.framework.rdm.dto.IssueVo">
-        delete ri,rit,riu,rir,ria,ric,rif,riw,ric,x
+        delete ri,rit,riu,rir,ria,ric,rif,riw,rico,x
         from rdm_issue ri
                  left join rdm_issue_tag rit on ri.id = rit.issue_id
                  left join rdm_issue_user riu on ri.id = riu.issue_id
@@ -989,7 +989,7 @@
                  left join rdm_issue_comment ric on ri.id = ric.issue_id
                  left join rdm_issue_file rif on ri.id = rif.issue_id
                  left join rdm_issue_webhookdata riw on ri.id = riw.issue_id
-                 left join rdm_issue_cost ric on ri.id = ric.issue_id
+                 left join rdm_issue_cost rico on ri.id = rico.issue_id
                  left join ${tableName} x on ri.id = x.issue_id
         where ri.id = #{id}
     </delete>
