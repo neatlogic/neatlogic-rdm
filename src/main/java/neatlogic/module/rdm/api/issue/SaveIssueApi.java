@@ -124,30 +124,34 @@ public class SaveIssueApi extends PrivateApiComponentBase {
                 }
             }
         }
+
+        //自动替换关系配置中的处理人
+        if (issueVo.getStatus() != null) {
+            Long oldIssueId = 0L;
+            if (id != null) {
+                oldIssueId = issueMapper.getIssueStatusById(id);
+            }
+            oldIssueId = oldIssueId == null ? 0L : oldIssueId;
+            if (!issueVo.getStatus().equals(oldIssueId)) {
+                AppStatusRelVo appStatusRelVo = new AppStatusRelVo();
+                appStatusRelVo.setFromStatusId(oldIssueId);
+                appStatusRelVo.setToStatusId(issueVo.getStatus());
+                appStatusRelVo.setAppId(issueVo.getAppId());
+                AppStatusRelVo rel = appMapper.getAppStatusRel(appStatusRelVo);
+                if (rel != null && MapUtils.isNotEmpty(rel.getConfig()) && rel.getConfig().containsKey("userList")) {
+                    List<String> userIdList = new ArrayList<>();
+                    for (int i = 0; i < rel.getConfig().getJSONArray("userList").size(); i++) {
+                        JSONObject userObj = rel.getConfig().getJSONArray("userList").getJSONObject(i);
+                        userIdList.add(userObj.getString("value").replace(IssueGroupSearch.PROJECTUSERTYPE.getValue() + "#", ""));
+                    }
+                    issueVo.setUserIdList(userIdList);
+                }
+            }
+        }
+
         if (id == null) {
             issueMapper.insertIssue(issueVo);
         } else {
-            //自动替换关系配置中的处理人
-            if (issueVo.getStatus() != null) {
-                Long oldIssueId = issueMapper.getIssueStatusById(id);
-                oldIssueId = oldIssueId == null ? 0L : oldIssueId;
-                if (!issueVo.getStatus().equals(oldIssueId)) {
-                    AppStatusRelVo appStatusRelVo = new AppStatusRelVo();
-                    appStatusRelVo.setFromStatusId(oldIssueId);
-                    appStatusRelVo.setToStatusId(issueVo.getStatus());
-                    appStatusRelVo.setAppId(issueVo.getAppId());
-                    AppStatusRelVo rel = appMapper.getAppStatusRel(appStatusRelVo);
-                    if (rel != null && MapUtils.isNotEmpty(rel.getConfig()) && rel.getConfig().containsKey("userList")) {
-                        List<String> userIdList = new ArrayList<>();
-                        for (int i = 0; i < rel.getConfig().getJSONArray("userList").size(); i++) {
-                            JSONObject userObj = rel.getConfig().getJSONArray("userList").getJSONObject(i);
-                            userIdList.add(userObj.getString("value").replace(IssueGroupSearch.PROJECTUSERTYPE.getValue() + "#", ""));
-                        }
-                        issueVo.setUserIdList(userIdList);
-                    }
-                }
-            }
-
             issueMapper.updateIssue(issueVo);
             issueMapper.deleteIssueTagByIssueId(issueVo.getId());
             issueMapper.deleteIssueUserByIssueId(issueVo.getId());
