@@ -16,13 +16,14 @@
 
 package neatlogic.module.rdm.groupsearch;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.rdm.dto.ProjectUserVo;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.restful.groupsearch.core.GroupSearchOptionVo;
+import neatlogic.framework.restful.groupsearch.core.GroupSearchVo;
 import neatlogic.framework.restful.groupsearch.core.IGroupSearchHandler;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,10 +31,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProjectUserTypeGroupHandler implements IGroupSearchHandler<ProjectUserVo> {
+public class ProjectUserTypeGroupHandler implements IGroupSearchHandler {
     @Override
     public String getName() {
         return IssueGroupSearch.PROJECTUSERTYPE.getValue();
+    }
+
+    @Override
+    public String getLabel() {
+        return IssueGroupSearch.PROJECTUSERTYPE.getText();
     }
 
     @Resource
@@ -41,8 +47,8 @@ public class ProjectUserTypeGroupHandler implements IGroupSearchHandler<ProjectU
 
 
     @Override
-    public List<ProjectUserVo> search(JSONObject jsonObj) {
-        Long projectId = jsonObj.getLong("projectId");
+    public List<GroupSearchOptionVo> search(GroupSearchVo groupSearchVo) {
+        Long projectId = groupSearchVo.getProjectId();
         if (projectId == null) {
             return new ArrayList<>();
         }
@@ -52,23 +58,22 @@ public class ProjectUserTypeGroupHandler implements IGroupSearchHandler<ProjectU
         userVo.setCurrentPage(1);
         userVo.setUserType(ProjectUserType.MEMBER.getValue());
         userVo.setProjectId(projectId);
-        userVo.setKeyword(jsonObj.getString("keyword"));
+        userVo.setKeyword(groupSearchVo.getKeyword());
 
-        return projectMapper.searchProjectUser(userVo);
+        return convertGroupSearchOption(projectMapper.searchProjectUser(userVo));
     }
 
     @Override
-    public List<ProjectUserVo> reload(JSONObject jsonObj) {
-        Long projectId = jsonObj.getLong("projectId");
+    public List<GroupSearchOptionVo> reload(GroupSearchVo groupSearchVo) {
+        Long projectId = groupSearchVo.getProjectId();
         List<ProjectUserVo> userList = new ArrayList<>();
         if (projectId == null) {
-            return userList;
+            return new ArrayList<>();
         }
         List<String> userUuidList = new ArrayList<>();
-        List<String> valueList = JSONObject.parseArray(jsonObj.getJSONArray("valueList").toJSONString(), String.class);
-        for (Object value : valueList) {
-            if (value.toString().startsWith(getHeader())) {
-                userUuidList.add(value.toString().replace(getHeader(), ""));
+        for (String value : groupSearchVo.getValueList()) {
+            if (value.startsWith(getHeader())) {
+                userUuidList.add(value.replace(getHeader(), StringUtils.EMPTY));
             }
         }
         if (!userUuidList.isEmpty()) {
@@ -81,25 +86,18 @@ public class ProjectUserTypeGroupHandler implements IGroupSearchHandler<ProjectU
             userVo.setUserIdList(userUuidList);
             userList = projectMapper.searchProjectUser(userVo);
         }
-        return userList;
+        return convertGroupSearchOption(userList);
     }
 
-    @Override
-    public JSONObject repack(List<ProjectUserVo> userList) {
-        JSONObject userTypeObj = new JSONObject();
-        userTypeObj.put("value", "rdm.project");
-        userTypeObj.put("text", "项目干系人");
-        userTypeObj.put("sort", getSort());
-        JSONArray userArray = new JSONArray();
+    private List<GroupSearchOptionVo> convertGroupSearchOption(List<ProjectUserVo> userList) {
+        List<GroupSearchOptionVo> dataList = new ArrayList<>();
         for (ProjectUserVo userVo : userList) {
-            JSONObject userTmp = new JSONObject();
-            userTmp.put("value", getHeader() + userVo.getUserId());
-            userTmp.put("text", userVo.getUserName());
-            userArray.add(userTmp);
+            GroupSearchOptionVo groupSearchOptionVo = new GroupSearchOptionVo();
+            groupSearchOptionVo.setValue(getHeader() + userVo.getUserId());
+            groupSearchOptionVo.setText(userVo.getUserName());
+            dataList.add(groupSearchOptionVo);
         }
-        userTypeObj.put("sort", getSort());
-        userTypeObj.put("dataList", userArray);
-        return userTypeObj;
+        return dataList;
     }
 
     @Override
