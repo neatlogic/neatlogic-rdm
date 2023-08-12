@@ -52,6 +52,17 @@ public class ProjectAuthManager {
         return false;
     }
 
+    public static boolean checkAppAuth(Long appId, ProjectUserType... userTypes) {
+        ProjectVo projectVo = projectMapper.getProjectByAppId(appId);
+        if (projectVo == null) {
+            throw new ProjectNotFoundException();
+        }
+        if (userTypes != null) {
+            return checkAuth(projectVo, userTypes);
+        }
+        return true;
+    }
+
     public static boolean checkProjectAuth(Long projectId, ProjectUserType... userTypes) {
         ProjectVo projectVo = projectMapper.getProjectById(projectId);
         if (projectVo == null) {

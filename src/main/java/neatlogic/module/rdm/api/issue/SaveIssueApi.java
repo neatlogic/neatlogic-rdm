@@ -28,11 +28,12 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
-import neatlogic.framework.rdm.exception.ProjectNotAuthException;
-import neatlogic.framework.rdm.exception.ProjectNotFoundException;
+import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -50,8 +51,6 @@ import java.util.List;
 @Transactional
 public class SaveIssueApi extends PrivateApiComponentBase {
 
-    @Resource
-    private ProjectMapper projectMapper;
     @Resource
     private AttrMapper attrMapper;
     @Resource
@@ -102,12 +101,8 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long toId = paramObj.getLong("toId");
         String relType = paramObj.getString("relType");
         Long appId = paramObj.getLong("appId");
-        ProjectVo projectVo = projectMapper.getProjectByAppId(appId);
-        if (projectVo == null) {
-            throw new ProjectNotFoundException();
-        }
-        if (!projectVo.getIsOwner() && !projectVo.getIsLeader() && !projectVo.getIsMember()) {
-            throw new ProjectNotAuthException(projectVo.getName());
+        if (!ProjectAuthManager.checkAppAuth(appId, ProjectUserType.MEMBER, ProjectUserType.OWNER, ProjectUserType.LEADER)) {
+            throw new ProjectNotAuthIssueException();
         }
         IssueVo issueVo = JSONObject.toJavaObject(paramObj, IssueVo.class);
         issueVo.setCreateUser(UserContext.get().getUserUuid(true));
