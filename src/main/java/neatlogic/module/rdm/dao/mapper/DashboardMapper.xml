@@ -100,4 +100,10 @@
                 #{fcu},
                 #{widgetListStr,typeHandler=CompressHandler})
     </insert>
+
+    <delete id="deleteDashboardById" parameterType="java.lang.Long">
+        delete
+        from rdm_dashboard
+        where id = #{value}
+    </delete>
 </mapper>

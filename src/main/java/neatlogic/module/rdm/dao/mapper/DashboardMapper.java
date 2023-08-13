@@ -30,4 +30,6 @@ public interface DashboardMapper {
     void insertDashboard(DashboardVo dashboardVo);
 
     void updateDashboard(DashboardVo dashboardVo);
+
+    void deleteDashboardById(Long id);
 }
