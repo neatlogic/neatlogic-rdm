@@ -40,12 +40,14 @@
             resultType="neatlogic.framework.rdm.dto.ProjectUserVo">
         SELECT
         distinct rpu.user_id AS userId,
-        u.user_name as userName
+        u.user_name as userName,
+        u.user_id as userEnName
         FROM rdm_project_user rpu
         JOIN user u ON rpu.user_id = u.uuid
         <where>
             <if test="keyword != null and keyword != ''">
-                u.user_name like concat('%', #{keyword},'%')
+                (u.user_name like concat('%', #{keyword},'%')
+                or u.user_id like concat('%', #{keyword}, '%'))
             </if>
             <if test="userType != null and userType != ''">
                 and rpu.user_type = #{userType}

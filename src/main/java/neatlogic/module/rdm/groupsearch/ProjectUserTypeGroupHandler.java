@@ -94,7 +94,7 @@ public class ProjectUserTypeGroupHandler implements IGroupSearchHandler {
         for (ProjectUserVo userVo : userList) {
             GroupSearchOptionVo groupSearchOptionVo = new GroupSearchOptionVo();
             groupSearchOptionVo.setValue(getHeader() + userVo.getUserId());
-            groupSearchOptionVo.setText(userVo.getUserName());
+            groupSearchOptionVo.setText(userVo.getUserName() + "[" + userVo.getUserEnName() + "]");
             dataList.add(groupSearchOptionVo);
         }
         return dataList;
