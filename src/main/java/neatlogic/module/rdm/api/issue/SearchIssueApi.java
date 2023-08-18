@@ -93,7 +93,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
-
+        issueVo.setMaxPageSize(500);//调整最大分页上限，为了应对故事墙搜索模式
         ProjectVo projectVo = projectMapper.getProjectById(issueVo.getProjectId());
         if (!ProjectAuthManager.checkProjectAuth(issueVo.getProjectId(), ProjectUserType.OWNER, ProjectUserType.LEADER, ProjectUserType.MEMBER)) {
             throw new IssueNotAuthSearchException();
