@@ -18,10 +18,6 @@ package neatlogic.module.rdm.annotation;
 
 import java.lang.annotation.*;
 
-/**
- * @author lvzk
- * @since 2021/9/17 16:36
- **/
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
