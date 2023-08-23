@@ -480,3 +480,20 @@ CREATE TABLE `rdm_issue_cost`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
+
+  CREATE TABLE `rdm_dashboard`  (
+    `id` bigint NOT NULL COMMENT '唯一标识',
+    `app_id` bigint NULL DEFAULT NULL,
+    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '名称',
+    `description` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
+    `is_active` tinyint(1) NULL DEFAULT NULL COMMENT '是否激活',
+    `fcd` timestamp(3) NULL DEFAULT NULL COMMENT '创建时间',
+    `fcu` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '创建人',
+    `lcd` timestamp(3) NULL DEFAULT NULL COMMENT '最后修改时间',
+    `lcu` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '最后修改人',
+    `widget_list` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '组件配置',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_fcu`(`fcu`) USING BTREE,
+    INDEX `idx_fcd`(`fcd`) USING BTREE,
+    INDEX `idx_app_id`(`app_id`) USING BTREE
+  ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '仪表板表' ROW_FORMAT = Dynamic;
