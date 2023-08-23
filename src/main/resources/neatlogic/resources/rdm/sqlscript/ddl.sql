@@ -468,7 +468,7 @@ CREATE TABLE IF NOT EXISTS `rdm_webhook_data`
 -- Table structure for rdm_issue_cost
 -- ----------------------------
 
-CREATE TABLE `rdm_issue_cost`
+CREATE TABLE IF NOT EXISTS `rdm_issue_cost`
 (
     `id`        bigint NOT NULL,
     `issue_id`  bigint DEFAULT NULL,
@@ -481,7 +481,7 @@ CREATE TABLE `rdm_issue_cost`
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci;
 
-  CREATE TABLE `rdm_dashboard`  (
+  CREATE TABLE IF NOT EXISTS `rdm_dashboard`  (
     `id` bigint NOT NULL COMMENT '唯一标识',
     `app_id` bigint NULL DEFAULT NULL,
     `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '名称',
