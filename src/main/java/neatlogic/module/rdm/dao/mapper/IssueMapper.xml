@@ -478,6 +478,12 @@
         <include refid="searchIssueAncestor"/>
         select
         distinct ri.id
+        <if test="sortList != null and sortList.size() > 0">
+            ,
+            <foreach collection="sortList" item="item" separator=",">
+                ${item.field}
+            </foreach>
+        </if>
         from rdm_issue ri
         join rdm_app ra on ri.app_id = ra.id
         <choose>
@@ -519,7 +525,17 @@
             join iterationAncestors ia on ri.id = ia.id
         </if>
         <include refid="searchIssueSql"></include>
-        order by ri.id desc
+        <choose>
+            <when test="sortList != null and sortList.size() > 0">
+                order by
+                <foreach collection="sortList" item="item" separator=",">
+                    ${item.field} ${item.sort}
+                </foreach>
+            </when>
+            <otherwise>
+                order by ri.id desc
+            </otherwise>
+        </choose>
         limit #{startNum}, #{pageSize}
     </select>
 
@@ -557,6 +573,13 @@
         DATE_FORMAT(ric.cost_date, '%Y-%m-%d') as issueCostDate,
         ric.timecost as issueCostTime,
         ric.description as issueCostDescription
+        <if test="sortList != null and sortList.size() > 0">
+            <foreach collection="sortList" item="item">
+                <if test="item.isCustom">
+                    ,${item.field}
+                </if>
+            </foreach>
+        </if>
         from rdm_issue ri
         <choose>
             <when test="fromId != null">
@@ -577,9 +600,32 @@
         left join rdm_tag rt on rit.tag_id = rt.id
         left join rdm_issue_user riu on ri.id = riu.issue_id
         left join rdm_issue_cost ric on ri.id = ric.issue_id
+        <if test="tableName != null and tableName != ''">
+            left join
+            ${tableName}
+            x
+            on
+            ri
+            .
+            id
+            =
+            x
+            .
+            issue_id
+        </if>
         where ri.id in
         <foreach collection="idList" open="(" close=")" separator="," item="item">#{item}</foreach>
-        order by ri.id desc
+        <choose>
+            <when test="sortList != null and sortList.size() > 0">
+                order by
+                <foreach collection="sortList" item="item" separator=",">
+                    ${item.field} ${item.sort}
+                </foreach>
+            </when>
+            <otherwise>
+                order by ri.id desc
+            </otherwise>
+        </choose>
     </select>
 
     <sql id="searchIssueSql">

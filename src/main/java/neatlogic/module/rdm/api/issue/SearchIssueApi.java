@@ -83,6 +83,7 @@ public class SearchIssueApi extends PrivateApiComponentBase {
             @Param(name = "isExpired", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isexpired"),
             @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite"),
             @Param(name = "mode", type = ApiParamType.ENUM, desc = "common.displaymode", rule = "level,list"),
+            @Param(name = "sortList", type = ApiParamType.JSONARRAY, desc = "common.sort"),
             @Param(name = "attrFilterList", type = ApiParamType.JSONARRAY, desc = "common.customattribute"),
             @Param(name = "currentPage", type = ApiParamType.INTEGER, desc = "common.currentpage"),
             @Param(name = "pageSize", type = ApiParamType.INTEGER, desc = "common.pagesize")})
@@ -94,6 +95,10 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
         issueVo.setMaxPageSize(500);//调整最大分页上限，为了应对故事墙搜索模式
+        if (CollectionUtils.isNotEmpty(issueVo.getSortList())) {
+            List<AppAttrVo> attrList = attrMapper.getAttrByAppId(issueVo.getAppId());
+
+        }
         ProjectVo projectVo = projectMapper.getProjectById(issueVo.getProjectId());
         if (!ProjectAuthManager.checkProjectAuth(issueVo.getProjectId(), ProjectUserType.OWNER, ProjectUserType.LEADER, ProjectUserType.MEMBER)) {
             throw new IssueNotAuthSearchException();
