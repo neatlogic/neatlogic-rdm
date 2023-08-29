@@ -93,8 +93,8 @@ public class SearchIssueApi extends PrivateApiComponentBase {
     @Description(desc = "nmrai.searchissueapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
+        paramObj.put("maxPageSize", 500);//调整最大分页上限，为了应对故事墙搜索模式
         IssueConditionVo issueVo = JSONObject.toJavaObject(paramObj, IssueConditionVo.class);
-        issueVo.setMaxPageSize(500);//调整最大分页上限，为了应对故事墙搜索模式
         if (CollectionUtils.isNotEmpty(issueVo.getSortList())) {
             List<AppAttrVo> attrList = attrMapper.getAttrByAppId(issueVo.getAppId());
 
