@@ -17,14 +17,17 @@
 package neatlogic.module.rdm.service;
 
 import com.alibaba.fastjson.JSONArray;
-import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.rdm.dto.IssueAttrVo;
-import neatlogic.framework.rdm.dto.IssueVo;
-import neatlogic.framework.rdm.dto.ProjectVo;
-import neatlogic.module.rdm.dao.mapper.AttrMapper;
-import neatlogic.module.rdm.dao.mapper.IssueMapper;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import neatlogic.framework.asynchronization.threadlocal.UserContext;
+import neatlogic.framework.common.constvalue.GroupSearch;
+import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
+import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
+import neatlogic.framework.rdm.dto.*;
+import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
+import neatlogic.framework.rdm.enums.IssueRelType;
+import neatlogic.module.rdm.dao.mapper.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,6 +41,11 @@ public class IssueServiceImpl implements IssueService {
     @Resource
     private IssueMapper issueMapper;
 
+    @Resource
+    private TagMapper tagMapper;
+
+    @Resource
+    private CommentMapper commentMapper;
 
     @Resource
     private AttrMapper attrMapper;
@@ -50,6 +58,64 @@ public class IssueServiceImpl implements IssueService {
         IssueVo issueVo = issueMapper.getIssueByIdForAudit(id);
         makeupIssue(issueVo);
         return issueVo;
+    }
+
+    @Override
+    public void saveIssue(IssueVo issueVo) {
+        if (issueVo.getIsNew()) {
+            issueMapper.insertIssue(issueVo);
+        } else {
+            issueMapper.updateIssue(issueVo);
+            issueMapper.deleteIssueTagByIssueId(issueVo.getId());
+            issueMapper.deleteIssueUserByIssueId(issueVo.getId());
+        }
+        if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
+            issueMapper.replaceIssueAttr(issueVo);
+        }
+        if (CollectionUtils.isNotEmpty(issueVo.getTagList())) {
+            for (String tag : issueVo.getTagList()) {
+                TagVo tagVo = tagMapper.getTagByName(tag);
+                if (tagVo == null) {
+                    tagVo = new TagVo(tag);
+                    tagMapper.insertTag(tagVo);
+                }
+                issueMapper.insertIssueTag(issueVo.getId(), tagVo.getId());
+            }
+        }
+
+        if (CollectionUtils.isNotEmpty(issueVo.getUserIdList())) {
+            for (String userId : issueVo.getUserIdList()) {
+                issueMapper.insertIssueUser(issueVo.getId(), userId.replace(GroupSearch.USER.getValuePlugin(), ""));
+            }
+        }
+
+        if (StringUtils.isNotBlank(issueVo.getComment())) {
+            CommentVo commentVo = new CommentVo();
+            commentVo.setIssueId(issueVo.getId());
+            commentVo.setContent(issueVo.getComment());
+            commentVo.setFcu(UserContext.get().getUserUuid(true));
+            commentVo.setStatus(issueVo.getStatus());
+            commentMapper.insertComment(commentVo);
+        }
+        //创建来源关系
+        if (issueVo.getFromId() != null) {
+            IssueVo fromIssue = issueMapper.getIssueById(issueVo.getFromId());
+            if (fromIssue != null) {
+                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId(), StringUtils.isNotBlank(issueVo.getRelType()) ? issueVo.getRelType() : IssueRelType.EXTEND.getValue());
+                issueMapper.insertIssueRel(issueRelVo);
+            }
+        } else if (issueVo.getToId() != null) {
+            IssueVo toIssue = issueMapper.getIssueById(issueVo.getToId());
+            if (toIssue != null) {
+                IssueRelVo issueRelVo = new IssueRelVo(issueVo.getAppId(), issueVo.getId(), toIssue.getAppId(), toIssue.getId(), StringUtils.isNotBlank(issueVo.getRelType()) ? issueVo.getRelType() : IssueRelType.EXTEND.getValue());
+                issueMapper.insertIssueRel(issueRelVo);
+            }
+        }
+        //创建全文检索索引
+        IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
+        if (indexHandler != null) {
+            indexHandler.createIndex(issueVo.getId());
+        }
     }
 
     @Override

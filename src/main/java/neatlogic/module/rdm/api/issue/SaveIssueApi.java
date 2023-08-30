@@ -20,12 +20,11 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
-import neatlogic.framework.common.constvalue.GroupSearch;
-import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
-import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.*;
-import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
+import neatlogic.framework.rdm.dto.AppAttrVo;
+import neatlogic.framework.rdm.dto.AppStatusRelVo;
+import neatlogic.framework.rdm.dto.IssueAttrVo;
+import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
@@ -35,9 +34,8 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.*;
-import org.apache.commons.collections4.CollectionUtils;
+import neatlogic.module.rdm.service.IssueService;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +62,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
+
+    @Resource
+    private IssueService issueService;
 
 
     @Override
@@ -97,9 +98,6 @@ public class SaveIssueApi extends PrivateApiComponentBase {
     @Description(desc = "nmrai.saveissueapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        Long fromId = paramObj.getLong("fromId");
-        Long toId = paramObj.getLong("toId");
-        String relType = paramObj.getString("relType");
         Long appId = paramObj.getLong("appId");
         if (!ProjectAuthManager.checkAppAuth(appId, ProjectUserType.MEMBER, ProjectUserType.OWNER, ProjectUserType.LEADER)) {
             throw new ProjectNotAuthIssueException();
@@ -144,60 +142,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             }
         }
 
-        if (id == null) {
-            issueMapper.insertIssue(issueVo);
-        } else {
-            issueMapper.updateIssue(issueVo);
-            issueMapper.deleteIssueTagByIssueId(issueVo.getId());
-            issueMapper.deleteIssueUserByIssueId(issueVo.getId());
-        }
-        if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
-            issueMapper.replaceIssueAttr(issueVo);
-        }
-        if (CollectionUtils.isNotEmpty(issueVo.getTagList())) {
-            for (String tag : issueVo.getTagList()) {
-                TagVo tagVo = tagMapper.getTagByName(tag);
-                if (tagVo == null) {
-                    tagVo = new TagVo(tag);
-                    tagMapper.insertTag(tagVo);
-                }
-                issueMapper.insertIssueTag(issueVo.getId(), tagVo.getId());
-            }
-        }
-
-        if (CollectionUtils.isNotEmpty(issueVo.getUserIdList())) {
-            for (String userId : issueVo.getUserIdList()) {
-                issueMapper.insertIssueUser(issueVo.getId(), userId.replace(GroupSearch.USER.getValuePlugin(), ""));
-            }
-        }
-
-        if (StringUtils.isNotBlank(issueVo.getComment())) {
-            CommentVo commentVo = new CommentVo();
-            commentVo.setIssueId(issueVo.getId());
-            commentVo.setContent(issueVo.getComment());
-            commentVo.setFcu(UserContext.get().getUserUuid(true));
-            commentVo.setStatus(issueVo.getStatus());
-            commentMapper.insertComment(commentVo);
-        }
-        //创建来源关系
-        if (fromId != null) {
-            IssueVo fromIssue = issueMapper.getIssueById(fromId);
-            if (fromIssue != null) {
-                IssueRelVo issueRelVo = new IssueRelVo(fromIssue.getAppId(), fromIssue.getId(), issueVo.getAppId(), issueVo.getId(), StringUtils.isNotBlank(relType) ? relType : IssueRelType.EXTEND.getValue());
-                issueMapper.insertIssueRel(issueRelVo);
-            }
-        } else if (toId != null) {
-            IssueVo toIssue = issueMapper.getIssueById(toId);
-            if (toIssue != null) {
-                IssueRelVo issueRelVo = new IssueRelVo(issueVo.getAppId(), issueVo.getId(), toIssue.getAppId(), toIssue.getId(), StringUtils.isNotBlank(relType) ? relType : IssueRelType.EXTEND.getValue());
-                issueMapper.insertIssueRel(issueRelVo);
-            }
-        }
-        //创建全文检索索引
-        IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
-        if (indexHandler != null) {
-            indexHandler.createIndex(issueVo.getId());
-        }
+        issueService.saveIssue(issueVo);
         return issueVo.getId();
     }
 

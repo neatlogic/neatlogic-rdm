@@ -200,6 +200,12 @@
         where id = #{value}
     </select>
 
+    <select id="checkIssueIsExists" parameterType="java.lang.Long" resultType="int">
+        select count(1)
+        from rdm_issue
+        where id = #{value}
+    </select>
+
     <select id="getIssueById" parameterType="java.lang.Long" resultMap="issueResultMap">
         select ri.id,
                ri.name,

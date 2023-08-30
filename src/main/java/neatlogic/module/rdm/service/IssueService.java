@@ -17,10 +17,15 @@
 package neatlogic.module.rdm.service;
 
 import neatlogic.framework.rdm.dto.IssueVo;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface IssueService {
     IssueVo getIssueById(Long issueId);
 
     IssueVo getIssueByIdForAudit(Long issueId);
+
+    @Transactional
+    void saveIssue(IssueVo issueVo);
+
 
 }
