@@ -10,7 +10,6 @@ import neatlogic.framework.plugin.issue.IssueSyncService;
 import neatlogic.framework.rdm.dto.IssueConditionVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
-import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +59,7 @@ public class RdmIssueSyncServiceImpl implements IssueSyncService {
         if (status != null) {
             statusIdSet = status.stream().map(Long::parseLong).collect(Collectors.toSet());
         }
-        
+
         List<SyncIssueVo> retList = new ArrayList<>();
         if (project != null) {
 
@@ -75,22 +74,22 @@ public class RdmIssueSyncServiceImpl implements IssueSyncService {
                         if (statusIdSet != null && !statusIdSet.contains(vo.getStatus())) {
                             continue;
                         }
-                        
+
                         UserVo createUser = userMapper.getUserByUserUuid(vo.getCreateUser());
                         String createUserName = "";
                         if (createUser != null) {
                             createUserName = createUser.getUserName();
                         }
-                        
+
                         SyncIssueVo syncIssueVo = new SyncIssueVo();
                         syncIssueVo.setSourceId(issueSearchVo.getSyncSourceVo().getId());
-                        syncIssueVo.setNo(String.valueOf(vo.getId()));
+                        syncIssueVo.setNo("RDM-" + vo.getId());
                         syncIssueVo.setName(vo.getName());
                         syncIssueVo.setType(vo.getAppType());
                         syncIssueVo.setStatus(vo.getStatusName());
                         syncIssueVo.setDescription(vo.getContent());
                         syncIssueVo.setHandleUserId(createUserName);
-                        
+
                         syncIssueVo.setIssueCreateTime(vo.getCreateDate());
                         syncIssueVo.setIssueUpdateTime(vo.getCreateDate());
                         syncIssueVo.setIssueLastSyncTime(new Date());
@@ -102,7 +101,7 @@ public class RdmIssueSyncServiceImpl implements IssueSyncService {
                         syncIssueVo.setFcu(UserContext.get().getUserUuid());
                         syncIssueVo.setLcd(new Date());
                         syncIssueVo.setLcu(UserContext.get().getUserUuid());
-                        
+
                         retList.add(syncIssueVo);
                     }
 
