@@ -16,39 +16,44 @@
 
 package neatlogic.module.rdm.attrhandler;
 
-import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.matrix.constvalue.SearchExpression;
 import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.enums.AttrType;
+import neatlogic.framework.util.$;
 import org.springframework.stereotype.Component;
 
-import java.text.DecimalFormat;
-
 @Component
-public class NumberAttrHandler implements IAttrValueHandler {
+public class CatalogAttrHandler implements IAttrValueHandler {
     @Override
     public String getName() {
-        return AttrType.NUMBER.getValue();
+        return AttrType.CATALOG.getValue();
     }
 
     @Override
     public String getLabel() {
-        return AttrType.NUMBER.getLabel();
+        return $.t("common.catalog");
     }
 
     @Override
     public String getType() {
-        return AttrType.NUMBER.getType();
+        return AttrType.CATALOG.getType();
     }
 
     @Override
     public String getImportHelp() {
-        return "请输入合法的数字";
+        return "请输入目录全路径，例如xx/yy/zz";
     }
 
     @Override
+    public SearchExpression[] getSupportExpression() {
+        return new SearchExpression[]{SearchExpression.EQ, SearchExpression.NE, SearchExpression.LI,
+                SearchExpression.NL, SearchExpression.NOTNULL, SearchExpression.NULL};
+    }
+
+
+    @Override
     public boolean getIsPrivate() {
-        return false;
+        return true;
     }
 
     @Override
@@ -56,19 +61,5 @@ public class NumberAttrHandler implements IAttrValueHandler {
         return false;
     }
 
-    @Override
-    public Object format(Object value, JSONObject config) {
-        //确保数字的精度一致，例如1.000和1应该是相等
-        DecimalFormat df = new DecimalFormat("#.####");
-        try {
-            return df.format(value);
-        } catch (Exception ex) {
-            return value;
-        }
-    }
 
-    @Override
-    public SearchExpression[] getSupportExpression() {
-        return new SearchExpression[]{SearchExpression.BT, SearchExpression.NOTNULL, SearchExpression.NULL};
-    }
 }

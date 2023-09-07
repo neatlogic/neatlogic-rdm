@@ -19,6 +19,8 @@ package neatlogic.module.rdm.api.appattr;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.dto.ValueTextVo;
+import neatlogic.framework.rdm.attrhandler.code.AttrHandlerFactory;
+import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.restful.annotation.Description;
@@ -54,7 +56,8 @@ public class ListCustomAttrTypeApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         List<ValueTextVo> dataList = new ArrayList<>();
         for (AttrType attrType : AttrType.values()) {
-            if (!attrType.isPrivate()) {
+            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+            if (handler != null && !handler.getIsPrivate()) {
                 dataList.add(new ValueTextVo(attrType.getName(), attrType.getLabel()));
             }
         }

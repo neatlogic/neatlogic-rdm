@@ -14,35 +14,35 @@
  * limitations under the License.
  */
 
-package neatlogic.module.rdm.api.appattr;
+package neatlogic.module.rdm.api.test;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
-import neatlogic.framework.common.constvalue.ApiParamType;
-import neatlogic.framework.common.dto.ValueTextVo;
 import neatlogic.framework.rdm.attrhandler.code.AttrHandlerFactory;
 import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.enums.AttrType;
-import neatlogic.framework.rdm.enums.SystemAttrType;
-import neatlogic.framework.restful.annotation.*;
+import neatlogic.framework.restful.annotation.Description;
+import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
-public class ListPrivateAttrApi extends PrivateApiComponentBase {
+public class TestApi extends PrivateApiComponentBase {
 
+
+    @Resource
+    private IssueMapper issueMapper;
 
     @Override
     public String getName() {
-        return "nmraa.listprivateattrapi.getname";
+        return "test";
     }
 
     @Override
@@ -50,36 +50,18 @@ public class ListPrivateAttrApi extends PrivateApiComponentBase {
         return null;
     }
 
-    @Input({
-            @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER)})
-    @Output({@Param(explode = ValueTextVo[].class)})
-    @Description(desc = "nmraa.listprivateattrapi.getname")
+    @Description(desc = "test")
     @Override
     public Object myDoService(JSONObject paramObj) {
-        List<AppAttrVo> attrList = new ArrayList<>();
-        Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         for (AttrType attrType : AttrType.values()) {
             IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
-            if (handler != null && handler.getIsPrivate()) {
-                AppAttrVo appAttrVo = new AppAttrVo();
-                appAttrVo.setName(attrType.getName());
-                appAttrVo.setLabel(attrType.getLabel());
-                appAttrVo.setType(attrType.getType());
-                appAttrVo.setIsRequired(0);
-                appAttrVo.setIsPrivate(1);
-                appAttrVo.setIsActive(0);
-                attrList.add(appAttrVo);
-            }
+            System.out.println(handler.getName().toUpperCase() + "(\"" + handler.getType() + "\", \"" + handler.getName() + "\", \"" + handler.getLabel() + "\", " + handler.getIsPrivate() + ", " + handler.getIsArray() + ", " + handler.getBelong() + ", \"" + handler.getImportHelp() + "\"),");
         }
-        if (needSystemAttr != null && needSystemAttr.equals(1)) {
-            List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(null);
-            attrList.addAll(0, systemAttrList);
-        }
-        return attrList;
+        return null;
     }
 
     @Override
     public String getToken() {
-        return "/rdm/project/app/privateattr/list";
+        return "/rdm/test";
     }
 }

@@ -22,6 +22,8 @@ import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.constvalue.GroupSearch;
+import neatlogic.framework.rdm.attrhandler.code.AttrHandlerFactory;
+import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AttrType;
@@ -192,7 +194,8 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     if (attrTypeList != null) {
                         int sort = 1;
                         for (AttrType attrType : attrTypeList) {
-                            if (attrType.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getAppType().equalsIgnoreCase(attrType.getBelong()))) {
+                            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+                            if (handler != null && (handler.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getAppType().equalsIgnoreCase(handler.getBelong())))) {
                                 AppAttrVo appAttrVo = new AppAttrVo();
                                 appAttrVo.setName(attrType.getName());
                                 appAttrVo.setLabel(attrType.getLabel());

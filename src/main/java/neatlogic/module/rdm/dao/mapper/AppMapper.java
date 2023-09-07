@@ -41,6 +41,8 @@ public interface AppMapper {
 
     AppStatusVo getStatusById(Long id);
 
+    AppStatusVo getStatusByAppIdAndName(@Param("appId") Long appId, @Param("name") String name);
+
     List<AppStatusVo> getStatusByAppId(IssueVo issueVo);
 
 

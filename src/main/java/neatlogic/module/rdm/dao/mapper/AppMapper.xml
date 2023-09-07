@@ -62,6 +62,21 @@
         where rasr.app_id = #{value}
     </select>
 
+    <select id="getStatusByAppIdAndName"
+            resultType="neatlogic.framework.rdm.dto.AppStatusVo">
+        select id,
+               app_id   as appId,
+               name,
+               label,
+               sort,
+               color,
+               is_start as isStart,
+               is_end   as isEnd
+        FROM rdm_app_status
+        WHERE app_id = #{appId}
+          and name = #{name}
+    </select>
+
     <select id="getStatusById" parameterType="java.lang.Long"
             resultType="neatlogic.framework.rdm.dto.AppStatusVo">
         select id,

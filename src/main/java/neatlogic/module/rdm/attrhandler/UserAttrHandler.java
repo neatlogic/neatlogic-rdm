@@ -16,34 +16,31 @@
 
 package neatlogic.module.rdm.attrhandler;
 
-import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.matrix.constvalue.SearchExpression;
 import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.enums.AttrType;
 import org.springframework.stereotype.Component;
 
-import java.text.DecimalFormat;
-
 @Component
-public class NumberAttrHandler implements IAttrValueHandler {
+public class UserAttrHandler implements IAttrValueHandler {
     @Override
     public String getName() {
-        return AttrType.NUMBER.getValue();
+        return AttrType.UESR.getValue();
     }
 
     @Override
     public String getLabel() {
-        return AttrType.NUMBER.getLabel();
+        return AttrType.UESR.getLabel();
     }
 
     @Override
     public String getType() {
-        return AttrType.NUMBER.getType();
+        return AttrType.UESR.getType();
     }
 
     @Override
     public String getImportHelp() {
-        return "请输入合法的数字";
+        return "请输入用户账号，多个账号用,分隔";
     }
 
     @Override
@@ -53,22 +50,12 @@ public class NumberAttrHandler implements IAttrValueHandler {
 
     @Override
     public boolean getIsArray() {
-        return false;
-    }
-
-    @Override
-    public Object format(Object value, JSONObject config) {
-        //确保数字的精度一致，例如1.000和1应该是相等
-        DecimalFormat df = new DecimalFormat("#.####");
-        try {
-            return df.format(value);
-        } catch (Exception ex) {
-            return value;
-        }
+        return true;
     }
 
     @Override
     public SearchExpression[] getSupportExpression() {
-        return new SearchExpression[]{SearchExpression.BT, SearchExpression.NOTNULL, SearchExpression.NULL};
+        return new SearchExpression[]{SearchExpression.EQ,
+                SearchExpression.NE, SearchExpression.LI, SearchExpression.NL, SearchExpression.NOTNULL, SearchExpression.NULL};
     }
 }

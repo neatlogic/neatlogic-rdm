@@ -16,6 +16,8 @@
 
 package neatlogic.module.rdm.startup.handler;
 
+import neatlogic.framework.rdm.attrhandler.code.AttrHandlerFactory;
+import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.enums.AttrType;
@@ -67,7 +69,8 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
                 List<String> projectAttrTypeList = projectMapper.getProjectAppTypeByProjectId(appVo.getProjectId());
                 //补充缺少的内部属性
                 for (AttrType attrType : attrTypeList) {
-                    if (attrType.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(attrType.getBelong()))) {
+                    IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+                    if (handler != null && (handler.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(handler.getBelong())))) {
                         if (privateAttrList.stream().noneMatch(d -> d.getType().equalsIgnoreCase(attrType.getType()))) {
                             AppAttrVo appAttrVo = new AppAttrVo();
                             appAttrVo.setName(attrType.getName());
@@ -89,7 +92,8 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
                     AppAttrVo attrVo = itAttr.next();
                     boolean isFound = false;
                     for (AttrType attrType : attrTypeList) {
-                        if (attrType.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(attrType.getBelong()))) {
+                        IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+                        if (handler != null && (handler.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(handler.getBelong())))) {
                             if (attrType.getType().equalsIgnoreCase(attrVo.getType())) {
                                 isFound = true;
                                 attrVo.setName(attrType.getName());

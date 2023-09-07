@@ -16,34 +16,31 @@
 
 package neatlogic.module.rdm.attrhandler;
 
-import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.matrix.constvalue.SearchExpression;
 import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
-import neatlogic.framework.rdm.enums.AttrType;
+import neatlogic.framework.rdm.enums.SystemAttrType;
 import org.springframework.stereotype.Component;
 
-import java.text.DecimalFormat;
-
 @Component
-public class NumberAttrHandler implements IAttrValueHandler {
+public class CreateUserAttrHandler implements IAttrValueHandler {
     @Override
     public String getName() {
-        return AttrType.NUMBER.getValue();
+        return SystemAttrType.CREATE_USER.getValue();
     }
 
     @Override
     public String getLabel() {
-        return AttrType.NUMBER.getLabel();
+        return SystemAttrType.CREATE_USER.getLabel();
     }
 
     @Override
     public String getType() {
-        return AttrType.NUMBER.getType();
+        return SystemAttrType.CREATE_USER.getType();
     }
 
     @Override
     public String getImportHelp() {
-        return "请输入合法的数字";
+        return null;
     }
 
     @Override
@@ -57,18 +54,19 @@ public class NumberAttrHandler implements IAttrValueHandler {
     }
 
     @Override
-    public Object format(Object value, JSONObject config) {
-        //确保数字的精度一致，例如1.000和1应该是相等
-        DecimalFormat df = new DecimalFormat("#.####");
-        try {
-            return df.format(value);
-        } catch (Exception ex) {
-            return value;
-        }
+    public boolean getAllowImport() {
+        return false;
     }
 
     @Override
+    public boolean getIsSystem() {
+        return true;
+    }
+
+
+    @Override
     public SearchExpression[] getSupportExpression() {
-        return new SearchExpression[]{SearchExpression.BT, SearchExpression.NOTNULL, SearchExpression.NULL};
+        return new SearchExpression[]{SearchExpression.LI, SearchExpression.NL, SearchExpression.NOTNULL,
+                SearchExpression.NULL};
     }
 }
