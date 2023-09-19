@@ -194,7 +194,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     if (attrTypeList != null) {
                         int sort = 1;
                         for (AttrType attrType : attrTypeList) {
-                            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+                            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
                             if (handler != null && (handler.getBelong() == null || projectTemplateVo.getAppTypeList().stream().anyMatch(d -> d.getAppType().equalsIgnoreCase(handler.getBelong())))) {
                                 AppAttrVo appAttrVo = new AppAttrVo();
                                 appAttrVo.setName(attrType.getName());

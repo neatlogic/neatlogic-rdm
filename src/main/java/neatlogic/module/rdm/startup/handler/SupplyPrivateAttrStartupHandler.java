@@ -69,7 +69,7 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
                 List<String> projectAttrTypeList = projectMapper.getProjectAppTypeByProjectId(appVo.getProjectId());
                 //补充缺少的内部属性
                 for (AttrType attrType : attrTypeList) {
-                    IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+                    IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
                     if (handler != null && (handler.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(handler.getBelong())))) {
                         if (privateAttrList.stream().noneMatch(d -> d.getType().equalsIgnoreCase(attrType.getType()))) {
                             AppAttrVo appAttrVo = new AppAttrVo();
@@ -92,7 +92,7 @@ public class SupplyPrivateAttrStartupHandler extends StartupBase {
                     AppAttrVo attrVo = itAttr.next();
                     boolean isFound = false;
                     for (AttrType attrType : attrTypeList) {
-                        IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+                        IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
                         if (handler != null && (handler.getBelong() == null || projectAttrTypeList.stream().anyMatch(d -> d.equalsIgnoreCase(handler.getBelong())))) {
                             if (attrType.getType().equalsIgnoreCase(attrVo.getType())) {
                                 isFound = true;

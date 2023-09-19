@@ -56,7 +56,7 @@ public class ListCustomAttrTypeApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         List<ValueTextVo> dataList = new ArrayList<>();
         for (AttrType attrType : AttrType.values()) {
-            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
             if (handler != null && !handler.getIsPrivate()) {
                 dataList.add(new ValueTextVo(attrType.getName(), attrType.getLabel()));
             }

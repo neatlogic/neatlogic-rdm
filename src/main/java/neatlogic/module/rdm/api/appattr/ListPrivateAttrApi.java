@@ -59,7 +59,7 @@ public class ListPrivateAttrApi extends PrivateApiComponentBase {
         List<AppAttrVo> attrList = new ArrayList<>();
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         for (AttrType attrType : AttrType.values()) {
-            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
             if (handler != null && handler.getIsPrivate()) {
                 AppAttrVo appAttrVo = new AppAttrVo();
                 appAttrVo.setName(attrType.getName());

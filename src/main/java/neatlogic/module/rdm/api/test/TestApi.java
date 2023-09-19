@@ -54,7 +54,7 @@ public class TestApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         for (AttrType attrType : AttrType.values()) {
-            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getValue());
+            IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
             System.out.println(handler.getName().toUpperCase() + "(\"" + handler.getType() + "\", \"" + handler.getName() + "\", \"" + handler.getLabel() + "\", " + handler.getIsPrivate() + ", " + handler.getIsArray() + ", " + handler.getBelong() + ", \"" + handler.getImportHelp() + "\"),");
         }
         return null;
