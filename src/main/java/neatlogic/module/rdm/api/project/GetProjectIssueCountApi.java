@@ -55,6 +55,7 @@ public class GetProjectIssueCountApi extends PrivateApiComponentBase {
             @Param(name = "isMine", desc = "nmraa.listprojectappapi.input.param.desc.ismine", type = ApiParamType.INTEGER),
             @Param(name = "isMyCreated", desc = "nmraa.listprojectappapi.input.param.desc.ismyreported", type = ApiParamType.INTEGER),
             @Param(name = "isEnd", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isend"),
+            @Param(name = "isProcessed", type = ApiParamType.INTEGER, rule = "0,1", desc = "term.rdm.isprocessed"),
             @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")})
     @Output({@Param(explode = ProjectVo[].class)})
     @Description(desc = "获取项目任务数量")
@@ -64,10 +65,12 @@ public class GetProjectIssueCountApi extends PrivateApiComponentBase {
         Integer isMyCreated = paramObj.getInteger("isMyCreated");
         Integer isEnd = paramObj.getInteger("isEnd");
         Integer isFavorite = paramObj.getInteger("isFavorite");
+        Integer isProcessed = paramObj.getInteger("isProcessed");
         IssueConditionVo issueConditionVo = new IssueConditionVo();
         issueConditionVo.setIsEnd(isEnd);
         issueConditionVo.setIsFavorite(isFavorite);
-        if (isMine != null && isMine.equals(1)) {
+        issueConditionVo.setIsProcessed(isProcessed);
+        if ((isMine != null && isMine.equals(1))) {
             List<String> userIdList = new ArrayList<>();
             userIdList.add(UserContext.get().getUserUuid(true));
             issueConditionVo.setUserIdList(userIdList);

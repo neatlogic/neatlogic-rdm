@@ -111,6 +111,7 @@ public class IssueServiceImpl implements IssueService {
                 issueMapper.insertIssueRel(issueRelVo);
             }
         }
+
         //创建全文检索索引
         IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
         if (indexHandler != null) {

@@ -765,6 +765,10 @@
                 #{currentUser}
                 )
             </if>
+            <if test="isProcessed != null and isProcessed == 1">
+                AND exists (select 1 from rdm_issue_audit ria where ria.issue_id = ri.id and ria.input_user =
+                #{currentUser})
+            </if>
             <if test="tableName != null and tableName != '' and attrFilterList != null and attrFilterList.size() > 0">
                 <foreach collection="attrFilterList" item="attrFilter">
                     <if test="attrFilter.valueList != null and attrFilter.valueList.size()>0">
@@ -896,6 +900,10 @@
                 AND exists (select 1 from rdm_favoriteissue rf where rf.issue_id = ri.id and rf.user_id =
                 #{currentUser}
                 )
+            </if>
+            <if test="isProcessed != null and isProcessed == 1">
+                AND exists (select 1 from rdm_issue_audit ria where ria.issue_id = ri.id and ria.input_user =
+                #{currentUser})
             </if>
         </where>
     </sql>
