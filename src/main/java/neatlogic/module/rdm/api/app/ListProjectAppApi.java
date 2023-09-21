@@ -69,7 +69,8 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             @Param(name = "isActive", type = ApiParamType.INTEGER, rule = "0,1", desc = "common.isactive"),
             @Param(name = "appType", type = ApiParamType.ENUM, member = IAppType.class, desc = "term.rdm.apptype"),
             @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER),
-            @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite")
+            @Param(name = "isFavorite", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmrai.toggleissueisfavoriteapi.input.param.desc.isfavorite"),
+            @Param(name = "isProcessed", type = ApiParamType.INTEGER, rule = "0,1", desc = "term.rdm.isprocessed")
     })
     @Output({@Param(explode = AppVo[].class)})
     @Description(desc = "nmraa.listprojectappapi.getname")
@@ -81,6 +82,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         Integer isMyCreated = paramObj.getInteger("isMyCreated");
         Integer isEnd = paramObj.getInteger("isEnd");
         Integer isFavorite = paramObj.getInteger("isFavorite");
+        Integer isProcessed = paramObj.getInteger("isProcessed");
         Integer isActive = paramObj.getInteger("isActive");
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         String appType = paramObj.getString("appType");
@@ -103,6 +105,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
             issueConditionVo.setProjectId(projectId);
             issueConditionVo.setIsEnd(isEnd);
             issueConditionVo.setIsFavorite(isFavorite);
+            issueConditionVo.setIsProcessed(isProcessed);
             issueConditionVo.setAppType(appType);
             if (isMine != null && isMine.equals(1)) {
                 List<String> userIdList = new ArrayList<>();

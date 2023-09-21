@@ -766,8 +766,13 @@
                 )
             </if>
             <if test="isProcessed != null and isProcessed == 1">
-                AND exists (select 1 from rdm_issue_audit ria where ria.issue_id = ri.id and ria.input_user =
-                #{currentUser})
+                AND (exists (select 1 from rdm_issue_audit ria where ria.issue_id = ri.id and ria.input_user =
+                #{currentUser} limit 1
+                ) or
+                exists (select 1 from rdm_issue_comment ric where ric.issue_id = ri.id and
+                ric.fcu =
+                #{currentUser} limit 1)
+                )
             </if>
             <if test="tableName != null and tableName != '' and attrFilterList != null and attrFilterList.size() > 0">
                 <foreach collection="attrFilterList" item="attrFilter">
@@ -902,8 +907,13 @@
                 )
             </if>
             <if test="isProcessed != null and isProcessed == 1">
-                AND exists (select 1 from rdm_issue_audit ria where ria.issue_id = ri.id and ria.input_user =
-                #{currentUser})
+                AND (
+                exists (select 1 from rdm_issue_audit ria where ria.issue_id = ri.id and ria.input_user =
+                #{currentUser} limit 1) or
+                exists (select 1 from rdm_issue_comment ric where ric.issue_id = ri.id and
+                ric.fcu =
+                #{currentUser} limit 1)
+                )
             </if>
         </where>
     </sql>
