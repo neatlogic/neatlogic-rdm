@@ -149,7 +149,7 @@
                ras.label    as statusLabel,
                ras.color    as statusColor
         from rdm_app a
-                 left join rdm_app_attr b on a.id = b.app_id
+                 left join rdm_app_attr b on a.id = b.app_id and b.is_active = 1
                  left join rdm_app_status ras on a.id = ras.app_id
         where a.id = #{value}
         order by b.sort, ras.is_start, ras.is_end desc, ras.sort
