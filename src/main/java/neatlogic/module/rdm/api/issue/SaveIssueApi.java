@@ -84,7 +84,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             @Param(name = "relType", type = ApiParamType.ENUM, member = IssueRelType.class, desc = "common.reltype"),
             @Param(name = "parentId", type = ApiParamType.LONG, desc = "term.rdm.parenttaskid"),
             @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc", isRequired = true),
-            @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "nmrai.saveissueapi.input.param.desc.name"),
+            @Param(name = "name", type = ApiParamType.STRING, isRequired = true, maxLength = 50, desc = "nmrai.saveissueapi.input.param.desc.name"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "common.priority"),
             @Param(name = "iteration", type = ApiParamType.LONG, desc = "common.iteration"),
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "common.catalog"),
