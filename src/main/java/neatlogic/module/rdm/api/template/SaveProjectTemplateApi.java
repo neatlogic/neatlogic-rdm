@@ -22,6 +22,7 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.PROJECT_TEMPLATE_MANAGE;
 import neatlogic.framework.rdm.dto.ProjectTemplateAppTypeVo;
 import neatlogic.framework.rdm.dto.ProjectTemplateVo;
+import neatlogic.framework.rdm.exception.AppTypeIsEmptyException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -62,6 +63,9 @@ public class SaveProjectTemplateApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
         ProjectTemplateVo projectTemplateVo = JSONObject.toJavaObject(paramObj, ProjectTemplateVo.class);
+        if (projectTemplateVo.getAppTypeList().isEmpty()) {
+            throw new AppTypeIsEmptyException();
+        }
         if (id == null) {
             projectTemplateMapper.insertProjectTemplate(projectTemplateVo);
         } else {
