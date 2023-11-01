@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS `rdm_favoriteissue`
 -- ----------------------------
 -- Table structure for rdm_issue
 -- ----------------------------
-CREATE TABLE `rdm_issue`
+CREATE TABLE IF NOT EXISTS `rdm_issue`
 (
     `id`          bigint NOT NULL,
     `name`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
