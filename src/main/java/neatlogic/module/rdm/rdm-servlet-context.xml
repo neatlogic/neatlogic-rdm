@@ -59,5 +59,6 @@
                 <value>classpath:neatlogic/module/rdm/**/dao/mapper/**/*.xml</value>
             </list>
         </property>
+        <property name="databaseIdProvider" ref="neatLogicDatabaseIdProvider"/>
     </bean>
 </beans>
