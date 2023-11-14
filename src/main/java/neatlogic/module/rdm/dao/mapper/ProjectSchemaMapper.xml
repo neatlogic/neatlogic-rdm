@@ -66,7 +66,7 @@
                 ,ADD KEY `index_${appAttrVo.id}` (`${appAttrVo.id}`)
             </when>
 
-            <when test="_databaseId = 'mysql' and appAttrVo.type == 'select'">
+            <when test="_databaseId == 'mysql' and appAttrVo.type == 'select'">
                 ,ADD KEY `index_${appAttrVo.id}` ((CAST(`${appAttrVo.id}` AS CHAR(255) ARRAY)))
             </when>
         </choose>
