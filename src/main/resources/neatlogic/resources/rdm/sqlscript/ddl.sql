@@ -379,15 +379,14 @@ CREATE TABLE IF NOT EXISTS `rdm_project_template`
 -- ----------------------------
 -- Table structure for rdm_project_template_apptype
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS `rdm_project_template_apptype`
-(
-    `template_id` bigint                                                       NOT NULL COMMENT '模板id',
-    `app_type`    varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用类型',
-    `sort`        int DEFAULT NULL COMMENT '排序',
-    PRIMARY KEY (`template_id`, `app_type`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS `rdm_project_template_apptype`(
+   `template_id` bigint NOT NULL COMMENT '模板id',
+   `app_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用类型',
+   `sort` int DEFAULT NULL COMMENT '排序',
+   `config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '配置',
+   PRIMARY KEY (`template_id`,`app_type`) USING BTREE
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 -- ----------------------------
 -- Table structure for rdm_project_user
@@ -452,18 +451,16 @@ CREATE TABLE IF NOT EXISTS `rdm_webhook_data`
 -- Table structure for rdm_issue_cost
 -- ----------------------------
 
-CREATE TABLE IF NOT EXISTS `rdm_issue_cost`
-(
-    `id`        bigint NOT NULL,
-    `issue_id`  bigint DEFAULT NULL,
-    `cost_date` date   DEFAULT NULL,
-    `timecost`  int    DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    KEY `idx_issue_id` (`issue_id`) USING BTREE,
-    KEY `idx_cost_date` (`cost_date`) USING BTREE
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS `rdm_issue_cost`(
+  `id` bigint NOT NULL,
+  `issue_id` bigint DEFAULT NULL,
+  `cost_date` date DEFAULT NULL,
+  `timecost` int DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  PRIMARY KEY (`id`),
+  KEY `idx_issue_id` (`issue_id`) USING BTREE,
+  KEY `idx_cost_date` (`cost_date`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
   CREATE TABLE IF NOT EXISTS `rdm_dashboard`  (
     `id` bigint NOT NULL COMMENT '唯一标识',
