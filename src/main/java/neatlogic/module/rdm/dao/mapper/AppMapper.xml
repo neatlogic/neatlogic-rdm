@@ -381,10 +381,9 @@
     </delete>
 
     <delete id="deleteAppStatusById" parameterType="java.lang.Long">
-        DELETE a,b,c
+        DELETE a,b
         FROM rdm_app_status a
-                 LEFT JOIN rdm_app_status_rel b ON a.id = b.from_status_id
-                 LEFT JOIN rdm_app_status_rel c ON a.id = c.to_status_id
+                 LEFT JOIN rdm_app_status_rel b ON a.id = b.from_status_id OR a.id = b.to_status_id
         WHERE a.id = #{value}
     </delete>
 
