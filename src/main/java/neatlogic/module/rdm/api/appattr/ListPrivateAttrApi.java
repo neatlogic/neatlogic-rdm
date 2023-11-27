@@ -26,12 +26,15 @@ import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.SystemAttrType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -51,24 +54,29 @@ public class ListPrivateAttrApi extends PrivateApiComponentBase {
     }
 
     @Input({
+            @Param(name = "appType", desc = "term.dr.drapptype.getenumname", type = ApiParamType.STRING),
             @Param(name = "needSystemAttr", desc = "nmraa.searchprivateattrapi.input.param.desc.needsystemattr", rule = "0,1", type = ApiParamType.INTEGER)})
     @Output({@Param(explode = ValueTextVo[].class)})
     @Description(desc = "nmraa.listprivateattrapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
+        String appType = paramObj.getString("appType");
         List<AppAttrVo> attrList = new ArrayList<>();
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
+        AttrType[] appAttrList = AppTypeManager.getAttrList(appType);
         for (AttrType attrType : AttrType.values()) {
             IAttrValueHandler handler = AttrHandlerFactory.getHandler(attrType.getType());
             if (handler != null && handler.getIsPrivate()) {
-                AppAttrVo appAttrVo = new AppAttrVo();
-                appAttrVo.setName(attrType.getName());
-                appAttrVo.setLabel(attrType.getLabel());
-                appAttrVo.setType(attrType.getType());
-                appAttrVo.setIsRequired(0);
-                appAttrVo.setIsPrivate(1);
-                appAttrVo.setIsActive(0);
-                attrList.add(appAttrVo);
+                if (StringUtils.isBlank(appType) || (appAttrList != null && Arrays.stream(appAttrList).anyMatch(d -> d.getType().equals(attrType.getType())))) {
+                    AppAttrVo appAttrVo = new AppAttrVo();
+                    appAttrVo.setName(attrType.getName());
+                    appAttrVo.setLabel(attrType.getLabel());
+                    appAttrVo.setType(attrType.getType());
+                    appAttrVo.setIsRequired(0);
+                    appAttrVo.setIsPrivate(1);
+                    appAttrVo.setIsActive(0);
+                    attrList.add(appAttrVo);
+                }
             }
         }
         if (needSystemAttr != null && needSystemAttr.equals(1)) {

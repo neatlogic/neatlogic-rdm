@@ -87,7 +87,7 @@ public class ListProjectAppApi extends PrivateApiComponentBase {
         Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
         String appType = paramObj.getString("appType");
         List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId, isActive);
-        List<IAppType> allAppTypeList = AppTypeManager.getAppTypeList();
+        //List<IAppType> allAppTypeList = AppTypeManager.getAppTypeList();
         //去掉不存在的appType（商业版可能被禁用掉了）
         appList.removeIf(d -> !AppTypeManager.isContain(d.getType()));
         if (needSystemAttr != null && needSystemAttr.equals(1)) {

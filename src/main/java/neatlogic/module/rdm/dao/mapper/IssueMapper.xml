@@ -310,7 +310,7 @@
 
 
     <select id="deleteIssueByAppId" parameterType="neatlogic.framework.rdm.dto.AppVo">
-        delete a,b,ria,ric,rif,rirf,rit,ric
+        delete a,b,ria,ric,rif,rirf,rit,rict
         from rdm_issue a
                  left join rdm_issue_user b on a.id = b.issue_id
                  left join rdm_issue_audit ria on a.id = ria.issue_id
@@ -318,7 +318,7 @@
                  left join rdm_issue_file rif on a.id = rif.issue_id
                  left join rdm_issue_rel rirf on a.id = rirf.from_issue_id OR a.id = rirf.to_issue_id
                  left join rdm_issue_tag rit on a.id = rit.issue_id
-                 left join rdm_issue_cost ric on a.id = ric.issue_id
+                 left join rdm_issue_cost rict on a.id = ric.issue_id
         where a.app_id = #{id}
     </select>
 
