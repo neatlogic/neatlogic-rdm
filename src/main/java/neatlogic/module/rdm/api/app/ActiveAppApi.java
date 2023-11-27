@@ -46,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -120,10 +121,10 @@ public class ActiveAppApi extends PrivateApiComponentBase {
         } else {
             if (appVo.getIsActive().equals(0)) {
                 appMapper.updateAppIsActive(appVo.getId(), 1);
-                AppVo oldAppVo = appMapper.getAppById(appVo.getId());
+                List<AppAttrVo> oldAttrList = attrMapper.getAttrByAppId(appVo.getId());
                 AttrType[] attrTypeList = AppTypeManager.getAttrList(appVo.getType());
-                if (CollectionUtils.isNotEmpty(oldAppVo.getAttrList())) {
-                    for (AppAttrVo attr : oldAppVo.getAttrList()) {
+                if (CollectionUtils.isNotEmpty(oldAttrList)) {
+                    for (AppAttrVo attr : oldAttrList) {
                         if (attr.getIsPrivate().equals(1) && (attrTypeList == null || Arrays.stream(attrTypeList).noneMatch(d -> d.getType().equals(attr.getType())))) {
                             attrMapper.deleteAppAttrById(attr.getId());
                         }
@@ -132,7 +133,7 @@ public class ActiveAppApi extends PrivateApiComponentBase {
                 if (attrTypeList != null) {
                     int sort = 1;
                     for (AttrType attrType : attrTypeList) {
-                        if (CollectionUtils.isEmpty(oldAppVo.getAttrList()) || oldAppVo.getAttrList().stream().noneMatch(d -> d.getType().equals(attrType.getType()))) {
+                        if (CollectionUtils.isEmpty(oldAttrList) || oldAttrList.stream().noneMatch(d -> d.getType().equals(attrType.getType()))) {
                             AppAttrVo appAttrVo = new AppAttrVo();
                             appAttrVo.setName(attrType.getName());
                             appAttrVo.setLabel(attrType.getLabel());
