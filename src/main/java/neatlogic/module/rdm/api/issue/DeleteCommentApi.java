@@ -52,7 +52,7 @@ public class DeleteCommentApi extends PrivateApiComponentBase {
     }
 
     @Input({@Param(name = "id", desc = "term.rdm.commonid", isRequired = true, type = ApiParamType.LONG)})
-    @Description(desc = "删除评论接口")
+    @Description(desc = "nmrai.deletecommentapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         commentMapper.deleteCommentById(paramObj.getLong("id"));
