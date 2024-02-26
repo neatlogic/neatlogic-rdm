@@ -61,6 +61,8 @@ public class SaveIterationApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
         IterationVo iterationVo = JSONObject.toJavaObject(paramObj, IterationVo.class);
+        iterationVo.setStartDate(null);
+        iterationVo.setEndDate(null);
         if (id == null) {
             iterationMapper.insertIteration(iterationVo);
         } else {
