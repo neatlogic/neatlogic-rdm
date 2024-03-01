@@ -16,6 +16,7 @@
 
 package neatlogic.module.rdm.api.project;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
@@ -29,7 +30,10 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
 import neatlogic.framework.rdm.enums.core.AppTypeManager;
-import neatlogic.framework.rdm.exception.*;
+import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
+import neatlogic.framework.rdm.exception.ProjectNameIsExistsException;
+import neatlogic.framework.rdm.exception.ProjectNotAuthException;
+import neatlogic.framework.rdm.exception.ProjectTemplateNotFoundException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -119,7 +123,8 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                         hasAttr = true;
                         for (int i = 0; i < attrObjList.size(); i++) {
                             JSONObject attrObj = attrObjList.getJSONObject(i);
-                            AppAttrVo appAttrVo = JSONObject.toJavaObject(attrObj, AppAttrVo.class);
+                            AppAttrVo appAttrVo = JSON.toJavaObject(attrObj, AppAttrVo.class);
+                            appAttrVo.setSort(i + 1);
                             if (appAttrVo.getIsRequired() == null) {
                                 appAttrVo.setIsRequired(0);
                             }
@@ -145,7 +150,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
 
                     if (CollectionUtils.isNotEmpty(statusObjList)) {
                         for (int i = 0; i < statusObjList.size(); i++) {
-                            AppStatusVo statusVo = JSONObject.toJavaObject(statusObjList.getJSONObject(i), AppStatusVo.class);
+                            AppStatusVo statusVo = JSON.toJavaObject(statusObjList.getJSONObject(i), AppStatusVo.class);
                             statusVo.setId(null);
                             statusVo.setAppId(appVo.getId());
                             statusList.add(statusVo);
@@ -153,7 +158,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                     }
                     if (CollectionUtils.isNotEmpty(statusRelObjList)) {
                         for (int i = 0; i < statusRelObjList.size(); i++) {
-                            AppStatusRelVo statusRelVo = JSONObject.toJavaObject(statusRelObjList.getJSONObject(i), AppStatusRelVo.class);
+                            AppStatusRelVo statusRelVo = JSON.toJavaObject(statusRelObjList.getJSONObject(i), AppStatusRelVo.class);
                             statusRelVo.setFromStatusId(null);
                             statusRelVo.setToStatusId(null);
                             statusRelVo.setId(null);
