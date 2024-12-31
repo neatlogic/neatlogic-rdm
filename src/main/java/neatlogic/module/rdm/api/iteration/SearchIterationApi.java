@@ -74,6 +74,7 @@ public class SearchIterationApi extends PrivateApiComponentBase {
         }
         int rowNum = iterationMapper.searchIterationCount(iterationVo);
         if (rowNum > 0) {
+            iterationVo.setRowNum(rowNum);
             iterationList = iterationMapper.searchIteration(iterationVo);
         }
         return TableResultUtil.getResult(iterationList, iterationVo);
