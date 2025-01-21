@@ -122,12 +122,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
     <select id="getNotIndexIssueIdList"
             parameterType="neatlogic.framework.fulltextindex.dto.fulltextindex.FullTextIndexTypeVo"
             resultType="java.lang.Long" useCache="false">
-        select a.id
+        <!--select a.id
         from rdm_issue a
                  left join fulltextindex_target_rdm b
                            on a.id = b.target_id and b.target_type = #{type}
         where b.target_id is null
-        limit #{pageSize}
+        limit #{pageSize}-->
+        SELECT a.id
+        FROM rdm_issue a
+        WHERE NOT EXISTS (
+        SELECT 1
+        FROM fulltextindex_target_rdm b
+        WHERE a.id = b.target_id and b.target_type = #{type}
+        )
+        LIMIT #{pageSize}
     </select>
 
     <select id="getTagByIssueId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.TagVo">
@@ -148,12 +156,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
                ri.timecost,
                rp.name                                                         as priorityName,
                ri.iteration,
-               ri.content                             as content,
+               ri.content                                                      as content,
                ri.catalog,
                ri.status,
-               DATE_FORMAT(ri.start_date, '%Y-%m-%d') as startDate,
-               DATE_FORMAT(ri.end_date, '%Y-%m-%d')   as endDate,
-               ria.name                               as iterationName,
+               DATE_FORMAT(ri.start_date, '%Y-%m-%d')                          as startDate,
+               DATE_FORMAT(ri.end_date, '%Y-%m-%d')                            as endDate,
+               ria.name                                                        as iterationName,
                ras.name                                                        as statusName,
                ras.label                                                       as statusLabel,
                ras.color                                                       as statusColor,
@@ -484,6 +492,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         <include refid="searchIssueAncestor"/>
         select
         distinct ri.id
+        <if test="wordList != null and wordList.size() > 0">
+            ,COUNT(distinct fw.word) AS match_count
+        </if>
         <if test="sortList != null and sortList.size() > 0">
             ,
             <foreach collection="sortList" item="item" separator=",">
@@ -532,15 +543,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
             join iterationAncestors ia on ri.id = ia.id
         </if>
         <include refid="searchIssueSql"></include>
+        <if test="wordList != null and wordList.size() > 0">
+            GROUP BY ri.id
+        </if>
         <choose>
             <when test="sortList != null and sortList.size() > 0">
                 order by
+                <if test="wordList != null and wordList.size() > 0">
+                    match_count DESC,
+                </if>
                 <foreach collection="sortList" item="item" separator=",">
                     ${item.field} ${item.sort}
                 </foreach>
             </when>
             <otherwise>
-                order by ri.id desc
+                order by
+                <if test="wordList != null and wordList.size() > 0">
+                    match_count DESC,
+                </if>
+                ri.id desc
             </otherwise>
         </choose>
         limit #{startNum}, #{pageSize}
@@ -624,7 +645,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         </if>
         where ri.id in
         <foreach collection="idList" open="(" close=")" separator="," item="item">#{item}</foreach>
-        <choose>
+        ORDER BY FIELD(ri.id,  <foreach collection="idList" separator="," item="item">#{item}</foreach>)
+        <!--<choose>
             <when test="sortList != null and sortList.size() > 0">
                 order by
                 <foreach collection="sortList" item="item" separator=",">
@@ -634,7 +656,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
             <otherwise>
                 order by ri.id desc
             </otherwise>
-        </choose>
+        </choose>-->
     </select>
 
     <sql id="searchIssueSql">
@@ -934,8 +956,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
             catalog    = #{catalog},
             start_date = #{startDate},
             end_date   = #{endDate},
-            content  = #{content,typeHandler=CompressHandler},
-            timecost = #{timecost}
+            content    = #{content,typeHandler=CompressHandler},
+            timecost   = #{timecost}
         where id = #{id}
     </update>
 
