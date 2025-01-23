@@ -40,6 +40,7 @@ public class IssueFullTextIndexHandler extends FullTextIndexHandlerBase {
         return "rdm";
     }
 
+
     @Override
     protected void myCreateIndex(FullTextIndexVo fullTextIndexVo) {
         Long issueId = fullTextIndexVo.getTargetId();
