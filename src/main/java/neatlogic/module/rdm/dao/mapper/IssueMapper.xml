@@ -355,7 +355,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         <result property="iterationName" column="iterationName"/>
         <result property="catalog" column="catalog"/>
         <result property="catalogName" column="catalogName"/>
-        <result property="content" column="content"/>
+        <result property="content" column="content" typeHandler="neatlogic.framework.dao.plugin.CompressHandler"/>
         <result property="commentCount" column="commentCount"/>
         <result property="auditCount" column="auditCount"/>
         <result property="childrenCount" column="childrenCount"/>
