@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 package neatlogic.module.rdm.dao.mapper;
 
 import neatlogic.framework.rdm.dto.AppAttrVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface AttrMapper {
     List<AppAttrVo> getAttrByAppId(Long appId);
 
     AppAttrVo getAttrById(Long attrId);
+
+    Long getAttrIdByAppIdAndName(@Param("appId") Long appId, @Param("name") String name);
 
     Integer getMaxAppAttrSortByAppId(Long appId);
 

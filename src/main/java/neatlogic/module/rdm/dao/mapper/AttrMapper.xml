@@ -42,6 +42,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         order by sort
     </select>
 
+    <select id="getAttrIdByAppIdAndName" resultType="java.lang.Long">
+        select id
+        FROM rdm_app_attr
+        where app_id = #{appId}
+          and name = #{name}
+        limit 1
+    </select>
+
     <select id="getAttrById" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.AppAttrVo">
         select id,
                app_id      as appId,

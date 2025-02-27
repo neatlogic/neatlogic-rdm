@@ -28,6 +28,7 @@ import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
@@ -37,7 +38,9 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.service.IssueService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,6 +102,18 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             throw new ProjectNotAuthIssueException();
         }
         IssueVo issueVo = JSON.toJavaObject(paramObj, IssueVo.class);
+        if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
+            for (IssueAttrVo attr : issueVo.getAttrList()) {
+                if (attr.getAttrId() == null && StringUtils.isNotBlank(attr.getAttrName())) {
+                    Long attrId = attrMapper.getAttrIdByAppIdAndName(issueVo.getAppId(), attr.getAttrName());
+                    if (attrId != null) {
+                        attr.setAttrId(attrId);
+                    } else {
+                        throw new AppAttrNotFoundException(attr.getAttrName());
+                    }
+                }
+            }
+        }
         issueVo.setCreateUser(UserContext.get().getUserUuid(true));
         issueVo.formatAttr();
         Long id = paramObj.getLong("id");

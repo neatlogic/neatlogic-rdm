@@ -125,6 +125,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
         order by a.sort
     </select>
 
+
     <select id="getAppById" parameterType="java.lang.Long" resultMap="appResultMap">
         select a.id,
                a.app_type    as appType,
