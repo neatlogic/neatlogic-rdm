@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 package neatlogic.module.rdm.api.issue;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
@@ -74,6 +75,36 @@ public class SaveIssueApi extends PrivateApiComponentBase {
     @Override
     public String getConfig() {
         return null;
+    }
+
+    @Override
+    public JSONObject example() {
+        JSONObject defaultJson = new JSONObject();
+        defaultJson.put("appId", 1111111111111L);
+        defaultJson.put("name", "任务标题");
+        defaultJson.put("attrList", new JSONArray(
+        ) {{
+            this.add(new JSONObject() {{
+                this.put("attrName", "appname1");
+                this.put("valueList", new JSONArray() {{
+                    this.add("value1");
+                    this.add("value2");
+                    this.add("value3");
+                }});
+            }});
+            this.add(new JSONObject() {{
+                this.put("attrName", "appname2");
+                this.put("valueList", new JSONArray() {{
+                    this.add("value4");
+                    this.add("value5");
+                    this.add("value6");
+                }});
+            }});
+        }});
+        defaultJson.put("userIdList", new JSONArray() {{
+            this.add("admin");
+        }});
+        return defaultJson;
     }
 
     @Input({

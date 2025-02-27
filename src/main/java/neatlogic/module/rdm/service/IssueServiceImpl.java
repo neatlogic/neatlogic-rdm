@@ -19,11 +19,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.common.constvalue.GroupSearch;
+import neatlogic.framework.dao.mapper.UserMapper;
+import neatlogic.framework.dto.UserVo;
+import neatlogic.framework.exception.user.UserNotFoundException;
 import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
 import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.rdm.enums.IssueRelType;
+import neatlogic.framework.util.Md5Util;
 import neatlogic.module.rdm.dao.mapper.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -49,6 +53,9 @@ public class IssueServiceImpl implements IssueService {
 
     @Resource
     private AttrMapper attrMapper;
+
+    @Resource
+    private UserMapper userMapper;
 
     @Resource
     private ProjectMapper projectMapper;
@@ -85,7 +92,16 @@ public class IssueServiceImpl implements IssueService {
 
         if (CollectionUtils.isNotEmpty(issueVo.getUserIdList())) {
             for (String userId : issueVo.getUserIdList()) {
-                issueMapper.insertIssueUser(issueVo.getId(), userId.replace(GroupSearch.USER.getValuePlugin(), ""));
+                userId = userId.replace(GroupSearch.USER.getValuePlugin(), "");
+                if (!Md5Util.isMd5(userId)) {
+                    UserVo userVo = userMapper.getUserByUserId(userId);
+                    if (userVo != null) {
+                        userId = userVo.getUuid();
+                    } else {
+                        throw new UserNotFoundException(userId);
+                    }
+                }
+                issueMapper.insertIssueUser(issueVo.getId(), userId);
             }
         }
 
