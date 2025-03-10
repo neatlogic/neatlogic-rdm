@@ -801,7 +801,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
                     <if test="attrFilter.valueList != null and attrFilter.valueList.size()>0">
                         <choose>
                             <when test="attrFilter.attrType == 'select'">
-                                and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
+                                and
+                                <foreach collection="attrFilter.valueList" item="attrValue" open="(" close=")"
+                                         separator=" or ">
+                                    JSON_SEARCH(x.`${attrFilter.attrId}`, 'one', #{attrValue})
+                                </foreach>
+                                <!--JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})-->
                             </when>
                             <when test="attrFilter.attrType == 'text' or attrFilter.attrType == 'textarea'">
                                 and x.`${attrFilter.attrId}` like CONCAT('%',#{attrFilter.valueList[0]},'%')
