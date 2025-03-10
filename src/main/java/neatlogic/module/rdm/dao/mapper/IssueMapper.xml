@@ -825,7 +825,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.-->
                                 </choose>
                             </when>
                             <when test="attrFilter.attrType == 'user'">
-                                and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})
+                                <!--and JSON_CONTAINS(x.`${attrFilter.attrId}`,#{attrFilter.value})-->
+                                and
+                                <foreach collection="attrFilter.valueList" item="attrValue" open="(" close=")"
+                                         separator=" or ">
+                                    JSON_SEARCH(x.`${attrFilter.attrId}`, 'one', #{attrValue})
+                                </foreach>
                             </when>
                             <when test="attrFilter.attrType == 'date' and attrFilter.valueList.size() > 0">
                                 AND x.`${attrFilter.attrId}` &gt;=
