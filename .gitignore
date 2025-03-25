@@ -22,3 +22,5 @@ target
 /dist/
 /nbdist/
 /.nb-gradle/
+
+.flattened-pom.xml
