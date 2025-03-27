@@ -24,3 +24,4 @@ target
 /.nb-gradle/
 
 .flattened-pom.xml
+.DS_Store
