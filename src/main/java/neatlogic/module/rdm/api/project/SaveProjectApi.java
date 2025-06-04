@@ -81,13 +81,66 @@ public class SaveProjectApi extends PrivateApiComponentBase {
         return null;
     }
 
+    @Override
+    public JSONObject example() {
+        JSONObject resultObj = new JSONObject();
+        resultObj.put("id", 1436317711867905L);
+        resultObj.put("name", "项目名称");
+        resultObj.put("templateId", 1L);
+        resultObj.put("description", "<p>test</p>");
+        resultObj.put("color", "#F9E31C");
+        JSONArray dateRange = new JSONArray();
+        dateRange.add("2025-06-04");
+        dateRange.add("2025-07-03");
+        resultObj.put("dateRange", dateRange);
+        JSONArray userList = new JSONArray();
+        {
+            JSONObject userObj = new JSONObject();
+            userObj.put("isNew", true);
+            userObj.put("userId", "user#fccf704231734072a1bf80d90b2d1de2");
+            JSONArray userTypeList = new JSONArray();
+            JSONObject userTypeObj = new JSONObject();
+            userTypeObj.put("userType", "owner");
+            userTypeObj.put("userTypeName", "项目所有人");
+            userTypeList.add(userTypeObj);
+            userObj.put("userTypeList", userTypeList);
+            userList.add(userObj);
+        }
+        {
+            JSONObject userObj = new JSONObject();
+            userObj.put("isNew", true);
+            userObj.put("userId", "fccf704231734072a1bf80d90b2d1de2");
+            JSONArray userTypeList = new JSONArray();
+            JSONObject userTypeObj = new JSONObject();
+            userTypeObj.put("userType", "leader");
+            userTypeObj.put("userTypeName", "项目负责人");
+            userTypeList.add(userTypeObj);
+            userObj.put("userTypeList", userTypeList);
+            userList.add(userObj);
+        }
+
+        {
+            JSONObject userObj = new JSONObject();
+            userObj.put("isNew", true);
+            userObj.put("userId", "fccf704231734072a1bf80d90b2d1de2");
+            JSONArray userTypeList = new JSONArray();
+            JSONObject userTypeObj = new JSONObject();
+            userTypeObj.put("userType", "member");
+            userTypeObj.put("userTypeName", "项目成员");
+            userTypeList.add(userTypeObj);
+            userObj.put("userTypeList", userTypeList);
+            userList.add(userObj);
+        }
+        resultObj.put("userList", userList);
+        return resultObj;
+    }
+
     @Input({@Param(name = "id", type = ApiParamType.LONG, desc = "nmrap.saveprojectapi.input.param.desc.id"),
             @Param(name = "name", type = ApiParamType.STRING, xss = true, isRequired = true, maxLength = 50, desc = "term.rdm.projectname"),
             @Param(name = "templateId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.projecttype"),
             @Param(name = "description", type = ApiParamType.STRING, desc = "common.description", maxLength = 5000),
             @Param(name = "dateRange", type = ApiParamType.JSONARRAY, desc = "term.rdm.startenddate"),
-            @Param(name = "memberIdList", type = ApiParamType.JSONARRAY, desc = "nmrap.saveprojectapi.input.param.desc.memberidlist"),
-            @Param(name = "leaderIdList", type = ApiParamType.JSONARRAY, desc = "term.rdm.project.manageridlist"),
+            @Param(name = "userList", type = ApiParamType.JSONARRAY, desc = "common.userlist"),
             @Param(name = "color", type = ApiParamType.STRING, desc = "common.color")})
     @Output({@Param(name = "id", type = ApiParamType.STRING, desc = "term.cmdb.ciid")})
     @Description(desc = "nmrap.saveprojectapi.getname")
