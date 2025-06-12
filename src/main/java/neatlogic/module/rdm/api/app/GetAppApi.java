@@ -56,13 +56,15 @@ public class GetAppApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppVo appVo = appMapper.getAppById(paramObj.getLong("id"));
-        Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
-        if (needSystemAttr != null && needSystemAttr.equals(1)) {
-            List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(appVo.getId());
-            if (appVo.getAttrList() != null) {
-                appVo.getAttrList().addAll(0, systemAttrList);
-            } else {
-                appVo.setAttrList(systemAttrList);
+        if (appVo != null) {
+            Integer needSystemAttr = paramObj.getInteger("needSystemAttr");
+            if (needSystemAttr != null && needSystemAttr.equals(1)) {
+                List<AppAttrVo> systemAttrList = SystemAttrType.getSystemAttrList(appVo.getId());
+                if (appVo.getAttrList() != null) {
+                    appVo.getAttrList().addAll(0, systemAttrList);
+                } else {
+                    appVo.setAttrList(systemAttrList);
+                }
             }
         }
         return appVo;
