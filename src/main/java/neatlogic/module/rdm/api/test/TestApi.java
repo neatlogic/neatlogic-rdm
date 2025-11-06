@@ -17,7 +17,9 @@ package neatlogic.module.rdm.api.test;
 
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
+import neatlogic.framework.common.constvalue.systemuser.SystemUser;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
+import neatlogic.framework.restful.annotation.AuthUser;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.constvalue.ApiAnonymousAccessSupportEnum;
@@ -26,6 +28,7 @@ import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import org.springframework.stereotype.Service;
 
 @Service
+@AuthUser(SystemUser.ANONYMOUS)
 @AuthAction(action = RDM_BASE.class)
 @OperationType(type = OperationTypeEnum.SEARCH)
 public class TestApi extends PrivateApiComponentBase {
