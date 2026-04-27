@@ -543,6 +543,7 @@
                 <foreach collection="sortList" item="item" separator=",">
                     ${item.field} ${item.sort}
                 </foreach>
+               , ri.id desc
             </when>
             <otherwise>
                 order by
