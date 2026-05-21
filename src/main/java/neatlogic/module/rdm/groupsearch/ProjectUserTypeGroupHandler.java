@@ -50,13 +50,13 @@ public class ProjectUserTypeGroupHandler implements IGroupSearchHandler {
         }
         ProjectUserVo userVo = new ProjectUserVo();
         userVo.setNeedPage(true);
-        userVo.setPageSize(20);
-        userVo.setCurrentPage(1);
+        userVo.setPageSize(groupSearchVo.getPageSize());
+        userVo.setCurrentPage(groupSearchVo.getCurrentPage());
         userVo.setUserType(ProjectUserType.MEMBER.getValue());
         userVo.setProjectId(projectId);
         userVo.setKeyword(groupSearchVo.getKeyword());
-
-        return convertGroupSearchOption(projectMapper.searchProjectUser(userVo));
+        List<ProjectUserVo> projectUserList = projectMapper.searchProjectUser(userVo);
+        return convertGroupSearchOption(projectUserList);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class ProjectUserTypeGroupHandler implements IGroupSearchHandler {
 
     @Override
     public int getSort() {
-        return 3;
+        return 5;
     }
 
     @Override

@@ -22,14 +22,7 @@
         where ra.project_id = #{value}
     </select>
 
-    <select id="searchProjectUser" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo"
-            resultType="neatlogic.framework.rdm.dto.ProjectUserVo">
-        SELECT
-        distinct rpu.user_id AS userId,
-        u.user_name as userName,
-        u.user_id as userEnName
-        FROM rdm_project_user rpu
-        JOIN user u ON rpu.user_id = u.uuid
+    <sql id="searchProjectUserWhere">
         <where>
             <if test="keyword != null and keyword != ''">
                 (u.user_name like concat('%', #{keyword},'%')
@@ -45,6 +38,29 @@
                 </foreach>
             </if>
         </where>
+    </sql>
+
+    <select id="searchProjectUserCount" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo" resultType="int">
+        SELECT
+            COUNT(distinct rpu.user_id)
+        FROM rdm_project_user rpu
+        <if test="keyword != null and keyword != ''">
+            JOIN user u ON rpu.user_id = u.uuid
+        </if>
+        <include refid="searchProjectUserWhere"/>
+    </select>
+
+    <select id="searchProjectUser" parameterType="neatlogic.framework.rdm.dto.ProjectUserVo"
+            resultType="neatlogic.framework.rdm.dto.ProjectUserVo">
+        SELECT
+        distinct rpu.user_id AS userId,
+        u.user_name as userName,
+        u.user_id as userEnName
+        FROM rdm_project_user rpu
+        <if test="keyword != null and keyword != ''">
+            JOIN user u ON rpu.user_id = u.uuid
+        </if>
+        <include refid="searchProjectUserWhere"/>
         limit #{startNum}, #{pageSize}
     </select>
 
