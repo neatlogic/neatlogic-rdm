@@ -47,6 +47,7 @@ public class ListRelIssueIdApi extends PrivateApiComponentBase {
     @Input({@Param(name = "issueId", type = ApiParamType.LONG, isRequired = true, desc = "term.rdm.issueid"),
             @Param(name = "relType", type = ApiParamType.ENUM, member = IssueRelType.class, isRequired = true, desc = "common.reltype"),
             @Param(name = "direction", type = ApiParamType.ENUM, member = IssueRelDirection.class, isRequired = true, desc = "term.rdm.reldirection"),
+            @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc"),
     })
     @Output({@Param(explode = Long[].class)})
     @Description(desc = "nmrai.listrelissueidapi.getname")
@@ -55,7 +56,8 @@ public class ListRelIssueIdApi extends PrivateApiComponentBase {
         Long issueId = paramObj.getLong("issueId");
         String relType = paramObj.getString("relType");
         String direction = paramObj.getString("direction");
-        return issueMapper.getRelIssueIdList(issueId, relType, direction);
+        Long appId = paramObj.getLong("appId");
+        return issueMapper.getRelIssueIdList(issueId, relType, direction, appId);
     }
 
     @Override

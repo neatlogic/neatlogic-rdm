@@ -55,22 +55,62 @@
         select
         <choose>
             <when test="direction == 'to'">
-                from_issue_id
+                case when ri.source_issue_id is not null then ri.source_issue_id else rir.from_issue_id end
             </when>
             <when test="direction == 'from'">
-                to_issue_id
+                case when ri.source_issue_id is not null then ri.source_issue_id else rir.to_issue_id end
             </when>
         </choose>
-        from rdm_issue_rel
+        from rdm_issue_rel rir
+        <choose>
+            <when test="direction == 'to'">
+                join rdm_issue ri on rir.from_issue_id = ri.id
+            </when>
+            <when test="direction == 'from'">
+                join rdm_issue ri on rir.to_issue_id = ri.id
+            </when>
+        </choose>
         where rel_type = #{relType}
         <choose>
             <when test="direction == 'to'">
                 and to_issue_id = #{issueId}
+                <if test="appId != null">
+                    and from_app_id = #{appId}
+                </if>
             </when>
             <when test="direction == 'from'">
                 and from_issue_id = #{issueId}
+                <if test="appId != null">
+                    and to_app_id = #{appId}
+                </if>
             </when>
         </choose>
+    </select>
+
+    <select id="getRelIssueIdBySourceIssueId" resultType="java.lang.Long">
+        select ri.id
+        from rdm_issue_rel rir
+        <choose>
+            <when test="direction == 'to'">
+                join rdm_issue ri on rir.from_issue_id = ri.id
+            </when>
+            <otherwise>
+                join rdm_issue ri on rir.to_issue_id = ri.id
+            </otherwise>
+        </choose>
+        where rir.rel_type = #{relType}
+          and ri.source_issue_id = #{sourceIssueId}
+        <choose>
+            <when test="direction == 'to'">
+                and rir.to_issue_id = #{issueId}
+                and rir.from_app_id = #{appId}
+            </when>
+            <otherwise>
+                and rir.from_issue_id = #{issueId}
+                and rir.to_app_id = #{appId}
+            </otherwise>
+        </choose>
+        limit 1
     </select>
 
     <select id="checkIssueIsFavorite" resultType="int">
@@ -139,6 +179,7 @@
                ra.app_type                                                     as appType,
                ra.project_id                                                   as projectId,
                ri.parent_id                                                    as parentId,
+               ri.source_issue_id                                              as sourceIssueId,
                ri.priority,
                ri.timecost,
                rp.name                                                         as priorityName,
@@ -206,6 +247,8 @@
                ri.app_id                                                             as appId,
                ra.app_type                                                           as appType,
                ra.project_id                                                         as projectId,
+               ri.parent_id                                                          as parentId,
+               ri.source_issue_id                                                    as sourceIssueId,
                ri.priority,
                ri.timecost,
                rp.name                                                               as priorityName,
@@ -324,6 +367,7 @@
         <result property="appType" column="appType"/>
         <result property="projectId" column="projectId"/>
         <result property="parentId" column="parentId"/>
+        <result property="sourceIssueId" column="sourceIssueId"/>
         <result property="createUser" column="createUser"/>
         <result property="createUserName" column="createUserName"/>
         <result property="createDate" column="createDate"/>
@@ -564,6 +608,7 @@
         ra.app_type as appType,
         ra.project_id as projectId,
         ri.parent_id as parentId,
+        ri.source_issue_id as sourceIssueId,
         ri.priority,
         ri.timecost,
         DATE_FORMAT(ri.start_date, '%Y-%m-%d') as startDate,
@@ -659,6 +704,17 @@
             <if test="issueId != null">
                 and ri.id = #{issueId}
             </if>
+            <if test="sourceIssueId != null">
+                and ri.source_issue_id = #{sourceIssueId}
+            </if>
+            <choose>
+                <when test="isCopy != null and isCopy == 1">
+                    and ri.source_issue_id is not null
+                </when>
+                <when test="isCopy != null and isCopy == 0">
+                    and ri.source_issue_id is null
+                </when>
+            </choose>
             <if test="createUser != null and createUser != ''">
                 and ri.create_user =
                 #{createUser}
@@ -994,6 +1050,7 @@
         insert into rdm_issue
         (id,
          parent_id,
+         source_issue_id,
          name,
          app_id,
          create_user,
@@ -1008,6 +1065,7 @@
          timecost)
         values (#{id},
                 #{parentId},
+                #{sourceIssueId},
                 #{name},
                 #{appId},
                 #{createUser},

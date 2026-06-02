@@ -31,7 +31,9 @@ public interface IssueMapper {
 
     IssueRelVo getIssueRel(@Param("fromIssueId") Long fromIssueId, @Param("toIssueId") Long toIssueId);
 
-    List<Long> getRelIssueIdList(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction);
+    List<Long> getRelIssueIdList(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction, @Param("appId") Long appId);
+
+    Long getRelIssueIdBySourceIssueId(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction, @Param("appId") Long appId, @Param("sourceIssueId") Long sourceIssueId);
 
     int checkIssueIsFavorite(@Param("issueId") Long issueId, @Param("userId") String userId);
 

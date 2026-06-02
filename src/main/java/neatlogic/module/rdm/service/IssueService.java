@@ -23,5 +23,7 @@ public interface IssueService {
     @Transactional
     void saveIssue(IssueVo issueVo);
 
+    @Transactional
+    IssueVo copyIssue(Long sourceIssueId);
 
 }

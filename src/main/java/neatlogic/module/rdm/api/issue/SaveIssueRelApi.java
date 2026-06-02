@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
+import neatlogic.framework.rdm.dto.AppVo;
 import neatlogic.framework.rdm.dto.IssueRelVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.enums.IssueRelDirection;
@@ -27,7 +28,9 @@ import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.service.IssueService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,8 +41,16 @@ import javax.annotation.Resource;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueRelApi extends PrivateApiComponentBase {
+    private static final String TESTCASE_APP_TYPE = "testcase";
+
     @Resource
     private IssueMapper issueMapper;
+
+    @Resource
+    private AppMapper appMapper;
+
+    @Resource
+    private IssueService issueService;
 
     @Override
     public String getName() {
@@ -63,27 +74,42 @@ public class SaveIssueRelApi extends PrivateApiComponentBase {
         Long id = paramObj.getLong("id");
         IssueVo issueVo = issueMapper.getIssueById(id);
         Long appId = paramObj.getLong("appId");
+        AppVo appVo = appMapper.getAppById(appId);
         String direction = paramObj.getString("direction");
         JSONArray idList = paramObj.getJSONArray("idList");
         String relType = paramObj.getString("relType");
         for (int i = 0; i < idList.size(); i++) {
-            IssueRelVo issueRelVo = new IssueRelVo();
-            issueRelVo.setDirection(direction);
-            issueRelVo.setRelType(relType);
-            if (direction.equals(IssueRelDirection.FROM.getValue())) {
-                issueRelVo.setFromIssueId(id);
-                issueRelVo.setFromAppId(issueVo.getAppId());
-                issueRelVo.setToIssueId(idList.getLong(i));
-                issueRelVo.setToAppId(appId);
-            } else {
-                issueRelVo.setToIssueId(id);
-                issueRelVo.setToAppId(issueVo.getAppId());
-                issueRelVo.setFromIssueId(idList.getLong(i));
-                issueRelVo.setFromAppId(appId);
+            Long targetIssueId = idList.getLong(i);
+            if (appVo != null && TESTCASE_APP_TYPE.equals(appVo.getType())) {
+                Long existingCopyId = issueMapper.getRelIssueIdBySourceIssueId(id, relType, direction, appId, targetIssueId);
+                if (existingCopyId != null) {
+                    continue;
+                }
+                IssueVo copyIssue = issueService.copyIssue(targetIssueId);
+                targetIssueId = copyIssue.getId();
             }
+            IssueRelVo issueRelVo = buildIssueRel(issueVo, targetIssueId, appId, direction, relType);
             issueMapper.insertIssueRel(issueRelVo);
         }
         return null;
+    }
+
+    private IssueRelVo buildIssueRel(IssueVo issueVo, Long targetIssueId, Long appId, String direction, String relType) {
+        IssueRelVo issueRelVo = new IssueRelVo();
+        issueRelVo.setDirection(direction);
+        issueRelVo.setRelType(relType);
+        if (direction.equals(IssueRelDirection.FROM.getValue())) {
+            issueRelVo.setFromIssueId(issueVo.getId());
+            issueRelVo.setFromAppId(issueVo.getAppId());
+            issueRelVo.setToIssueId(targetIssueId);
+            issueRelVo.setToAppId(appId);
+        } else {
+            issueRelVo.setToIssueId(issueVo.getId());
+            issueRelVo.setToAppId(issueVo.getAppId());
+            issueRelVo.setFromIssueId(targetIssueId);
+            issueRelVo.setFromAppId(appId);
+        }
+        return issueRelVo;
     }
 
     @Override

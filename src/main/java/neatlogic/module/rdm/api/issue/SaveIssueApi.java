@@ -19,10 +19,7 @@ import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
-import neatlogic.framework.rdm.dto.AppAttrVo;
-import neatlogic.framework.rdm.dto.AppStatusRelVo;
-import neatlogic.framework.rdm.dto.IssueAttrVo;
-import neatlogic.framework.rdm.dto.IssueVo;
+import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
@@ -51,6 +48,8 @@ import java.util.List;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueApi extends PrivateApiComponentBase {
+    private static final String TESTCASE_APP_TYPE = "testcase";
+
 
     @Resource
     private AttrMapper attrMapper;
@@ -129,6 +128,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (!ProjectAuthManager.checkAppAuth(appId, ProjectUserType.MEMBER, ProjectUserType.OWNER, ProjectUserType.LEADER)) {
             throw new ProjectNotAuthIssueException();
         }
+        AppVo appVo = appMapper.getAppById(appId);
         IssueVo issueVo = JSON.toJavaObject(paramObj, IssueVo.class);
         if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
             for (IssueAttrVo attr : issueVo.getAttrList()) {
@@ -181,7 +181,36 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             }
         }
 
+        Long fromId = issueVo.getFromId();
+        Long toId = issueVo.getToId();
+        String relType = StringUtils.isNotBlank(issueVo.getRelType()) ? issueVo.getRelType() : IssueRelType.EXTEND.getValue();
+        boolean needTestcaseCopyRel = appVo != null && TESTCASE_APP_TYPE.equals(appVo.getType()) && (fromId != null || toId != null);
+        if (needTestcaseCopyRel) {
+            // 测试用例在需求/测试计划中新增时，先保存用例库原用例，再用副本承载上下文快照。
+            issueVo.setFromId(null);
+            issueVo.setToId(null);
+            issueVo.setRelType(null);
+        }
         issueService.saveIssue(issueVo);
+        if (needTestcaseCopyRel) {
+            IssueVo copyIssue = issueService.copyIssue(issueVo.getId());
+            IssueRelVo issueRelVo = new IssueRelVo();
+            issueRelVo.setRelType(relType);
+            if (fromId != null) {
+                IssueVo fromIssue = issueMapper.getIssueById(fromId);
+                issueRelVo.setFromIssueId(fromIssue.getId());
+                issueRelVo.setFromAppId(fromIssue.getAppId());
+                issueRelVo.setToIssueId(copyIssue.getId());
+                issueRelVo.setToAppId(copyIssue.getAppId());
+            } else {
+                IssueVo toIssue = issueMapper.getIssueById(toId);
+                issueRelVo.setToIssueId(toIssue.getId());
+                issueRelVo.setToAppId(toIssue.getAppId());
+                issueRelVo.setFromIssueId(copyIssue.getId());
+                issueRelVo.setFromAppId(copyIssue.getAppId());
+            }
+            issueMapper.insertIssueRel(issueRelVo);
+        }
         return issueVo.getId();
     }
 

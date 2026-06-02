@@ -19,11 +19,13 @@ import neatlogic.framework.common.constvalue.GroupSearch;
 import neatlogic.framework.dao.mapper.UserMapper;
 import neatlogic.framework.dto.UserVo;
 import neatlogic.framework.exception.user.UserNotFoundException;
+import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
 import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.rdm.enums.IssueRelType;
+import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.util.Md5Util;
 import neatlogic.module.rdm.dao.mapper.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -56,6 +58,9 @@ public class IssueServiceImpl implements IssueService {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Resource
+    private AppMapper appMapper;
 
     @Override
     public IssueVo getIssueByIdForAudit(Long id) {
@@ -130,6 +135,67 @@ public class IssueServiceImpl implements IssueService {
         if (indexHandler != null) {
             indexHandler.createIndex(issueVo.getId());
         }
+    }
+
+    @Override
+    public IssueVo copyIssue(Long sourceIssueId) {
+        IssueVo sourceIssue = getIssueById(sourceIssueId);
+        if (sourceIssue == null) {
+            throw new IssueNotFoundException(sourceIssueId);
+        }
+        if (sourceIssue.getSourceIssueId() != null) {
+            sourceIssue = getIssueById(sourceIssue.getSourceIssueId());
+            if (sourceIssue == null) {
+                throw new IssueNotFoundException(sourceIssueId);
+            }
+        }
+        IssueVo copyIssue = new IssueVo();
+        Long copyIssueId = copyIssue.getId();
+        copyIssue.setSourceIssueId(sourceIssue.getId());
+        copyIssue.setAppId(sourceIssue.getAppId());
+        copyIssue.setName(sourceIssue.getName());
+        copyIssue.setCreateUser(UserContext.get().getUserUuid(true));
+        copyIssue.setPriority(sourceIssue.getPriority());
+        copyIssue.setIteration(sourceIssue.getIteration());
+        copyIssue.setCatalog(sourceIssue.getCatalog());
+        copyIssue.setStartDate(sourceIssue.getStartDate());
+        copyIssue.setEndDate(sourceIssue.getEndDate());
+        copyIssue.setTimecost(sourceIssue.getTimecost());
+        copyIssue.setContent(sourceIssue.getContent());
+        copyIssue.setTagList(sourceIssue.getTagList());
+        copyIssue.setUserIdList(sourceIssue.getUserIdList());
+        copyIssue.setStatus(getCopyStatus(sourceIssue));
+        if (CollectionUtils.isNotEmpty(sourceIssue.getAttrList())) {
+            List<IssueAttrVo> attrList = new ArrayList<>();
+            for (IssueAttrVo sourceAttr : sourceIssue.getAttrList()) {
+                IssueAttrVo copyAttr = new IssueAttrVo(sourceAttr.getAttrId(), copyIssueId, sourceAttr.getAttrType(), sourceAttr.getConfig());
+                if (CollectionUtils.isNotEmpty(sourceAttr.getValueList())) {
+                    copyAttr.setValueList(JSON.parseArray(JSON.toJSONString(sourceAttr.getValueList())));
+                }
+                attrList.add(copyAttr);
+            }
+            copyIssue.setAttrList(attrList);
+        }
+        saveIssue(copyIssue);
+        if (CollectionUtils.isNotEmpty(sourceIssue.getFileList())) {
+            for (FileVo fileVo : sourceIssue.getFileList()) {
+                issueMapper.insertIssueFile(copyIssue.getId(), fileVo.getId());
+            }
+        }
+        return copyIssue;
+    }
+
+    private Long getCopyStatus(IssueVo sourceIssue) {
+        IssueVo statusCondition = new IssueVo();
+        statusCondition.setAppId(sourceIssue.getAppId());
+        List<AppStatusVo> statusList = appMapper.getStatusByAppId(statusCondition);
+        if (CollectionUtils.isNotEmpty(statusList)) {
+            Optional<AppStatusVo> startStatus = statusList.stream().filter(status -> Integer.valueOf(1).equals(status.getIsStart())).findFirst();
+            if (startStatus.isPresent()) {
+                return startStatus.get().getId();
+            }
+        }
+        return sourceIssue.getStatus();
     }
 
     @Override
