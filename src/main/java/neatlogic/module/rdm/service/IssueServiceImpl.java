@@ -18,6 +18,7 @@ import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.common.constvalue.GroupSearch;
 import neatlogic.framework.dao.mapper.UserMapper;
 import neatlogic.framework.dto.UserVo;
+import neatlogic.framework.exception.type.ParamIrregularException;
 import neatlogic.framework.exception.user.UserNotFoundException;
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
@@ -34,10 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class IssueServiceImpl implements IssueService {
@@ -75,12 +73,14 @@ public class IssueServiceImpl implements IssueService {
             issueMapper.insertIssue(issueVo);
         } else {
             issueMapper.updateIssue(issueVo);
-            issueMapper.deleteIssueTagByIssueId(issueVo.getId());
-            issueMapper.deleteIssueUserByIssueId(issueVo.getId());
+            if (issueVo.getTagList() != null) {
+                issueMapper.deleteIssueTagByIssueId(issueVo.getId());
+            }
+            if (issueVo.getUserIdList() != null) {
+                issueMapper.deleteIssueUserByIssueId(issueVo.getId());
+            }
         }
-        if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
-            issueMapper.replaceIssueAttr(issueVo);
-        }
+        saveIssueAttr(issueVo);
         if (CollectionUtils.isNotEmpty(issueVo.getTagList())) {
             for (String tag : issueVo.getTagList()) {
                 TagVo tagVo = tagMapper.getTagByName(tag);
@@ -135,6 +135,19 @@ public class IssueServiceImpl implements IssueService {
         if (indexHandler != null) {
             indexHandler.createIndex(issueVo.getId());
         }
+        syncCopyIssue(issueVo);
+    }
+
+    private void saveIssueAttr(IssueVo issueVo) {
+        if (CollectionUtils.isEmpty(issueVo.getAttrList())) {
+            return;
+        }
+        // 动态属性表是按 app 生成的宽表，issue 不一定已有属性行；先判断再局部更新，避免 replace 覆盖其他属性列。
+        if (issueMapper.checkIssueAttrExists(issueVo) > 0) {
+            issueMapper.updateIssueAttr(issueVo);
+        } else {
+            issueMapper.replaceIssueAttr(issueVo);
+        }
     }
 
     @Override
@@ -183,6 +196,148 @@ public class IssueServiceImpl implements IssueService {
             }
         }
         return copyIssue;
+    }
+
+    @Override
+    public List<IssueCopyRelVo> searchIssueCopyRelBySourceIssueId(Long sourceIssueId) {
+        List<IssueCopyRelVo> copyRelList = issueMapper.searchIssueCopyRelBySourceIssueId(sourceIssueId);
+        if (CollectionUtils.isNotEmpty(copyRelList)) {
+            for (IssueCopyRelVo copyRelVo : copyRelList) {
+                copyRelVo.setAppColor(copyRelVo.getAppColor());
+                copyRelVo.setRelAppColor(copyRelVo.getRelAppColor());
+            }
+        }
+        return copyRelList;
+    }
+
+    private void syncCopyIssue(IssueVo sourceIssue) {
+        if (sourceIssue == null || sourceIssue.getId() == null) {
+            throw new ParamIrregularException("id");
+        }
+        List<Long> copyIssueIdList = sourceIssue.getCopyIssueIdList();
+        if (CollectionUtils.isEmpty(copyIssueIdList)) {
+            return;
+        }
+        IssueVo savedSourceIssue = getIssueById(sourceIssue.getId());
+        if (savedSourceIssue == null) {
+            throw new IssueNotFoundException(sourceIssue.getId());
+        }
+        if (savedSourceIssue.getSourceIssueId() != null) {
+            throw new ParamIrregularException("id");
+        }
+        for (Long copyIssueId : copyIssueIdList) {
+            if (copyIssueId == null || copyIssueId <= 0) {
+                throw new ParamIrregularException("copyIssueIdList");
+            }
+            IssueVo copyIssue = getIssueById(copyIssueId);
+            if (copyIssue == null) {
+                throw new IssueNotFoundException(copyIssueId);
+            }
+            if (!sourceIssue.getId().equals(copyIssue.getSourceIssueId())) {
+                throw new ParamIrregularException("copyIssueIdList");
+            }
+            boolean isContentChanged = false;
+            if (sourceIssue.hasSubmittedField("content") && !Objects.equals(copyIssue.getContent(), sourceIssue.getContent())) {
+                copyIssue.setContent(sourceIssue.getContent());
+                isContentChanged = true;
+            }
+            List<IssueAttrVo> changedAttrList = getChangedCopyAttrList(copyIssue, sourceIssue);
+            if (CollectionUtils.isNotEmpty(changedAttrList)) {
+                List<IssueAttrVo> copyAttrList = new ArrayList<>();
+                for (IssueAttrVo sourceAttr : changedAttrList) {
+                    copyAttrList.add(copyAttr(sourceAttr, copyIssue.getId()));
+                }
+                copyIssue.setAttrList(copyAttrList);
+            } else {
+                copyIssue.setAttrList(null);
+            }
+            boolean isIssueFieldChanged = syncChangedIssueField(sourceIssue, copyIssue);
+            if (isContentChanged || CollectionUtils.isNotEmpty(changedAttrList) || isIssueFieldChanged) {
+                // 副本必须走完整 issue 保存流程，确保审计、全文索引和既有保存副作用都正常执行。
+                copyIssue.setCopyIssueIdList(null);
+                saveIssue(copyIssue);
+            }
+        }
+    }
+
+    private boolean syncChangedIssueField(IssueVo sourceIssue, IssueVo copyIssue) {
+        boolean isChanged = false;
+        if (sourceIssue.hasSubmittedField("priority") && !Objects.equals(copyIssue.getPriority(), sourceIssue.getPriority())) {
+            copyIssue.setPriority(sourceIssue.getPriority());
+            isChanged = true;
+        }
+        if (sourceIssue.hasSubmittedField("iteration") && !Objects.equals(copyIssue.getIteration(), sourceIssue.getIteration())) {
+            copyIssue.setIteration(sourceIssue.getIteration());
+            isChanged = true;
+        }
+        if (sourceIssue.hasSubmittedField("catalog") && !Objects.equals(copyIssue.getCatalog(), sourceIssue.getCatalog())) {
+            copyIssue.setCatalog(sourceIssue.getCatalog());
+            isChanged = true;
+        }
+        if (sourceIssue.hasSubmittedField("startDate") && !Objects.equals(copyIssue.getStartDate(), sourceIssue.getStartDate())) {
+            copyIssue.setStartDate(sourceIssue.getStartDate());
+            isChanged = true;
+        }
+        if (sourceIssue.hasSubmittedField("endDate") && !Objects.equals(copyIssue.getEndDate(), sourceIssue.getEndDate())) {
+            copyIssue.setEndDate(sourceIssue.getEndDate());
+            isChanged = true;
+        }
+        if (sourceIssue.hasSubmittedField("timecost") && !Objects.equals(copyIssue.getTimecost(), sourceIssue.getTimecost())) {
+            copyIssue.setTimecost(sourceIssue.getTimecost());
+            isChanged = true;
+        }
+        if (sourceIssue.hasSubmittedField("tagList") && isSubmittedListChanged(copyIssue.getTagList(), sourceIssue.getTagList())) {
+            copyIssue.setTagList(copyStringList(sourceIssue.getTagList()));
+            isChanged = true;
+        } else {
+            copyIssue.setTagList(null);
+        }
+        if (sourceIssue.hasSubmittedField("userIdList") && isSubmittedListChanged(copyIssue.getUserIdList(), sourceIssue.getUserIdList())) {
+            copyIssue.setUserIdList(copyStringList(sourceIssue.getUserIdList()));
+            isChanged = true;
+        } else {
+            copyIssue.setUserIdList(null);
+        }
+        return isChanged;
+    }
+
+    private boolean isSubmittedListChanged(List<String> oldList, List<String> newList) {
+        if (newList == null) {
+            return false;
+        }
+        return !CollectionUtils.isEqualCollection(oldList == null ? new ArrayList<>() : oldList, newList);
+    }
+
+    private List<String> copyStringList(List<String> list) {
+        return list == null ? null : new ArrayList<>(list);
+    }
+
+    private List<IssueAttrVo> getChangedCopyAttrList(IssueVo copyIssue, IssueVo sourceIssue) {
+        List<IssueAttrVo> changedAttrList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(sourceIssue.getAttrList())) {
+            for (IssueAttrVo sourceAttr : sourceIssue.getAttrList()) {
+                IssueAttrVo oldAttr = copyIssue.getAttr(sourceAttr.getAttrId());
+                if (!Objects.equals(getAttrValue(oldAttr), getAttrValue(sourceAttr))) {
+                    changedAttrList.add(sourceAttr);
+                }
+            }
+        }
+        return changedAttrList;
+    }
+
+    private String getAttrValue(IssueAttrVo attr) {
+        if (attr == null) {
+            return null;
+        }
+        return attr.getValue();
+    }
+
+    private IssueAttrVo copyAttr(IssueAttrVo sourceAttr, Long issueId) {
+        IssueAttrVo copyAttr = new IssueAttrVo(sourceAttr.getAttrId(), issueId, sourceAttr.getAttrType(), sourceAttr.getConfig());
+        if (CollectionUtils.isNotEmpty(sourceAttr.getValueList())) {
+            copyAttr.setValueList(JSON.parseArray(JSON.toJSONString(sourceAttr.getValueList())));
+        }
+        return copyAttr;
     }
 
     private Long getCopyStatus(IssueVo sourceIssue) {

@@ -39,8 +39,6 @@ import javax.annotation.Resource;
 @OperationType(type = OperationTypeEnum.DELETE)
 @Transactional
 public class DeleteIssueRelApi extends PrivateApiComponentBase {
-    private static final String TESTCASE_APP_TYPE = "testcase";
-
     @Resource
     private IssueMapper issueMapper;
 
@@ -72,8 +70,8 @@ public class DeleteIssueRelApi extends PrivateApiComponentBase {
             IssueVo fromIssue = issueMapper.getIssueById(fromId);
             IssueVo toIssue = issueMapper.getIssueById(toId);
             issueMapper.deleteIssueRel(issueRelVo);
-            deleteTestcaseCopy(fromIssue);
-            deleteTestcaseCopy(toIssue);
+            deleteCopyIssue(fromIssue);
+            deleteCopyIssue(toIssue);
 /*
             IssueAuditVo fromIssueAuditVo = new IssueAuditVo();
             fromIssueAuditVo.setIssueId(fromId);
@@ -102,8 +100,8 @@ public class DeleteIssueRelApi extends PrivateApiComponentBase {
         return null;
     }
 
-    private void deleteTestcaseCopy(IssueVo issueVo) {
-        if (issueVo != null && TESTCASE_APP_TYPE.equals(issueVo.getAppType()) && issueVo.getSourceIssueId() != null) {
+    private void deleteCopyIssue(IssueVo issueVo) {
+        if (issueVo != null && issueVo.getSourceIssueId() != null) {
             issueMapper.deleteIssueById(issueVo);
             IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
             if (indexHandler != null) {

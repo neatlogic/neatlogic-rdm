@@ -35,6 +35,8 @@ public interface IssueMapper {
 
     Long getRelIssueIdBySourceIssueId(@Param("issueId") Long issueId, @Param("relType") String relType, @Param("direction") String direction, @Param("appId") Long appId, @Param("sourceIssueId") Long sourceIssueId);
 
+    List<IssueCopyRelVo> searchIssueCopyRelBySourceIssueId(Long sourceIssueId);
+
     int checkIssueIsFavorite(@Param("issueId") Long issueId, @Param("userId") String userId);
 
     List<ProjectVo> getProjectIssueCountByUserId(IssueConditionVo issueConditionVo);
@@ -67,7 +69,9 @@ public interface IssueMapper {
 
     int searchIssueCount(IssueVo issueVo);
 
-    void updateIssueAttr(IssueVo issueVo);
+    int checkIssueAttrExists(IssueVo issueVo);
+
+    int updateIssueAttr(IssueVo issueVo);
 
     void deleteIssueByAppId(AppVo appVo);
 

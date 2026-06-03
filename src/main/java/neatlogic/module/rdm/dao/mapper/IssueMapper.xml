@@ -113,6 +113,60 @@
         limit 1
     </select>
 
+    <select id="searchIssueCopyRelBySourceIssueId" parameterType="java.lang.Long" resultType="neatlogic.framework.rdm.dto.IssueCopyRelVo">
+        select ri.id,
+               ri.name,
+               ri.source_issue_id as sourceIssueId,
+               ri.app_id          as appId,
+               ra.app_type        as appType,
+               ra.project_id      as projectId,
+               ri.status,
+               ras.name           as statusName,
+               ras.label          as statusLabel,
+               ras.color          as statusColor,
+               rir.rel_type       as relType,
+               case
+                   when ri.id = rir.from_issue_id then 'from'
+                   when ri.id = rir.to_issue_id then 'to'
+                   else null
+                   end            as direction,
+               case
+                   when ri.id = rir.from_issue_id then rir.to_issue_id
+                   when ri.id = rir.to_issue_id then rir.from_issue_id
+                   else null
+                   end            as relIssueId,
+               case
+                   when ri.id = rir.from_issue_id then to_issue.name
+                   when ri.id = rir.to_issue_id then from_issue.name
+                   else null
+                   end            as relIssueName,
+               case
+                   when ri.id = rir.from_issue_id then rir.to_app_id
+                   when ri.id = rir.to_issue_id then rir.from_app_id
+                   else null
+                   end            as relAppId,
+               case
+                   when ri.id = rir.from_issue_id then to_app.app_type
+                   when ri.id = rir.to_issue_id then from_app.app_type
+                   else null
+                   end            as relAppType,
+               case
+                   when ri.id = rir.from_issue_id then to_app.project_id
+                   when ri.id = rir.to_issue_id then from_app.project_id
+                   else null
+                   end            as relProjectId
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_status ras on ri.status = ras.id
+                 left join rdm_issue_rel rir on ri.id = rir.from_issue_id or ri.id = rir.to_issue_id
+                 left join rdm_issue from_issue on rir.from_issue_id = from_issue.id
+                 left join rdm_issue to_issue on rir.to_issue_id = to_issue.id
+                 left join rdm_app from_app on rir.from_app_id = from_app.id
+                 left join rdm_app to_app on rir.to_app_id = to_app.id
+        where ri.source_issue_id = #{value}
+        order by ri.id desc
+    </select>
+
     <select id="checkIssueIsFavorite" resultType="int">
         select count(1)
         from rdm_favoriteissue
@@ -453,6 +507,12 @@
         </if>
         x.issue_id as issueId
         from ${tableName} x where x.issue_id = #{id}
+    </select>
+
+    <select id="checkIssueAttrExists" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="int">
+        select count(1)
+        from ${tableName}
+        where issue_id = #{id}
     </select>
 
     <select id="searchIssueCount" parameterType="neatlogic.framework.rdm.dto.IssueConditionVo" resultType="int">

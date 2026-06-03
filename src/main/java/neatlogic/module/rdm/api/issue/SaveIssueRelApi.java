@@ -22,6 +22,7 @@ import neatlogic.framework.rdm.dto.IssueRelVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.enums.IssueRelDirection;
 import neatlogic.framework.rdm.enums.IssueRelType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -41,8 +42,6 @@ import javax.annotation.Resource;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueRelApi extends PrivateApiComponentBase {
-    private static final String TESTCASE_APP_TYPE = "testcase";
-
     @Resource
     private IssueMapper issueMapper;
 
@@ -80,7 +79,7 @@ public class SaveIssueRelApi extends PrivateApiComponentBase {
         String relType = paramObj.getString("relType");
         for (int i = 0; i < idList.size(); i++) {
             Long targetIssueId = idList.getLong(i);
-            if (appVo != null && TESTCASE_APP_TYPE.equals(appVo.getType())) {
+            if (appVo != null && AppTypeManager.getNeedCopyOnRel(appVo.getType())) {
                 Long existingCopyId = issueMapper.getRelIssueIdBySourceIssueId(id, relType, direction, appId, targetIssueId);
                 if (existingCopyId != null) {
                     continue;

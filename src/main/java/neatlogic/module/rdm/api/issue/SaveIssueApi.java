@@ -18,12 +18,15 @@ import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.exception.type.ParamIrregularException;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
+import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
@@ -48,9 +51,6 @@ import java.util.List;
 @OperationType(type = OperationTypeEnum.UPDATE)
 @Transactional
 public class SaveIssueApi extends PrivateApiComponentBase {
-    private static final String TESTCASE_APP_TYPE = "testcase";
-
-
     @Resource
     private AttrMapper attrMapper;
     @Resource
@@ -110,14 +110,19 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             @Param(name = "relType", type = ApiParamType.ENUM, member = IssueRelType.class, desc = "common.reltype"),
             @Param(name = "parentId", type = ApiParamType.LONG, desc = "term.rdm.parenttaskid"),
             @Param(name = "appId", type = ApiParamType.LONG, desc = "nmraa.getappapi.input.param.desc", isRequired = true),
-            @Param(name = "name", type = ApiParamType.STRING, isRequired = true, maxLength = 50, desc = "nmrai.saveissueapi.input.param.desc.name"),
+            @Param(name = "name", type = ApiParamType.STRING, maxLength = 50, desc = "nmrai.saveissueapi.input.param.desc.name"),
             @Param(name = "priority", type = ApiParamType.LONG, desc = "common.priority"),
             @Param(name = "iteration", type = ApiParamType.LONG, desc = "common.iteration"),
             @Param(name = "catalog", type = ApiParamType.LONG, desc = "common.catalog"),
             @Param(name = "tagList", type = ApiParamType.JSONARRAY, desc = "common.tag"),
             @Param(name = "status", type = ApiParamType.LONG, desc = "common.status"),
+            @Param(name = "startDate", type = ApiParamType.STRING, desc = "term.rdm.startdate"),
+            @Param(name = "endDate", type = ApiParamType.STRING, desc = "term.rdm.enddate"),
+            @Param(name = "timecost", type = ApiParamType.INTEGER, desc = "term.rdm.plantimecost"),
+            @Param(name = "content", type = ApiParamType.STRING, desc = "common.content"),
             @Param(name = "attrList", type = ApiParamType.JSONARRAY, desc = "nmrai.saveissueapi.input.param.desc.attrlist"),
             @Param(name = "userIdList", type = ApiParamType.JSONARRAY, desc = "common.userlist"),
+            @Param(name = "copyIssueIdList", type = ApiParamType.JSONARRAY, desc = "副本issue id列表"),
             @Param(name = "comment", type = ApiParamType.STRING, desc = "common.comment")})
     @Output({@Param(name = "id", type = ApiParamType.LONG, desc = "term.rdm.issueid")})
     @ResubmitInterval
@@ -130,31 +135,20 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         }
         AppVo appVo = appMapper.getAppById(appId);
         IssueVo issueVo = JSON.toJavaObject(paramObj, IssueVo.class);
-        if (CollectionUtils.isNotEmpty(issueVo.getAttrList())) {
-            for (IssueAttrVo attr : issueVo.getAttrList()) {
-                if (attr.getAttrId() == null && StringUtils.isNotBlank(attr.getAttrName())) {
-                    Long attrId = attrMapper.getAttrIdByAppIdAndName(issueVo.getAppId(), attr.getAttrName());
-                    if (attrId != null) {
-                        attr.setAttrId(attrId);
-                    } else {
-                        throw new AppAttrNotFoundException(attr.getAttrName());
-                    }
-                }
-            }
-        }
+        issueVo.setSubmittedFieldList(getSubmittedFieldList(paramObj));
+        prepareAttr(issueVo);
         issueVo.setCreateUser(UserContext.get().getUserUuid(true));
         issueVo.formatAttr();
         Long id = paramObj.getLong("id");
-        List<AppAttrVo> appAttrList = attrMapper.getAttrByAppId(issueVo.getAppId());
-        //补充页面没有提供的自定义属性
-        for (AppAttrVo appAttrVo : appAttrList) {
-            if (appAttrVo.getIsPrivate().equals(0)) {
-                if (issueVo.getAttr(appAttrVo.getId()) == null) {
-                    issueVo.addAttr(new IssueAttrVo(appAttrVo.getId(), issueVo.getId(), appAttrVo.getType(), appAttrVo.getConfig()));
-                } else {
-                    issueVo.getAttr(appAttrVo.getId()).setAttrType(appAttrVo.getType()).setConfig(appAttrVo.getConfig());
-                }
+        IssueVo oldIssue = null;
+        if (id != null) {
+            oldIssue = issueService.getIssueById(id);
+            if (oldIssue == null) {
+                throw new IssueNotFoundException(id);
             }
+            mergeMissingIssueField(paramObj, issueVo, oldIssue);
+        } else if (StringUtils.isBlank(issueVo.getName())) {
+            throw new ParamIrregularException("name");
         }
 
         //自动替换关系配置中的处理人
@@ -184,15 +178,16 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long fromId = issueVo.getFromId();
         Long toId = issueVo.getToId();
         String relType = StringUtils.isNotBlank(issueVo.getRelType()) ? issueVo.getRelType() : IssueRelType.EXTEND.getValue();
-        boolean needTestcaseCopyRel = appVo != null && TESTCASE_APP_TYPE.equals(appVo.getType()) && (fromId != null || toId != null);
-        if (needTestcaseCopyRel) {
-            // 测试用例在需求/测试计划中新增时，先保存用例库原用例，再用副本承载上下文快照。
+        boolean needCopyRel = appVo != null && AppTypeManager.getNeedCopyOnRel(appVo.getType()) && (fromId != null || toId != null);
+        if (needCopyRel) {
+            // 开启副本能力的应用在上下文中新增时，先保存原件，再用副本承载上下文快照。
             issueVo.setFromId(null);
             issueVo.setToId(null);
             issueVo.setRelType(null);
         }
+        issueVo.setCopyIssueIdList(getCopyIssueIdList(paramObj));
         issueService.saveIssue(issueVo);
-        if (needTestcaseCopyRel) {
+        if (needCopyRel) {
             IssueVo copyIssue = issueService.copyIssue(issueVo.getId());
             IssueRelVo issueRelVo = new IssueRelVo();
             issueRelVo.setRelType(relType);
@@ -212,6 +207,85 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             issueMapper.insertIssueRel(issueRelVo);
         }
         return issueVo.getId();
+    }
+
+    private void prepareAttr(IssueVo issueVo) {
+        if (CollectionUtils.isEmpty(issueVo.getAttrList())) {
+            return;
+        }
+        for (IssueAttrVo attr : issueVo.getAttrList()) {
+            if (attr.getAttrId() == null && StringUtils.isNotBlank(attr.getAttrName())) {
+                Long attrId = attrMapper.getAttrIdByAppIdAndName(issueVo.getAppId(), attr.getAttrName());
+                if (attrId != null) {
+                    attr.setAttrId(attrId);
+                } else {
+                    throw new AppAttrNotFoundException(attr.getAttrName());
+                }
+            }
+            AppAttrVo appAttrVo = attrMapper.getAttrById(attr.getAttrId());
+            if (appAttrVo == null || !issueVo.getAppId().equals(appAttrVo.getAppId())) {
+                throw new AppAttrNotFoundException(attr.getAttrId());
+            }
+            attr.setAttrType(appAttrVo.getType()).setConfig(appAttrVo.getConfig());
+        }
+    }
+
+    private void mergeMissingIssueField(JSONObject paramObj, IssueVo issueVo, IssueVo oldIssue) {
+        if (oldIssue == null) {
+            return;
+        }
+        if (!paramObj.containsKey("name")) {
+            issueVo.setName(oldIssue.getName());
+        }
+        if (!paramObj.containsKey("priority")) {
+            issueVo.setPriority(oldIssue.getPriority());
+        }
+        if (!paramObj.containsKey("iteration")) {
+            issueVo.setIteration(oldIssue.getIteration());
+        }
+        if (!paramObj.containsKey("status")) {
+            issueVo.setStatus(oldIssue.getStatus());
+        }
+        if (!paramObj.containsKey("catalog")) {
+            issueVo.setCatalog(oldIssue.getCatalog());
+        }
+        if (!paramObj.containsKey("startDate")) {
+            issueVo.setStartDate(oldIssue.getStartDate());
+        }
+        if (!paramObj.containsKey("endDate")) {
+            issueVo.setEndDate(oldIssue.getEndDate());
+        }
+        if (!paramObj.containsKey("content")) {
+            issueVo.setContent(oldIssue.getContent());
+        }
+        if (!paramObj.containsKey("timecost")) {
+            issueVo.setTimecost(oldIssue.getTimecost());
+        }
+    }
+
+    private List<String> getSubmittedFieldList(JSONObject paramObj) {
+        List<String> submittedFieldList = new ArrayList<>();
+        String[] fieldArray = new String[]{"name", "priority", "iteration", "catalog", "tagList", "startDate", "endDate", "timecost", "content", "userIdList", "attrList"};
+        for (String field : fieldArray) {
+            if (paramObj.containsKey(field)) {
+                submittedFieldList.add(field);
+            }
+        }
+        return submittedFieldList;
+    }
+
+    private List<Long> getCopyIssueIdList(JSONObject paramObj) {
+        JSONArray copyIssueIdArray = paramObj.getJSONArray("copyIssueIdList");
+        if (CollectionUtils.isNotEmpty(copyIssueIdArray)) {
+            List<Long> copyIssueIdList = copyIssueIdArray.toJavaList(Long.class);
+            for (Long copyIssueId : copyIssueIdList) {
+                if (copyIssueId == null || copyIssueId <= 0) {
+                    throw new ParamIrregularException("copyIssueIdList");
+                }
+            }
+            return copyIssueIdList;
+        }
+        return new ArrayList<>();
     }
 
     @Override

@@ -12,22 +12,18 @@
 
 package neatlogic.module.rdm.service;
 
-import neatlogic.framework.rdm.dto.IssueCopyRelVo;
-import neatlogic.framework.rdm.dto.IssueVo;
-import org.springframework.transaction.annotation.Transactional;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 
-public interface IssueService {
-    IssueVo getIssueById(Long issueId);
+public interface IssueExcelService {
 
-    IssueVo getIssueByIdForAudit(Long issueId);
+    void exportIssue(JSONObject paramObj, HttpServletResponse response) throws Exception;
 
-    @Transactional
-    void saveIssue(IssueVo issueVo);
+    void downloadImportTemplate(Long appId, HttpServletResponse response) throws Exception;
 
-    @Transactional
-    IssueVo copyIssue(Long sourceIssueId);
+    JSONObject previewImportIssue(Long appId, MultipartFile multipartFile) throws Exception;
 
-    List<IssueCopyRelVo> searchIssueCopyRelBySourceIssueId(Long sourceIssueId);
+    JSONObject importIssue(Long appId, MultipartFile multipartFile) throws Exception;
 }
