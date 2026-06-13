@@ -59,6 +59,14 @@ public interface IssueMapper {
 
     List<IssueCountVo> getIssueCountByProjectId(IssueCountVo issueCountVo);
 
+    HashMap<String, Object> getIssueOverviewSummary(IssueVo issueVo);
+
+    List<HashMap<String, Object>> getIssueOverviewStatusList(IssueVo issueVo);
+
+    List<HashMap<String, Object>> getIssueOverviewPriorityList(IssueVo issueVo);
+
+    List<HashMap<String, Object>> getIssueOverviewTrendList(IssueVo issueVo);
+
     List<IssueVo> searchIssue(IssueVo issueVo);
 
     List<Long> searchIssueId(IssueVo issueVo);

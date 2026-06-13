@@ -400,6 +400,111 @@
         group by `date`
     </select>
 
+    <sql id="issueOverviewLeftJoin">
+        left join rdm_app_catalog rac on ri.catalog = rac.id
+    </sql>
+
+    <sql id="issueOverviewJoinFilter">
+        ri.app_id = #{appId}
+        and ra.project_id = #{projectId}
+        <if test="catalogLft != null and catalogRht != null">
+            and rac.lft &gt;= #{catalogLft}
+            and rac.rht &lt;= #{catalogRht}
+        </if>
+    </sql>
+
+    <select id="getIssueOverviewSummary" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.util.HashMap">
+        select count(ri.id) as totalCount,
+               ifnull(sum(case when ri.end_date &lt; NOW() then 1 else 0 end), 0) as overdueCount,
+               ifnull(sum(case when ras.is_end = 1 then 1 else 0 end), 0) as doneCount,
+               ifnull(sum(case
+                              when ri.priority in (
+                                  select id
+                                  from (
+                                      select id
+                                      from rdm_priority
+                                      order by sort
+                                      limit 2
+                                  ) p
+                              ) and ifnull(ras.is_end, 0) != 1 then 1
+                              else 0
+                   end), 0) as highRiskCount
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_status ras on ri.status = ras.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where
+        <include refid="issueOverviewJoinFilter"></include>
+    </select>
+
+    <select id="getIssueOverviewStatusList" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.util.HashMap">
+        select ras.id,
+               ras.name,
+               ras.label,
+               ras.color,
+               ras.is_end as isEnd,
+               ras.sort,
+               <choose>
+                   <when test="catalogLft != null and catalogRht != null">
+                       ifnull(sum(case when rac.lft &gt;= #{catalogLft} and rac.rht &lt;= #{catalogRht} then 1 else 0 end), 0)
+                   </when>
+                   <otherwise>
+                       count(ri.id)
+                   </otherwise>
+               </choose>
+               as issueCount
+        from rdm_app_status ras
+                 left join rdm_issue ri on ri.status = ras.id and ri.app_id = #{appId}
+                 left join rdm_app ra on ri.app_id = ra.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where ras.app_id = #{appId}
+        <if test="projectId != null">
+            and (ra.project_id = #{projectId} or ri.id is null)
+        </if>
+        group by ras.id, ras.name, ras.label, ras.color, ras.is_end, ras.sort
+        order by ras.sort
+    </select>
+
+    <select id="getIssueOverviewPriorityList" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.util.HashMap">
+        select rp.id,
+               rp.name,
+               rp.color,
+               rp.sort,
+               <choose>
+                   <when test="catalogLft != null and catalogRht != null">
+                       ifnull(sum(case when rac.lft &gt;= #{catalogLft} and rac.rht &lt;= #{catalogRht} then 1 else 0 end), 0)
+                   </when>
+                   <otherwise>
+                       count(ri.id)
+                   </otherwise>
+               </choose>
+               as issueCount
+        from rdm_priority rp
+                 left join rdm_issue ri on ri.priority = rp.id and ri.app_id = #{appId}
+                 left join rdm_app ra on ri.app_id = ra.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where 1 = 1
+        <if test="projectId != null">
+            and (ra.project_id = #{projectId} or ri.id is null)
+        </if>
+        group by rp.id, rp.name, rp.color, rp.sort
+        order by rp.sort
+    </select>
+
+    <select id="getIssueOverviewTrendList" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.util.HashMap">
+        select DATE_FORMAT(ri.create_date, '%Y-%m') as month,
+               count(ri.id) as totalCount,
+               ifnull(sum(case when ri.end_date &lt; NOW() then 1 else 0 end), 0) as overdueCount
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where
+        <include refid="issueOverviewJoinFilter"></include>
+          and ri.create_date &gt;= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
+        group by DATE_FORMAT(ri.create_date, '%Y-%m')
+        order by month
+    </select>
+
 
     <select id="deleteIssueByAppId" parameterType="neatlogic.framework.rdm.dto.AppVo">
         delete a,b,ria,ric,rif,rirf,rit,rict
