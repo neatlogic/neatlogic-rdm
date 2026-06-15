@@ -61,11 +61,21 @@ public interface IssueMapper {
 
     HashMap<String, Object> getIssueOverviewSummary(IssueVo issueVo);
 
+    Integer getIssueOverviewTotalCount(IssueVo issueVo);
+
+    Integer getIssueOverviewOverdueCount(IssueVo issueVo);
+
+    Integer getIssueOverviewDoneCount(IssueVo issueVo);
+
+    Integer getIssueOverviewHighRiskCount(IssueVo issueVo);
+
     List<HashMap<String, Object>> getIssueOverviewStatusList(IssueVo issueVo);
 
     List<HashMap<String, Object>> getIssueOverviewPriorityList(IssueVo issueVo);
 
     List<HashMap<String, Object>> getIssueOverviewTrendList(IssueVo issueVo);
+
+    List<HashMap<String, Object>> getIssueOverviewCustomAttrValueList(@Param("issueVo") IssueVo issueVo, @Param("tableName") String tableName, @Param("attrId") Long attrId);
 
     List<IssueVo> searchIssue(IssueVo issueVo);
 

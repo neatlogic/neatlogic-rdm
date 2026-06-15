@@ -18,17 +18,19 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
+import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.rdm.enums.AppStatAttrType;
 import neatlogic.framework.rdm.enums.AttrType;
-import neatlogic.framework.rdm.exception.AppAttrNameIsExistsException;
-import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
-import neatlogic.framework.rdm.exception.InsertAttrToSchemaException;
+import neatlogic.framework.rdm.exception.*;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.framework.util.RegexUtils;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectSchemaMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,8 @@ import javax.annotation.Resource;
 public class SaveAttrApi extends PrivateApiComponentBase {
     @Resource
     private AttrMapper attrMapper;
+    @Resource
+    private AppMapper appMapper;
 
 
     @Resource
@@ -61,6 +65,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
             @Param(name = "name", type = ApiParamType.REGEX, rule = RegexUtils.ENCHAR, desc = "common.uniquename", isRequired = true, maxLength = 50),
             @Param(name = "label", type = ApiParamType.STRING, desc = "common.name", isRequired = true, maxLength = 50),
             @Param(name = "type", type = ApiParamType.ENUM, desc = "common.type", isRequired = true, member = AttrType.class),
+            @Param(name = "statKey", type = ApiParamType.STRING, desc = "term.rdm.statkey", maxLength = 100),
             @Param(name = "isActive", type = ApiParamType.INTEGER, defaultValue = "0", desc = "common.isactive", rule = "1,0"),
             @Param(name = "isRequired", type = ApiParamType.INTEGER, defaultValue = "0", desc = "common.isrequired", rule = "1,0"),
             @Param(name = "description", type = ApiParamType.STRING, desc = "common.description", maxLength = 500)
@@ -74,6 +79,7 @@ public class SaveAttrApi extends PrivateApiComponentBase {
         if (attrMapper.checkAttrNameIsExists(appAttrVo) > 0) {
             throw new AppAttrNameIsExistsException(appAttrVo.getName());
         }
+        validateStatKey(appAttrVo);
         Long id = paramObj.getLong("id");
         if (id == null) {
             Integer maxSort = attrMapper.getMaxAppAttrSortByAppId(appAttrVo.getAppId());
@@ -92,6 +98,27 @@ public class SaveAttrApi extends PrivateApiComponentBase {
             attrMapper.updateAppAttr(appAttrVo);
         }
         return appAttrVo.getId();
+    }
+
+    private void validateStatKey(AppAttrVo appAttrVo) {
+        if (StringUtils.isBlank(appAttrVo.getStatKey())) {
+            appAttrVo.setStatKey(null);
+            return;
+        }
+        AppVo appVo = appMapper.getAppById(appAttrVo.getAppId());
+        AppStatAttrType statAttrType = AppStatAttrType.get(appAttrVo.getStatKey());
+        if (appVo == null || statAttrType == null || !statAttrType.getAppType().equalsIgnoreCase(appVo.getType())) {
+            throw new AppAttrStatKeyInvalidException(appAttrVo.getStatKey());
+        }
+        if (!statAttrType.getAllowCustomAttr()) {
+            throw new AppAttrStatKeyInvalidException(appAttrVo.getStatKey());
+        }
+        if (!statAttrType.isSupportAttrType(appAttrVo.getType())) {
+            throw new AppAttrStatKeyInvalidException(appAttrVo.getStatKey());
+        }
+        if (attrMapper.checkAttrStatKeyIsExists(appAttrVo) > 0) {
+            throw new AppAttrStatKeyDuplicateException(appAttrVo.getStatKey());
+        }
     }
 
     @Override

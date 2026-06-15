@@ -40,6 +40,7 @@
             <result column="appAttrIsPrivate" property="isPrivate"/>
             <result column="appAttrConfigStr" property="configStr"/>
             <result column="appAttrIsActive" property="isActive"/>
+            <result column="appAttrStatKey" property="statKey"/>
         </association>
     </resultMap>
 
@@ -65,7 +66,8 @@
         raa.sort as appAttrSort,
         raa.is_private AS appAttrIsPrivate,
         raa.config AS appAttrConfigStr,
-        raa.is_active AS appAttrIsActive
+        raa.is_active AS appAttrIsActive,
+        raa.stat_key AS appAttrStatKey
         from rdm_issue_audit ria
         left join rdm_app_attr raa on ria.attr_id = raa.id
         <include refid="searchIssueSql"></include>

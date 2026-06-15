@@ -20,11 +20,15 @@ import java.util.List;
 public interface AttrMapper {
     int checkAttrNameIsExists(AppAttrVo objectAttrVo);
 
+    int checkAttrStatKeyIsExists(AppAttrVo appAttrVo);
+
     List<AppAttrVo> getAttrByAppId(Long appId);
 
     AppAttrVo getAttrById(Long attrId);
 
     Long getAttrIdByAppIdAndName(@Param("appId") Long appId, @Param("name") String name);
+
+    AppAttrVo getAttrByAppIdAndStatKey(@Param("appId") Long appId, @Param("statKey") String statKey);
 
     Integer getMaxAppAttrSortByAppId(Long appId);
 

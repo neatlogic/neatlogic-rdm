@@ -128,7 +128,8 @@
                b.is_required as attrIsRequired,
                b.sort        as attrSort,
                b.is_private  as attrIsPrivate,
-               b.config     as attrConfigStr,
+               b.config      as attrConfigStr,
+               b.stat_key    as attrStatKey,
                ras.id       as statusId,
                ras.is_start as statusIsStart,
                ras.is_end   as statusIsEnd,
@@ -157,7 +158,8 @@
                b.is_required as attrIsRequired,
                b.sort        as attrSort,
                b.is_private  as attrIsPrivate,
-               b.config      as attrConfigStr
+               b.config      as attrConfigStr,
+               b.stat_key    as attrStatKey
         from rdm_app a
                  left join rdm_app_attr b
                            on a.id = b.app_id
@@ -181,6 +183,7 @@
             <result property="sort" column="attrSort"/>
             <result property="isPrivate" column="attrIsPrivate"/>
             <result property="configStr" column="attrConfigStr"/>
+            <result property="statKey" column="attrStatKey"/>
         </collection>
         <collection property="statusList" ofType="neatlogic.framework.rdm.dto.AppStatusVo">
             <id property="id" column="statusId"/>
@@ -207,7 +210,8 @@
                b.is_required as attrIsRequired,
                b.sort        as attrSort,
                b.is_private  as attrIsPrivate,
-               b.config      as attrConfigStr
+               b.config      as attrConfigStr,
+               b.stat_key    as attrStatKey
         from (select distinct ra.*
               from rdm_app ra
                        join rdm_issue ri on ra.id = ri.app_id
@@ -233,7 +237,8 @@
         b.is_required as attrIsRequired,
         b.sort as attrSort,
         b.is_private as attrIsPrivate,
-        b.config as attrConfigStr
+        b.config as attrConfigStr,
+        b.stat_key as attrStatKey
         from rdm_app a
         left join rdm_app_attr b
         on a.id = b.app_id

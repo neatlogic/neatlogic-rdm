@@ -437,6 +437,58 @@
         <include refid="issueOverviewJoinFilter"></include>
     </select>
 
+    <select id="getIssueOverviewTotalCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.lang.Integer">
+        select count(ri.id)
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where
+        <include refid="issueOverviewJoinFilter"></include>
+    </select>
+
+    <select id="getIssueOverviewOverdueCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.lang.Integer">
+        select count(ri.id)
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_status ras on ri.status = ras.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where
+        <include refid="issueOverviewJoinFilter"></include>
+          and ri.end_date &lt; NOW()
+          and ifnull(ras.is_end, 0) != 1
+    </select>
+
+    <select id="getIssueOverviewDoneCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.lang.Integer">
+        select count(ri.id)
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_status ras on ri.status = ras.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where
+        <include refid="issueOverviewJoinFilter"></include>
+          and ras.is_end = 1
+    </select>
+
+    <select id="getIssueOverviewHighRiskCount" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.lang.Integer">
+        select count(ri.id)
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_status ras on ri.status = ras.id
+                 <include refid="issueOverviewLeftJoin"></include>
+        where
+        <include refid="issueOverviewJoinFilter"></include>
+          and ri.priority in (
+              select id
+              from (
+                  select id
+                  from rdm_priority
+                  order by sort
+                  limit 2
+              ) p
+          )
+          and ifnull(ras.is_end, 0) != 1
+    </select>
+
     <select id="getIssueOverviewStatusList" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.util.HashMap">
         select ras.id,
                ras.name,
@@ -494,15 +546,33 @@
     <select id="getIssueOverviewTrendList" parameterType="neatlogic.framework.rdm.dto.IssueVo" resultType="java.util.HashMap">
         select DATE_FORMAT(ri.create_date, '%Y-%m') as month,
                count(ri.id) as totalCount,
-               ifnull(sum(case when ri.end_date &lt; NOW() then 1 else 0 end), 0) as overdueCount
+               ifnull(sum(case when ri.end_date &lt; NOW() and ifnull(ras.is_end, 0) != 1 then 1 else 0 end), 0) as overdueCount
         from rdm_issue ri
                  join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_status ras on ri.status = ras.id
                  <include refid="issueOverviewLeftJoin"></include>
         where
         <include refid="issueOverviewJoinFilter"></include>
           and ri.create_date &gt;= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 6 MONTH), '%Y-%m-01')
         group by DATE_FORMAT(ri.create_date, '%Y-%m')
         order by month
+    </select>
+
+    <select id="getIssueOverviewCustomAttrValueList" resultType="java.util.HashMap">
+        select ri.id as issueId,
+               x.`${attrId}` as value
+        from rdm_issue ri
+                 join rdm_app ra on ri.app_id = ra.id
+                 left join rdm_app_catalog rac on ri.catalog = rac.id
+                 left join ${tableName} x on ri.id = x.issue_id
+        where ri.app_id = #{issueVo.appId}
+          and ra.project_id = #{issueVo.projectId}
+        <if test="issueVo.catalogLft != null and issueVo.catalogRht != null">
+          and rac.lft &gt;= #{issueVo.catalogLft}
+          and rac.rht &lt;= #{issueVo.catalogRht}
+        </if>
+          and x.`${attrId}` is not null
+          and x.`${attrId}` != ''
     </select>
 
 

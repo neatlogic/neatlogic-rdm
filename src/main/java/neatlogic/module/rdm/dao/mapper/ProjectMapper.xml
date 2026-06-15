@@ -105,7 +105,8 @@
                raa.is_required  as isRequired,
                raa.sort,
                raa.is_private   as isPrivate,
-               raa.config       as configStr
+               raa.config       as configStr,
+               raa.stat_key     as statKey
         from rdm_app_attr raa
                  join rdm_app ra on raa.app_id = ra.id
         where ra.project_id = #{value}

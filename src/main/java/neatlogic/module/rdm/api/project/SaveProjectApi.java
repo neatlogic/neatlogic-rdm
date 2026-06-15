@@ -41,6 +41,7 @@ import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
 import neatlogic.module.rdm.service.ProjectService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -182,6 +183,9 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                             }
                             if (appAttrVo.getIsPrivate() == null) {
                                 appAttrVo.setIsPrivate(0);
+                            }
+                            if (StringUtils.isBlank(appAttrVo.getStatKey())) {
+                                appAttrVo.setStatKey(null);
                             }
                             //如果是内置属性检查是否还存在
                             if (appAttrVo.getIsPrivate().equals(0) || (appAttrVo.getIsPrivate().equals(1) && AttrType.get(appAttrVo.getType()) != null)) {
