@@ -24,7 +24,6 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
-import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
@@ -35,6 +34,7 @@ import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.service.IssueRelStrategyService;
 import neatlogic.module.rdm.service.IssueService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -61,6 +61,8 @@ public class SaveIssueApi extends PrivateApiComponentBase {
 
     @Resource
     private IssueService issueService;
+    @Resource
+    private IssueRelStrategyService issueRelStrategyService;
 
 
     @Override
@@ -178,7 +180,16 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         Long fromId = issueVo.getFromId();
         Long toId = issueVo.getToId();
         String relType = StringUtils.isNotBlank(issueVo.getRelType()) ? issueVo.getRelType() : IssueRelType.EXTEND.getValue();
-        boolean needCopyRel = appVo != null && AppTypeManager.getNeedCopyOnRel(appVo.getType()) && (fromId != null || toId != null);
+        IssueVo fromIssue = null;
+        IssueVo toIssue = null;
+        boolean needCopyRel = false;
+        if (fromId != null) {
+            fromIssue = issueMapper.getIssueById(fromId);
+            needCopyRel = fromIssue != null && issueRelStrategyService.needCopy(fromIssue.getAppId(), issueVo.getAppId(), relType);
+        } else if (toId != null) {
+            toIssue = issueMapper.getIssueById(toId);
+            needCopyRel = toIssue != null && issueRelStrategyService.needCopy(issueVo.getAppId(), toIssue.getAppId(), relType);
+        }
         if (needCopyRel) {
             // 开启副本能力的应用在上下文中新增时，先保存原件，再用副本承载上下文快照。
             issueVo.setFromId(null);
@@ -192,13 +203,11 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             IssueRelVo issueRelVo = new IssueRelVo();
             issueRelVo.setRelType(relType);
             if (fromId != null) {
-                IssueVo fromIssue = issueMapper.getIssueById(fromId);
                 issueRelVo.setFromIssueId(fromIssue.getId());
                 issueRelVo.setFromAppId(fromIssue.getAppId());
                 issueRelVo.setToIssueId(copyIssue.getId());
                 issueRelVo.setToAppId(copyIssue.getAppId());
             } else {
-                IssueVo toIssue = issueMapper.getIssueById(toId);
                 issueRelVo.setToIssueId(toIssue.getId());
                 issueRelVo.setToAppId(toIssue.getAppId());
                 issueRelVo.setFromIssueId(copyIssue.getId());

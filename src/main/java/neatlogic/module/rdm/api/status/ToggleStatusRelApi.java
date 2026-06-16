@@ -16,8 +16,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.exception.type.ParamIrregularException;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppStatusRelVo;
+import neatlogic.framework.rdm.dto.AppStatusVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -55,6 +57,7 @@ public class ToggleStatusRelApi extends PrivateApiComponentBase {
         String action = paramObj.getString("action");
         AppStatusRelVo appStatusRelVo = JSON.toJavaObject(paramObj, AppStatusRelVo.class);
         if (action.equals("add")) {
+            validateScope(appStatusRelVo);
             appMapper.insertAppStatusRel(appStatusRelVo);
             return appStatusRelVo.getId();
         } else if (action.equals("delete")) {
@@ -65,6 +68,22 @@ public class ToggleStatusRelApi extends PrivateApiComponentBase {
             }
         }
         return null;
+    }
+
+    private void validateScope(AppStatusRelVo appStatusRelVo) {
+        if (appStatusRelVo.getFromStatusId() == null || appStatusRelVo.getFromStatusId().equals(0L)) {
+            return;
+        }
+        AppStatusVo fromStatus = appMapper.getStatusById(appStatusRelVo.getFromStatusId());
+        AppStatusVo toStatus = appMapper.getStatusById(appStatusRelVo.getToStatusId());
+        if (fromStatus == null || toStatus == null) {
+            return;
+        }
+        String fromScope = fromStatus.getScope();
+        String toScope = toStatus.getScope();
+        if (!"all".equals(fromScope) && !"all".equals(toScope) && !fromScope.equals(toScope)) {
+            throw new ParamIrregularException("toStatusId");
+        }
     }
 
     @Override

@@ -25,7 +25,9 @@ import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,6 +40,8 @@ public class ListStatusApi extends PrivateApiComponentBase {
 
     @Resource
     private AppMapper appMapper;
+    @Resource
+    private IssueMapper issueMapper;
 
     @Override
     public String getName() {
@@ -53,12 +57,16 @@ public class ListStatusApi extends PrivateApiComponentBase {
             @Param(name = "status", type = ApiParamType.LONG, desc = "nmras.liststatusapi.input.param.desc.status"),
             @Param(name = "needIssueCount", type = ApiParamType.INTEGER, rule = "0,1", desc = "nmras.liststatusapi.input.param.desc.needissuecount"),
             @Param(name = "fromId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.fromid"),
-            @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid")})
+            @Param(name = "toId", type = ApiParamType.LONG, desc = "nmrai.searchissueapi.input.param.desc.toid"),
+            @Param(name = "id", type = ApiParamType.LONG, desc = "issue id"),
+            @Param(name = "sourceIssueId", type = ApiParamType.LONG, desc = "来源issue id"),
+            @Param(name = "statusScope", type = ApiParamType.ENUM, rule = "original,copy", desc = "状态作用范围")})
     @Output({@Param(explode = AppStatusVo[].class)})
     @Description(desc = "nmras.liststatusapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         IssueVo issueVo = JSON.toJavaObject(paramObj, IssueVo.class);
+        setStatusScope(issueVo, paramObj);
         /*AppStatusVo startStatus = null;
         if (status != null && status.equals(0L)) {
             List<AppStatusVo> statusList = appMapper.getStatusByAppId(issueVo);
@@ -107,6 +115,24 @@ public class ListStatusApi extends PrivateApiComponentBase {
             statusList.add(0, startStatus);
         }*/
         return statusList;
+    }
+
+    private void setStatusScope(IssueVo issueVo, JSONObject paramObj) {
+        if (StringUtils.isNotBlank(issueVo.getStatusScope())) {
+            return;
+        }
+        Long sourceIssueId = paramObj.getLong("sourceIssueId");
+        if (sourceIssueId != null) {
+            issueVo.setStatusScope("copy");
+            return;
+        }
+        Long id = paramObj.getLong("id");
+        if (id != null) {
+            IssueVo oldIssue = issueMapper.getIssueById(id);
+            if (oldIssue != null) {
+                issueVo.setStatusScope(oldIssue.getSourceIssueId() == null ? "original" : "copy");
+            }
+        }
     }
 
     @Override

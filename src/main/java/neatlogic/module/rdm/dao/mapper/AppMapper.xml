@@ -56,6 +56,7 @@
                label,
                sort,
                color,
+               scope,
                is_start as isStart,
                is_end   as isEnd
         FROM rdm_app_status
@@ -71,6 +72,7 @@
                label,
                sort,
                color,
+               scope,
                is_start as isStart,
                is_end   as isEnd
         FROM rdm_app_status
@@ -87,7 +89,8 @@
         a.name,
         a.label,
         a.sort,
-        a.color
+        a.color,
+        a.scope
         <if test="needIssueCount == 1">
             ,(select count(ri.id) from rdm_issue ri
             <if test="fromId != null">
@@ -106,6 +109,9 @@
             join rdm_app_status_rel b on a.id = b.to_status_id and b.from_status_id = #{status} and b.app_id = #{appId}
         </if>
         WHERE a.app_id = #{appId}
+        <if test="statusScope != null and statusScope != ''">
+            and a.scope in ('all', #{statusScope})
+        </if>
         <if test="status != null">
             and a.id != #{status}
         </if>
@@ -135,7 +141,8 @@
                ras.is_end   as statusIsEnd,
                ras.name     as statusName,
                ras.label    as statusLabel,
-               ras.color    as statusColor
+               ras.color    as statusColor,
+               ras.scope    as statusScope
         from rdm_app a
                  left join rdm_app_attr b on a.id = b.app_id and b.is_active = 1
                  left join rdm_app_status ras on a.id = ras.app_id
@@ -189,6 +196,7 @@
             <id property="id" column="statusId"/>
             <result property="isStart" column="statusIsStart"/>
             <result property="isEnd" column="statusIsEnd"/>
+            <result property="scope" column="statusScope"/>
             <result property="name" column="statusName"/>
             <result property="label" column="statusLabel"/>
             <result property="color" column="statusColor"/>
@@ -272,13 +280,15 @@
          name,
          label,
          sort,
-         color)
+         color,
+         scope)
         values (#{id},
                 #{appId},
                 #{name},
                 #{label},
                 #{sort},
-                #{color})
+                #{color},
+                #{scope})
     </insert>
 
     <update id="updateAppStatusSort" parameterType="neatlogic.framework.rdm.dto.AppStatusVo">
@@ -305,6 +315,7 @@
         set `name`        = #{name},
             `label`       = #{label},
             `color`       = #{color},
+            `scope`       = #{scope},
             `description` = #{description}
         where `id` = #{id}
     </update>

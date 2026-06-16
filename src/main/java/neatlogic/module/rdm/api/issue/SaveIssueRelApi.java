@@ -22,7 +22,6 @@ import neatlogic.framework.rdm.dto.IssueRelVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.enums.IssueRelDirection;
 import neatlogic.framework.rdm.enums.IssueRelType;
-import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -31,6 +30,7 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.service.IssueRelStrategyService;
 import neatlogic.module.rdm.service.IssueService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +50,8 @@ public class SaveIssueRelApi extends PrivateApiComponentBase {
 
     @Resource
     private IssueService issueService;
+    @Resource
+    private IssueRelStrategyService issueRelStrategyService;
 
     @Override
     public String getName() {
@@ -77,9 +79,11 @@ public class SaveIssueRelApi extends PrivateApiComponentBase {
         String direction = paramObj.getString("direction");
         JSONArray idList = paramObj.getJSONArray("idList");
         String relType = paramObj.getString("relType");
+        Long fromAppId = direction.equals(IssueRelDirection.FROM.getValue()) ? issueVo.getAppId() : appId;
+        Long toAppId = direction.equals(IssueRelDirection.FROM.getValue()) ? appId : issueVo.getAppId();
         for (int i = 0; i < idList.size(); i++) {
             Long targetIssueId = idList.getLong(i);
-            if (appVo != null && AppTypeManager.getNeedCopyOnRel(appVo.getType())) {
+            if (appVo != null && issueRelStrategyService.needCopy(fromAppId, toAppId, relType)) {
                 Long existingCopyId = issueMapper.getRelIssueIdBySourceIssueId(id, relType, direction, appId, targetIssueId);
                 if (existingCopyId != null) {
                     continue;

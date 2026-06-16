@@ -52,6 +52,7 @@ public class SaveStatusApi extends PrivateApiComponentBase {
             @Param(name = "label", type = ApiParamType.STRING, isRequired = true, desc = "common.name"),
             @Param(name = "appId", type = ApiParamType.LONG, isRequired = true, desc = "nmraa.getappapi.input.param.desc"),
             @Param(name = "description", type = ApiParamType.STRING, desc = "common.description"),
+            @Param(name = "scope", type = ApiParamType.ENUM, rule = "original,copy,all", desc = "状态作用范围"),
             @Param(name = "color", type = ApiParamType.STRING, desc = "common.color")})
     @Output({@Param(explode = AppStatusVo.class)})
     @Description(desc = "nmras.savestatusapi.getname")

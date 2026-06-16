@@ -13,11 +13,14 @@
 package neatlogic.module.rdm.api.app;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.exception.type.ParamIrregularException;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppVo;
+import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -25,6 +28,7 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.service.IssueRelStrategyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,8 +59,41 @@ public class SaveAppConfigApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         AppVo appVo = JSON.toJavaObject(paramObj, AppVo.class);
+        validateRelStrategy(appVo);
         appMapper.saveAppConfig(appVo);
         return null;
+    }
+
+    private void validateRelStrategy(AppVo appVo) {
+        if (appVo == null || appVo.getId() == null || appVo.getConfig() == null) {
+            return;
+        }
+        AppVo oldApp = appMapper.getAppById(appVo.getId());
+        if (oldApp == null) {
+            return;
+        }
+        JSONArray relStrategyList = appVo.getConfig().getJSONArray("relStrategyList");
+        if (relStrategyList == null) {
+            return;
+        }
+        for (int i = 0; i < relStrategyList.size(); i++) {
+            JSONObject strategy = relStrategyList.getJSONObject(i);
+            if (strategy == null) {
+                throw new ParamIrregularException("relStrategyList");
+            }
+            String toAppType = strategy.getString("toAppType");
+            String relType = strategy.getString("relType");
+            String action = strategy.getString("action");
+            if (appMapper.getAppByProjectIdAndType(oldApp.getProjectId(), toAppType) == null) {
+                throw new ParamIrregularException("toAppType");
+            }
+            if (IssueRelType.getValue(relType) == null) {
+                throw new ParamIrregularException("relType");
+            }
+            if (!IssueRelStrategyService.ACTION_ORIGINAL.equals(action) && !IssueRelStrategyService.ACTION_COPY.equals(action)) {
+                throw new ParamIrregularException("action");
+            }
+        }
     }
 
     @Override

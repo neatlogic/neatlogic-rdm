@@ -343,6 +343,7 @@ public class IssueServiceImpl implements IssueService {
     private Long getCopyStatus(IssueVo sourceIssue) {
         IssueVo statusCondition = new IssueVo();
         statusCondition.setAppId(sourceIssue.getAppId());
+        statusCondition.setStatusScope("copy");
         List<AppStatusVo> statusList = appMapper.getStatusByAppId(statusCondition);
         if (CollectionUtils.isNotEmpty(statusList)) {
             Optional<AppStatusVo> startStatus = statusList.stream().filter(status -> Integer.valueOf(1).equals(status.getIsStart())).findFirst();
