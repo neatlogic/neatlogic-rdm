@@ -1,0 +1,70 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_catalog",
+  "label": "研发管理app_catalog表",
+  "description": "研发管理app_catalog表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "主键ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "唯一标识。"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "app关联ID，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "parent关联ID，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "lft",
+      "type": "int",
+      "description": "研发管理app_catalog表的lft字段。"
+    },
+    {
+      "name": "rht",
+      "type": "int",
+      "description": "研发管理app_catalog表的rht字段。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "主键索引，覆盖 id 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "普通索引，覆盖 app_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id"
+      ],
+      "description": "普通索引，覆盖 parent_id 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue_rel",
+  "label": "研发管理issue_rel表",
+  "description": "研发管理issue_rel表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "from_issue_id",
+      "type": "bigint",
+      "description": "from_issue关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "to_issue_id",
+      "type": "bigint",
+      "description": "to_issue关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "from_app_id",
+      "type": "bigint",
+      "description": "from_app关联ID，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "to_app_id",
+      "type": "bigint",
+      "description": "to_app关联ID，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "rel_type",
+      "type": "enum('extend','relative','repeat')",
+      "description": "关系，从属关系是extend，关联是relative，相同是repeat。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "from_issue_id",
+        "to_issue_id"
+      ],
+      "description": "主键索引，覆盖 from_issue_id、to_issue_id 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_from_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "from_app_id"
+      ],
+      "description": "普通索引，覆盖 from_app_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_to_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "to_app_id"
+      ],
+      "description": "普通索引，覆盖 to_app_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_to_issue_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "to_issue_id"
+      ],
+      "description": "普通索引，覆盖 to_issue_id 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_status",
+  "label": "研发管理app_status表",
+  "description": "研发管理app_status表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "主键，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "对象id，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "is_start",
+      "type": "tinyint",
+      "description": "布尔标记字段。"
+    },
+    {
+      "name": "is_end",
+      "type": "tinyint",
+      "description": "布尔标记字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(50)",
+      "description": "唯一标识。"
+    },
+    {
+      "name": "label",
+      "type": "varchar(50)",
+      "description": "名称。"
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "排序。"
+    },
+    {
+      "name": "description",
+      "type": "varchar(500)",
+      "description": "说明。"
+    },
+    {
+      "name": "color",
+      "type": "varchar(50)",
+      "description": "研发管理app_status表的color字段。"
+    },
+    {
+      "name": "scope",
+      "type": "varchar(20)",
+      "description": "状态作用范围。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "主键索引，覆盖 id 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_obejct_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "普通索引，覆盖 app_id 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}

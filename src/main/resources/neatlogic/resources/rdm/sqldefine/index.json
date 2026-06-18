@@ -1,0 +1,150 @@
+{
+  "moduleId": "rdm",
+  "tables": [
+    {
+      "name": "rdm_app",
+      "label": "研发管理app表",
+      "description": "研发管理app表，属于研发管理模块的数据表。 可用于研发管理相关的启用状态筛选、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_app_attr",
+      "label": "cmdb配置项属性表",
+      "description": "cmdb配置项属性表 可用于研发管理相关的启用状态筛选、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_app_catalog",
+      "label": "研发管理app_catalog表",
+      "description": "研发管理app_catalog表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_app_priority",
+      "label": "研发管理app_priority表",
+      "description": "研发管理app_priority表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_app_status",
+      "label": "研发管理app_status表",
+      "description": "研发管理app_status表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_app_status_rel",
+      "label": "研发管理app_status_rel表",
+      "description": "研发管理app_status_rel表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_app_usersetting",
+      "label": "研发管理app_usersetting表",
+      "description": "研发管理app_usersetting表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_dashboard",
+      "label": "仪表板表",
+      "description": "仪表板表 可用于研发管理相关的启用状态筛选、时间维度统计、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_favoriteissue",
+      "label": "研发管理favoriteissue表",
+      "description": "研发管理favoriteissue表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue",
+      "label": "研发管理issue表",
+      "description": "研发管理issue表，属于研发管理模块的数据表。 可用于研发管理相关的状态跟踪、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_audit",
+      "label": "研发管理issue_audit表",
+      "description": "研发管理issue_audit表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_comment",
+      "label": "研发管理issue_comment表",
+      "description": "研发管理issue_comment表，属于研发管理模块的数据表。 可用于研发管理相关的状态跟踪、时间维度统计、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_cost",
+      "label": "研发管理issue_cost表",
+      "description": "研发管理issue_cost表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_file",
+      "label": "研发管理issue_file表",
+      "description": "研发管理issue_file表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_rel",
+      "label": "研发管理issue_rel表",
+      "description": "研发管理issue_rel表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_tag",
+      "label": "研发管理issue_tag表",
+      "description": "研发管理issue_tag表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_user",
+      "label": "研发管理issue_user表",
+      "description": "研发管理issue_user表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_issue_webhookdata",
+      "label": "研发管理issue_webhookdata表",
+      "description": "研发管理issue_webhookdata表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_iteration",
+      "label": "研发管理iteration表",
+      "description": "研发管理iteration表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_priority",
+      "label": "研发管理priority表",
+      "description": "研发管理priority表，属于研发管理模块的数据表。 可用于研发管理相关数据的查询、筛选和报表展示。"
+    },
+    {
+      "name": "rdm_project",
+      "label": "研发管理project表",
+      "description": "研发管理project表，属于研发管理模块的数据表。 可用于研发管理相关的时间维度统计、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_project_status",
+      "label": "研发管理project_status表",
+      "description": "研发管理project_status表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_project_status_rel",
+      "label": "研发管理project_status_rel表",
+      "description": "研发管理project_status_rel表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_project_template",
+      "label": "研发管理project_template表",
+      "description": "研发管理project_template表，属于研发管理模块的数据表。 可用于研发管理相关的启用状态筛选等报表查询场景。"
+    },
+    {
+      "name": "rdm_project_template_apptype",
+      "label": "研发管理project_template_apptype表",
+      "description": "研发管理project_template_apptype表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_project_user",
+      "label": "研发管理project_user表",
+      "description": "研发管理project_user表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_tag",
+      "label": "研发管理tag表",
+      "description": "研发管理tag表，属于研发管理模块的数据表。 可用于研发管理相关数据的查询、筛选和报表展示。"
+    },
+    {
+      "name": "rdm_webhook_config",
+      "label": "研发管理webhook_config表",
+      "description": "研发管理webhook_config表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_webhook_data",
+      "label": "研发管理webhook_data表",
+      "description": "研发管理webhook_data表，属于研发管理模块的数据表。 可用于研发管理相关的时间维度统计、关联查询等报表查询场景。"
+    }
+  ]
+}

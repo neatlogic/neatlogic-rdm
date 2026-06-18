@@ -1,0 +1,37 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_project_user",
+  "label": "研发管理project_user表",
+  "description": "研发管理project_user表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "project关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "user_id",
+      "type": "char(32)",
+      "description": "user关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "user_type",
+      "type": "enum('member','leader','owner')",
+      "description": "研发管理project_user表的user_type字段，作为当前表记录的主键或唯一定位字段。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "project_id",
+        "user_id",
+        "user_type"
+      ],
+      "description": "主键索引，覆盖 project_id、user_id、user_type 字段，适合用于唯一定位记录和主表关联查询。"
+    }
+  ]
+}

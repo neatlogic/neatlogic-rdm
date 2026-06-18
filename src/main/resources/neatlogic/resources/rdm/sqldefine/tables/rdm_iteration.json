@@ -1,0 +1,55 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_iteration",
+  "label": "研发管理iteration表",
+  "description": "研发管理iteration表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "主键ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "唯一标识。"
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "project关联ID。"
+    },
+    {
+      "name": "start_date",
+      "type": "date",
+      "description": "研发管理iteration表的start_date字段。"
+    },
+    {
+      "name": "end_date",
+      "type": "date",
+      "description": "研发管理iteration表的end_date字段。"
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "描述。"
+    },
+    {
+      "name": "is_open",
+      "type": "tinyint",
+      "description": "布尔标记字段。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "主键索引，覆盖 id 字段，适合用于唯一定位记录和主表关联查询。"
+    }
+  ]
+}

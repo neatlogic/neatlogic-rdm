@@ -1,0 +1,175 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue",
+  "label": "研发管理issue表",
+  "description": "研发管理issue表，属于研发管理模块的数据表。 可用于研发管理相关的状态跟踪、关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "主键ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "名称。"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "应用id，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "create_user",
+      "type": "char(32)",
+      "description": "创建者，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "priority",
+      "type": "bigint",
+      "description": "优先级id。"
+    },
+    {
+      "name": "status",
+      "type": "bigint",
+      "description": "状态id。"
+    },
+    {
+      "name": "create_date",
+      "type": "datetime(3)",
+      "description": "创建日期，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "content",
+      "type": "longtext",
+      "description": "描述。"
+    },
+    {
+      "name": "catalog",
+      "type": "bigint",
+      "description": "目录id，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "父issue id，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "iteration",
+      "type": "bigint",
+      "description": "迭代，已建立普通索引，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "start_date",
+      "type": "date",
+      "description": "预计开始。"
+    },
+    {
+      "name": "end_date",
+      "type": "date",
+      "description": "预计结束。"
+    },
+    {
+      "name": "timecost",
+      "type": "int",
+      "description": "预计耗时。"
+    },
+    {
+      "name": "source_issue_id",
+      "type": "bigint",
+      "description": "来源issue id，已建立普通索引，适合用于过滤、关联或排序查询。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "主键索引，覆盖 id 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_catalog",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "catalog"
+      ],
+      "description": "普通索引，覆盖 catalog 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_create_date",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "create_date"
+      ],
+      "description": "普通索引，覆盖 create_date 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_createdate",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "create_date"
+      ],
+      "description": "普通索引，覆盖 create_date 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_iteration",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "iteration"
+      ],
+      "description": "普通索引，覆盖 iteration 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_objectid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "普通索引，覆盖 app_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id"
+      ],
+      "description": "普通索引，覆盖 parent_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_source_issue_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "source_issue_id"
+      ],
+      "description": "普通索引，覆盖 source_issue_id 字段，适合用于过滤、关联或排序查询。"
+    },
+    {
+      "name": "idx_user_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "create_user"
+      ],
+      "description": "普通索引，覆盖 create_user 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}

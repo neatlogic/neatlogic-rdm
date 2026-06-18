@@ -1,0 +1,85 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_project",
+  "label": "研发管理project表",
+  "description": "研发管理project表，属于研发管理模块的数据表。 可用于研发管理相关的时间维度统计、关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "id，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "名称。"
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "说明。"
+    },
+    {
+      "name": "start_date",
+      "type": "date",
+      "description": "开始日期。"
+    },
+    {
+      "name": "end_date",
+      "type": "date",
+      "description": "结束日期。"
+    },
+    {
+      "name": "type",
+      "type": "varchar(50)",
+      "description": "项目类型。"
+    },
+    {
+      "name": "color",
+      "type": "varchar(20)",
+      "description": "颜色标识。"
+    },
+    {
+      "name": "template_id",
+      "type": "bigint",
+      "description": "模板。"
+    },
+    {
+      "name": "fcd",
+      "type": "timestamp(3)",
+      "description": "创建时间。"
+    },
+    {
+      "name": "fcu",
+      "type": "char(32)",
+      "description": "创建人。"
+    },
+    {
+      "name": "lcd",
+      "type": "timestamp(3)",
+      "description": "修改时间。"
+    },
+    {
+      "name": "lcu",
+      "type": "char(32)",
+      "description": "修改人。"
+    },
+    {
+      "name": "is_close",
+      "type": "tinyint",
+      "description": "是否关闭。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "主键索引，覆盖 id 字段，适合用于唯一定位记录和主表关联查询。"
+    }
+  ]
+}

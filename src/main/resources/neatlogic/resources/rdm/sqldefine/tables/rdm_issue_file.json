@@ -1,0 +1,41 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue_file",
+  "label": "研发管理issue_file表",
+  "description": "研发管理issue_file表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "issue_id",
+      "type": "bigint",
+      "description": "issue关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "file_id",
+      "type": "bigint",
+      "description": "file关联ID，作为当前表记录的主键或唯一定位字段。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "issue_id",
+        "file_id"
+      ],
+      "description": "主键索引，覆盖 issue_id、file_id 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "idx_file_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "file_id"
+      ],
+      "description": "普通索引，覆盖 file_id 字段，适合用于过滤、关联或排序查询。"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_status_rel",
+  "label": "研发管理app_status_rel表",
+  "description": "研发管理app_status_rel表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "主键ID，数据库中要求唯一，适合用于精确查询和去重判断。"
+    },
+    {
+      "name": "from_status_id",
+      "type": "bigint",
+      "description": "from_status关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "to_status_id",
+      "type": "bigint",
+      "description": "to_status关联ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "app关联ID。"
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "属性设置。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "from_status_id",
+        "to_status_id"
+      ],
+      "description": "主键索引，覆盖 from_status_id、to_status_id 字段，适合用于唯一定位记录和主表关联查询。"
+    },
+    {
+      "name": "uk_id",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "id"
+      ],
+      "description": "唯一索引，覆盖 id 字段，适合用于精确检索、唯一性判断和去重查询。"
+    }
+  ]
+}

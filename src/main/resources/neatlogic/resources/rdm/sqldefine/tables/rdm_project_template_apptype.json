@@ -1,0 +1,41 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_project_template_apptype",
+  "label": "研发管理project_template_apptype表",
+  "description": "研发管理project_template_apptype表，属于研发管理模块的数据表。 可用于研发管理相关的关联查询等报表查询场景。",
+  "fields": [
+    {
+      "name": "template_id",
+      "type": "bigint",
+      "description": "模板id，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "app_type",
+      "type": "varchar(50)",
+      "description": "应用类型，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "排序。"
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "配置。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "template_id",
+        "app_type"
+      ],
+      "description": "主键索引，覆盖 template_id、app_type 字段，适合用于唯一定位记录和主表关联查询。"
+    }
+  ]
+}

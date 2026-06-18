@@ -1,0 +1,40 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_priority",
+  "label": "研发管理priority表",
+  "description": "研发管理priority表，属于研发管理模块的数据表。 可用于研发管理相关数据的查询、筛选和报表展示。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "主键ID，作为当前表记录的主键或唯一定位字段。"
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "唯一标识。"
+    },
+    {
+      "name": "color",
+      "type": "varchar(255)",
+      "description": "研发管理priority表的color字段。"
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "排序。"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "主键索引，覆盖 id 字段，适合用于唯一定位记录和主表关联查询。"
+    }
+  ]
+}
