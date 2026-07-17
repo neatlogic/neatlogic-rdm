@@ -21,6 +21,9 @@ import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthDeleteException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
+import neatlogic.framework.rdm.notify.constvalue.RdmProjectNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
+import neatlogic.framework.notify.dto.InvokeNotifyPolicyConfigVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -32,6 +35,9 @@ import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.service.ProjectService;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
+import neatlogic.framework.dependency.core.DependencyManager;
+import neatlogic.module.rdm.dependency.NotifyPolicy2RdmTargetDependencyHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +63,9 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
     @Resource
     private IssueMapper issueMapper;
 
+    @Resource
+    private RdmNotifyService rdmNotifyService;
+
     @Override
     public String getName() {
         return "nmrap.deleteprojectapi.getname";
@@ -79,8 +88,13 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
         if (!projectVo.getIsOwner()) {
             throw new ProjectNotAuthDeleteException(projectVo.getName());
         }
+        RdmNotifyContextVo notifyContextVo = new RdmNotifyContextVo();
+        notifyContextVo.setBizType("project");
+        notifyContextVo.setProjectVo(projectVo);
+        notifyContextVo.setNotifyPolicyConfig(projectVo.getConfig().getObject("notifyPolicyConfig", InvokeNotifyPolicyConfigVo.class));
         List<AppVo> appList = appMapper.getAppDetailByProjectId(projectId, null);
         for (AppVo appVo : appList) {
+            DependencyManager.delete(NotifyPolicy2RdmTargetDependencyHandler.class, "app#" + appVo.getId());
             issueMapper.deleteIssueByAppId(appVo);
             appMapper.deleteAppById(appVo.getId());
             EscapeTransactionJob.State s = projectService.dropObjectSchema(appVo);
@@ -88,7 +102,9 @@ public class DeleteProjectApi extends PrivateApiComponentBase {
                 throw new CreateObjectSchemaException(appVo.getName());
             }
         }
+        DependencyManager.delete(NotifyPolicy2RdmTargetDependencyHandler.class, "project#" + projectId);
         projectMapper.deleteProjectById(projectId);
+        rdmNotifyService.notify(notifyContextVo, RdmProjectNotifyTriggerType.DELETED);
         return null;
     }
 

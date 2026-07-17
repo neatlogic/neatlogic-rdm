@@ -18,6 +18,9 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.ProjectUserVo;
+import neatlogic.framework.rdm.dto.ProjectVo;
+import neatlogic.framework.rdm.notify.constvalue.RdmProjectNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -25,6 +28,7 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,9 @@ import javax.annotation.Resource;
 public class SaveProjectUserApi extends PrivateApiComponentBase {
     @Resource
     private ProjectMapper projectMapper;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
 
     @Override
     public String getName() {
@@ -57,6 +64,7 @@ public class SaveProjectUserApi extends PrivateApiComponentBase {
         JSONArray userIdList = paramObj.getJSONArray("userIdList");
         String userType = paramObj.getString("userType");
         Long projectId = paramObj.getLong("projectId");
+        ProjectVo oldProjectVo = projectMapper.getProjectById(projectId);
         for (int i = 0; i < userIdList.size(); i++) {
             String userId = userIdList.getString(i).replace("user#", "");
             ProjectUserVo projectUserVo = new ProjectUserVo();
@@ -65,6 +73,11 @@ public class SaveProjectUserApi extends PrivateApiComponentBase {
             projectUserVo.setUserType(userType);
             projectMapper.insertProjectUser(projectUserVo);
         }
+        RdmNotifyContextVo contextVo = new RdmNotifyContextVo();
+        contextVo.setBizType("project");
+        contextVo.setOldProjectVo(oldProjectVo);
+        contextVo.setProjectVo(projectMapper.getProjectById(projectId));
+        rdmNotifyService.notify(contextVo, RdmProjectNotifyTriggerType.MEMBER_CHANGED);
         return null;
     }
 

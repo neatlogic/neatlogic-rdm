@@ -18,14 +18,18 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.IterationVo;
+import neatlogic.framework.rdm.notify.constvalue.RdmIterationNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.IterationMapper;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -34,6 +38,9 @@ import javax.annotation.Resource;
 public class SaveIterationApi extends PrivateApiComponentBase {
     @Resource
     private IterationMapper iterationMapper;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
 
 
     @Override
@@ -57,6 +64,10 @@ public class SaveIterationApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
+        IterationVo oldIterationVo = null;
+        if (id != null) {
+            oldIterationVo = iterationMapper.getIterationById(id);
+        }
         IterationVo iterationVo = JSON.toJavaObject(paramObj, IterationVo.class);
         iterationVo.setStartDate(null);
         iterationVo.setEndDate(null);
@@ -65,12 +76,32 @@ public class SaveIterationApi extends PrivateApiComponentBase {
         } else {
             iterationMapper.updateIteration(iterationVo);
         }
+        IterationVo currentIterationVo = iterationMapper.getIterationById(iterationVo.getId());
+        RdmNotifyContextVo contextVo = new RdmNotifyContextVo();
+        contextVo.setBizType("iteration");
+        contextVo.setIterationVo(currentIterationVo);
+        contextVo.setOldIterationVo(oldIterationVo);
+        if (oldIterationVo == null) {
+            rdmNotifyService.notify(contextVo, RdmIterationNotifyTriggerType.CREATED);
+        } else if (isChanged(oldIterationVo, currentIterationVo)) {
+            rdmNotifyService.notify(contextVo, RdmIterationNotifyTriggerType.UPDATED);
+        }
         return iterationVo.getId();
     }
 
     @Override
     public String getToken() {
         return "/rdm/iteration/save";
+    }
+
+    /**
+     * 迭代更新通知只关注可编辑的业务字段。
+     */
+    private boolean isChanged(IterationVo oldIterationVo, IterationVo currentIterationVo) {
+        return !Objects.equals(oldIterationVo.getName(), currentIterationVo.getName())
+                || !Objects.equals(oldIterationVo.getDescription(), currentIterationVo.getDescription())
+                || !Objects.equals(oldIterationVo.getStartDate(), currentIterationVo.getStartDate())
+                || !Objects.equals(oldIterationVo.getEndDate(), currentIterationVo.getEndDate());
     }
 
 }

@@ -25,6 +25,9 @@ import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.rdm.exception.IssueNotDeleteAuthException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
+import neatlogic.framework.rdm.notify.constvalue.RdmIssueNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
+import neatlogic.framework.notify.dto.InvokeNotifyPolicyConfigVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -33,6 +36,9 @@ import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
+import neatlogic.module.rdm.service.IssueService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +56,15 @@ public class DeleteIssueApi extends PrivateApiComponentBase {
     @Resource
     private ProjectMapper projectMapper;
 
+    @Resource
+    private AppMapper appMapper;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
+
+    @Resource
+    private IssueService issueService;
+
     @Override
     public String getName() {
         return "nmrai.deleteissueapi.getname";
@@ -65,7 +80,8 @@ public class DeleteIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long issueId = paramObj.getLong("id");
-        IssueVo issueVo = issueMapper.getIssueById(issueId);
+        // 删除前读取完整Issue及自定义属性，供事务提交后的通知参数映射使用。
+        IssueVo issueVo = issueService.getIssueById(issueId);
         if (issueVo == null) {
             throw new IssueNotFoundException(issueId);
         }
@@ -74,11 +90,19 @@ public class DeleteIssueApi extends PrivateApiComponentBase {
             throw new ProjectNotFoundException(issueVo.getProjectId());
         }
         if (projectVo.getIsLeader() || projectVo.getIsOwner() || projectVo.getIsMember() && issueVo.getCreateUser().equalsIgnoreCase(UserContext.get().getUserUuid(true))) {
+            neatlogic.framework.rdm.dto.AppVo appVo = appMapper.getAppById(issueVo.getAppId());
+            RdmNotifyContextVo notifyContextVo = new RdmNotifyContextVo();
+            notifyContextVo.setBizType(appVo.getType());
+            notifyContextVo.setProjectVo(projectVo);
+            notifyContextVo.setAppVo(appVo);
+            notifyContextVo.setIssueVo(issueVo);
+            notifyContextVo.setNotifyPolicyConfig(appVo.getConfig().getObject("notifyPolicyConfig", InvokeNotifyPolicyConfigVo.class));
             issueMapper.deleteIssueById(issueVo);
             IFullTextIndexHandler indexHandler = FullTextIndexHandlerFactory.getHandler(IssueFullTextIndexType.ISSUE);
             if (indexHandler != null) {
                 indexHandler.deleteIndex(issueVo.getId());
             }
+            rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.DELETED);
         } else {
             throw new IssueNotDeleteAuthException();
         }

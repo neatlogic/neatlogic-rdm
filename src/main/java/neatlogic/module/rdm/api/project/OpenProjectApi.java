@@ -18,6 +18,8 @@ import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.rdm.auth.label.PROJECT_MANAGE;
 import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
+import neatlogic.framework.rdm.notify.constvalue.RdmProjectNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
@@ -25,17 +27,23 @@ import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
 @Service
 @AuthAction(action = PROJECT_MANAGE.class)
 @OperationType(type = OperationTypeEnum.UPDATE)
+@Transactional
 public class OpenProjectApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectMapper projectMapper;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
 
 
     @Override
@@ -59,6 +67,10 @@ public class OpenProjectApi extends PrivateApiComponentBase {
         }
         projectVo.setIsClose(0);
         projectMapper.updateProject(projectVo);
+        RdmNotifyContextVo contextVo = new RdmNotifyContextVo();
+        contextVo.setBizType("project");
+        contextVo.setProjectVo(projectVo);
+        rdmNotifyService.notify(contextVo, RdmProjectNotifyTriggerType.OPENED);
         return null;
     }
 

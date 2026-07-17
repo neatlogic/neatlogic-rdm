@@ -41,6 +41,10 @@ public interface AppMapper {
 
     List<AppStatusVo> getStatusByAppId(IssueVo issueVo);
 
+    /**
+     * 查询指定App类型使用过的状态标签并去重。
+     */
+    List<String> getStatusLabelListByAppType(String appType);
 
     void updateAppStatus(AppStatusVo appStatusVo);
 

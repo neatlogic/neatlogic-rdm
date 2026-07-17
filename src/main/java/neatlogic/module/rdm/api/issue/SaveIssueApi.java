@@ -27,6 +27,8 @@ import neatlogic.framework.rdm.enums.ProjectUserType;
 import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
+import neatlogic.framework.rdm.notify.constvalue.RdmIssueNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
@@ -36,6 +38,7 @@ import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.service.IssueRelStrategyService;
 import neatlogic.module.rdm.service.IssueService;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +48,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -63,6 +69,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
     private IssueService issueService;
     @Resource
     private IssueRelStrategyService issueRelStrategyService;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
 
 
     @Override
@@ -215,7 +224,56 @@ public class SaveIssueApi extends PrivateApiComponentBase {
             }
             issueMapper.insertIssueRel(issueRelVo);
         }
+        IssueVo currentIssueVo = issueService.getIssueById(issueVo.getId());
+        RdmNotifyContextVo notifyContextVo = new RdmNotifyContextVo();
+        notifyContextVo.setBizType(appVo.getType());
+        notifyContextVo.setAppVo(appVo);
+        notifyContextVo.setIssueVo(currentIssueVo);
+        notifyContextVo.setOldIssueVo(oldIssue);
+        notifyContextVo.setChangedFieldList(getSubmittedFieldList(paramObj));
+        if (oldIssue == null) {
+            rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.CREATED);
+        } else {
+            if (paramObj.containsKey("status") && !Objects.equals(oldIssue.getStatus(), currentIssueVo.getStatus())) {
+                rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.STATUS_CHANGED);
+            }
+            if (!getWorkerSet(oldIssue).equals(getWorkerSet(currentIssueVo))) {
+                rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.WORKER_CHANGED);
+            }
+            if (hasOrdinaryUpdate(paramObj)) {
+                rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.UPDATED);
+            }
+        }
+        if (StringUtils.isNotBlank(issueVo.getComment())) {
+            CommentVo commentVo = new CommentVo();
+            commentVo.setIssueId(issueVo.getId());
+            commentVo.setContent(issueVo.getComment());
+            commentVo.setFcu(UserContext.get().getUserUuid(true));
+            notifyContextVo.setCommentVo(commentVo);
+            rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.COMMENTED);
+        }
         return issueVo.getId();
+    }
+
+    /**
+     * 状态、处理人和评论使用独立触发点，普通更新只覆盖其余业务字段。
+     */
+    private boolean hasOrdinaryUpdate(JSONObject paramObj) {
+        String[] fieldArray = new String[]{"name", "priority", "iteration", "catalog", "tagList", "startDate", "endDate", "timecost", "content", "attrList"};
+        for (String field : fieldArray) {
+            if (paramObj.containsKey(field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Set<String> getWorkerSet(IssueVo issueVo) {
+        Set<String> resultSet = new HashSet<>();
+        if (issueVo != null && CollectionUtils.isNotEmpty(issueVo.getUserIdList())) {
+            resultSet.addAll(issueVo.getUserIdList());
+        }
+        return resultSet;
     }
 
     private void prepareAttr(IssueVo issueVo) {

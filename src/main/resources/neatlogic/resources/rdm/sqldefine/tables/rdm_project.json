@@ -68,6 +68,11 @@
       "name": "is_close",
       "type": "tinyint",
       "description": "是否关闭。"
+    },
+    {
+      "name": "config",
+      "type": "text",
+      "description": "项目扩展配置。"
     }
   ],
   "indexes": [

@@ -26,6 +26,8 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
 import neatlogic.framework.rdm.enums.core.AppTypeManager;
+import neatlogic.framework.rdm.notify.constvalue.RdmProjectNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.rdm.exception.ProjectNameIsExistsException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthException;
@@ -40,6 +42,7 @@ import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
 import neatlogic.module.rdm.service.ProjectService;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -49,6 +52,9 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -68,6 +74,9 @@ public class SaveProjectApi extends PrivateApiComponentBase {
 
     @Resource
     private ProjectService projectService;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
 
     @Override
     public String getName() {
@@ -145,6 +154,10 @@ public class SaveProjectApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
+        ProjectVo oldProjectVo = null;
+        if (id != null) {
+            oldProjectVo = projectMapper.getProjectById(id);
+        }
         ProjectVo projectVo = JSON.toJavaObject(paramObj, ProjectVo.class);
         projectVo.setIsClose(0);
         if (projectMapper.checkProjectNameIsExists(projectVo) > 0) {
@@ -311,7 +324,52 @@ public class SaveProjectApi extends PrivateApiComponentBase {
             }
         }
 
+        ProjectVo currentProjectVo = projectMapper.getProjectById(projectVo.getId());
+        RdmNotifyContextVo notifyContextVo = new RdmNotifyContextVo();
+        notifyContextVo.setBizType("project");
+        notifyContextVo.setProjectVo(currentProjectVo);
+        notifyContextVo.setOldProjectVo(oldProjectVo);
+        if (oldProjectVo == null) {
+            rdmNotifyService.notify(notifyContextVo, RdmProjectNotifyTriggerType.CREATED);
+        } else {
+            if (isBasicInfoChanged(oldProjectVo, currentProjectVo)) {
+                rdmNotifyService.notify(notifyContextVo, RdmProjectNotifyTriggerType.UPDATED);
+            }
+            if (!buildUserSnapshot(oldProjectVo).equals(buildUserSnapshot(currentProjectVo))) {
+                rdmNotifyService.notify(notifyContextVo, RdmProjectNotifyTriggerType.MEMBER_CHANGED);
+            }
+        }
         return projectVo.getId();
+    }
+
+    /**
+     * 成员比较只关心用户与项目角色组合，忽略查询顺序和显示字段。
+     */
+    private Set<String> buildUserSnapshot(ProjectVo projectVo) {
+        Set<String> resultSet = new TreeSet<>();
+        if (projectVo == null || CollectionUtils.isEmpty(projectVo.getUserList())) {
+            return resultSet;
+        }
+        for (ProjectUserVo userVo : projectVo.getUserList()) {
+            if (CollectionUtils.isEmpty(userVo.getUserTypeList())) {
+                continue;
+            }
+            for (ProjectUserTypeVo userTypeVo : userVo.getUserTypeList()) {
+                resultSet.add(userVo.getUserId() + "#" + userTypeVo.getUserType());
+            }
+        }
+        return resultSet;
+    }
+
+    /**
+     * 状态和成员变化由独立触发点处理，此处只判断项目基础信息。
+     */
+    private boolean isBasicInfoChanged(ProjectVo oldProjectVo, ProjectVo currentProjectVo) {
+        return !Objects.equals(oldProjectVo.getName(), currentProjectVo.getName())
+                || !Objects.equals(oldProjectVo.getDescription(), currentProjectVo.getDescription())
+                || !Objects.equals(oldProjectVo.getStartDate(), currentProjectVo.getStartDate())
+                || !Objects.equals(oldProjectVo.getEndDate(), currentProjectVo.getEndDate())
+                || !Objects.equals(oldProjectVo.getColor(), currentProjectVo.getColor());
     }
 
     @Override

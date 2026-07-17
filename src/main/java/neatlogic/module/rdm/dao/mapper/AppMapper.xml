@@ -3,11 +3,22 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="neatlogic.module.rdm.dao.mapper.AppMapper">
+    <select id="getStatusLabelListByAppType" parameterType="java.lang.String" resultType="java.lang.String">
+        select distinct ras.label
+        from rdm_app_status ras
+                 join rdm_app ra on ras.app_id = ra.id
+        where ra.app_type = #{value}
+          and ras.label is not null
+          and ras.label != ''
+        order by ras.label
+    </select>
+
     <select id="getAppByProjectIdAndType" resultType="neatlogic.framework.rdm.dto.AppVo">
         select a.id,
                a.app_type   as type,
                a.project_id AS projectId,
                a.sort,
+               a.config     as configStr,
                a.is_active  as isActive
         from rdm_app a
         where a.project_id = #{projectId}

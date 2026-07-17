@@ -21,11 +21,15 @@ import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.CommentVo;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
+import neatlogic.framework.rdm.notify.constvalue.RdmIssueNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
 import neatlogic.module.rdm.dao.mapper.CommentMapper;
-import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
+import neatlogic.module.rdm.service.IssueService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +45,13 @@ public class SaveCommentApi extends PrivateApiComponentBase {
     private CommentMapper commentMapper;
 
     @Resource
-    private IssueMapper issueMapper;
+    private AppMapper appMapper;
+
+    @Resource
+    private RdmNotifyService rdmNotifyService;
+
+    @Resource
+    private IssueService issueService;
 
 
     @Override
@@ -65,20 +75,32 @@ public class SaveCommentApi extends PrivateApiComponentBase {
     public Object myDoService(JSONObject paramObj) {
         Long id = paramObj.getLong("id");
         CommentVo commentVo = JSON.toJavaObject(paramObj, CommentVo.class);
-        IssueVo issueVo = issueMapper.getIssueById(commentVo.getIssueId());
+        IssueVo issueVo = issueService.getIssueById(commentVo.getIssueId());
         if (issueVo == null) {
             throw new IssueNotFoundException(commentVo.getIssueId());
         }
         commentVo.setStatus(issueVo.getStatus());
         if (id == null) {
+            CommentVo repliedCommentVo = null;
             if (commentVo.getParentId() != null) {
                 CommentVo parentCommentVo = commentMapper.getCommentById(commentVo.getParentId());
+                repliedCommentVo = parentCommentVo;
                 if (parentCommentVo != null && parentCommentVo.getParentId() != null) {
                     commentVo.setParentId(parentCommentVo.getParentId());
                 }
             }
             commentVo.setFcu(UserContext.get().getUserUuid(true));
             commentMapper.insertComment(commentVo);
+            RdmNotifyContextVo contextVo = new RdmNotifyContextVo();
+            contextVo.setBizType(appMapper.getAppById(issueVo.getAppId()).getType());
+            contextVo.setIssueVo(issueVo);
+            contextVo.setCommentVo(commentVo);
+            if (repliedCommentVo == null) {
+                rdmNotifyService.notify(contextVo, RdmIssueNotifyTriggerType.COMMENTED);
+            } else {
+                contextVo.setReplyUserUuid(repliedCommentVo.getFcu());
+                rdmNotifyService.notify(contextVo, RdmIssueNotifyTriggerType.REPLIED);
+            }
         } else {
             commentMapper.updateComment(commentVo);
         }

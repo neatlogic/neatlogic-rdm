@@ -35,6 +35,11 @@ public interface ProjectMapper {
 
     List<String> getProjectAppTypeByProjectId(Long projectId);
 
+    /**
+     * 合并项目模板名称和现有项目类型，保留历史项目仍在使用的类型。
+     */
+    List<String> getProjectTypeList();
+
     ProjectVo getProjectByAppId(Long appId);
 
     ProjectVo getProjectByIssueId(Long issueId);
@@ -64,6 +69,8 @@ public interface ProjectMapper {
 
 
     void updateProject(ProjectVo projectVo);
+
+    void updateProjectConfig(ProjectVo projectVo);
 
     void updateProjectStatus(ProjectStatusVo projectStatusVo);
 
