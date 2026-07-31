@@ -11,24 +11,21 @@
 package neatlogic.module.rdm.portal.widget;
 
 import neatlogic.framework.portal.widget.core.IPortalWidget;
-import neatlogic.framework.portal.widget.core.IPortalWidgetGroup;
 
 public enum RdmPortalWidget implements IPortalWidget {
-    rdmMyTask("rdmMyTask", "我的任务", 1, RdmPortalWidgetGroup.rdmGroup1),
-    rdmProjectHealth("rdmProjectHealth", "项目健康", 2, RdmPortalWidgetGroup.rdmGroup1),
-    rdmOverdueMilestone("rdmOverdueMilestone", "逾期缺陷与里程碑", 3, RdmPortalWidgetGroup.rdmGroup2),
-    rdmMilestoneTimeline("rdmMilestoneTimeline", "里程碑与交付风险", 4, RdmPortalWidgetGroup.rdmGroup2),
+    rdmMyTask("rdmMyTask", "我的任务", 1),
+    rdmProjectHealth("rdmProjectHealth", "项目健康", 2),
+    rdmOverdueMilestone("rdmOverdueMilestone", "逾期缺陷与里程碑", 3),
+    rdmMilestoneTimeline("rdmMilestoneTimeline", "里程碑与交付风险", 4),
     ;
     private final String value;
     private final String text;
     private final Integer sort;
-    private final IPortalWidgetGroup group;
 
-    RdmPortalWidget(String value, String text, Integer sort, IPortalWidgetGroup group) {
+    RdmPortalWidget(String value, String text, Integer sort) {
         this.value = value;
         this.text = text;
         this.sort = sort;
-        this.group = group;
     }
 
     @Override
@@ -44,10 +41,5 @@ public enum RdmPortalWidget implements IPortalWidget {
     @Override
     public Integer getSort() {
         return this.sort;
-    }
-
-    @Override
-    public IPortalWidgetGroup getGroup() {
-        return this.group;
     }
 }
