@@ -13,10 +13,10 @@ package neatlogic.module.rdm.portal.widget;
 import neatlogic.framework.portal.widget.core.IPortalWidget;
 
 public enum RdmPortalWidget implements IPortalWidget {
-    rdmMyTask("rdmMyTask", "我的任务", 1),
-    rdmProjectHealth("rdmProjectHealth", "项目健康", 2),
-    rdmOverdueMilestone("rdmOverdueMilestone", "逾期缺陷与里程碑", 3),
-    rdmMilestoneTimeline("rdmMilestoneTimeline", "里程碑与交付风险", 4),
+//    rdmMyTask("rdmMyTask", "我的任务", 1),
+//    rdmProjectHealth("rdmProjectHealth", "项目健康", 2),
+//    rdmOverdueMilestone("rdmOverdueMilestone", "逾期缺陷与里程碑", 3),
+//    rdmMilestoneTimeline("rdmMilestoneTimeline", "里程碑与交付风险", 4),
     ;
     private final String value;
     private final String text;
