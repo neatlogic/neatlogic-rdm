@@ -12,6 +12,7 @@
 
 package neatlogic.module.rdm.api.issue;
 
+import neatlogic.framework.restful.dto.ApiExampleVo;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -84,8 +85,9 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         return null;
     }
 
+    /** 通过代码组装请求示例，返回带标题和说明的场景列表。 */
     @Override
-    public JSONObject example() {
+    public java.util.List<ApiExampleVo> example() {
         JSONObject defaultJson = new JSONObject();
         defaultJson.put("appId", 1111111111111L);
         defaultJson.put("name", "任务标题");
@@ -111,7 +113,7 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         defaultJson.put("userIdList", new JSONArray() {{
             this.add("admin");
         }});
-        return defaultJson;
+        return java.util.Collections.singletonList(new ApiExampleVo("common.example", "nf.api.example.replacevalues", defaultJson));
     }
 
     @Input({
