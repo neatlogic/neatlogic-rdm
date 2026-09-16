@@ -12,7 +12,6 @@
 
 package neatlogic.module.rdm.api.issue;
 
-import neatlogic.framework.restful.dto.ApiExampleVo;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -25,6 +24,7 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
+import neatlogic.framework.rdm.event.RdmEventManager;
 import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
@@ -33,13 +33,15 @@ import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.framework.restful.dto.ApiExampleVo;
 import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
+import neatlogic.module.rdm.event.IssueEvents;
+import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import neatlogic.module.rdm.service.IssueRelStrategyService;
 import neatlogic.module.rdm.service.IssueService;
-import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,11 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -235,15 +233,19 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         notifyContextVo.setChangedFieldList(getSubmittedFieldList(paramObj));
         if (oldIssue == null) {
             rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.CREATED);
+            // 使用保存后的完整对象发布，事件引擎仅在当前事务提交后执行配置。
+            RdmEventManager.doEvent(currentIssueVo.getProjectId(), currentIssueVo.getAppId(), IssueEvents.CREATED, currentIssueVo);
         } else {
             if (paramObj.containsKey("status") && !Objects.equals(oldIssue.getStatus(), currentIssueVo.getStatus())) {
                 rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.STATUS_CHANGED);
+                RdmEventManager.doEvent(currentIssueVo.getProjectId(), currentIssueVo.getAppId(), IssueEvents.STATUS_CHANGED, currentIssueVo);
             }
             if (!getWorkerSet(oldIssue).equals(getWorkerSet(currentIssueVo))) {
                 rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.WORKER_CHANGED);
             }
             if (hasOrdinaryUpdate(paramObj)) {
                 rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.UPDATED);
+                RdmEventManager.doEvent(currentIssueVo.getProjectId(), currentIssueVo.getAppId(), IssueEvents.UPDATED, currentIssueVo);
             }
         }
         if (StringUtils.isNotBlank(issueVo.getComment())) {

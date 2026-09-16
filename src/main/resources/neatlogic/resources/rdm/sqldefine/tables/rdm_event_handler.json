@@ -1,0 +1,105 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_event_handler",
+  "label": "研发事件处理器配置",
+  "description": "研发事件处理器配置，支持研发事件配置、级联执行与审计查询。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "处理器配置id"
+    },
+    {
+      "name": "uuid",
+      "type": "varchar(32)",
+      "description": "配置引用标识"
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "父处理器配置id，根处理器为空"
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "适用项目id，空范围不执行"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "适用应用id，空范围不执行"
+    },
+    {
+      "name": "name",
+      "type": "varchar(200)",
+      "description": "处理器配置名称"
+    },
+    {
+      "name": "handler",
+      "type": "varchar(100)",
+      "description": "插件唯一标识"
+    },
+    {
+      "name": "event",
+      "type": "varchar(100)",
+      "description": "事件标识"
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "执行顺序，相同时按id顺序执行"
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "处理器JSON配置"
+    },
+    {
+      "name": "is_active",
+      "type": "tinyint",
+      "description": "是否启用"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ]
+    },
+    {
+      "name": "uk_uuid",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "uuid"
+      ]
+    },
+    {
+      "name": "idx_event_scope",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "event",
+        "project_id",
+        "app_id"
+      ]
+    },
+    {
+      "name": "idx_parent_sort",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id",
+        "sort",
+        "id"
+      ]
+    }
+  ]
+}

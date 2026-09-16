@@ -145,6 +145,21 @@
       "name": "rdm_webhook_data",
       "label": "研发管理webhook_data表",
       "description": "研发管理webhook_data表，属于研发管理模块的数据表。 可用于研发管理相关的时间维度统计、关联查询等报表查询场景。"
+    },
+    {
+      "name": "rdm_event_handler",
+      "label": "研发事件处理器配置",
+      "description": "研发事件处理器配置，支持研发事件配置、级联执行与审计查询。"
+    },
+    {
+      "name": "rdm_event_plugin",
+      "label": "研发事件插件全局配置",
+      "description": "研发事件插件全局配置，支持研发事件配置、级联执行与审计查询。"
+    },
+    {
+      "name": "rdm_event_audit",
+      "label": "研发事件执行审计",
+      "description": "研发事件执行审计，支持研发事件配置、级联执行与审计查询。"
     }
   ]
 }

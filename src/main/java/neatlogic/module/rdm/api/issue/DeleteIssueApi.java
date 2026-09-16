@@ -18,25 +18,27 @@ import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
 import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
+import neatlogic.framework.notify.dto.InvokeNotifyPolicyConfigVo;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
+import neatlogic.framework.rdm.event.RdmEventManager;
 import neatlogic.framework.rdm.exception.IssueNotDeleteAuthException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
 import neatlogic.framework.rdm.notify.constvalue.RdmIssueNotifyTriggerType;
 import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
-import neatlogic.framework.notify.dto.InvokeNotifyPolicyConfigVo;
 import neatlogic.framework.restful.annotation.Description;
 import neatlogic.framework.restful.annotation.Input;
 import neatlogic.framework.restful.annotation.OperationType;
 import neatlogic.framework.restful.annotation.Param;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.IssueMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
-import neatlogic.module.rdm.dao.mapper.AppMapper;
+import neatlogic.module.rdm.event.IssueEvents;
 import neatlogic.module.rdm.notify.service.RdmNotifyService;
 import neatlogic.module.rdm.service.IssueService;
 import org.springframework.stereotype.Service;
@@ -80,7 +82,7 @@ public class DeleteIssueApi extends PrivateApiComponentBase {
     @Override
     public Object myDoService(JSONObject paramObj) {
         Long issueId = paramObj.getLong("id");
-        // 删除前读取完整Issue及自定义属性，供事务提交后的通知参数映射使用。
+        // 删除前读取完整需求及自定义属性，供事务提交后的通知和事件快照使用。
         IssueVo issueVo = issueService.getIssueById(issueId);
         if (issueVo == null) {
             throw new IssueNotFoundException(issueId);
@@ -103,6 +105,8 @@ public class DeleteIssueApi extends PrivateApiComponentBase {
                 indexHandler.deleteIndex(issueVo.getId());
             }
             rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.DELETED);
+            // 删除完成后发布删除前快照，插件执行时不再重载已经删除的需求。
+            RdmEventManager.doEvent(issueVo.getProjectId(), issueVo.getAppId(), IssueEvents.DELETED, issueVo);
         } else {
             throw new IssueNotDeleteAuthException();
         }

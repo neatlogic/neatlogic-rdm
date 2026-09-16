@@ -39,6 +39,10 @@ public class RdmUserTypeGroupHandler implements IGroupSearchHandler {
         List<String> includeList = groupSearchVo.getIncludeList();
         for (IssueUserType userType : IssueUserType.values()) {
             String value = getHeader() + userType.getValue();
+            // 排除条件优先于隐藏项补充条件，并在统计数量前生效。
+            if (CollectionUtils.isNotEmpty(groupSearchVo.getExcludeList()) && groupSearchVo.getExcludeList().contains(value)) {
+                continue;
+            }
             boolean isIncluded = CollectionUtils.isNotEmpty(includeList) && includeList.contains(value);
             if (!userType.getIsShow() && !isIncluded) {
                 continue;

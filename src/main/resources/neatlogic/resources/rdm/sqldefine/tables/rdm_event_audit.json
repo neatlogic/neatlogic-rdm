@@ -1,0 +1,152 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_event_audit",
+  "label": "研发事件执行审计",
+  "description": "研发事件执行审计，支持研发事件配置、级联执行与审计查询。",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "执行审计id"
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "父执行审计id"
+    },
+    {
+      "name": "issue_id",
+      "type": "bigint",
+      "description": "历史需求id，仅用于旧审计迁移"
+    },
+    {
+      "name": "object_type",
+      "type": "varchar(100)",
+      "description": "业务对象类型"
+    },
+    {
+      "name": "object_id",
+      "type": "varchar(255)",
+      "description": "业务对象标识"
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "项目id"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "应用id"
+    },
+    {
+      "name": "event",
+      "type": "varchar(100)",
+      "description": "事件标识"
+    },
+    {
+      "name": "handler",
+      "type": "varchar(100)",
+      "description": "插件唯一标识"
+    },
+    {
+      "name": "handler_name",
+      "type": "varchar(200)",
+      "description": "处理器配置名称快照"
+    },
+    {
+      "name": "event_handler_id",
+      "type": "bigint",
+      "description": "处理器配置id"
+    },
+    {
+      "name": "start_time",
+      "type": "datetime(3)",
+      "description": "执行开始时间"
+    },
+    {
+      "name": "end_time",
+      "type": "datetime(3)",
+      "description": "执行结束时间"
+    },
+    {
+      "name": "status",
+      "type": "varchar(50)",
+      "description": "执行状态"
+    },
+    {
+      "name": "error",
+      "type": "longtext",
+      "description": "失败或跳过原因"
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "处理器JSON配置快照"
+    },
+    {
+      "name": "result",
+      "type": "longtext",
+      "description": "插件执行结果"
+    },
+    {
+      "name": "server_id",
+      "type": "int",
+      "description": "执行服务节点"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ]
+    },
+    {
+      "name": "idx_object_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "project_id",
+        "app_id",
+        "object_type",
+        "object_id",
+        "parent_id",
+        "id"
+      ]
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id",
+        "id"
+      ]
+    },
+    {
+      "name": "idx_start_time",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "start_time"
+      ]
+    },
+    {
+      "name": "idx_status_start",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "status",
+        "start_time"
+      ]
+    }
+  ]
+}

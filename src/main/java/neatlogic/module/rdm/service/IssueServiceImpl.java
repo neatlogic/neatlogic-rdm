@@ -23,6 +23,7 @@ import neatlogic.framework.exception.user.UserNotFoundException;
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.fulltextindex.core.FullTextIndexHandlerFactory;
 import neatlogic.framework.fulltextindex.core.IFullTextIndexHandler;
+import neatlogic.framework.rdm.crossover.IRdmIssueCrossoverService;
 import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
 import neatlogic.framework.rdm.enums.IssueRelType;
@@ -38,7 +39,7 @@ import javax.annotation.Resource;
 import java.util.*;
 
 @Service
-public class IssueServiceImpl implements IssueService {
+public class IssueServiceImpl implements IssueService, IRdmIssueCrossoverService {
     @Resource
     private IssueMapper issueMapper;
 
