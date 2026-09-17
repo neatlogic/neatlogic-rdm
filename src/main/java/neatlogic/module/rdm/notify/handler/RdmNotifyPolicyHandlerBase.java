@@ -11,6 +11,7 @@ package neatlogic.module.rdm.notify.handler;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import neatlogic.framework.auth.core.AuthBase;
 import neatlogic.framework.asynchronization.threadlocal.TenantContext;
 import neatlogic.framework.common.config.Config;
 import neatlogic.framework.common.constvalue.Expression;
@@ -304,8 +305,8 @@ public abstract class RdmNotifyPolicyHandlerBase extends NotifyPolicyHandlerBase
     }
 
     @Override
-    public String getAuthName() {
-        return PROJECT_MANAGE.class.getSimpleName();
+    public Class<? extends AuthBase> getAuthClass() {
+        return PROJECT_MANAGE.class;
     }
 
     @Override
