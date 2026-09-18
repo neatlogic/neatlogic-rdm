@@ -1,0 +1,175 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue",
+  "label": "R&D Management Issue Table",
+  "description": "The issue table is part of the R&D management module. It is used for tracking and querying related statuses in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "Name."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "Application ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "create_user",
+      "type": "char(32)",
+      "description": "Creator. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "priority",
+      "type": "bigint",
+      "description": "Priority ID."
+    },
+    {
+      "name": "status",
+      "type": "bigint",
+      "description": "Status_id."
+    },
+    {
+      "name": "create_date",
+      "type": "datetime(3)",
+      "description": "Creation date. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "content",
+      "type": "longtext",
+      "description": "Description."
+    },
+    {
+      "name": "catalog",
+      "type": "bigint",
+      "description": "Directory ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "Parent issue ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "iteration",
+      "type": "bigint",
+      "description": "Iteration. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "start_date",
+      "type": "date",
+      "description": "Expected start."
+    },
+    {
+      "name": "end_date",
+      "type": "date",
+      "description": "Expected end."
+    },
+    {
+      "name": "timecost",
+      "type": "int",
+      "description": "Estimated time."
+    },
+    {
+      "name": "source_issue_id",
+      "type": "bigint",
+      "description": "Source issue ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_catalog",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "catalog"
+      ],
+      "description": "Standard index covering the catalog field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_create_date",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "create_date"
+      ],
+      "description": "Standard index covering the create_date field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_createdate",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "create_date"
+      ],
+      "description": "Standard index covering the create_date field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_iteration",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "iteration"
+      ],
+      "description": "Standard index covering the iteration field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_objectid",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "Standard index covering the app_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id"
+      ],
+      "description": "Standard index covering the parent_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_source_issue_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "source_issue_id"
+      ],
+      "description": "Standard index covering the source_issue_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_user_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "create_user"
+      ],
+      "description": "Standard index covering the create_user field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

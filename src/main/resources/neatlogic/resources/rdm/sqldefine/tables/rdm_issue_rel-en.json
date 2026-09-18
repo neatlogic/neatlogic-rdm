@@ -1,0 +1,76 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue_rel",
+  "label": "R&D Management issue_rel Table",
+  "description": "The issue_rel table is part of the R&D management module and is used for related queries and report scenarios in R&D management.",
+  "fields": [
+    {
+      "name": "from_issue_id",
+      "type": "bigint",
+      "description": "from_issue association ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "to_issue_id",
+      "type": "bigint",
+      "description": "To_issue_id, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "from_app_id",
+      "type": "bigint",
+      "description": "\"From_app\" association ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "to_app_id",
+      "type": "bigint",
+      "description": "to_app association ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "rel_type",
+      "type": "enum('extend','relative','repeat')",
+      "description": "Relationship, from the parent-child relationship is extend, the association is relative, the same is repeat."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "from_issue_id",
+        "to_issue_id"
+      ],
+      "description": "Primary key index covering the from_issue_id, to_issue_id fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_from_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "from_app_id"
+      ],
+      "description": "Standard index covering the from_app_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_to_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "to_app_id"
+      ],
+      "description": "Standard index covering the to_app_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_to_issue_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "to_issue_id"
+      ],
+      "description": "Standard index covering the to_issue_id field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

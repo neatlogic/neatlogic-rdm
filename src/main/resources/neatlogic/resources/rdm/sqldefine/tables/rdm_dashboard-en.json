@@ -1,0 +1,100 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_dashboard",
+  "label": "Dashboard Table",
+  "description": "Dashboard table is used for enabling state filtering, time dimension statistics, and association queries in R&D management scenarios.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Unique identifier, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "The application association ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "Name."
+    },
+    {
+      "name": "description",
+      "type": "varchar(1000)",
+      "description": "Description."
+    },
+    {
+      "name": "is_active",
+      "type": "tinyint(1)",
+      "description": "Indicates whether it is active."
+    },
+    {
+      "name": "fcd",
+      "type": "timestamp(3)",
+      "description": "Creation time. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "fcu",
+      "type": "char(32)",
+      "description": "Creator. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "lcd",
+      "type": "timestamp(3)",
+      "description": "Last modified time."
+    },
+    {
+      "name": "lcu",
+      "type": "char(32)",
+      "description": "Last modified by."
+    },
+    {
+      "name": "widget_list",
+      "type": "longtext",
+      "description": "Component configuration."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "Standard index covering the app_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_fcd",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "fcd"
+      ],
+      "description": "Standard index covering the fcd field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_fcu",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "fcu"
+      ],
+      "description": "Standard index covering the fcu field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

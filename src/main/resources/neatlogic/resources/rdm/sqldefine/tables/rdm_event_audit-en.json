@@ -1,0 +1,152 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_event_audit",
+  "label": "Research Event Audit",
+  "description": "Research event execution audit supports event configuration, cascading execution, and audit queries.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Audit ID"
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "Parent audit ID"
+    },
+    {
+      "name": "issue_id",
+      "type": "bigint",
+      "description": "Historical requirement ID, used for legacy audit migration."
+    },
+    {
+      "name": "object_type",
+      "type": "varchar(100)",
+      "description": "Business object type"
+    },
+    {
+      "name": "object_id",
+      "type": "varchar(255)",
+      "description": "Business object identifier"
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "Project_id"
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "Application ID"
+    },
+    {
+      "name": "event",
+      "type": "varchar(100)",
+      "description": "Event identifier"
+    },
+    {
+      "name": "handler",
+      "type": "varchar(100)",
+      "description": "Plugin unique identifier"
+    },
+    {
+      "name": "handler_name",
+      "type": "varchar(200)",
+      "description": "snapshot of processor configuration name"
+    },
+    {
+      "name": "event_handler_id",
+      "type": "bigint",
+      "description": "Processor configuration ID"
+    },
+    {
+      "name": "start_time",
+      "type": "datetime(3)",
+      "description": "Start time of the execution"
+    },
+    {
+      "name": "end_time",
+      "type": "datetime(3)",
+      "description": "End time of execution"
+    },
+    {
+      "name": "status",
+      "type": "varchar(50)",
+      "description": "Execution status"
+    },
+    {
+      "name": "error",
+      "type": "longtext",
+      "description": "Failure or skip reason"
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "Processor JSON configuration snapshot"
+    },
+    {
+      "name": "result",
+      "type": "longtext",
+      "description": "Plugin execution result"
+    },
+    {
+      "name": "server_id",
+      "type": "int",
+      "description": "Execution service node"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ]
+    },
+    {
+      "name": "idx_object_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "project_id",
+        "app_id",
+        "object_type",
+        "object_id",
+        "parent_id",
+        "id"
+      ]
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id",
+        "id"
+      ]
+    },
+    {
+      "name": "idx_start_time",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "start_time"
+      ]
+    },
+    {
+      "name": "idx_status_start",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "status",
+        "start_time"
+      ]
+    }
+  ]
+}

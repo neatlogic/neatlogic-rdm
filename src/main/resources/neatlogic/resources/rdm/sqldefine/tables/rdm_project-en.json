@@ -1,0 +1,90 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_project",
+  "label": "R&D Management Project Table",
+  "description": "The project table in the R&D management module, which belongs to the R&D management system, is used for statistical queries and association queries related to R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "Name."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "Explanation."
+    },
+    {
+      "name": "start_date",
+      "type": "date",
+      "description": "Start date."
+    },
+    {
+      "name": "end_date",
+      "type": "date",
+      "description": "End date."
+    },
+    {
+      "name": "type",
+      "type": "varchar(50)",
+      "description": "Project type."
+    },
+    {
+      "name": "color",
+      "type": "varchar(20)",
+      "description": "Color tagging."
+    },
+    {
+      "name": "template_id",
+      "type": "bigint",
+      "description": "Template."
+    },
+    {
+      "name": "fcd",
+      "type": "timestamp(3)",
+      "description": "Creation time."
+    },
+    {
+      "name": "fcu",
+      "type": "char(32)",
+      "description": "Creator."
+    },
+    {
+      "name": "lcd",
+      "type": "timestamp(3)",
+      "description": "Update the timestamp."
+    },
+    {
+      "name": "lcu",
+      "type": "char(32)",
+      "description": "Updated by."
+    },
+    {
+      "name": "is_close",
+      "type": "tinyint",
+      "description": "Is it closed."
+    },
+    {
+      "name": "config",
+      "type": "text",
+      "description": "Project extension configuration."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

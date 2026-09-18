@@ -1,0 +1,55 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_iteration",
+  "label": "R&D Management Iteration Table",
+  "description": "The iteration table is a data table under the R&D management module. It is used for related queries and report queries in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "Unique identifier."
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "Project ID."
+    },
+    {
+      "name": "start_date",
+      "type": "date",
+      "description": "Add the `start_date` field to the `iteration` table in the R&D management system."
+    },
+    {
+      "name": "end_date",
+      "type": "date",
+      "description": "Add the `end_date` field to the `iteration` table in the R&D management system."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "Description."
+    },
+    {
+      "name": "is_open",
+      "type": "tinyint",
+      "description": "Boolean field."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

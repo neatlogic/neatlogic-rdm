@@ -1,0 +1,56 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_status_rel",
+  "label": "R&D Management app_status_rel Table",
+  "description": "The app_status_rel table is a data table under the R&D management module. It is used for related queries and report queries in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID. This value must be unique in the database and is suitable for exact-match queries and duplicate detection."
+    },
+    {
+      "name": "from_status_id",
+      "type": "bigint",
+      "description": "\"From_status\" associated ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "to_status_id",
+      "type": "bigint",
+      "description": "Status_id, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "App association ID."
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "Attribute settings."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "from_status_id",
+        "to_status_id"
+      ],
+      "description": "Primary key index covering the from_status_id, to_status_id fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "uk_id",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "id"
+      ],
+      "description": "Unique index covering the ID field, suitable for exact-match retrieval, uniqueness checks, and duplicate detection."
+    }
+  ]
+}

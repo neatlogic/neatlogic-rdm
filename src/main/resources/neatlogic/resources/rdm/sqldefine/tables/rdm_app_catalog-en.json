@@ -1,0 +1,70 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_catalog",
+  "label": "R&D Management app_catalog Table",
+  "description": "The app_catalog table is associated with R&D management and is used for related queries and report scenarios in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "Unique identifier."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "The application association ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "Parent relationship ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "lft",
+      "type": "int",
+      "description": "Add the lft field to the app_catalog table in the R&D management system."
+    },
+    {
+      "name": "rht",
+      "type": "int",
+      "description": "Update the rht field in the app_catalog table for R&D management."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "Standard index covering the app_id field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_parent_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id"
+      ],
+      "description": "Standard index covering the parent_id field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

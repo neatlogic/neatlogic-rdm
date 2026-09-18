@@ -1,0 +1,31 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue_webhookdata",
+  "label": "issue_webhookdata Table in R&D Management System",
+  "description": "The issue_webhookdata table is part of the R&D management module and is used for related queries and report queries in R&D management scenarios.",
+  "fields": [
+    {
+      "name": "issue_id",
+      "type": "bigint",
+      "description": "Issue ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "data_id",
+      "type": "bigint",
+      "description": "Data association ID, used as the primary key or unique identifier for records in this table."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "issue_id",
+        "data_id"
+      ],
+      "description": "Primary key index covering the issue_id, data_id fields, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

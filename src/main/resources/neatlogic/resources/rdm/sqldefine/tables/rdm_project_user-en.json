@@ -1,0 +1,37 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_project_user",
+  "label": "R&D Management -- project_user Table",
+  "description": "The project_user table is a data table under the R&D management module. It is used for related queries and report queries in R&D management scenarios.",
+  "fields": [
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "The project association ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "user_id",
+      "type": "char(32)",
+      "description": "User association ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "user_type",
+      "type": "enum('member','leader','owner')",
+      "description": "Update the user_type field in the project_user table in the R&D management system, used as the primary key or unique identifier for records in this table."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "project_id",
+        "user_id",
+        "user_type"
+      ],
+      "description": "Primary key index covering the project_id, user_id, user_type fields, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_attr",
+  "label": "CMDB Configuration Item Attribute Table",
+  "description": "Configuration item attributes table for research and development management, enabling status filtering, and query scenarios for related associations.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "Retrieve the ID of the rdm_object. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "type",
+      "type": "varchar(50)",
+      "description": "Data type."
+    },
+    {
+      "name": "name",
+      "type": "varchar(50)",
+      "description": "English name. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "label",
+      "type": "varchar(200)",
+      "description": "Label name during entry."
+    },
+    {
+      "name": "description",
+      "type": "varchar(500)",
+      "description": "Description."
+    },
+    {
+      "name": "validator_id",
+      "type": "bigint",
+      "description": "The component ID for the validator needs to be implemented in the code."
+    },
+    {
+      "name": "is_required",
+      "type": "tinyint",
+      "description": "Is mandatory."
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "Sort."
+    },
+    {
+      "name": "is_private",
+      "type": "tinyint(1)",
+      "description": "Private attribute, system default attribute, cannot be deleted."
+    },
+    {
+      "name": "config",
+      "type": "text",
+      "description": "Attribute settings."
+    },
+    {
+      "name": "is_active",
+      "type": "tinyint",
+      "description": "Indicates whether it is active."
+    },
+    {
+      "name": "show_type",
+      "type": "enum('none','all','list','detail')",
+      "description": "Display mode."
+    },
+    {
+      "name": "stat_key",
+      "type": "varchar(100)",
+      "description": "Statistical attribute identifier."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_name",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "name"
+      ],
+      "description": "Standard index covering the name field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "uk_app_stat_key",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "app_id",
+        "stat_key"
+      ],
+      "description": "Unique index covering the app_id, stat_key fields, suitable for exact-match retrieval, uniqueness checks, and duplicate detection."
+    },
+    {
+      "name": "uk_name",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "app_id",
+        "name",
+        "is_private"
+      ],
+      "description": "Unique index covering the app_id, name, is_private fields, suitable for exact-match retrieval, uniqueness checks, and duplicate detection."
+    }
+  ]
+}

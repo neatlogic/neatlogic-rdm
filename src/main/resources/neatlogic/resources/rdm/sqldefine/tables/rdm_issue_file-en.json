@@ -1,0 +1,41 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue_file",
+  "label": "R&D Management issue_file Table",
+  "description": "The issue_file table is part of the R&D management module and is used for related queries and report scenarios in R&D management.",
+  "fields": [
+    {
+      "name": "issue_id",
+      "type": "bigint",
+      "description": "Issue ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "file_id",
+      "type": "bigint",
+      "description": "File association ID, used as the primary key or unique identifier for records in this table."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "issue_id",
+        "file_id"
+      ],
+      "description": "Primary key index covering the issue_id, file_id fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_file_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "file_id"
+      ],
+      "description": "Standard index covering the file_id field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_event_plugin",
+  "label": "Global Configuration for R&D Event Plugin",
+  "description": "Global configuration for the research event plugin, supporting research event configuration, cascading execution, and audit queries.",
+  "fields": [
+    {
+      "name": "name",
+      "type": "varchar(100)",
+      "description": "Plugin unique identifier"
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "Global JSON configuration for plugins"
+    },
+    {
+      "name": "is_active",
+      "type": "tinyint",
+      "description": "ENABLE/DISABLE"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "name"
+      ]
+    }
+  ]
+}

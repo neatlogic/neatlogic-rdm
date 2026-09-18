@@ -1,0 +1,41 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_project_template_apptype",
+  "label": "R&D Management -- project_template_apptype Table",
+  "description": "The project_template_apptype table is a data table within the R&D management module, used for related queries and report scenarios in R&D management.",
+  "fields": [
+    {
+      "name": "template_id",
+      "type": "bigint",
+      "description": "Template ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_type",
+      "type": "varchar(50)",
+      "description": "Application type, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "Sort."
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "Configuration."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "template_id",
+        "app_type"
+      ],
+      "description": "Primary key index covering the template_id, app_type fields, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "moduleId": "rdm",
+  "tables": [
+    {
+      "name": "rdm_app",
+      "label": "R&D Management App Table",
+      "description": "R&D management app table, belonging to the R&D management module, used for enabling state filtering and related query scenarios for reporting in R&D management."
+    },
+    {
+      "name": "rdm_app_attr",
+      "label": "CMDB Configuration Item Attribute Table",
+      "description": "Configuration item attributes table for research and development management, enabling status filtering, and query scenarios for related associations."
+    },
+    {
+      "name": "rdm_app_catalog",
+      "label": "R&D Management app_catalog Table",
+      "description": "The app_catalog table is associated with R&D management and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_app_priority",
+      "label": "R&D Management App_Priority Table",
+      "description": "The app_priority table is a data table under the R&D management module. It is used for related queries and report queries in R&D management scenarios."
+    },
+    {
+      "name": "rdm_app_status",
+      "label": "R&D Management app_status Table",
+      "description": "The app_status table is a data table under the R&D management module. It is used for related queries and report queries in R&D management."
+    },
+    {
+      "name": "rdm_app_status_rel",
+      "label": "R&D Management app_status_rel Table",
+      "description": "The app_status_rel table is a data table under the R&D management module. It is used for related queries and report queries in R&D management."
+    },
+    {
+      "name": "rdm_app_usersetting",
+      "label": "R&D Management app_usersetting Table",
+      "description": "The app_usersetting table is a data table under the R&D management module. It is used for related queries and report queries in R&D management scenarios."
+    },
+    {
+      "name": "rdm_dashboard",
+      "label": "Dashboard Table",
+      "description": "Dashboard table is used for enabling state filtering, time dimension statistics, and association queries in R&D management scenarios."
+    },
+    {
+      "name": "rdm_favoriteissue",
+      "label": "R&D Management Favorite Issue Table",
+      "description": "The favoriteissue table belongs to the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue",
+      "label": "R&D Management Issue Table",
+      "description": "The issue table is part of the R&D management module. It is used for tracking and querying related statuses in R&D management."
+    },
+    {
+      "name": "rdm_issue_audit",
+      "label": "R&D Management issue_audit Table",
+      "description": "The issue_audit table is part of the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue_comment",
+      "label": "R&D Management Issue_comment Table",
+      "description": "The issue_comment table is part of the R&D management module. It is used for tracking the status of R&D management, statistical time dimensions, and query associations."
+    },
+    {
+      "name": "rdm_issue_cost",
+      "label": "R&D Management Issue Cost Table",
+      "description": "The issue_cost table is part of the R&D management module and is used for related queries and reporting scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue_file",
+      "label": "R&D Management issue_file Table",
+      "description": "The issue_file table is part of the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue_rel",
+      "label": "R&D Management issue_rel Table",
+      "description": "The issue_rel table is part of the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue_tag",
+      "label": "R&D Management Issue Tag Table",
+      "description": "The issue_tag table is part of the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue_user",
+      "label": "R&D Management issue_user Table",
+      "description": "The issue_user table is part of the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_issue_webhookdata",
+      "label": "issue_webhookdata Table in R&D Management System",
+      "description": "The issue_webhookdata table is part of the R&D management module and is used for related queries and report queries in R&D management scenarios."
+    },
+    {
+      "name": "rdm_iteration",
+      "label": "R&D Management Iteration Table",
+      "description": "The iteration table is a data table under the R&D management module. It is used for related queries and report queries in R&D management."
+    },
+    {
+      "name": "rdm_priority",
+      "label": "R&D Management Priority Table",
+      "description": "R&D management priority table, belonging to the R&D management module, used for querying, filtering, and reporting of related data in R&D management."
+    },
+    {
+      "name": "rdm_project",
+      "label": "R&D Management Project Table",
+      "description": "The project table in the R&D management module, which belongs to the R&D management system, is used for statistical queries and association queries related to R&D management."
+    },
+    {
+      "name": "rdm_project_status",
+      "label": "R&D Management Project Status Table",
+      "description": "The project_status table is a data table under the R&D management module. It is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_project_status_rel",
+      "label": "R&D Management -- project_status_rel Table",
+      "description": "The project_status_rel table is part of the R&D management module and is used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_project_template",
+      "label": "R&D Management -- project_template Table",
+      "description": "The project_template table is a data table under the R&D management module. It is used for enabling state filtering and other reporting scenarios related to R&D management."
+    },
+    {
+      "name": "rdm_project_template_apptype",
+      "label": "R&D Management -- project_template_apptype Table",
+      "description": "The project_template_apptype table is a data table within the R&D management module, used for related queries and report scenarios in R&D management."
+    },
+    {
+      "name": "rdm_project_user",
+      "label": "R&D Management -- project_user Table",
+      "description": "The project_user table is a data table under the R&D management module. It is used for related queries and report queries in R&D management scenarios."
+    },
+    {
+      "name": "rdm_tag",
+      "label": "R&D Management Tag Table",
+      "description": "R&D management tag table, belonging to the R&D management module, used for querying, filtering, and reporting of related data in R&D management."
+    },
+    {
+      "name": "rdm_webhook_config",
+      "label": "R&D Management webhook_config Table",
+      "description": "The webhook_config table is part of the R&D management module and is used for related queries and report queries in the R&D management scenario."
+    },
+    {
+      "name": "rdm_webhook_data",
+      "label": "R&D Management webhook_data Table",
+      "description": "The webhook_data table is part of the R&D management module and is used for statistical reporting and query scenarios related to time dimensions in R&D management."
+    },
+    {
+      "name": "rdm_event_handler",
+      "label": "Research Event Processor Configuration",
+      "description": "Event processor for research events, supporting research event configuration, cascading execution, and audit queries."
+    },
+    {
+      "name": "rdm_event_plugin",
+      "label": "Global Configuration for R&D Event Plugin",
+      "description": "Global configuration for the research event plugin, supporting research event configuration, cascading execution, and audit queries."
+    },
+    {
+      "name": "rdm_event_audit",
+      "label": "Research Event Audit",
+      "description": "Research event execution audit supports event configuration, cascading execution, and audit queries."
+    }
+  ]
+}

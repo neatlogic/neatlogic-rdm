@@ -1,0 +1,40 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_priority",
+  "label": "R&D Management Priority Table",
+  "description": "R&D management priority table, belonging to the R&D management module, used for querying, filtering, and reporting of related data in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "description": "Unique identifier."
+    },
+    {
+      "name": "color",
+      "type": "varchar(255)",
+      "description": "Add the `color` field to the `priority` table in the R&D management."
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "Sort."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_usersetting",
+  "label": "R&D Management app_usersetting Table",
+  "description": "The app_usersetting table is a data table under the R&D management module. It is used for related queries and report queries in R&D management scenarios.",
+  "fields": [
+    {
+      "name": "user_id",
+      "type": "char(32)",
+      "description": "User association ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "The application association ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "Configuration."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "user_id",
+        "app_id"
+      ],
+      "description": "Primary key index covering the user_id, app_id fields, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "Standard index covering the app_id field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

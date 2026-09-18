@@ -1,0 +1,45 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_webhook_config",
+  "label": "R&D Management webhook_config Table",
+  "description": "The webhook_config table is part of the R&D management module and is used for related queries and report queries in the R&D management scenario.",
+  "fields": [
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "The application association ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "webhook_url",
+      "type": "char(32)",
+      "description": "The webhook_url field in the webhook_config table of the R&D management webhooks. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "secret_token",
+      "type": "char(32)",
+      "description": "Create a webhook_config table with a secret_token field."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "app_id"
+      ],
+      "description": "Primary key index covering the app_id field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_url",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "webhook_url"
+      ],
+      "description": "Standard index covering the webhook_url field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app",
+  "label": "R&D Management App Table",
+  "description": "R&D management app table, belonging to the R&D management module, used for enabling state filtering and related query scenarios for reporting in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Object ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_type",
+      "type": "varchar(50)",
+      "description": "Title."
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "Project ID."
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "Sort."
+    },
+    {
+      "name": "is_active",
+      "type": "tinyint",
+      "description": "Indicates whether it is active."
+    },
+    {
+      "name": "config",
+      "type": "text",
+      "description": "Configuration."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

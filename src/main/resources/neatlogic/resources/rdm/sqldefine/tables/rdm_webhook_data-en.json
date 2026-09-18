@@ -1,0 +1,70 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_webhook_data",
+  "label": "R&D Management webhook_data Table",
+  "description": "The webhook_data table is part of the R&D management module and is used for statistical reporting and query scenarios related to time dimensions in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "The application association ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "create_time",
+      "type": "datetime(3)",
+      "description": "Time field."
+    },
+    {
+      "name": "data",
+      "type": "longtext",
+      "description": "Create webhook_data table with data field."
+    },
+    {
+      "name": "event",
+      "type": "varchar(50)",
+      "description": "Create webhook_data table with event field."
+    },
+    {
+      "name": "user_id",
+      "type": "varchar(50)",
+      "description": "User association ID."
+    },
+    {
+      "name": "email",
+      "type": "varchar(255)",
+      "description": "Create webhook_data.email field in the research_management.webhook_data table."
+    },
+    {
+      "name": "user_name",
+      "type": "varchar(50)",
+      "description": "Create webhook_data table with user_name field."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_app_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "app_id"
+      ],
+      "description": "Standard index covering the app_id field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}

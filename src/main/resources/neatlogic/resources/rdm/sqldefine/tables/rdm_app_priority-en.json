@@ -1,0 +1,40 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_app_priority",
+  "label": "R&D Management App_Priority Table",
+  "description": "The app_priority table is a data table under the R&D management module. It is used for related queries and report queries in R&D management scenarios.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "name",
+      "type": "varchar(50)",
+      "description": "Unique identifier."
+    },
+    {
+      "name": "label",
+      "type": "varchar(50)",
+      "description": "Name."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "Object ID."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_event_handler",
+  "label": "Research Event Processor Configuration",
+  "description": "Event processor for research events, supporting research event configuration, cascading execution, and audit queries.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Processor configuration ID"
+    },
+    {
+      "name": "uuid",
+      "type": "varchar(32)",
+      "description": "Configuration reference identifier"
+    },
+    {
+      "name": "parent_id",
+      "type": "bigint",
+      "description": "Parent processor configuration ID, root processor is empty."
+    },
+    {
+      "name": "project_id",
+      "type": "bigint",
+      "description": "Use project ID, execute only if no range is specified."
+    },
+    {
+      "name": "app_id",
+      "type": "bigint",
+      "description": "Use application ID, no execution if empty range."
+    },
+    {
+      "name": "name",
+      "type": "varchar(200)",
+      "description": "Processor configuration name"
+    },
+    {
+      "name": "handler",
+      "type": "varchar(100)",
+      "description": "Plugin unique identifier"
+    },
+    {
+      "name": "event",
+      "type": "varchar(100)",
+      "description": "Event identifier"
+    },
+    {
+      "name": "sort",
+      "type": "int",
+      "description": "Execution order; execute by ID if the execution times are the same."
+    },
+    {
+      "name": "config",
+      "type": "longtext",
+      "description": "Processor JSON configuration"
+    },
+    {
+      "name": "is_active",
+      "type": "tinyint",
+      "description": "ENABLE/DISABLE"
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ]
+    },
+    {
+      "name": "uk_uuid",
+      "type": "BTREE",
+      "unique": true,
+      "primary": false,
+      "columns": [
+        "uuid"
+      ]
+    },
+    {
+      "name": "idx_event_scope",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "event",
+        "project_id",
+        "app_id"
+      ]
+    },
+    {
+      "name": "idx_parent_sort",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "parent_id",
+        "sort",
+        "id"
+      ]
+    }
+  ]
+}

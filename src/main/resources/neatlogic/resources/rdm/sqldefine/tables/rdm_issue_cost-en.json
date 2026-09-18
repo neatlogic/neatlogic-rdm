@@ -1,0 +1,65 @@
+{
+  "moduleId": "rdm",
+  "name": "rdm_issue_cost",
+  "label": "R&D Management Issue Cost Table",
+  "description": "The issue_cost table is part of the R&D management module and is used for related queries and reporting scenarios in R&D management.",
+  "fields": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "description": "Primary key ID, used as the primary key or unique identifier for records in this table."
+    },
+    {
+      "name": "issue_id",
+      "type": "bigint",
+      "description": "Issue ID. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "cost_date",
+      "type": "date",
+      "description": "The cost_date field in the issue_cost table of the R&D management system. A standard index is defined on this field, making it suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "timecost",
+      "type": "int",
+      "description": "Create a new field named `timecost` in the `issue_cost` table."
+    },
+    {
+      "name": "description",
+      "type": "text",
+      "description": "Description."
+    }
+  ],
+  "indexes": [
+    {
+      "name": "PRIMARY",
+      "type": "BTREE",
+      "unique": true,
+      "primary": true,
+      "columns": [
+        "id"
+      ],
+      "description": "Primary key index covering the ID field, suitable for uniquely identifying records and queries that join the primary table."
+    },
+    {
+      "name": "idx_cost_date",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "cost_date"
+      ],
+      "description": "Standard index covering the cost_date field, suitable for filtering, join, and sort queries."
+    },
+    {
+      "name": "idx_issue_id",
+      "type": "BTREE",
+      "unique": false,
+      "primary": false,
+      "columns": [
+        "issue_id"
+      ],
+      "description": "Standard index covering the issue_id field, suitable for filtering, join, and sort queries."
+    }
+  ]
+}
