@@ -1,0 +1,275 @@
+{
+  "nmraa": {
+    "activeappapi": {
+      "getname": "Activate application"
+    },
+    "getallappapi": {
+      "getname": "Get all application types"
+    },
+    "getappapi": {
+      "getname": "Obtain application information",
+      "input": {
+        "param": {
+          "desc": "Application ID"
+        }
+      }
+    },
+    "getappcompleterateapi": {
+      "getname": "Obtain application completion rate"
+    },
+    "listprivateattrapi": {
+      "getname": "Get all internal properties"
+    },
+    "listprojectappapi": {
+      "getname": "Obtain project application list",
+      "input": {
+        "param": {
+          "desc": {
+            "ismine": "Do you want to only query the application list containing the current user's tasks",
+            "ismyreported": "Whether to only query the application list reported by the current user",
+            "needissuecount": "Do you need to return the number of tasks"
+          }
+        }
+      }
+    },
+    "saveappconfigapi": {
+      "getname": "Save application configuration"
+    },
+    "saveattrapi": {
+      "getname": "Save Application Properties",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "Attribute ID, does not provide a new representation"
+          }
+        }
+      }
+    },
+    "searchprivateattrapi": {
+      "getname": "Query application properties",
+      "input": {
+        "param": {
+          "desc": {
+            "needsystemattr": "Do you need system attributes"
+          }
+        }
+      }
+    },
+    "unactiveappapi": {
+      "getname": "Disable Application "
+    },
+    "updateappsortapi": {
+      "getname": "Update app sorting"
+    }
+  },
+  "nmrad": {
+    "deletedashboardapi": {
+      "getname": "Delete dashboard"
+    },
+    "getdashboardapi": {
+      "getname": "Get dashboard"
+    },
+    "savedashboardapi": {
+      "getname": "Save Dashboard",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "ID, blank represents adding"
+          }
+        }
+      }
+    }
+  },
+  "nmrai": {
+    "checkissueisfavoriteapi": {
+      "getname": "Check if the task is being followed",
+      "output": {
+        "param": {
+          "desc": "Whether to be followed, 0: No, 1: Yes"
+        }
+      }
+    },
+    "clearparentissueapi": {
+      "getname": "Clear Parent Task Relationship"
+    },
+    "deletecommentapi": {
+      "getname": "Delete Comment"
+    },
+    "deleteissueapi": {
+      "getname": "Delete Task"
+    },
+    "deleteissuecostapi": {
+      "getname": "Delete expenses"
+    },
+    "deleteissuerelapi": {
+      "getname": "Delete task association relationship"
+    },
+    "getissuecostapi": {
+      "getname": "Obtain expense details"
+    },
+    "listrelissueidapi": {
+      "getname": "Obtain a list of relationship task IDs"
+    },
+    "saveissueapi": {
+      "getname": "Save Task",
+      "input": {
+        "param": {
+          "desc": {
+            "attrlist": "Custom Property list",
+            "id": "ID, does not provide a representative for adding a task",
+            "name": "Task Name"
+          }
+        }
+      }
+    },
+    "saveissuecostapi": {
+      "getname": "Save expenses"
+    },
+    "searchissueapi": {
+      "getname": "Search Task",
+      "input": {
+        "param": {
+          "desc": {
+            "fromid": "Source Task ID",
+            "toid": "Target Task ID"
+          }
+        }
+      }
+    },
+    "searchissuecostapi": {
+      "getname": "Search expenses"
+    },
+    "toggleissueisfavoriteapi": {
+      "getname": "Switching task attention status",
+      "input": {
+        "param": {
+          "desc": {
+            "isfavorite": "Whether to follow"
+          }
+        }
+      }
+    }
+  },
+  "nmrap": {
+    "closeprojectapi": {
+      "getname": "Close Project"
+    },
+    "deletepriorityapi": {
+      "getname": "Delete Priority",
+      "input": {
+        "param": {
+          "desc": "Priority ID"
+        }
+      }
+    },
+    "deleteprojectapi": {
+      "getname": "delete item"
+    },
+    "listprojecttemplateapi": {
+      "getname": "Obtain a list of project templates"
+    },
+    "listprojectuserapi": {
+      "getname": "Obtain project user list"
+    },
+    "openprojectapi": {
+      "getname": "Open Project"
+    },
+    "savepriorityapi": {
+      "description": {
+        "desc": "Save Priority"
+      },
+      "input": {
+        "param": {
+          "desc": {
+            "id": "Priority ID, does not provide a representative for adding"
+          }
+        }
+      }
+    },
+    "saveprojectapi": {
+      "getname": "Save Project",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "ID, does not provide a representative for adding new projects"
+          }
+        }
+      }
+    },
+    "saveprojecttemplatefromprojectapi": {
+      "getname": "Save Project as Template"
+    },
+    "saveprojectuserapi": {
+      "getname": "Add Project User"
+    },
+    "searchprojectapi": {
+      "getname": "Query items"
+    },
+    "updateprioritysortapi": {
+      "getname": "Update priority sorting",
+      "input": {
+        "param": {
+          "desc": {
+            "prioritylist": "Priority List"
+          }
+        }
+      }
+    }
+  },
+  "nmras": {
+    "liststatusapi": {
+      "getname": "Get application status list",
+      "input": {
+        "param": {
+          "desc": {
+            "needissuecount": "Whether to count the number of tasks",
+            "status": "The current status, if provided, will only list the reachable status list. If 0, it represents obtaining the start status and the reachable status list of the start status"
+          }
+        }
+      }
+    },
+    "savestatusapi": {
+      "getname": "Save application status",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "Status ID, do not provide a representative to add"
+          }
+        }
+      }
+    },
+    "updatestatussortapi": {
+      "getname": "Update status sorting"
+    }
+  },
+  "nmrat": {
+    "deleteprojecttemplateapi": {
+      "getname": "Delete Project Template"
+    },
+    "getprojecttemplateapi": {
+      "getname": "Obtain project template details"
+    },
+    "saveprojecttemplateapi": {
+      "getname": "Save Project Template"
+    }
+  },
+  "page": {
+    "isclose": "Whether To Close",
+    "ismine": "Is it mine"
+  },
+  "term": {
+    "rdm": {
+      "closed": "Closed",
+      "commonid": "Comment ID",
+      "dashboardid": "Dashboard ID",
+      "groupdesc": "RDM platform",
+      "groupname": "RDM",
+      "ismytask": "Is it my task",
+      "isopen": "Is it enabled",
+      "name": "RDM",
+      "notclosed": "Not closed",
+      "notopened": "Not opened",
+      "opened": "Opened"
+    }
+  }
+}

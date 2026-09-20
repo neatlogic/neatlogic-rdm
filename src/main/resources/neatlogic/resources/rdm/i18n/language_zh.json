@@ -1,0 +1,275 @@
+{
+  "nmraa": {
+    "activeappapi": {
+      "getname": "激活应用"
+    },
+    "getallappapi": {
+      "getname": "获取所有应用类型"
+    },
+    "getappapi": {
+      "getname": "获取应用信息",
+      "input": {
+        "param": {
+          "desc": "应用id"
+        }
+      }
+    },
+    "getappcompleterateapi": {
+      "getname": "获取应用完成率"
+    },
+    "listprivateattrapi": {
+      "getname": "获取所有内部属性"
+    },
+    "listprojectappapi": {
+      "getname": "获取项目应用列表",
+      "input": {
+        "param": {
+          "desc": {
+            "ismine": "是否只查询包含当前用户任务的应用列表",
+            "ismyreported": "是否只查询当前用户上报的应用列表",
+            "needissuecount": "是否需要返回任务数量"
+          }
+        }
+      }
+    },
+    "saveappconfigapi": {
+      "getname": "保存应用配置"
+    },
+    "saveattrapi": {
+      "getname": "保存应用属性",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "属性id，不提供代表新增"
+          }
+        }
+      }
+    },
+    "searchprivateattrapi": {
+      "getname": "查询应用属性",
+      "input": {
+        "param": {
+          "desc": {
+            "needsystemattr": "是否需要系统属性"
+          }
+        }
+      }
+    },
+    "unactiveappapi": {
+      "getname": "禁用应用"
+    },
+    "updateappsortapi": {
+      "getname": "更新应用排序"
+    }
+  },
+  "nmrad": {
+    "deletedashboardapi": {
+      "getname": "删除仪表板"
+    },
+    "getdashboardapi": {
+      "getname": "获取仪表板"
+    },
+    "savedashboardapi": {
+      "getname": "保存仪表板",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "id，为空代表新增"
+          }
+        }
+      }
+    }
+  },
+  "nmrai": {
+    "checkissueisfavoriteapi": {
+      "getname": "检查任务是否被关注",
+      "output": {
+        "param": {
+          "desc": "是否被关注，0:否，1:是"
+        }
+      }
+    },
+    "clearparentissueapi": {
+      "getname": "清除父任务关系"
+    },
+    "deletecommentapi": {
+      "getname": "删除评论"
+    },
+    "deleteissueapi": {
+      "getname": "删除任务"
+    },
+    "deleteissuecostapi": {
+      "getname": "删除花费"
+    },
+    "deleteissuerelapi": {
+      "getname": "删除任务关联关系"
+    },
+    "getissuecostapi": {
+      "getname": "获取花费详情"
+    },
+    "listrelissueidapi": {
+      "getname": "获取关系任务id列表"
+    },
+    "saveissueapi": {
+      "getname": "保存任务",
+      "input": {
+        "param": {
+          "desc": {
+            "attrlist": "自定义属性列表",
+            "id": "id，不提供代表新增任务",
+            "name": "任务名称"
+          }
+        }
+      }
+    },
+    "saveissuecostapi": {
+      "getname": "保存花费"
+    },
+    "searchissueapi": {
+      "getname": "搜索任务",
+      "input": {
+        "param": {
+          "desc": {
+            "fromid": "来源任务id",
+            "toid": "目标任务id"
+          }
+        }
+      }
+    },
+    "searchissuecostapi": {
+      "getname": "搜索花费"
+    },
+    "toggleissueisfavoriteapi": {
+      "getname": "切换任务关注状态",
+      "input": {
+        "param": {
+          "desc": {
+            "isfavorite": "是否关注"
+          }
+        }
+      }
+    }
+  },
+  "nmrap": {
+    "closeprojectapi": {
+      "getname": "关闭项目"
+    },
+    "deletepriorityapi": {
+      "getname": "删除优先级",
+      "input": {
+        "param": {
+          "desc": "优先级id"
+        }
+      }
+    },
+    "deleteprojectapi": {
+      "getname": "删除项目"
+    },
+    "listprojecttemplateapi": {
+      "getname": "获取项目模板列表"
+    },
+    "listprojectuserapi": {
+      "getname": "获取项目用户列表"
+    },
+    "openprojectapi": {
+      "getname": "打开项目"
+    },
+    "savepriorityapi": {
+      "description": {
+        "desc": "保存优先级"
+      },
+      "input": {
+        "param": {
+          "desc": {
+            "id": "优先级id，不提供代表新增"
+          }
+        }
+      }
+    },
+    "saveprojectapi": {
+      "getname": "保存项目",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "id，不提供代表新增项目"
+          }
+        }
+      }
+    },
+    "saveprojecttemplatefromprojectapi": {
+      "getname": "项目另存为模板"
+    },
+    "saveprojectuserapi": {
+      "getname": "添加项目用户"
+    },
+    "searchprojectapi": {
+      "getname": "查询项目"
+    },
+    "updateprioritysortapi": {
+      "getname": "更新优先级排序",
+      "input": {
+        "param": {
+          "desc": {
+            "prioritylist": "优先级列表"
+          }
+        }
+      }
+    }
+  },
+  "nmras": {
+    "liststatusapi": {
+      "getname": "获取应用状态列表",
+      "input": {
+        "param": {
+          "desc": {
+            "needissuecount": "是否统计任务数量",
+            "status": "当前状态，如果提供则只会列出可到达状态列表，如果是0，代表获取开始状态以及开始状态能到达的状态列表"
+          }
+        }
+      }
+    },
+    "savestatusapi": {
+      "getname": "保存应用状态",
+      "input": {
+        "param": {
+          "desc": {
+            "id": "状态id，不提供代表添加"
+          }
+        }
+      }
+    },
+    "updatestatussortapi": {
+      "getname": "更新状态排序"
+    }
+  },
+  "nmrat": {
+    "deleteprojecttemplateapi": {
+      "getname": "删除项目模板"
+    },
+    "getprojecttemplateapi": {
+      "getname": "获取项目模板详情"
+    },
+    "saveprojecttemplateapi": {
+      "getname": "保存项目模板"
+    }
+  },
+  "page": {
+    "isclose": "是否关闭",
+    "ismine": "是否我的"
+  },
+  "term": {
+    "rdm": {
+      "closed": "已关闭",
+      "commonid": "评论id",
+      "dashboardid": "仪表板id",
+      "groupdesc": "研发管理平台",
+      "groupname": "研发管理",
+      "ismytask": "是否我的任务",
+      "isopen": "是否开启",
+      "name": "研发管理",
+      "notclosed": "未关闭",
+      "notopened": "未开启",
+      "opened": "已开启"
+    }
+  }
+}
