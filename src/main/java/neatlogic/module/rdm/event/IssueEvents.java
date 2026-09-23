@@ -14,13 +14,13 @@ import java.util.*;
 public class IssueEvents implements IRdmEventDefinitionProvider {
     private static final Set<String> APP_TYPES = issueAppTypes();
     public static final RdmEventDefinition<IssueVo> CREATED = new RdmEventDefinition<>(
-            "ISSUE_CREATE", "需求创建", "需求创建后触发", APP_TYPES, "issue", IssueVo.class, false);
+            "ISSUE_CREATE", "term.rdm.event.issuecreate.label", "term.rdm.event.issuecreate.description", APP_TYPES, "issue", IssueVo.class, false);
     public static final RdmEventDefinition<IssueVo> UPDATED = new RdmEventDefinition<>(
-            "ISSUE_UPDATE", "需求更新", "需求内容更新后触发", APP_TYPES, "issue", IssueVo.class, false);
+            "ISSUE_UPDATE", "term.rdm.event.issueupdate.label", "term.rdm.event.issueupdate.description", APP_TYPES, "issue", IssueVo.class, false);
     public static final RdmEventDefinition<IssueVo> STATUS_CHANGED = new RdmEventDefinition<>(
-            "ISSUE_STATUS_CHANGE", "需求状态变更", "需求状态变更后触发", APP_TYPES, "issue", IssueVo.class, false);
+            "ISSUE_STATUS_CHANGE", "term.rdm.event.issuestatuschange.label", "term.rdm.event.issuestatuschange.description", APP_TYPES, "issue", IssueVo.class, false);
     public static final RdmEventDefinition<IssueVo> DELETED = new RdmEventDefinition<>(
-            "ISSUE_DELETE", "需求删除", "需求删除后触发", APP_TYPES, "issue", IssueVo.class, true);
+            "ISSUE_DELETE", "term.rdm.event.issuedelete.label", "term.rdm.event.issuedelete.description", APP_TYPES, "issue", IssueVo.class, true);
 
     /** 复用应用扩展机制，所有声明管理需求的应用均支持需求事件。 */
     private static Set<String> issueAppTypes() {

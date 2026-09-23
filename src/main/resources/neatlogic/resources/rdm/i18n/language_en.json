@@ -262,6 +262,24 @@
       "closed": "Closed",
       "commonid": "Comment ID",
       "dashboardid": "Dashboard ID",
+      "event": {
+        "issuecreate": {
+          "description": "Triggered after an issue is created",
+          "label": "Issue Created"
+        },
+        "issuedelete": {
+          "description": "Triggered after an issue is deleted",
+          "label": "Issue Deleted"
+        },
+        "issuestatuschange": {
+          "description": "Triggered after an issue's status changes",
+          "label": "Issue Status Changed"
+        },
+        "issueupdate": {
+          "description": "Triggered after issue content is updated",
+          "label": "Issue Updated"
+        }
+      },
       "groupdesc": "RDM platform",
       "groupname": "RDM",
       "ismytask": "Is it my task",

@@ -262,6 +262,24 @@
       "closed": "已关闭",
       "commonid": "评论id",
       "dashboardid": "仪表板id",
+      "event": {
+        "issuecreate": {
+          "description": "需求创建后触发",
+          "label": "需求创建"
+        },
+        "issuedelete": {
+          "description": "需求删除后触发",
+          "label": "需求删除"
+        },
+        "issuestatuschange": {
+          "description": "需求状态变更后触发",
+          "label": "需求状态变更"
+        },
+        "issueupdate": {
+          "description": "需求内容更新后触发",
+          "label": "需求更新"
+        }
+      },
       "groupdesc": "研发管理平台",
       "groupname": "研发管理",
       "ismytask": "是否我的任务",
