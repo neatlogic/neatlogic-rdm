@@ -263,6 +263,22 @@
       "commonid": "评论id",
       "dashboardid": "仪表板id",
       "event": {
+        "bugcreate": {
+          "description": "缺陷创建后触发",
+          "label": "缺陷创建"
+        },
+        "bugdelete": {
+          "description": "缺陷删除后触发",
+          "label": "缺陷删除"
+        },
+        "bugstatuschange": {
+          "description": "缺陷状态变更后触发",
+          "label": "缺陷状态变更"
+        },
+        "bugupdate": {
+          "description": "缺陷内容更新后触发",
+          "label": "缺陷更新"
+        },
         "issuecreate": {
           "description": "需求创建后触发",
           "label": "需求创建"
@@ -278,6 +294,38 @@
         "issueupdate": {
           "description": "需求内容更新后触发",
           "label": "需求更新"
+        },
+        "storycreate": {
+          "description": "需求创建后触发",
+          "label": "需求创建"
+        },
+        "storydelete": {
+          "description": "需求删除后触发",
+          "label": "需求删除"
+        },
+        "storystatuschange": {
+          "description": "需求状态变更后触发",
+          "label": "需求状态变更"
+        },
+        "storyupdate": {
+          "description": "需求内容更新后触发",
+          "label": "需求更新"
+        },
+        "taskcreate": {
+          "description": "任务创建后触发",
+          "label": "任务创建"
+        },
+        "taskdelete": {
+          "description": "任务删除后触发",
+          "label": "任务删除"
+        },
+        "taskstatuschange": {
+          "description": "任务状态变更后触发",
+          "label": "任务状态变更"
+        },
+        "taskupdate": {
+          "description": "任务内容更新后触发",
+          "label": "任务更新"
         }
       },
       "groupdesc": "研发管理平台",

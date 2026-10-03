@@ -15,6 +15,8 @@ package neatlogic.module.rdm.api.app;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
+import neatlogic.framework.rdm.app.RdmAppCapability;
+import neatlogic.framework.rdm.app.RdmAppCapabilityRegistry;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.AppAttrVo;
 import neatlogic.framework.rdm.dto.AppVo;
@@ -147,7 +149,7 @@ public class ActiveAppApi extends PrivateApiComponentBase {
                 }
             }
         }
-        if (appVo != null && appVo.getHasIssue()) {
+        if (appVo != null && RdmAppCapabilityRegistry.has(appVo.getType(), RdmAppCapability.OBJECT_SCHEMA)) {
             appVo.setAttrList(attrMapper.getAttrByAppId(appVo.getId()));
             EscapeTransactionJob.State s = projectService.buildObjectSchema(appVo);
             if (!s.isSucceed()) {

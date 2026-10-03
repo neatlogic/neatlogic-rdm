@@ -263,6 +263,22 @@
       "commonid": "Comment ID",
       "dashboardid": "Dashboard ID",
       "event": {
+        "bugcreate": {
+          "description": "Triggered after a bug is created",
+          "label": "Bug Created"
+        },
+        "bugdelete": {
+          "description": "Triggered after a bug is deleted",
+          "label": "Bug Deleted"
+        },
+        "bugstatuschange": {
+          "description": "Triggered after a bug status changes",
+          "label": "Bug Status Changed"
+        },
+        "bugupdate": {
+          "description": "Triggered after a bug is updated",
+          "label": "Bug Updated"
+        },
         "issuecreate": {
           "description": "Triggered after an issue is created",
           "label": "Issue Created"
@@ -278,6 +294,38 @@
         "issueupdate": {
           "description": "Triggered after issue content is updated",
           "label": "Issue Updated"
+        },
+        "storycreate": {
+          "description": "Triggered after a story is created",
+          "label": "Story Created"
+        },
+        "storydelete": {
+          "description": "Triggered after a story is deleted",
+          "label": "Story Deleted"
+        },
+        "storystatuschange": {
+          "description": "Triggered after a story status changes",
+          "label": "Story Status Changed"
+        },
+        "storyupdate": {
+          "description": "Triggered after a story is updated",
+          "label": "Story Updated"
+        },
+        "taskcreate": {
+          "description": "Triggered after a task is created",
+          "label": "Task Created"
+        },
+        "taskdelete": {
+          "description": "Triggered after a task is deleted",
+          "label": "Task Deleted"
+        },
+        "taskstatuschange": {
+          "description": "Triggered after a task status changes",
+          "label": "Task Status Changed"
+        },
+        "taskupdate": {
+          "description": "Triggered after a task is updated",
+          "label": "Task Updated"
         }
       },
       "groupdesc": "RDM platform",

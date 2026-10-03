@@ -44,6 +44,7 @@ public class IssueEventApiTriggerTest {
     private boolean deleted;
     private boolean indexed;
     private int reads;
+    private AppVo app;
     private final SaveIssueApi saveApi = new SaveIssueApi();
     private final DeleteIssueApi deleteApi = new DeleteIssueApi();
 
@@ -52,14 +53,28 @@ public class IssueEventApiTriggerTest {
         IssueEventApiTriggerTest test = new IssueEventApiTriggerTest();
         try {
             test.initialize();
-            test.save(false, false, true, true, "ISSUE_CREATE");
-            test.save(true, true, false, true, "ISSUE_STATUS_CHANGE");
-            test.save(true, false, true, true, "ISSUE_UPDATE");
-            test.save(true, true, true, true, "ISSUE_STATUS_CHANGE", "ISSUE_UPDATE");
+            test.save(false, false, true, true, "STORY_CREATE");
+            test.save(true, true, false, true, "STORY_STATUS_CHANGE");
+            test.save(true, false, true, true, "STORY_UPDATE");
+            test.save(true, true, true, true, "STORY_STATUS_CHANGE", "STORY_UPDATE");
             test.save(true, false, false, true);
-            test.save(false, false, true, false, "ISSUE_CREATE");
+            test.save(false, false, true, false, "STORY_CREATE");
             test.delete(true);
             test.delete(false);
+            // 商业模块事件由其提供者注册；这里模拟模块注册后验证同一 API 的五种应用路由。
+            for (String type : Arrays.asList("testcase", "testplan")) {
+                for (String action : Arrays.asList("CREATE", "DELETE", "STATUS_CHANGE", "UPDATE")) {
+                    RdmEventRegistry.register(IssueEvents.definition(type, action));
+                }
+            }
+            for (String type : Arrays.asList("task", "bug", "testcase", "testplan")) {
+                test.app.setType(type);
+                String eventPrefix = type.toUpperCase(Locale.ROOT);
+                test.save(false, false, true, true, eventPrefix + "_CREATE");
+                test.save(true, true, true, true, eventPrefix + "_STATUS_CHANGE", eventPrefix + "_UPDATE");
+                test.delete(true);
+            }
+            test.app.setType("story");
             // 商业能力关闭时普通生命周期及原通知仍完成，事件配置不查询。
             test.capability.set(false);
             test.save(false, false, true, true);
@@ -86,7 +101,7 @@ public class IssueEventApiTriggerTest {
         user.setUserId("event-test");
         user.setAuthorization("test-token");
         UserContext.init(user, null, "Asia/Hong_Kong");
-        AppVo app = new AppVo();
+        app = new AppVo();
         app.setId(3L);
         app.setProjectId(2L);
         app.setType("story");
@@ -192,7 +207,7 @@ public class IssueEventApiTriggerTest {
         check(deleted && indexed && reads == 1, "删除应只读取一次删除前完整对象");
         check(published.isEmpty(), "删除事务提交前不应发布");
         complete(commit);
-        if (capability.get()) { assertPublished(commit, "ISSUE_DELETE"); }
+        if (capability.get()) { assertPublished(commit, app.getType().toUpperCase(Locale.ROOT) + "_DELETE"); }
         else { assertPublished(commit); }
         check(reads == 1, "删除事件不应重载数据库对象");
     }

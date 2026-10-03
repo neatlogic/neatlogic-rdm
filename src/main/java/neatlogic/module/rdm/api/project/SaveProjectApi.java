@@ -12,7 +12,6 @@
 
 package neatlogic.module.rdm.api.project;
 
-import neatlogic.framework.restful.dto.ApiExampleVo;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -20,6 +19,8 @@ import neatlogic.framework.asynchronization.threadlocal.UserContext;
 import neatlogic.framework.auth.core.AuthAction;
 import neatlogic.framework.common.constvalue.ApiParamType;
 import neatlogic.framework.common.constvalue.GroupSearch;
+import neatlogic.framework.rdm.app.RdmAppCapability;
+import neatlogic.framework.rdm.app.RdmAppCapabilityRegistry;
 import neatlogic.framework.rdm.attrhandler.code.AttrHandlerFactory;
 import neatlogic.framework.rdm.attrhandler.code.IAttrValueHandler;
 import neatlogic.framework.rdm.auth.label.RDM_BASE;
@@ -27,35 +28,31 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
 import neatlogic.framework.rdm.enums.core.AppTypeManager;
-import neatlogic.framework.rdm.notify.constvalue.RdmProjectNotifyTriggerType;
-import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.rdm.exception.ProjectNameIsExistsException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthException;
 import neatlogic.framework.rdm.exception.ProjectTemplateNotFoundException;
+import neatlogic.framework.rdm.notify.constvalue.RdmProjectNotifyTriggerType;
+import neatlogic.framework.rdm.notify.dto.RdmNotifyContextVo;
 import neatlogic.framework.restful.annotation.*;
 import neatlogic.framework.restful.constvalue.OperationTypeEnum;
 import neatlogic.framework.restful.core.privateapi.PrivateApiComponentBase;
+import neatlogic.framework.restful.dto.ApiExampleVo;
 import neatlogic.framework.transaction.core.EscapeTransactionJob;
 import neatlogic.module.rdm.auth.ProjectAuthManager;
 import neatlogic.module.rdm.dao.mapper.AppMapper;
 import neatlogic.module.rdm.dao.mapper.AttrMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectMapper;
 import neatlogic.module.rdm.dao.mapper.ProjectTemplateMapper;
-import neatlogic.module.rdm.service.ProjectService;
 import neatlogic.module.rdm.notify.service.RdmNotifyService;
+import neatlogic.module.rdm.service.ProjectService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Service
 @AuthAction(action = RDM_BASE.class)
@@ -289,7 +286,7 @@ public class SaveProjectApi extends PrivateApiComponentBase {
                 appList.add(appVo);
             }
             for (AppVo appVo : appList) {
-                if (appVo.getHasIssue()) {
+                if (RdmAppCapabilityRegistry.has(appVo.getType(), RdmAppCapability.OBJECT_SCHEMA)) {
                     EscapeTransactionJob.State s = projectService.buildObjectSchema(appVo);
                     if (!s.isSucceed()) {
                         throw new CreateObjectSchemaException(appVo.getName());

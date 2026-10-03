@@ -23,7 +23,6 @@ import neatlogic.framework.rdm.auth.label.RDM_BASE;
 import neatlogic.framework.rdm.dto.IssueVo;
 import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.rdm.enums.IssueFullTextIndexType;
-import neatlogic.framework.rdm.event.RdmEventManager;
 import neatlogic.framework.rdm.exception.IssueNotDeleteAuthException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
@@ -106,7 +105,7 @@ public class DeleteIssueApi extends PrivateApiComponentBase {
             }
             rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.DELETED);
             // 删除完成后发布删除前快照，插件执行时不再重载已经删除的需求。
-            RdmEventManager.doEvent(issueVo.getProjectId(), issueVo.getAppId(), IssueEvents.DELETED, issueVo);
+            IssueEvents.publish(appVo.getType(), "DELETE", issueVo);
         } else {
             throw new IssueNotDeleteAuthException();
         }

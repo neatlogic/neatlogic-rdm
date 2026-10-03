@@ -2,13 +2,15 @@
 
 ## 业务接入
 
-当前已接入需求保存、删除 API 和商业模块 GitLab Push 接收 API。应用设置已增加事件配置页，不覆盖导入、副本同步等内部写入入口。
+当前已接入需求、任务、缺陷、测试用例、测试计划的保存与删除 API，以及商业模块 GitLab Push 接收 API。应用设置已增加事件配置页，不覆盖导入、副本同步等内部写入入口。
 
 ```java
-RdmEventManager.doEvent(projectId, appId, IssueEvents.UPDATED, issueVo);
+IssueEvents.publish(appVo.getType(), "UPDATE", issueVo);
 ```
 
-事件定义 `RdmEventDefinition<T>` 将事件标识、允许的应用类型、对象标识及 `Class<T>` 和删除快照策略绑定，通过工厂获取 `IRdmEventObjectAdapter<T>`。`IssueEvents` 保留四个 `ISSUE_*` 标识；其他应用通过自己的 `IRdmEventDefinitionProvider` 注册其他 Vo 事件，同一个应用可以支持多种对象事件。
+事件定义 `RdmEventDefinition<T>` 将事件标识、允许的应用类型、对象标识及 `Class<T>` 和删除快照策略绑定，通过工厂获取 `IRdmEventObjectAdapter<T>`。社区模块注册 `STORY_*`、`TASK_*`、`BUG_*`，商业模块注册 `TESTCASE_*`、`TESTPLAN_*`；这些事件共用 `IssueVo` 执行载荷，但各自只属于一个应用。GitLab 保留独立事件及 `GitlabPushVo`。
+
+`RdmAppCapabilityRegistry` 与事件注册相互独立。社区模块声明需求、任务、缺陷，商业模块声明测试用例、测试计划的 `OBJECT_SCHEMA` 和 `WORK_ITEM` 能力；`AppVo.capabilities` 向页面提供名称列表。应用类型本身不再携带 `hasIssue`。
 
 插件必须继承 `RdmEventHandlerBase<T>`，声明 `getObjectClass()`、支持事件与父插件标识，实现 `myTrigger(..., T object, ...)`。注册表拒绝绕过基类的实现，以保证事务、重载、身份验证与审计始终执行。插件方法直接接收具体 Vo，无需业务转换。
 
@@ -29,6 +31,8 @@ RdmEventManager.doEvent(projectId, appId, IssueEvents.UPDATED, issueVo);
 ## 存储与升级
 
 审计定位采用 `projectId + appId + objectType + objectId`。对象 ID 为最多 255 字符的字符串，对象类型最多 100 字符，数据库区分大小写。插件配置和审计展示结果仍可以保存 JSON，但不是插件间业务载荷。
+
+2026-09-24 changelog 按 `rdm_app.app_type` 将五种应用的根规则与子规则 `event` 从 `ISSUE_*` 更新为所属应用标识，保持 ID、UUID、排序、启停、配置和历史审计原值。集成插件在读取分支、执行和再次保存时，把配置 JSON 中相同动作的旧 `ISSUE_*` 引用归一化；这也适用于由 Mapper 解压后的配置。升级时先停止所有旧服务节点，执行迁移并部署新版本，再恢复事件执行，避免旧节点继续按 `ISSUE_*` 查询已迁移规则。
 
 2026-09-13 SQL 更新新建定义，并为旧表补充字段、将 `issue_id` 改成可空、回填旧审计、调整索引。旧列暂留，运行代码不再读写它。升级沿用项目逐条 SQL 哈希执行、忽略已存在列/索引等规则，不能用普通 stop-on-error 脚本执行器直接替代生产升级机制。
 
@@ -68,15 +72,10 @@ mvn -Pdevelop -pl ../neatlogic-rdm -am -DskipTests compile
 需求在 `neatlogic-rdm/src/main/java/neatlogic/module/rdm/api/issue/SaveIssueApi.java` 完成保存、关联处理和完整对象读取后，复用已有通知条件发布创建、状态变更或普通更新事件；`DeleteIssueApi.java` 在删除及索引处理完成后传入删除前完整对象。
 
 ```java
-RdmEventManager.doEvent(
-    currentIssueVo.getProjectId(),
-    currentIssueVo.getAppId(),
-    IssueEvents.CREATED,
-    currentIssueVo
-);
+IssueEvents.publish(appVo.getType(), "CREATE", currentIssueVo);
 ```
 
-新建仅发布创建事件；一次编辑若同时符合状态变化和普通更新条件，会发布两个独立事件，不保证二者异步执行顺序。四种事件都依赖现有 API 事务，回滚不会发布。需求事件目前沿用所有 `hasIssue` 应用的类型定义。
+新建仅发布所属应用的创建事件；一次编辑若同时符合状态变化和普通更新条件，会发布两个独立事件，不保证二者异步执行顺序。四种事件都依赖现有 API 事务，回滚不会发布。
 
 GitLab 在商业模块 `SaveWebhookDataApi.java` 完成现有 Webhook 保存和索引处理后，将已接受的 Push 转换成 `GitlabPushVo` 再发布：
 

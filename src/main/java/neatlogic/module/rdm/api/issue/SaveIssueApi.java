@@ -24,7 +24,6 @@ import neatlogic.framework.rdm.dto.*;
 import neatlogic.framework.rdm.enums.IssueGroupSearch;
 import neatlogic.framework.rdm.enums.IssueRelType;
 import neatlogic.framework.rdm.enums.ProjectUserType;
-import neatlogic.framework.rdm.event.RdmEventManager;
 import neatlogic.framework.rdm.exception.AppAttrNotFoundException;
 import neatlogic.framework.rdm.exception.IssueNotFoundException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthIssueException;
@@ -234,18 +233,18 @@ public class SaveIssueApi extends PrivateApiComponentBase {
         if (oldIssue == null) {
             rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.CREATED);
             // 使用保存后的完整对象发布，事件引擎仅在当前事务提交后执行配置。
-            RdmEventManager.doEvent(currentIssueVo.getProjectId(), currentIssueVo.getAppId(), IssueEvents.CREATED, currentIssueVo);
+            IssueEvents.publish(appVo.getType(), "CREATE", currentIssueVo);
         } else {
             if (paramObj.containsKey("status") && !Objects.equals(oldIssue.getStatus(), currentIssueVo.getStatus())) {
                 rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.STATUS_CHANGED);
-                RdmEventManager.doEvent(currentIssueVo.getProjectId(), currentIssueVo.getAppId(), IssueEvents.STATUS_CHANGED, currentIssueVo);
+                IssueEvents.publish(appVo.getType(), "STATUS_CHANGE", currentIssueVo);
             }
             if (!getWorkerSet(oldIssue).equals(getWorkerSet(currentIssueVo))) {
                 rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.WORKER_CHANGED);
             }
             if (hasOrdinaryUpdate(paramObj)) {
                 rdmNotifyService.notify(notifyContextVo, RdmIssueNotifyTriggerType.UPDATED);
-                RdmEventManager.doEvent(currentIssueVo.getProjectId(), currentIssueVo.getAppId(), IssueEvents.UPDATED, currentIssueVo);
+                IssueEvents.publish(appVo.getType(), "UPDATE", currentIssueVo);
             }
         }
         if (StringUtils.isNotBlank(issueVo.getComment())) {
