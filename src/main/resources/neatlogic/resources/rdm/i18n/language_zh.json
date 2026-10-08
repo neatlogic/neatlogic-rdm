@@ -1,4 +1,14 @@
 {
+  "file": {
+    "handler": {
+      "issuefilehandler": {
+        "displayname": "任务管理附件"
+      },
+      "rdmfilehandler": {
+        "displayname": "文件型属性附件"
+      }
+    }
+  },
   "nmraa": {
     "activeappapi": {
       "getname": "激活应用"

@@ -1,4 +1,14 @@
 {
+  "file": {
+    "handler": {
+      "issuefilehandler": {
+        "displayname": "Task Management Attachment"
+      },
+      "rdmfilehandler": {
+        "displayname": "File Attribute Attachment"
+      }
+    }
+  },
   "nmraa": {
     "activeappapi": {
       "getname": "Activate application"

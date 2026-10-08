@@ -15,6 +15,7 @@ package neatlogic.module.rdm.file;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import neatlogic.framework.file.core.FileTypeHandlerBase;
+import neatlogic.framework.util.$;
 import neatlogic.framework.file.dto.FileVo;
 import neatlogic.framework.rdm.dto.IssueAuditVo;
 import neatlogic.module.rdm.dao.mapper.IssueAuditMapper;
@@ -44,9 +45,10 @@ public class IssueFileHandler extends FileTypeHandlerBase {
         return true;
     }
 
+    /** 返回当前语言环境下的文件类型显示名称。 */
     @Override
     public String getDisplayName() {
-        return "任务管理附件";
+        return $.t("file.handler.issuefilehandler.displayname");
     }
 
     @Override
