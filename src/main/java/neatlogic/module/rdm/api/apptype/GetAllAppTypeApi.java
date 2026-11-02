@@ -45,12 +45,16 @@ public class GetAllAppTypeApi extends PrivateApiComponentBase {
         return null;
     }
 
+    /** 实时过滤不可用应用，授权到期后不继续显示启动时缓存的商业入口。 */
     @Output({@Param(explode = AppTypeVo[].class)})
     @Description(desc = "nmraa.getallappapi.getname")
     @Override
     public Object myDoService(JSONObject paramObj) {
         List<AppTypeVo> appTypeList = new ArrayList<>();
         for (IAppType appType : AppTypeManager.getAppTypeList()) {
+            if (!appType.isValid()) {
+                continue;
+            }
             AppTypeVo appTypeVo = new AppTypeVo();
             appTypeVo.setLabel(appType.getLabel());
             appTypeVo.setName(appType.getName());

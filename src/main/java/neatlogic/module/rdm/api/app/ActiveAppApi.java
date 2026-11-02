@@ -24,6 +24,7 @@ import neatlogic.framework.rdm.dto.ProjectVo;
 import neatlogic.framework.rdm.enums.AttrType;
 import neatlogic.framework.rdm.enums.core.AppTypeManager;
 import neatlogic.framework.rdm.enums.core.IAppType;
+import neatlogic.framework.rdm.exception.AppTypeNotFoundException;
 import neatlogic.framework.rdm.exception.CreateObjectSchemaException;
 import neatlogic.framework.rdm.exception.ProjectNotAuthException;
 import neatlogic.framework.rdm.exception.ProjectNotFoundException;
@@ -86,6 +87,11 @@ public class ActiveAppApi extends PrivateApiComponentBase {
         }
         if (!projectVo.getIsLeader() && !projectVo.getIsOwner()) {
             throw new ProjectNotAuthException(projectVo.getName());
+        }
+        // 新增和重新启用均检查当前可用性，避免授权到期后借助历史应用重新开启入口。
+        IAppType availableType = AppTypeManager.get(appType);
+        if (availableType == null || !availableType.isValid()) {
+            throw new AppTypeNotFoundException(appType);
         }
         AppVo appVo = appMapper.getAppByProjectIdAndType(projectId, appType);
         if (appVo == null) {
